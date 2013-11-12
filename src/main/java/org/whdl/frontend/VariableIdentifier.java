@@ -5,10 +5,8 @@ class VariableIdentifier {
   private String name;
   private NamespaceIdentifier namespaceIdentifier;
 
-  public VariableIdentifier(
-    NamespaceIdentifier namespaceIdentifier,
-    String name
-  ) {
+  public VariableIdentifier(NamespaceIdentifier namespaceIdentifier,
+                            String name) {
     this.name = name;
     this.namespaceIdentifier = namespaceIdentifier;
   }
