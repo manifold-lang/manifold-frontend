@@ -2,12 +2,12 @@ package org.whdl.frontend;
 
 public class BooleanValue extends Value {
 
-  private final BooleanValue trueInstance = new BooleanValue(true);
-  private final BooleanValue falseInstance = new BooleanValue(false);
+  private static final BooleanValue trueInstance = new BooleanValue(true);
+  private static final BooleanValue falseInstance = new BooleanValue(false);
 
-  private Boolean value;
+  private boolean value;
 
-  private BooleanValue(Boolean value) {
+  private BooleanValue(boolean value) {
     this.value = value;
   }
 
@@ -15,7 +15,7 @@ public class BooleanValue extends Value {
     return BooleanTypeValue.instance;
   }
 
-  public Boolean toBoolean() {
+  public boolean toBoolean() {
     return value;
   }
 
