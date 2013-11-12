@@ -5,6 +5,14 @@ public class BooleanValue extends Value {
   private static final BooleanValue trueInstance = new BooleanValue(true);
   private static final BooleanValue falseInstance = new BooleanValue(false);
 
+  public static BooleanValue getInstance(boolean value) {
+    if (value) {
+      return trueInstance;
+    } else {
+      return falseInstance;
+    }
+  }
+
   private boolean value;
 
   private BooleanValue(boolean value) {
@@ -12,7 +20,7 @@ public class BooleanValue extends Value {
   }
 
   public TypeValue getTypeValue() {
-    return BooleanTypeValue.instance;
+    return BooleanTypeValue.getInstance();
   }
 
   public boolean toBoolean() {

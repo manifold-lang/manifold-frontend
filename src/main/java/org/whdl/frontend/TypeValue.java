@@ -4,9 +4,10 @@ public abstract class TypeValue extends Value {
 
  /*
   * Java doesn't let us express this but every `TypeValue`, by convention,
-  * ought to have a `public abstract final` singleton `instance` property
+  * ought to have a `public abstract final getInstance()` singleton accessor
+  * method.
   *
-  *   public abstract final TypeValue instance;
+  *   public abstract final TypeValue getInstance();
   *
   * and a private constructor
   *
@@ -14,7 +15,7 @@ public abstract class TypeValue extends Value {
   */
 
   public TypeValue getTypeValue() {
-    return TypeTypeValue.instance;
+    return TypeTypeValue.getInstance();
   }
 
 }

@@ -2,7 +2,11 @@ package org.whdl.frontend;
 
 public class TypeTypeValue extends TypeValue {
 
-  public final static TypeTypeValue instance = new TypeTypeValue();
+  private final static TypeTypeValue instance = new TypeTypeValue();
+
+  public static TypeTypeValue getInstance() {
+    return instance;
+  }
 
   private TypeTypeValue() {}
 
