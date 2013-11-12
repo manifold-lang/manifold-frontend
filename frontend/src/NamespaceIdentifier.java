@@ -1,17 +1,16 @@
 package org.whdl.frontend;
 
 import java.util.ArrayList;
-import java.util.List;
 
 class NamespaceIdentifier {
 
-  private ArrayList<String> name;
+  private List<String> name;
 
-  public NamespaceIdentifier(ArrayList<String> name) {
-    this.name = name;
+  public NamespaceIdentifier(List<String> name) {
+    this.name = ava.util.Collections.unmodifiableList(name);
   }
 
   public List<String> getName() {
-    return java.util.Collections.unmodifiableList(name);
+    return name;
   }
 }
