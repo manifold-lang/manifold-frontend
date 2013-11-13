@@ -1,4 +1,4 @@
-package org.whdl.frontend;
+package org.whdl.frontend.syntaxtree;
 
 public class BooleanValue extends Value {
 
