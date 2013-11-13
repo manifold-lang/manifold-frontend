@@ -1,4 +1,4 @@
-package org.whdl.frontend;
+package org.whdl.frontend.syntaxtree;
 
 class VariableIdentifier {
 
