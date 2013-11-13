@@ -4,7 +4,7 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 import static org.hamcrest.CoreMatchers.instanceOf;
 
-public class BooleanValueTest {
+public class TestBooleanValue {
   
   private BooleanValue getInstance(boolean value) {
     return BooleanValue.getInstance(value);

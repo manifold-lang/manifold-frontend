@@ -4,7 +4,7 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 import static org.hamcrest.CoreMatchers.instanceOf;
 
-public class TypeTypeValueTest {
+public class TestTypeTypeValue {
 
   public TypeTypeValue getInstance() {
     return TypeTypeValue.getInstance();

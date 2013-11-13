@@ -3,7 +3,7 @@ package org.whdl.frontend;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
-public class TypeValueTest {
+public class TestTypeValue {
 
   private TypeValue getInstance() {
      // TypeValue is abstract so we use a simple implementation.

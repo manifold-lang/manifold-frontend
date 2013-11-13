@@ -4,7 +4,7 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 import static org.hamcrest.CoreMatchers.instanceOf;
 
-public class BooleanTypeValueTest {
+public class TestBooleanTypeValue {
 
   @Test
   public void testStaticGetInstance() {
