@@ -2,7 +2,7 @@ package org.whdl.frontend.syntaxtree;
 
 import java.util.List;
 
-class NamespaceIdentifier {
+public class NamespaceIdentifier {
 
   private List<String> name;
 

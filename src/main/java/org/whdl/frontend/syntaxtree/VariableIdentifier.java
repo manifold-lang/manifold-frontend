@@ -1,6 +1,6 @@
 package org.whdl.frontend.syntaxtree;
 
-class VariableIdentifier {
+public class VariableIdentifier {
 
   private String name;
   private NamespaceIdentifier namespaceIdentifier;
