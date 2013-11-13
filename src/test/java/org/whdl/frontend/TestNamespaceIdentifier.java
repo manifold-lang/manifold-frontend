@@ -5,7 +5,7 @@ import org.junit.Test;
 import java.lang.UnsupportedOperationException;
 import java.util.ArrayList;
 
-public class NamespaceIdentifierTest {
+public class TestNamespaceIdentifier {
 
   private NamespaceIdentifier getInstance() {
     ArrayList<String> name = new ArrayList<String>(3);

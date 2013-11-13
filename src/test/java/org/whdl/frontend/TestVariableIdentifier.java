@@ -5,7 +5,7 @@ import org.junit.Test;
 import java.lang.UnsupportedOperationException;
 import java.util.ArrayList;
 
-public class VariableIdentifierTest {
+public class TestVariableIdentifier {
 
   private NamespaceIdentifier namespaceIdentifierInstance;
 
