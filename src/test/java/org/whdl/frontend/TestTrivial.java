@@ -3,9 +3,9 @@ package org.whdl.frontend;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
-public class TrivialTest {
+public class TestTrivial {
   @Test
-  public void trivial() {
+  public void testTrivial() {
     assertEquals(true, true);
   }
 }
