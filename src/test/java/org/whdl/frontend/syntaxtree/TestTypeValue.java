@@ -14,5 +14,10 @@ public class TestTypeValue {
   public void testGetTypeValue() {
     assertSame(getInstance().getTypeValue(), TypeTypeValue.getInstance());
   }
+  
+  @Test
+  public void testGetSupertypeTypeValue() {
+    assertSame(getInstance().getSupertypeTypeValue(), TypeTypeValue.getInstance());
+  }
 
 }
