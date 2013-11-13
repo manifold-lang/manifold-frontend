@@ -24,8 +24,10 @@ public class BooleanValueTest {
 
   @Test
   public void testGetTypeValue() {
-    assertThat(getInstance(true).getTypeValue(), instanceOf(BooleanTypeValue.class));
-    assertThat(getInstance(false).getTypeValue(), instanceOf(BooleanTypeValue.class));
+    assertThat(getInstance(true).getTypeValue(),
+               instanceOf(BooleanTypeValue.class));
+    assertThat(getInstance(false).getTypeValue(),
+               instanceOf(BooleanTypeValue.class));
   }
 
 }

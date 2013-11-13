@@ -8,7 +8,8 @@ public class BooleanTypeValueTest {
 
   @Test
   public void testStaticGetInstance() {
-    assertThat(BooleanTypeValue.getInstance(), instanceOf(BooleanTypeValue.class));
+    assertThat(BooleanTypeValue.getInstance(),
+               instanceOf(BooleanTypeValue.class));
   }
 
 }
