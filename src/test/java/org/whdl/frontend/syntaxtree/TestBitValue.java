@@ -23,13 +23,13 @@ public class TestBitValue {
   }
 
   @Test
-  public void testGetTypeValue() {
+  public void testGetType() {
     assertThat(
-      getInstance(true).getTypeValue(),
+      getInstance(true).getType(),
       instanceOf(BitTypeValue.class)
     );
     assertThat(
-      getInstance(false).getTypeValue(),
+      getInstance(false).getType(),
       instanceOf(BitTypeValue.class)
     );
   }
