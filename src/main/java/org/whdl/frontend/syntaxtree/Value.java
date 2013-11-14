@@ -12,11 +12,12 @@ public abstract class Value {
   
   /*
    * Returns true if this value can be evaulated at compiletime.
+   * Either this or isRuntimeEvaluable or both must return true.
    */
   public abstract boolean isCompiletimeEvaluable();
   
   /*
-   * Returns true if this value is syntesizable.
+   * Returns true if this value is synthesizable.
    */
   public abstract boolean isRuntimeEvaluable();
 }
