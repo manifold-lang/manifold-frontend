@@ -1,30 +1,31 @@
 package org.whdl.frontend.syntaxtree;
 
-public class BooleanValue extends Value {
+public class BitValue extends Value {
 
-  private static final BooleanValue trueInstance = new BooleanValue(true);
-  private static final BooleanValue falseInstance = new BooleanValue(false);
+  private static final BitValue highInstance = new BitValue(true);
+  private static final BitValue lowInstance = new BitValue(false);
 
-  public static BooleanValue getInstance(boolean value) {
+  public static BitValue getInstance(boolean value) {
     if (value) {
-      return trueInstance;
+      return highInstance;
     } else {
-      return falseInstance;
+      return lowInstance;
     }
   }
 
   private boolean value;
 
-  private BooleanValue(boolean value) {
+  private BitValue(boolean value) {
     this.value = value;
   }
 
   public TypeValue getTypeValue() {
-    return BooleanTypeValue.getInstance();
+    return BitTypeValue.getInstance();
   }
 
   public boolean toBoolean() {
     return value;
   }
-
+  
+  public void verify() {}
 }

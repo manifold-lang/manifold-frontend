@@ -7,7 +7,7 @@ public class TestTypeValue {
 
   private TypeValue getInstance() {
      // TypeValue is abstract so we use a simple implementation.
-    return BooleanTypeValue.getInstance();
+    return BitTypeValue.getInstance();
   }
 
   @Test

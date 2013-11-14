@@ -8,6 +8,5 @@ public abstract class Value {
    * Executed during formal verification pass. Any errors should result in an
    * exception.
    */
-  public void verify() {}
-
+  public abstract void verify();
 }

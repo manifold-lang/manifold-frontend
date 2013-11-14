@@ -17,9 +17,9 @@ public abstract class TypeValue extends Value {
   public TypeValue getTypeValue() {
     return TypeTypeValue.getInstance();
   }
-  
+
   public TypeValue getSupertypeTypeValue() {
     return TypeTypeValue.getInstance();
-  }
+  }  
 
 }

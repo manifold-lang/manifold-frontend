@@ -13,5 +13,6 @@ public class TypeTypeValue extends TypeValue {
   public TypeTypeValue getTypeValue() {
     return instance;
   }
-
+  
+  public void verify() {}
 }

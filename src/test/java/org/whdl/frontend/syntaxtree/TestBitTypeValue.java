@@ -4,12 +4,14 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 import static org.hamcrest.CoreMatchers.instanceOf;
 
-public class TestBooleanTypeValue {
+public class TestBitTypeValue {
 
   @Test
   public void testStaticGetInstance() {
-    assertThat(BooleanTypeValue.getInstance(),
-               instanceOf(BooleanTypeValue.class));
+    assertThat(
+      BitTypeValue.getInstance(),
+      instanceOf(BitTypeValue.class)
+    );
   }
 
 }

@@ -4,16 +4,16 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 import static org.hamcrest.CoreMatchers.instanceOf;
 
-public class TestBooleanValue {
+public class TestBitValue {
   
-  private BooleanValue getInstance(boolean value) {
-    return BooleanValue.getInstance(value);
+  private BitValue getInstance(boolean value) {
+    return BitValue.getInstance(value);
   }
 
   @Test
   public void testStaticGetInstance() {
-    assertThat(BooleanValue.getInstance(true), instanceOf(BooleanValue.class));
-    assertThat(BooleanValue.getInstance(false), instanceOf(BooleanValue.class));
+    assertThat(BitValue.getInstance(true), instanceOf(BitValue.class));
+    assertThat(BitValue.getInstance(false), instanceOf(BitValue.class));
   }
 
   @Test
@@ -24,10 +24,13 @@ public class TestBooleanValue {
 
   @Test
   public void testGetTypeValue() {
-    assertThat(getInstance(true).getTypeValue(),
-               instanceOf(BooleanTypeValue.class));
-    assertThat(getInstance(false).getTypeValue(),
-               instanceOf(BooleanTypeValue.class));
+    assertThat(
+      getInstance(true).getTypeValue(),
+      instanceOf(BitTypeValue.class)
+    );
+    assertThat(
+      getInstance(false).getTypeValue(),
+      instanceOf(BitTypeValue.class)
+    );
   }
-
 }
