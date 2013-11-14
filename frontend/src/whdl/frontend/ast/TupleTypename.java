@@ -13,7 +13,7 @@ public class TupleTypename extends Typename {
 	}
 	public void put(Identifier s, Typename t) throws TranslationException {
 		if(elements.containsKey(s)){
-			throw new DuplicateTupleFieldException(s);
+			throw new DuplicateEnumExpression(s);
 		}
 		elements.put(s, t);
 	}

@@ -1,10 +1,10 @@
 package whdl.frontend.ast;
 
-public class Program {
+public class CompilationUnit {
 	private Identifier namespaceID;
 	private PackageList packageList;
 	private StatementList statements;
-	public Program(Identifier namespaceID, PackageList packageList, StatementList statements){
+	public CompilationUnit(Identifier namespaceID, PackageList packageList, StatementList statements){
 		this.namespaceID = namespaceID;
 		this.packageList = packageList;
 		this.statements = statements;
