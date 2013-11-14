@@ -11,6 +11,7 @@
 
 # Netbeans project files
 nbproject/private/
+.nb-gradle
 
 ## generic files
 *~
