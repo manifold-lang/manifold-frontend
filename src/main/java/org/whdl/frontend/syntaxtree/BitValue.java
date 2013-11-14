@@ -28,4 +28,12 @@ public class BitValue extends Value {
   }
   
   public void verify() {}
+  
+  public boolean isCompiletimeEvaluable() {
+    return true;
+  }
+  
+  public boolean isRuntimeEvaluable() {
+    return true;
+  }
 }

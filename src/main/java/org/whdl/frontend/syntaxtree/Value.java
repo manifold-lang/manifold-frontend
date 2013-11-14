@@ -9,5 +9,14 @@ public abstract class Value {
    * exception.
    */
   public abstract void verify();
-
+  
+  /*
+   * Returns true if this value can be evaulated at compiletime.
+   */
+  public abstract boolean isCompiletimeEvaluable();
+  
+  /*
+   * Returns true if this value is syntesizable.
+   */
+  public abstract boolean isRuntimeEvaluable();
 }
