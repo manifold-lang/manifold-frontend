@@ -14,11 +14,11 @@ public abstract class TypeValue extends Value {
   *   private abstract TypeValue();
   */
 
-  public TypeValue getTypeValue() {
+  public TypeValue getType() {
     return TypeTypeValue.getInstance();
   }
 
-  public TypeValue getSupertypeTypeValue() {
+  public TypeValue getSupertype() {
     return TypeTypeValue.getInstance();
   }  
 

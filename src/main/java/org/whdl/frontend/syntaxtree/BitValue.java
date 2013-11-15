@@ -19,7 +19,7 @@ public class BitValue extends Value {
     this.value = value;
   }
 
-  public TypeValue getTypeValue() {
+  public TypeValue getType() {
     return BitTypeValue.getInstance();
   }
 

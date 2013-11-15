@@ -10,7 +10,7 @@ public class TypeTypeValue extends TypeValue {
 
   private TypeTypeValue() {}
 
-  public TypeTypeValue getTypeValue() {
+  public TypeTypeValue getType() {
     return instance;
   }
   

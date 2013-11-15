@@ -16,8 +16,8 @@ public class TestTypeTypeValue {
   }
 
   @Test
-  public void testGetTypeValue() {
-    assertThat(getInstance().getTypeValue(), instanceOf(TypeTypeValue.class));
+  public void testGetType() {
+    assertThat(getInstance().getType(), instanceOf(TypeTypeValue.class));
   }
 
 }
