@@ -15,7 +15,7 @@ public class Variable {
 	public TypeValue getTypeValue() throws TypeMismatchException{
 		// FIXME if it is possible to type-check this expression earlier, it should be done as soon as possible
 		// e.g. in a semantic analysis pass
-		Value val = typeExpression.eval();
+		Value val = typeExpression.evaluate();
 		if(!(val instanceof TypeValue)){
 			throw new TypeMismatchException(TypeTypeValue.getInstance(), val.getType());
 		}
@@ -27,7 +27,7 @@ public class Variable {
 		if(!isAssigned()){
 			throw new VariableNotAssignedException(this);
 		}
-		return valExpr.eval();
+		return valExpr.evaluate();
 	}
 	public void setValue(Expression valExpr) throws MultipleAssignmentException{
 		if(isAssigned()){
