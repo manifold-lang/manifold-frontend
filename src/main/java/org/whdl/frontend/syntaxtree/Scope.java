@@ -12,24 +12,27 @@ public class Scope {
 	
 	private Map<VariableIdentifier, Variable> symbolTable = new HashMap<VariableIdentifier, Variable>();
 	
-	public void defineVariable(VariableIdentifier identifier, Expression typeExpression){
+	public void defineVariable(VariableIdentifier identifier, Expression typeExpression) throws MultipleDefinitionException{
+		// FIXME this does not handle namespaces correctly
 		if(symbolTable.containsKey(identifier)){
-			// FIXME multiple definition exception...except for functions with different type signatures
+			// FIXME this does not handle functions with different type signatures correctly
+			throw new MultipleDefinitionException(identifier);
 		}
 		Variable v = new Variable(identifier, typeExpression);
 		symbolTable.put(identifier, v);
 	}
 	
-	public TypeValue getVariableTypeValue(VariableIdentifier identifier){
+	public TypeValue getVariableTypeValue(VariableIdentifier identifier) throws TypeMismatchException, VariableNotDefinedException{
 		return getVariable(identifier).getTypeValue();
 	}
 	
-	public Variable getVariable(VariableIdentifier identifier){
+	public Variable getVariable(VariableIdentifier identifier) throws VariableNotDefinedException{
+		// FIXME this does not handle namespaces correctly
 		Variable v = symbolTable.get(identifier);
 		if(v == null){
 			// no such variable in this scope; check parent scope
 			if(parentScope == null){
-				// FIXME throw no such definition exception
+				throw new VariableNotDefinedException(identifier);
 			}
 			return parentScope.getVariable(identifier);
 		}else{
@@ -37,11 +40,11 @@ public class Scope {
 		}
 	}
 	
-	public Value getVariableValue(VariableIdentifier identifier){
+	public Value getVariableValue(VariableIdentifier identifier) throws VariableNotAssignedException, VariableNotDefinedException{
 		return getVariable(identifier).getValue();
 	}
 	
-	public void assignVariable(VariableIdentifier identifier, Expression valueExpression){
+	public void assignVariable(VariableIdentifier identifier, Expression valueExpression) throws VariableNotDefinedException, MultipleAssignmentException{
 		Variable v = getVariable(identifier);
 		v.setValue(valueExpression);
 	}

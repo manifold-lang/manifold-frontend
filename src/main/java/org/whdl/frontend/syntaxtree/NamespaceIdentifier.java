@@ -13,4 +13,20 @@ public class NamespaceIdentifier {
   public List<String> getName() {
     return name;
   }
+  
+  @Override
+  public String toString(){
+	  // FIXME this is syntax-dependent
+	  StringBuilder sb = new StringBuilder();
+	  boolean first = true;
+	  for(String n : name){
+		  if(first){
+			  first = false;
+		  }else{
+			  sb.append(":");
+		  }
+		  sb.append(n);		  
+	  }
+	  return sb.toString();
+  }
 }

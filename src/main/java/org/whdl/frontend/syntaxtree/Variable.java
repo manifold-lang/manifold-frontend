@@ -9,10 +9,12 @@ public class Variable {
 		this.typeExpression = typeExpression;
 	}
 	public VariableIdentifier getIdentifier(){return identifier;}
-	public TypeValue getTypeValue(){
+	public TypeValue getTypeValue() throws TypeMismatchException{
+		// FIXME if it is possible to type-check this expression earlier, it should be done as soon as possible
+		// e.g. in a semantic analysis pass
 		Value val = typeExpression.eval();
 		if(!(val instanceof TypeValue)){
-			// FIXME type error
+			throw new TypeMismatchException(new TypeValue(), val.getType());
 		}
 		return (TypeValue)val;
 	}
@@ -21,15 +23,15 @@ public class Variable {
 	private Expression valExpr;
 	
 	public boolean isAssigned(){return assigned;}
-	public Value getValue(){
+	public Value getValue() throws VariableNotAssignedException{
 		if(!isAssigned()){
-			// FIXME variable not assigned exception
+			throw new VariableNotAssignedException(this);
 		}
 		return valExpr.eval();
 	}
-	public void setValue(Expression valExpr){
+	public void setValue(Expression valExpr) throws MultipleAssignmentException{
 		if(isAssigned()){
-			// FIXME multiple assignment exception 
+			throw new MultipleAssignmentException(this);
 		}
 		this.valExpr = valExpr;
 		this.assigned = true;
