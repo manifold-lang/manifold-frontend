@@ -8,6 +8,9 @@ public class Scope {
 	public Scope(Scope parentScope){
 		this.parentScope = parentScope;
 	}
+	public Scope(){
+		this.parentScope = null;
+	}
 	public Scope getParentScope(){return parentScope;}
 	
 	private Map<VariableIdentifier, Variable> symbolTable = new HashMap<VariableIdentifier, Variable>();
