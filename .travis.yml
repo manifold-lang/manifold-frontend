@@ -1,1 +1,4 @@
 language: java
+
+notifications:
+  flowdock: 7d74281204f1157d62da6c815741d2fe

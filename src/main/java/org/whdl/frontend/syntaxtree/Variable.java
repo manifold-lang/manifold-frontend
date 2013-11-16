@@ -14,7 +14,7 @@ public class Variable {
 		// e.g. in a semantic analysis pass
 		Value val = typeExpression.eval();
 		if(!(val instanceof TypeValue)){
-			throw new TypeMismatchException(new TypeValue(), val.getType());
+			throw new TypeMismatchException(TypeTypeValue.getInstance(), val.getType());
 		}
 		return (TypeValue)val;
 	}
