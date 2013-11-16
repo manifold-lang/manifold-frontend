@@ -3,6 +3,9 @@ package org.whdl.frontend.syntaxtree;
 public class Variable {
 	private VariableIdentifier identifier;
 	private Expression typeExpression;
+	
+	private boolean assigned = false;
+	private Expression valExpr;
 
 	public Variable(VariableIdentifier identifier, Expression typeExpression){
 		this.identifier = identifier;
@@ -18,9 +21,6 @@ public class Variable {
 		}
 		return (TypeValue)val;
 	}
-	
-	private boolean assigned = false;
-	private Expression valExpr;
 	
 	public boolean isAssigned(){return assigned;}
 	public Value getValue() throws VariableNotAssignedException{
