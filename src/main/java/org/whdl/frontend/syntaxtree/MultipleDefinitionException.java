@@ -3,13 +3,13 @@ package org.whdl.frontend.syntaxtree;
 public class MultipleDefinitionException extends Exception {
 	private static final long serialVersionUID = 1L;
 	
-	private VariableIdentifier id;
+	private VariableIdentifier identifier;
 	public MultipleDefinitionException(VariableIdentifier id) {
-		this.id = id;
+		this.identifier = id;
 	}
 	@Override
 	public String getMessage(){
-		return "multiple definitions of variable '" + id + "'";
+		return "multiple definitions of variable '" + identifier + "'";
 	}
 
 }

@@ -3,12 +3,12 @@ package org.whdl.frontend.syntaxtree;
 public class MultipleAssignmentException extends Exception {
 	private static final long serialVersionUID = 1L;
 
-	private Variable var;
+	private Variable variable;
 	public MultipleAssignmentException(Variable var){
-		this.var = var;
+		this.variable = var;
 	}
 	@Override
 	public String getMessage(){
-		return "multiple assignment to variable '" + var.getIdentifier() + "'";
+		return "multiple assignment to variable '" + variable.getIdentifier() + "'";
 	}
 }

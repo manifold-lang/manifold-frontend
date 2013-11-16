@@ -3,13 +3,13 @@ package org.whdl.frontend.syntaxtree;
 public class VariableNotAssignedException extends Exception {
 	private static final long serialVersionUID = 1L;
 	
-	private Variable var;
+	private Variable variable;
 	public VariableNotAssignedException(Variable var){
-		this.var = var;
+		this.variable = var;
 	}
 
 	@Override
 	public String getMessage(){
-		return "value of variable '" + var.getIdentifier() + "' used but not assigned";
+		return "value of variable '" + variable.getIdentifier() + "' used but not assigned";
 	}
 }

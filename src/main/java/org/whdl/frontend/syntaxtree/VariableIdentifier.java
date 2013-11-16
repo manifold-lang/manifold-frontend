@@ -24,7 +24,7 @@ public class VariableIdentifier {
 	  String nsString = getNamespaceIdentifier().toString();
 	  if(nsString.isEmpty()){
 		  return getName();
-	  }else{
+	  } else {
 		  // FIXME this is syntax-dependent
 		  return nsString + "." + getName();
 	  }

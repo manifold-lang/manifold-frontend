@@ -9,18 +9,18 @@ public class CompilationUnit {
 	private Set<Statement> statements;
 	private Scope fileScope;
 	
-	public CompilationUnit(NamespaceIdentifier namespace, List<NamespaceIdentifier> imports, Set<Statement> statements){
+	public CompilationUnit(NamespaceIdentifier namespace, List<NamespaceIdentifier> imports, Set<Statement> statements) {
 		this.namespace = namespace;
 		this.imports = imports;
 		this.statements = statements;
 		this.fileScope = new Scope();
 	}
 	
-	public NamespaceIdentifier getNamespace(){return namespace;}
-	public List<NamespaceIdentifier> getImports(){return imports;}
-	public Set<Statement> getStatements(){return statements;}
+	public NamespaceIdentifier getNamespace() {return namespace;}
+	public List<NamespaceIdentifier> getImports() {return imports;}
+	public Set<Statement> getStatements() {return statements;}
 	
-	public void populateScope(Scope s){
+	public void populateScope(Scope s) {
 		// FIXME implement this
 	}
 	

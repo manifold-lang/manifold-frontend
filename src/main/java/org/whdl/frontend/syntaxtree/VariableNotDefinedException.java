@@ -3,12 +3,12 @@ package org.whdl.frontend.syntaxtree;
 public class VariableNotDefinedException extends Exception {
 	private static final long serialVersionUID = 1L;
 
-	private VariableIdentifier id;
+	private VariableIdentifier identifier;
 	public VariableNotDefinedException(VariableIdentifier id){
-		this.id = id;
+		this.identifier = id;
 	}
 	@Override
 	public String getMessage(){
-		return "variable '" + id + "' not defined in this scope";
+		return "variable '" + identifier + "' not defined in this scope";
 	}
 }
