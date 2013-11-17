@@ -35,7 +35,7 @@ public class Scope {
 
 	public TypeValue getVariableType(VariableIdentifier identifier)
 			throws TypeMismatchException, VariableNotDefinedException {
-		return getVariable(identifier).getTypeValue();
+		return getVariable(identifier).getType();
 	}
 
 	public Variable getVariable(VariableIdentifier identifier)

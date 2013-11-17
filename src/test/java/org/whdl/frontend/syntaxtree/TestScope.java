@@ -5,147 +5,160 @@ import static org.junit.Assert.*;
 import java.util.ArrayList;
 
 import org.junit.Test;
-import org.whdl.frontend.syntaxtree.TestVariable.FacadeTypeExpression;
 
 public class TestScope {
 
-	/*
-	 * Most of these tests depend on the correct operation of Variable. Look to
-	 * those tests if errors show up.
-	 */
+  // because we just need something that returns a type, without bringing too
+  // much else into the works
+  // FIXME(lucas) Remove this once we have an actual LiteralExpression
+  static private class FacadeExpression extends Expression {
 
-	@Test
-	public void testGetParentScope() {
-		Scope foo = new Scope(null);
-		Scope bar = new Scope(foo);
-		assertSame(foo, bar.getParentScope());
-	}
+    private Value value;
 
-	private NamespaceIdentifier getNamespaceIdentifier() {
-		ArrayList<String> name = new ArrayList<String>(3);
-		name.add("whdl");
-		name.add("is");
-		name.add("cool");
+    public FacadeExpression(Value value) {
+      this.value = value;
+    }
 
-		return new NamespaceIdentifier(name);
-	}
+    @Override
+    public Value evaluate() {
+      return value;
+    }
 
-	private VariableIdentifier getIdentifier() {
-		VariableIdentifier id = new VariableIdentifier(
-				getNamespaceIdentifier(), "foo");
-		return id;
-	}
+    @Override
+    public TypeValue getType() {
+      return value.getType();
+    }
 
-	// because we just need something that returns a type, without bringing too
-	// much else into the works
-	class FacadeTypeExpression extends Expression {
+  }
 
-		@Override
-		public Value evaluate() {
-			return TypeTypeValue.getInstance();
-		}
+  /*
+   * Most of these tests depend on the correct operation of Variable. Look to
+   * those tests if errors show up.
+   */
 
-		@Override
-		public TypeValue getType() {
-			return evaluate().getType();
-		}
+  @Test
+  public void testGetParentScope() {
+    Scope foo = new Scope(null);
+    Scope bar = new Scope(foo);
+    assertSame(foo, bar.getParentScope());
+  }
 
-	}
+  private NamespaceIdentifier getNamespaceIdentifier() {
+    ArrayList<String> name = new ArrayList<String>(3);
+    name.add("whdl");
+    name.add("is");
+    name.add("cool");
 
-	private Expression getTypeExpression() {
-		return new FacadeTypeExpression();
-	}
+    return new NamespaceIdentifier(name);
+  }
 
-	@Test
-	public void testDefineVariable() {
-		Scope s = new Scope();
-		try {
-			s.defineVariable(getIdentifier(), getTypeExpression());
-		} catch (MultipleDefinitionException mde) {
-			fail("MultipleDefinitionException thrown, but only a single definition was made");
-		}
-		try {
-			s.defineVariable(getIdentifier(), getTypeExpression());
-			fail("multiple definitions of variable not detected");
-		} catch (MultipleDefinitionException mde) {
-			// good
-		}
-	}
+  private VariableIdentifier getVariableIdentifier() {
+    VariableIdentifier id = new VariableIdentifier(getNamespaceIdentifier(),
+        "foo");
 
-	@Test
-	public void testGetVariableType() throws MultipleDefinitionException,
-			TypeMismatchException, VariableNotDefinedException {
-		// implicitly tests defineVariable()
-		Scope s = new Scope();
-		s.defineVariable(getIdentifier(), getTypeExpression());
-		TypeValue tv = s.getVariableType(getIdentifier());
-		assertEquals(getTypeExpression().evaluate(), tv);
-	}
+    return id;
+  }
 
-	@Test
-	public void testGetVariable() throws MultipleDefinitionException {
-		// implicitly tests defineVariable()
-		Scope s = new Scope();
-		try {
-			Variable v = s.getVariable(getIdentifier());
-			fail("somehow got a variable that doesn't exist yet");
-		} catch (VariableNotDefinedException vnde) {
-			// good
-		}
-		s.defineVariable(getIdentifier(), getTypeExpression());
-		try {
-			Variable v = s.getVariable(getIdentifier());
-		} catch (VariableNotDefinedException vnde) {
-			fail("could not get a variable defined in this scope");
-		}
-	}
-	
-	@Test
-	public void testGetVariable_ParentScope() throws MultipleDefinitionException {
-		// implicitly tests defineVariable()
-		Scope s1 = new Scope();
-		Scope s2 = new Scope(s1);
-		s1.defineVariable(getIdentifier(), getTypeExpression());
-		try{
-			Variable v = s2.getVariable(getIdentifier());
-		}catch(VariableNotDefinedException vnde){
-			fail("could not get a variable defined in a parent scope");
-		}
-	}
+  private Expression getTypeExpression() {
+    return new FacadeExpression(BitTypeValue.getInstance());
+  }
 
-	@Test
-	public void testGetVariableValue() throws MultipleDefinitionException, VariableNotDefinedException, MultipleAssignmentException, VariableNotAssignedException {
-		// implicitly tests defineVariable(), assignVariable()
-		Scope s = new Scope();
-		s.defineVariable(getIdentifier(), getTypeExpression());
-		s.assignVariable(getIdentifier(), getTypeExpression());
-		Value v = s.getVariableValue(getIdentifier());
-		assertEquals(getTypeExpression().evaluate(), v);
-	}
+  // FIXME(lucas) return an instance of the type
+  private Expression getValueExpression() {
+    return new FacadeExpression(BitValue.getInstance(true));
+  }
 
-	@Test
-	public void testAssignVariable() throws MultipleDefinitionException,
-			MultipleAssignmentException, VariableNotDefinedException {
-		// implicitly tests defineVariable()
-		Scope s = new Scope();
-		try {
-			s.assignVariable(getIdentifier(), getTypeExpression());
-			fail("assigned to a variable that doesn't exist");
-		} catch (VariableNotDefinedException vnde) {
-			// good
-		}
-		s.defineVariable(getIdentifier(), getTypeExpression());
-		try {
-			s.assignVariable(getIdentifier(), getTypeExpression());
-		} catch (MultipleAssignmentException mae) {
-			fail("MultipleAssignmentException thrown, but variable only assigned once");
-		}
-		try {
-			s.assignVariable(getIdentifier(), getTypeExpression());
-			fail("multiple assignment to a variable was allowed");
-		} catch (MultipleAssignmentException mae) {
-			// good
-		}
-	}
+  @Test
+  public void testDefineVariable() throws MultipleDefinitionException {
+    Scope s = new Scope();
+    s.defineVariable(getVariableIdentifier(), getTypeExpression());
+  }
+
+  @Test(expected = MultipleDefinitionException.class)
+  public void testDefineVariableMultiple() throws MultipleDefinitionException {
+    Scope s = new Scope();
+    s.defineVariable(getVariableIdentifier(), getTypeExpression());
+    s.defineVariable(getVariableIdentifier(), getTypeExpression());
+  }
+
+  @Test
+  public void testGetVariableType() throws MultipleDefinitionException,
+      TypeMismatchException, VariableNotDefinedException {
+
+    Scope s = new Scope();
+    s.defineVariable(getVariableIdentifier(), getTypeExpression());
+    assertEquals(getTypeExpression().evaluate(),
+        s.getVariableType(getVariableIdentifier()));
+  }
+
+  @Test(expected = VariableNotDefinedException.class)
+  public void testGetVariableNotDefined() throws VariableNotDefinedException {
+    Scope s = new Scope();
+    s.getVariable(getVariableIdentifier());
+  }
+
+  @Test
+  public void testGetVariable() throws MultipleDefinitionException,
+      VariableNotDefinedException, TypeMismatchException {
+    Scope s = new Scope();
+    s.defineVariable(getVariableIdentifier(), getTypeExpression());
+    Variable v = s.getVariable(getVariableIdentifier());
+
+    assertEquals(v.getIdentifier(), getVariableIdentifier());
+    assertEquals(v.getType(), getTypeExpression().evaluate());
+  }
+
+  @Test
+  public void testGetVariable_ParentScope() throws MultipleDefinitionException {
+    // implicitly tests defineVariable()
+    Scope s1 = new Scope();
+    Scope s2 = new Scope(s1);
+    s1.defineVariable(getVariableIdentifier(), getTypeExpression());
+    try {
+      Variable v = s2.getVariable(getVariableIdentifier());
+    } catch (VariableNotDefinedException vnde) {
+      fail("could not get a variable defined in a parent scope");
+    }
+  }
+
+  @Test
+  public void testGetVariableValue() throws MultipleDefinitionException,
+      VariableNotDefinedException, MultipleAssignmentException,
+      VariableNotAssignedException {
+
+    Scope s = new Scope();
+    s.defineVariable(getVariableIdentifier(), getTypeExpression());
+    s.assignVariable(getVariableIdentifier(), getValueExpression());
+
+    assertEquals(getValueExpression().evaluate(),
+        s.getVariableValue(getVariableIdentifier()));
+  }
+
+  @Test(expected = VariableNotDefinedException.class)
+  public void testAssignVariableNotDefined()
+      throws VariableNotDefinedException, MultipleAssignmentException {
+    Scope s = new Scope();
+    s.assignVariable(getVariableIdentifier(), getValueExpression());
+  }
+
+  @Test
+  public void testAssignVariable() throws MultipleDefinitionException,
+      VariableNotDefinedException, MultipleAssignmentException,
+      VariableNotAssignedException {
+    Scope s = new Scope();
+    s.defineVariable(getVariableIdentifier(), getTypeExpression());
+    s.assignVariable(getVariableIdentifier(), getValueExpression());
+    assertEquals(s.getVariableValue(getVariableIdentifier()),
+        getValueExpression().evaluate());
+  }
+
+  @Test(expected = MultipleAssignmentException.class)
+  public void testAssignVariableMultiple() throws MultipleDefinitionException,
+      VariableNotDefinedException, MultipleAssignmentException {
+    Scope s = new Scope();
+    s.defineVariable(getVariableIdentifier(), getTypeExpression());
+    s.assignVariable(getVariableIdentifier(), getValueExpression());
+    s.assignVariable(getVariableIdentifier(), getValueExpression());
+  }
 
 }

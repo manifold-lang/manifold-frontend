@@ -36,21 +36,37 @@ public class TestVariableIdentifier {
   }
   
   @Test
-  public void testEquals(){
-	  // an identifier must be equal to itself
-	  VariableIdentifier v1 = getInstance();
-	  assertEquals(v1, v1);
-	  // identifiers that have the same namespace and name must be equal
-	  VariableIdentifier v2 = new VariableIdentifier(getNamespaceIdentifierInstance(), "foo");
-	  assertEquals(v1, v2);
-	  // identifiers that disagree on name cannot be equal
-	  VariableIdentifier v3 = new VariableIdentifier(getNamespaceIdentifierInstance(), "bar");
-	  assertNotEquals(v1, v3);
-	  // identifiers that disagree on namespace cannot be equal
-	  ArrayList<String> name = new ArrayList<String>(1);
-	  name.add("bogus");
-	  NamespaceIdentifier n4 = new NamespaceIdentifier(name);
-	  VariableIdentifier v4 = new VariableIdentifier(n4, "foo");
-	  assertNotEquals(v1, v4);
+  public void testEqualsItself() {
+    assertEquals(getInstance(), getInstance());
+  }
+  
+  @Test
+  public void testEquals() {
+    VariableIdentifier v = new VariableIdentifier(
+        getNamespaceIdentifierInstance(),
+        "foo"
+    );
+    assertEquals(getInstance(), v);
+  }
+    
+  @Test
+  public void testNotEqualsName() {
+    VariableIdentifier v = new VariableIdentifier(
+        getNamespaceIdentifierInstance(),
+        "bar"
+    );
+    assertNotEquals(getInstance(), v);
+  }
+    
+  @Test
+  public void testNotEqualsNamespace() {
+    ArrayList<String> namespaceName = new ArrayList<String>(1);
+    namespaceName.add("bogus");
+    
+    VariableIdentifier v = new VariableIdentifier(
+        new NamespaceIdentifier(namespaceName),
+        "foo"
+    );
+    assertNotEquals(getInstance(), v);
   }
 }
