@@ -14,6 +14,11 @@ public class NamespaceIdentifier {
     return name;
   }
   
+  public static String getSeparator(){
+	  // FIXME this is syntax-dependent, but at least it abstracts out the dependency
+	  return ":";
+  }
+  
   @Override
   public String toString(){
 	  // FIXME this is syntax-dependent
@@ -23,7 +28,7 @@ public class NamespaceIdentifier {
 		  if(first){
 			  first = false;
 		  }else{
-			  sb.append(":");
+			  sb.append(getSeparator());
 		  }
 		  sb.append(n);		  
 	  }
