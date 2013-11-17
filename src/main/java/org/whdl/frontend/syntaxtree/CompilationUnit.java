@@ -20,7 +20,7 @@ public class CompilationUnit {
 	public List<NamespaceIdentifier> getImports() {return imports;}
 	public Set<Statement> getStatements() {return statements;}
 	
-	public void populateScope(Scope s) {
+	public void populateScope() {
 		// FIXME implement this
 	}
 	
