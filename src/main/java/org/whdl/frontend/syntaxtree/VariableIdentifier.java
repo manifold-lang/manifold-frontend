@@ -31,6 +31,11 @@ public class VariableIdentifier {
 	}
 
 	@Override
+	public int hashCode(){
+		return 3 + 19 * getName().hashCode() + 37 * getNamespaceIdentifier().hashCode();
+	}
+	
+	@Override
 	public boolean equals(Object aThat) {
 		if (this == aThat)
 			return true;
