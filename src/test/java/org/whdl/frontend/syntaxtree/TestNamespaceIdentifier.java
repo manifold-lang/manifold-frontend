@@ -30,4 +30,13 @@ public class TestNamespaceIdentifier {
   public void testGetNameImmutable() {
     getInstance().getName().add("NOT!");
   }
+  
+  @Test
+  public void testToString(){
+	  String separator = NamespaceIdentifier.getSeparator();
+	  String expected = "whdl" + separator + "is" + separator + "cool";
+	  String actual = getInstance().toString();
+	  assertEquals(expected, actual);
+  }
+  
 }

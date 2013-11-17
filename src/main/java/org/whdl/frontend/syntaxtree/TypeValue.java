@@ -1,5 +1,6 @@
 package org.whdl.frontend.syntaxtree;
 
+
 public abstract class TypeValue extends Value {
 
  /*
@@ -23,3 +24,4 @@ public abstract class TypeValue extends Value {
   }  
 
 }
+

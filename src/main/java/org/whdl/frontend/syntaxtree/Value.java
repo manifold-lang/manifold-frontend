@@ -9,4 +9,5 @@ public abstract class Value {
    * exception.
    */
   public abstract void verify();
+
 }

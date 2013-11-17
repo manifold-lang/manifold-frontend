@@ -34,4 +34,39 @@ public class TestVariableIdentifier {
     assertSame(getInstance().getNamespaceIdentifier(),
                getNamespaceIdentifierInstance());
   }
+  
+  @Test
+  public void testEqualsItself() {
+    assertEquals(getInstance(), getInstance());
+  }
+  
+  @Test
+  public void testEquals() {
+    VariableIdentifier v = new VariableIdentifier(
+        getNamespaceIdentifierInstance(),
+        "foo"
+    );
+    assertEquals(getInstance(), v);
+  }
+    
+  @Test
+  public void testNotEqualsName() {
+    VariableIdentifier v = new VariableIdentifier(
+        getNamespaceIdentifierInstance(),
+        "bar"
+    );
+    assertNotEquals(getInstance(), v);
+  }
+    
+  @Test
+  public void testNotEqualsNamespace() {
+    ArrayList<String> namespaceName = new ArrayList<String>(1);
+    namespaceName.add("bogus");
+    
+    VariableIdentifier v = new VariableIdentifier(
+        new NamespaceIdentifier(namespaceName),
+        "foo"
+    );
+    assertNotEquals(getInstance(), v);
+  }
 }
