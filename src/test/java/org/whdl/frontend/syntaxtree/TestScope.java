@@ -99,6 +99,19 @@ public class TestScope {
 			fail("could not get a variable defined in this scope");
 		}
 	}
+	
+	@Test
+	public void testGetVariable_ParentScope() throws MultipleDefinitionException {
+		// implicitly tests defineVariable()
+		Scope s1 = new Scope();
+		Scope s2 = new Scope(s1);
+		s1.defineVariable(getIdentifier(), getTypeExpression());
+		try{
+			Variable v = s2.getVariable(getIdentifier());
+		}catch(VariableNotDefinedException vnde){
+			fail("could not get a variable defined in a parent scope");
+		}
+	}
 
 	@Test
 	public void testGetVariableValue() throws MultipleDefinitionException, VariableNotDefinedException, MultipleAssignmentException, VariableNotAssignedException {
