@@ -11,10 +11,7 @@ public class TestVariableIdentifier {
 
   private NamespaceIdentifier getNamespaceIdentifierInstance() {
     if (namespaceIdentifierInstance == null) {
-      ArrayList<String> name = new ArrayList<String>(1);
-      name.add("whdl");
-
-      namespaceIdentifierInstance = new NamespaceIdentifier(name);
+      namespaceIdentifierInstance = new NamespaceIdentifier("whdl");
     }
 
     return namespaceIdentifierInstance;
@@ -31,8 +28,10 @@ public class TestVariableIdentifier {
 
   @Test
   public void testGetNamespaceIdentifier() {
-    assertSame(getInstance().getNamespaceIdentifier(),
-               getNamespaceIdentifierInstance());
+    assertSame(
+      getInstance().getNamespaceIdentifier(),
+      getNamespaceIdentifierInstance()
+    );
   }
   
   @Test

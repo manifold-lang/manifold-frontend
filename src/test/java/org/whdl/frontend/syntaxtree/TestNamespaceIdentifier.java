@@ -8,17 +8,26 @@ import java.util.ArrayList;
 public class TestNamespaceIdentifier {
 
   private NamespaceIdentifier getInstance() {
+    return new NamespaceIdentifier("whdl:is:cool");
+  }
+  
+  @Test
+  public void testStringConstructor() {
+    NamespaceIdentifier identifier = new NamespaceIdentifier("whdl:is:cool");
+
+    assertEquals(identifier.getName().size(), 3);
+    assertEquals(identifier.getName().get(0), "whdl");
+    assertEquals(identifier.getName().get(1), "is");
+    assertEquals(identifier.getName().get(2), "cool");
+  }
+  
+  @Test
+  public void testListConstructor() {
     ArrayList<String> name = new ArrayList<String>(3);
     name.add("whdl");
     name.add("is");
     name.add("cool");
-
-    return new NamespaceIdentifier(name);
-  }
-
-  @Test
-  public void testGetName() {
-    NamespaceIdentifier identifier = getInstance();
+    NamespaceIdentifier identifier = new NamespaceIdentifier(name);
 
     assertEquals(identifier.getName().size(), 3);
     assertEquals(identifier.getName().get(0), "whdl");
@@ -30,7 +39,7 @@ public class TestNamespaceIdentifier {
   public void testGetNameImmutable() {
     getInstance().getName().add("NOT!");
   }
-  
+
   @Test
   public void testToString(){
 	  String separator = NamespaceIdentifier.getSeparator();
