@@ -17,15 +17,7 @@ public class Variable {
   }
 
   public TypeValue getType() throws TypeMismatchException {
-    // FIXME if it is possible to type-check this expression earlier, it
-    // should be done as soon as possible
-    // e.g. in a semantic analysis pass
-    Value val = typeExpression.evaluate();
-    if (!(val instanceof TypeValue)) {
-      throw new TypeMismatchException(TypeTypeValue.getInstance(),
-          val.getType());
-    }
-    return (TypeValue) val;
+    return (TypeValue) typeExpression.evaluate();
   }
 
   public boolean isAssigned() {
@@ -45,6 +37,27 @@ public class Variable {
     }
     this.valueExpression = valExpr;
     this.assigned = true;
+  }
+  
+  public void verify() throws TypeMismatchException {
+    // Ensure the Type is an actual type
+    if (typeExpression.getType() != TypeTypeValue.getInstance()) {
+      // TODO(lucas) We should have a special exception for the case where
+      // a nontype value is used as a type.
+      throw new TypeMismatchException(
+          TypeTypeValue.getInstance(),
+          typeExpression.getType()
+      );
+    }
+    
+    // Ensure the value is of the correct type
+    // TODO(lucas)
+    if (assigned && !(valueExpression.getType().isSubtypeOf(getType()))) {
+      throw new TypeMismatchException(
+          getType(),
+          valueExpression.getType()
+      );
+    }
   }
 
 }

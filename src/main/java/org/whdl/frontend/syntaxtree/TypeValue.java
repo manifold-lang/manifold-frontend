@@ -23,5 +23,14 @@ public abstract class TypeValue extends Value {
     return TypeTypeValue.getInstance();
   }  
 
+  public boolean isSubtypeOf(TypeValue type) {
+    if (this == type) {
+      return true;
+    } else {
+      // TypeTypeValue overrides this method for base case behaviour.
+      return getSupertype().isSubtypeOf(type);
+    }
+  }
+
 }
 

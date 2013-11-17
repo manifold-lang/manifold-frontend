@@ -19,5 +19,20 @@ public class TestTypeTypeValue {
   public void testGetType() {
     assertThat(getInstance().getType(), instanceOf(TypeTypeValue.class));
   }
+  
+  @Test
+  public void isSubtypeOf_false() {
+    assertFalse(getInstance().isSubtypeOf(BitTypeValue.getInstance()));
+  }
+  
+  @Test
+  public void isSubtypeOf_true() {
+    assertTrue(getInstance().isSubtypeOf(getInstance()));
+  }
+  
+  @Test
+  public void verify() {
+    getInstance().verify();
+  }
 
 }

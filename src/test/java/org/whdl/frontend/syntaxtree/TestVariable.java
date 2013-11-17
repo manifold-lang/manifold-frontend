@@ -85,4 +85,29 @@ public class TestVariable {
       v.setValue(getValueExpression());
       v.setValue(getValueExpression());
     }
+    
+    @Test(expected=TypeMismatchException.class)
+    public void verify_nontypeThrow() throws
+        TypeMismatchException,
+        MultipleAssignmentException {
+ 
+      Variable v = new Variable(
+          getVariableIdentifier(),
+          new FacadeExpression(BitValue.getInstance(false))
+      );
+      v.verify();
+    }
+    
+    @Test(expected=TypeMismatchException.class)
+    public void verify_typeMismatchThrow() throws
+        TypeMismatchException,
+        MultipleAssignmentException {
+ 
+      Variable v = new Variable(
+          getVariableIdentifier(),
+          new FacadeExpression(BitTypeValue.getInstance())
+      );
+      v.setValue(new FacadeExpression(BitTypeValue.getInstance()));
+      v.verify();
+    }
 }
