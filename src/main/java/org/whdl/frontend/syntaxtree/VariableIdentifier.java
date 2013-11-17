@@ -31,19 +31,23 @@ public class VariableIdentifier {
 	}
 
 	@Override
-	public int hashCode(){
-		return 3 + 19 * getName().hashCode() + 37 * getNamespaceIdentifier().hashCode();
+	public int hashCode() {
+		return 3 + 19 * getName().hashCode() + 37
+				* getNamespaceIdentifier().hashCode();
 	}
-	
+
 	@Override
 	public boolean equals(Object aThat) {
-		if (this == aThat)
+		if (this == aThat) {
 			return true;
-		if (!(aThat instanceof VariableIdentifier))
+		}
+		if (!(aThat instanceof VariableIdentifier)) {
 			return false;
+		}
 		VariableIdentifier that = (VariableIdentifier) aThat;
-		// two variable identifiers are equal if they have the same namespace and name
-		return (this.getName().equals(that.getName()) && 
-				this.getNamespaceIdentifier().equals(that.getNamespaceIdentifier()));
+		// two variable identifiers are equal if they have the same namespace
+		// and name
+		return (this.getName().equals(that.getName()) && this
+				.getNamespaceIdentifier().equals(that.getNamespaceIdentifier()));
 	}
 }

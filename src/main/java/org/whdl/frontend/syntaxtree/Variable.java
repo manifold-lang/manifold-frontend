@@ -5,7 +5,7 @@ public class Variable {
 	private Expression typeExpression;
 
 	private boolean assigned = false;
-	private Expression valExpr;
+	private Expression valueExpression;
 
 	public Variable(VariableIdentifier identifier, Expression typeExpression) {
 		this.identifier = identifier;
@@ -36,14 +36,14 @@ public class Variable {
 		if (!isAssigned()) {
 			throw new VariableNotAssignedException(this);
 		}
-		return valExpr.evaluate();
+		return valueExpression.evaluate();
 	}
 
 	public void setValue(Expression valExpr) throws MultipleAssignmentException {
 		if (isAssigned()) {
 			throw new MultipleAssignmentException(this);
 		}
-		this.valExpr = valExpr;
+		this.valueExpression = valExpr;
 		this.assigned = true;
 	}
 

@@ -44,8 +44,8 @@ public class TestVariable {
 		}
 
 	}
-	
-	private Expression getTypeExpression(){
+
+	private Expression getTypeExpression() {
 		return new FacadeTypeExpression();
 	}
 
@@ -67,22 +67,24 @@ public class TestVariable {
 	public void testGetValue() {
 		// implicitly tests Variable.isAssigned(), Variable.setValue()
 		Variable v = getVariable();
-		assertFalse("newly created variable incorrectly appears to be assigned", v.isAssigned());
-		try{
+		assertFalse(
+				"newly created variable incorrectly appears to be assigned",
+				v.isAssigned());
+		try {
 			Value val = v.getValue();
 			fail("incorrectly obtained the value of an unassigned variable");
-		}catch(VariableNotAssignedException vnae){
+		} catch (VariableNotAssignedException vnae) {
 			// good, that is the exception we want to see
 		}
 		// and guess what we can ALSO use as the value expression...
-		try{
+		try {
 			v.setValue(getTypeExpression());
-		}catch(MultipleAssignmentException mae){
+		} catch (MultipleAssignmentException mae) {
 			fail("MultipleAssignmentException thrown, but multiple assignment did not happen");
 		}
-		try{
+		try {
 			assertEquals(getTypeExpression().evaluate(), v.getValue());
-		}catch(VariableNotAssignedException vnae){
+		} catch (VariableNotAssignedException vnae) {
 			fail("VariableNotAssignedException thrown, but variable was assigned");
 		}
 	}
@@ -91,17 +93,19 @@ public class TestVariable {
 	public void testSetValue() {
 		// implicitly tests isAssigned()
 		Variable v = getVariable();
-		assertFalse("newly created variable incorrectly appears to be assigned", v.isAssigned());
+		assertFalse(
+				"newly created variable incorrectly appears to be assigned",
+				v.isAssigned());
 		// and guess what we can ALSO use as the value expression...
-		try{
+		try {
 			v.setValue(getTypeExpression());
-		}catch(MultipleAssignmentException mae){
+		} catch (MultipleAssignmentException mae) {
 			fail("MultipleAssignmentException thrown, but multiple assignment did not happen");
 		}
-		try{
+		try {
 			v.setValue(getTypeExpression());
 			fail("multiple assignment to variable was allowed");
-		}catch(MultipleAssignmentException mae){
+		} catch (MultipleAssignmentException mae) {
 			// good, that is the exception we want to see
 		}
 	}

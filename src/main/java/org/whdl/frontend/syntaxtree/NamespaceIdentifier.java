@@ -44,8 +44,6 @@ public class NamespaceIdentifier {
 	  if(this == aThat) return true;
 	  if(!(aThat instanceof NamespaceIdentifier)) return false;
 	  NamespaceIdentifier that = (NamespaceIdentifier)aThat;
-	  List<String> thisName = this.getName();
-	  List<String> thatName = that.getName();
 	  // two namespace identifiers are equal if they name the same namespace
 	  return this.getName().equals(that.getName());
   }

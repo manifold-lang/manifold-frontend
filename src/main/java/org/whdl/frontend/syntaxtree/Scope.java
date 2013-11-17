@@ -5,6 +5,7 @@ import java.util.Map;
 
 public class Scope {
 	private Scope parentScope;
+	private Map<VariableIdentifier, Variable> symbolTable = new HashMap<VariableIdentifier, Variable>();
 
 	public Scope(Scope parentScope) {
 		this.parentScope = parentScope;
@@ -17,8 +18,6 @@ public class Scope {
 	public Scope getParentScope() {
 		return parentScope;
 	}
-
-	private Map<VariableIdentifier, Variable> symbolTable = new HashMap<VariableIdentifier, Variable>();
 
 	public void defineVariable(VariableIdentifier identifier,
 			Expression typeExpression) throws MultipleDefinitionException {
