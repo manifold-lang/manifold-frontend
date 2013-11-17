@@ -33,7 +33,7 @@ public class BitValue extends Value {
     return true;
   }
   
-  public boolean isRuntimeEvaluable() {
+  public boolean isSynthesizable() {
     return true;
   }
 }

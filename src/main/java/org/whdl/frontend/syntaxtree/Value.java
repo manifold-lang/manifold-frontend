@@ -12,12 +12,13 @@ public abstract class Value {
   
   /*
    * Returns true if this value can be evaulated at compiletime.
-   * Either this or isRuntimeEvaluable or both must return true.
+   * Either this or isSynthesizable or both must return true.
    */
   public abstract boolean isCompiletimeEvaluable();
   
   /*
-   * Returns true if this value is synthesizable.
+   * Returns true if this value is synthesizable, able to be represented in
+   * hardware.
    */
-  public abstract boolean isRuntimeEvaluable();
+  public abstract boolean isSynthesizable();
 }

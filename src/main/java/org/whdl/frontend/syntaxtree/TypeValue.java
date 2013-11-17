@@ -36,7 +36,7 @@ public abstract class TypeValue extends Value {
     return true;
   }
   
-  public boolean isRuntimeEvaluable() {
+  public boolean isSynthesizable() {
     return false;
   }
 }
