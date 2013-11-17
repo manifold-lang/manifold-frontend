@@ -23,10 +23,6 @@ public class TestVariable {
 		return id;
 	}
 
-	private Expression getTypeExpression(){
-		return new FacadeTypeExpression();
-	}
-	
 	private Variable getVariable() {
 		// declare "foo" as a variable that stores a Type
 		Variable v = new Variable(getIdentifier(), getTypeExpression());
@@ -47,6 +43,10 @@ public class TestVariable {
 			return evaluate().getType();
 		}
 
+	}
+	
+	private Expression getTypeExpression(){
+		return new FacadeTypeExpression();
 	}
 
 	@Test
