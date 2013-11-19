@@ -36,12 +36,13 @@ public class TestVariableIdentifier {
   }
   
   @Test
-  public void testEqualsItself() {
-    assertEquals(getInstance(), getInstance());
+  public void equals_itself() {
+    VariableIdentifier id = getInstance();
+    assertEquals(id, id);
   }
   
   @Test
-  public void testEquals() {
+  public void equals_true() {
     VariableIdentifier v = new VariableIdentifier(
         getNamespaceIdentifierInstance(),
         "foo"
@@ -50,16 +51,21 @@ public class TestVariableIdentifier {
   }
     
   @Test
-  public void testNotEqualsName() {
+  public void equals_false_name() {
     VariableIdentifier v = new VariableIdentifier(
         getNamespaceIdentifierInstance(),
         "bar"
     );
     assertNotEquals(getInstance(), v);
   }
+  
+  @Test
+  public void equals_false_typeof() {
+    assertNotEquals(getInstance(), "foo");
+  }
     
   @Test
-  public void testNotEqualsNamespace() {
+  public void equals_false_namespace() {
     ArrayList<String> namespaceName = new ArrayList<String>(1);
     namespaceName.add("bogus");
     
@@ -68,5 +74,20 @@ public class TestVariableIdentifier {
         "foo"
     );
     assertNotEquals(getInstance(), v);
+  }
+  
+  @Test
+  public void toString_namespaced() {
+    assertEquals(getInstance().toString(), "whdl:foo");
+  }
+  
+  @Test
+  public void toString_notNamespaced() {
+    VariableIdentifier identifier = new VariableIdentifier(
+      new NamespaceIdentifier(new ArrayList()),
+      "foo"
+    );
+    
+    assertEquals(identifier.toString(), "foo");
   }
 }

@@ -46,10 +46,18 @@ public class NamespaceIdentifier {
   
   @Override
   public boolean equals(Object aThat){
-	  if(this == aThat) return true;
-	  if(!(aThat instanceof NamespaceIdentifier)) return false;
-	  NamespaceIdentifier that = (NamespaceIdentifier)aThat;
-	  // two namespace identifiers are equal if they name the same namespace
-	  return this.getName().equals(that.getName());
+	  if (this == aThat) {
+      return true;
+    } else if (!(aThat instanceof NamespaceIdentifier)) {
+      return false;
+    } else {
+      NamespaceIdentifier that = (NamespaceIdentifier) aThat;
+      // two namespace identifiers are equal if they name the same namespace
+      return this.getName().equals(that.getName());
+    }
+  }
+  
+  public boolean isEmpty() {
+    return this.name.isEmpty();
   }
 }

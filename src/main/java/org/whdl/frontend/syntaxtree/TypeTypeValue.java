@@ -15,4 +15,10 @@ public class TypeTypeValue extends TypeValue {
   }
   
   public void verify() {}
+  
+  // We override the isSubtypeOf method to prevent recursive loops.
+  @Override
+  public boolean isSubtypeOf(TypeValue type) {
+    return this == type;
+  }
 }

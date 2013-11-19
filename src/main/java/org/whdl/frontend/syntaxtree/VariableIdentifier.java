@@ -21,12 +21,11 @@ public class VariableIdentifier {
 
 	@Override
 	public String toString() {
-		String nsString = getNamespaceIdentifier().toString();
-		if (nsString.isEmpty()) {
+		if (getNamespaceIdentifier().isEmpty()) {
 			return getName();
 		} else {
-			// FIXME this is syntax-dependent
-			return nsString + "." + getName();
+			return getNamespaceIdentifier().toString() +
+          NamespaceIdentifier.getSeparator() + getName();
 		}
 	}
 
