@@ -4,9 +4,9 @@ public class TypeMismatchException extends Exception {
   private static final long serialVersionUID = 1L;
 
   private TypeValue expectedType;
-  private TypeValue actualType;
+  private Value actualType;
 
-  public TypeMismatchException(TypeValue expectedType, TypeValue actualType) {
+  public TypeMismatchException(TypeValue expectedType, Value actualType) {
     this.expectedType = expectedType;
     this.actualType = actualType;
   }

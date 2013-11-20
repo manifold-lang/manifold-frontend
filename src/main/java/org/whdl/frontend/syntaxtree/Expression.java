@@ -1,13 +1,6 @@
 package org.whdl.frontend.syntaxtree;
 
-
-/**
- * Base expr class
- * @author Max
- *
- */
-public abstract class Expression
-{
+public abstract class Expression {
 	public abstract TypeValue getType();
 	public abstract Value evaluate();
 	public abstract void verify();
