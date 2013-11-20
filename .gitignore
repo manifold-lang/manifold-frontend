@@ -19,3 +19,4 @@ nbproject/private/
 *.DS_Store
 *.swp
 *.out
+/bin

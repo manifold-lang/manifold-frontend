@@ -9,4 +9,16 @@ public abstract class Value {
    * exception.
    */
   public abstract void verify();
+  
+  /*
+   * Returns true if this value can be evaulated at compiletime.
+   * Either this or isSynthesizable or both must return true.
+   */
+  public abstract boolean isCompiletimeEvaluable();
+  
+  /*
+   * Returns true if this value is synthesizable, able to be represented in
+   * hardware.
+   */
+  public abstract boolean isSynthesizable();
 }

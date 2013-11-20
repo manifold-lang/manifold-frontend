@@ -8,56 +8,73 @@ package org.whdl.frontend.syntaxtree;
 public class FunctionInvocationExpression extends Expression
 {
 	private Expression input;
-	private VariableIdentifier function;
+	private Expression functionExpression;
+	private FunctionValue function = null;
 	
-	public FunctionInvocationExpression(Expression input, VariableIdentifier function)
+	public FunctionInvocationExpression(Expression input, Expression function)
 	{
-		// TODO: check that function is actually a function
-		// TODO: check that the function takes in the type of input (or do it in verify)?
-		// pending because VariableIdentifier doesn't seem to specify Value/FunctionValue
 		this.input = input;
-		this.function = function;
+		this.functionExpression = function;
+		
+		if(functionExpression.isCompiletimeEvaluable())	{
+			try {
+				Value exprResult = functionExpression.evaluate();
+				this.function = (FunctionValue)exprResult;
+			}
+			catch (ClassCastException e) {
+				// TODO(max) throw a  better exception for this
+				// this could definitely be better handled once we get
+				// FunctionTypeValue completed
+				throw new RuntimeException("Expected expression to evaluate to a function but it did not", e);
+			}
+		}
+		else {
+			// should this be invalid?
+		}
 	}
 	
 	@Override
-    public TypeValue resultType()
+    public TypeValue getType()
     {
-		// TODO: VariableIdentifier doesn't specify a Value/FunctionValue?
+	    // TODO: what to return when functionExpr cannot be compile time evaluated?
+		if(function != null) {
+			return function.getType();
+		}
+		
+		// should be an exception?
 		return null;
     }
 
 	@Override
     public Value evaluate()
     {
-	    // TODO VariableIdentifier doesn't specify a Value/FunctionValue?
-	    return null;
+	    // TODO: pending FunctionValue/FunctionTypeValue
+		throw new UnsupportedOperationException("FunctionValue/FunctionTypeValue still unfinished");
     }
 
 	@Override
     public void verify()
     {
-	    // TODO: checks in constr or here?
+	    // TODO: pending FunctionValue/FunctionTypeValue
+		throw new UnsupportedOperationException("FunctionValue/FunctionTypeValue still unfinished");
     }
 
 	@Override
     public boolean isAssignable()
     {
-	    // TODO: how to determine this?
 		return false;
     }
 
 	@Override
     public boolean isCompiletimeEvaluable()
     {
-	    // TODO Auto-generated method stub
-	    return false;
+	    return (function != null && function.isCompiletimeEvaluable() && input.isCompiletimeEvaluable());
     }
 
 	@Override
-    public boolean isRuntimeEvaluable()
+    public boolean isSynthesizable()
     {
-	    // TODO Auto-generated method stub
-	    return false;
+	    return true;
     }
 
 }

@@ -30,4 +30,39 @@ public class TestNamespaceIdentifier {
   public void testGetNameImmutable() {
     getInstance().getName().add("NOT!");
   }
+  
+  @Test
+  public void testToString(){
+	  String separator = NamespaceIdentifier.getSeparator();
+	  String expected = "whdl" + separator + "is" + separator + "cool";
+	  String actual = getInstance().toString();
+	  assertEquals(expected, actual);
+  }
+  
+  @Test
+  public void isEmpty_true() {
+    NamespaceIdentifier name = new NamespaceIdentifier(new ArrayList());
+    assertTrue(name.isEmpty());
+  }
+  
+  @Test
+  public void isEmpty_false() {
+    assertFalse(getInstance().isEmpty());
+  }
+  
+  @Test
+  public void equals_true() {
+    assertTrue(getInstance().equals(getInstance()));
+  }
+  
+  @Test
+  public void equals_itself_true() {
+    NamespaceIdentifier id = getInstance();
+    assertTrue(id.equals(id));
+  }
+  
+  @Test
+  public void equals_type_false() {
+    assertFalse(getInstance().equals("foo"));
+  }
 }

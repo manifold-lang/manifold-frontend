@@ -6,6 +6,10 @@ import static org.hamcrest.CoreMatchers.instanceOf;
 
 public class TestBitTypeValue {
 
+  private BitTypeValue getInstance() {
+    return BitTypeValue.getInstance();
+  }
+  
   @Test
   public void testStaticGetInstance() {
     assertThat(
@@ -13,5 +17,11 @@ public class TestBitTypeValue {
       instanceOf(BitTypeValue.class)
     );
   }
+  
+  @Test
+  public void testVerify() {
+    getInstance().verify();
+  }
+
 
 }

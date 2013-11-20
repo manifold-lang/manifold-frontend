@@ -16,7 +16,7 @@ public class LiteralExpression extends Expression
 	}
 
 	@Override
-	public TypeValue resultType()
+	public TypeValue getType()
 	{
 		return value.getType();
 	}
@@ -30,7 +30,6 @@ public class LiteralExpression extends Expression
 	@Override
 	public void verify()
 	{
-		// Note (max) - anything else needed for this?
 		value.verify();
 	}
 
@@ -43,13 +42,13 @@ public class LiteralExpression extends Expression
 	@Override
 	public boolean isCompiletimeEvaluable()
 	{
-		return true;
+		return value.isCompiletimeEvaluable();
 	}
 
 	@Override
-	public boolean isRuntimeEvaluable()
+	public boolean isSynthesizable()
 	{
-		return true;
+		return value.isSynthesizable();
 	}
 
 }
