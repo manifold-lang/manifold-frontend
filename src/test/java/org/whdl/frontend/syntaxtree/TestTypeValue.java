@@ -51,4 +51,15 @@ public class TestTypeValue {
     assertFalse(BitTypeValue.getInstance().isSubtypeOf(
         FacadeTypeValue.getInstance()));
   }
+  
+  @Test
+  public void testIsCompiletimeEvaluable() {
+    assertTrue(getInstance().isCompiletimeEvaluable());
+  }
+  
+  @Test
+  public void testIsSynthesizable() {
+    assertFalse(getInstance().isSynthesizable());
+  }
+
 }

@@ -31,6 +31,12 @@ public abstract class TypeValue extends Value {
       return getSupertype().isSubtypeOf(type);
     }
   }
-
+  
+  public boolean isCompiletimeEvaluable() {
+    return true;
+  }
+  
+  public boolean isSynthesizable() {
+    return false;
+  }
 }
-

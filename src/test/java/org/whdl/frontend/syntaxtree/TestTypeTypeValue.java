@@ -34,5 +34,10 @@ public class TestTypeTypeValue {
   public void verify() {
     getInstance().verify();
   }
+  
+  @Test
+  public void testVerify() {
+    getInstance().verify();
+  }
 
 }

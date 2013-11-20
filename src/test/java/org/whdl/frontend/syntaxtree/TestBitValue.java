@@ -33,4 +33,20 @@ public class TestBitValue {
       instanceOf(BitTypeValue.class)
     );
   }
+  
+  @Test
+  public void testIsCompiletimeEvaluable() {
+    assertTrue(getInstance(false).isCompiletimeEvaluable());
+  }
+  
+  @Test
+  public void testIsSynthesizable() {
+    assertTrue(getInstance(false).isSynthesizable());
+  }
+  
+  @Test
+  public void testVerify() {
+    getInstance(true).verify();
+  }
+
 }
