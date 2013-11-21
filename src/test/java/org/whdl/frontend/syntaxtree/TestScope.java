@@ -8,29 +8,6 @@ import org.junit.Test;
 
 public class TestScope {
 
-  // because we just need something that returns a type, without bringing too
-  // much else into the works
-  // FIXME(lucas) Remove this once we have an actual LiteralExpression
-  static private class FacadeExpression extends Expression {
-
-    private Value value;
-
-    public FacadeExpression(Value value) {
-      this.value = value;
-    }
-
-    @Override
-    public Value evaluate() {
-      return value;
-    }
-
-    @Override
-    public TypeValue getType() {
-      return value.getType();
-    }
-
-  }
-
   /*
    * Most of these tests depend on the correct operation of Variable. Look to
    * those tests if errors show up.
@@ -60,12 +37,12 @@ public class TestScope {
   }
 
   private Expression getTypeExpression() {
-    return new FacadeExpression(BitTypeValue.getInstance());
+    return new LiteralExpression(BitTypeValue.getInstance());
   }
 
   // FIXME(lucas) return an instance of the type
   private Expression getValueExpression() {
-    return new FacadeExpression(BitValue.getInstance(true));
+    return new LiteralExpression(BitValue.getInstance(true));
   }
 
   @Test
