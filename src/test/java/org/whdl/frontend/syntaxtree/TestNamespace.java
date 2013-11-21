@@ -8,29 +8,6 @@ import org.junit.Test;
 
 public class TestNamespace {
 
-  // because we just need something that returns a type, without bringing too
-  // much else into the works
-  // FIXME(lucas) Remove this once we have an actual LiteralExpression
-  static private class FacadeExpression extends Expression {
-
-    private Value value;
-
-    public FacadeExpression(Value value) {
-      this.value = value;
-    }
-
-    @Override
-    public Value evaluate() {
-      return value;
-    }
-
-    @Override
-    public TypeValue getType() {
-      return value.getType();
-    }
-
-  }
-
   private NamespaceIdentifier getNamespaceIdentifier() {
     ArrayList<String> name = new ArrayList<String>(3);
     name.add("whdl");
@@ -48,7 +25,7 @@ public class TestNamespace {
   }
 
   private Expression getTypeExpression() {
-    return new FacadeExpression(BitTypeValue.getInstance());
+    return new LiteralExpression(BitTypeValue.getInstance());
   }
 
   @Test
@@ -66,6 +43,16 @@ public class TestNamespace {
   }
 
   @Test
+  public void containsIdentifier_publicScope_success() {
+    fail("not implemented yet");
+  }
+
+  @Test
+  public void containsIdentifier_privateScope_fail() {
+    fail("not implemented yet");
+  }
+
+  @Test
   public void getVariable_publicScope_success()
       throws MultipleDefinitionException, VariableNotDefinedException {
     // depends on correctness of Scope
@@ -73,6 +60,7 @@ public class TestNamespace {
     n.getPublicScope().defineVariable(getVariableIdentifier(),
         getTypeExpression());
     Variable v = n.getVariable(getVariableIdentifier());
+    assertEquals(getVariableIdentifier(), v.getIdentifier());
   }
 
   @Test(expected = VariableNotDefinedException.class)
@@ -83,6 +71,7 @@ public class TestNamespace {
     n.getPrivateScope().defineVariable(getVariableIdentifier(),
         getTypeExpression());
     Variable v = n.getVariable(getVariableIdentifier());
+    fail("somehow retrieved a variable defined in a private scope");
   }
 
 }

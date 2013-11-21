@@ -59,6 +59,11 @@ public class TestScope {
   }
 
   @Test
+  public void testContainsIdentifier() {
+    fail("not implemented yet");
+  }
+
+  @Test
   public void testGetVariableType() throws MultipleDefinitionException,
       TypeMismatchException, VariableNotDefinedException {
 

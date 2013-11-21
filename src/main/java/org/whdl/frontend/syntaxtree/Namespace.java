@@ -22,7 +22,12 @@ public class Namespace {
   }
 
   // TODO(murphy)
-  // public Set<CompilationUnit> getFiles();
+  // public Set<CompilationUnit> getCompilationUnits();
+
+  public boolean containsIdentifier(VariableIdentifier identifier) {
+    // can only search public identifiers
+    return publicScope.containsIdentifier(identifier);
+  }
 
   public Variable getVariable(VariableIdentifier identifier)
       throws VariableNotDefinedException {
