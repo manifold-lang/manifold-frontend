@@ -7,26 +7,6 @@ import java.util.ArrayList;
 import org.junit.Test;
 
 public class TestVariable {
-    
-    // because we just need something that returns a type, without bringing too
-    // much else into the works
-    // FIXME(lucas) Remove this once we have an actual LiteralExpression
-    static private class FacadeExpression extends Expression {
-      
-      private Value value;
-   
-      public FacadeExpression(Value value) {
-        this.value = value;
-      }
-  
-      @Override
-      public Value evaluate() { return value; }
-  
-      @Override
-      public TypeValue getType() { return value.getType(); }
-   
-    }
-  
     private NamespaceIdentifier getNamespaceIdentifier() {
       ArrayList<String> name = new ArrayList<String>(3);
       name.add("whdl");
@@ -46,11 +26,11 @@ public class TestVariable {
     }
     
     private Expression getTypeExpression(){
-      return new FacadeExpression(BitTypeValue.getInstance());
+      return new LiteralExpression(BitTypeValue.getInstance());
     }
     
     private Expression getValueExpression(){
-      return new FacadeExpression(BitValue.getInstance(true));
+      return new LiteralExpression(BitValue.getInstance(true));
     }
   
     @Test
@@ -93,7 +73,7 @@ public class TestVariable {
  
       Variable v = new Variable(
           getVariableIdentifier(),
-          new FacadeExpression(BitValue.getInstance(false))
+          new LiteralExpression(BitValue.getInstance(false))
       );
       v.verify();
     }
@@ -105,9 +85,9 @@ public class TestVariable {
  
       Variable v = new Variable(
           getVariableIdentifier(),
-          new FacadeExpression(BitTypeValue.getInstance())
+          new LiteralExpression(BitTypeValue.getInstance())
       );
-      v.setValue(new FacadeExpression(BitTypeValue.getInstance()));
+      v.setValue(new LiteralExpression(BitTypeValue.getInstance()));
       v.verify();
     }
 }
