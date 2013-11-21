@@ -8,12 +8,7 @@ import org.junit.Test;
 
 public class TestVariable {
     private NamespaceIdentifier getNamespaceIdentifier() {
-      ArrayList<String> name = new ArrayList<String>(3);
-      name.add("whdl");
-      name.add("is");
-      name.add("cool");
-  
-      return new NamespaceIdentifier(name);
+      return new NamespaceIdentifier("whdl:is:cool");
     }
   
     private VariableIdentifier getVariableIdentifier() {

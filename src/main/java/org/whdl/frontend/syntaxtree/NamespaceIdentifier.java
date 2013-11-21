@@ -1,22 +1,27 @@
 package org.whdl.frontend.syntaxtree;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class NamespaceIdentifier {
+    
+  public static String getSeparator(){
+	  // FIXME this is syntax-dependent, but at least it abstracts out the dependency
+	  return ":";
+  }
 
   private List<String> name;
-
+  
+  public NamespaceIdentifier(String name) {
+    this.name = Arrays.asList(name.split(getSeparator()));
+  }
+  
   public NamespaceIdentifier(List<String> name) {
     this.name = java.util.Collections.unmodifiableList(name);
   }
 
   public List<String> getName() {
     return name;
-  }
-  
-  public static String getSeparator(){
-	  // FIXME this is syntax-dependent, but at least it abstracts out the dependency
-	  return ":";
   }
   
   @Override
