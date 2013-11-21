@@ -18,6 +18,8 @@ public class Namespace {
   }
 
   public Scope getPublicScope() {
+    // TODO we may or may not want to make this immutable in the future,
+    // depending on where this is populated
     return publicScope;
   }
 

@@ -34,6 +34,8 @@ public class Scope {
   }
 
   public boolean containsIdentifier(VariableIdentifier identifier) {
+    // FIXME does it make sense for this to search recursively upwards?
+    // i.e. do we always want to check every scope or just this one?
     if (symbolTable.containsKey(identifier)) {
       return true;
     } else if (parentScope == null) {

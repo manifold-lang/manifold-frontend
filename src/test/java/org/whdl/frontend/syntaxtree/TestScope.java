@@ -25,10 +25,8 @@ public class TestScope {
   }
 
   private VariableIdentifier getVariableIdentifier() {
-    VariableIdentifier id = new VariableIdentifier(
-        getNamespaceIdentifier(),
-        "foo"
-    );
+    VariableIdentifier id = new VariableIdentifier(getNamespaceIdentifier(),
+        "foo");
 
     return id;
   }
@@ -56,8 +54,10 @@ public class TestScope {
   }
 
   @Test
-  public void testContainsIdentifier() {
-    fail("not implemented yet");
+  public void testContainsIdentifier() throws MultipleDefinitionException {
+    Scope s = new Scope();
+    s.defineVariable(getVariableIdentifier(), getTypeExpression());
+    assertTrue(s.containsIdentifier(getVariableIdentifier()));
   }
 
   @Test
@@ -89,7 +89,6 @@ public class TestScope {
 
   @Test
   public void testGetVariable_ParentScope() throws MultipleDefinitionException {
-    // implicitly tests defineVariable()
     Scope s1 = new Scope();
     Scope s2 = new Scope(s1);
     s1.defineVariable(getVariableIdentifier(), getTypeExpression());

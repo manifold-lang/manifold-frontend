@@ -9,12 +9,7 @@ import org.junit.Test;
 public class TestNamespace {
 
   private NamespaceIdentifier getNamespaceIdentifier() {
-    ArrayList<String> name = new ArrayList<String>(3);
-    name.add("whdl");
-    name.add("is");
-    name.add("cool");
-
-    return new NamespaceIdentifier(name);
+    return new NamespaceIdentifier("whdl:is:cool");
   }
 
   private VariableIdentifier getVariableIdentifier() {
@@ -43,13 +38,21 @@ public class TestNamespace {
   }
 
   @Test
-  public void containsIdentifier_publicScope_success() {
-    fail("not implemented yet");
+  public void containsIdentifier_publicScope_success()
+      throws MultipleDefinitionException {
+    Namespace n = new Namespace(getNamespaceIdentifier());
+    n.getPublicScope().defineVariable(getVariableIdentifier(),
+        getTypeExpression());
+    assertTrue(n.containsIdentifier(getVariableIdentifier()));
   }
 
   @Test
-  public void containsIdentifier_privateScope_fail() {
-    fail("not implemented yet");
+  public void containsIdentifier_privateScope_fail()
+      throws MultipleDefinitionException {
+    Namespace n = new Namespace(getNamespaceIdentifier());
+    n.getPrivateScope().defineVariable(getVariableIdentifier(),
+        getTypeExpression());
+    assertFalse(n.containsIdentifier(getVariableIdentifier()));
   }
 
   @Test
