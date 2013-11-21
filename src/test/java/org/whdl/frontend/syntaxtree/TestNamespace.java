@@ -1,9 +1,7 @@
 package org.whdl.frontend.syntaxtree;
 
 import static org.junit.Assert.*;
-
 import java.util.ArrayList;
-
 import org.junit.Test;
 
 public class TestNamespace {
@@ -38,21 +36,21 @@ public class TestNamespace {
   }
 
   @Test
-  public void containsIdentifier_publicScope_success()
+  public void isVariableDefined_publicScope_success()
       throws MultipleDefinitionException {
     Namespace n = new Namespace(getNamespaceIdentifier());
     n.getPublicScope().defineVariable(getVariableIdentifier(),
         getTypeExpression());
-    assertTrue(n.containsIdentifier(getVariableIdentifier()));
+    assertTrue(n.isVariableDefined(getVariableIdentifier()));
   }
 
   @Test
-  public void containsIdentifier_privateScope_fail()
+  public void isVariableDefined_privateScope_fail()
       throws MultipleDefinitionException {
     Namespace n = new Namespace(getNamespaceIdentifier());
     n.getPrivateScope().defineVariable(getVariableIdentifier(),
         getTypeExpression());
-    assertFalse(n.containsIdentifier(getVariableIdentifier()));
+    assertFalse(n.isVariableDefined(getVariableIdentifier()));
   }
 
   @Test

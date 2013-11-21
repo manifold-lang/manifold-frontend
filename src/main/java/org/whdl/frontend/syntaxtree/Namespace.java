@@ -26,9 +26,9 @@ public class Namespace {
   // TODO(murphy)
   // public Set<CompilationUnit> getCompilationUnits();
 
-  public boolean containsIdentifier(VariableIdentifier identifier) {
+  public boolean isVariableDefined(VariableIdentifier identifier) {
     // can only search public identifiers
-    return publicScope.containsIdentifier(identifier);
+    return publicScope.isVariableDefined(identifier);
   }
 
   public Variable getVariable(VariableIdentifier identifier)

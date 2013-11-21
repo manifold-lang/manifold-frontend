@@ -33,15 +33,13 @@ public class Scope {
     symbolTable.put(identifier, v);
   }
 
-  public boolean containsIdentifier(VariableIdentifier identifier) {
-    // FIXME does it make sense for this to search recursively upwards?
-    // i.e. do we always want to check every scope or just this one?
+  public boolean isVariableDefined(VariableIdentifier identifier) {
     if (symbolTable.containsKey(identifier)) {
       return true;
     } else if (parentScope == null) {
       return false;
     } else {
-      return parentScope.containsIdentifier(identifier);
+      return parentScope.isVariableDefined(identifier);
     }
   }
 

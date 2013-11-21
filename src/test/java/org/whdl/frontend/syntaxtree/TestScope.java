@@ -1,9 +1,7 @@
 package org.whdl.frontend.syntaxtree;
 
 import static org.junit.Assert.*;
-
 import java.util.ArrayList;
-
 import org.junit.Test;
 
 public class TestScope {
@@ -54,10 +52,16 @@ public class TestScope {
   }
 
   @Test
-  public void testContainsIdentifier() throws MultipleDefinitionException {
+  public void testIsVariableDefined_true() throws MultipleDefinitionException {
     Scope s = new Scope();
     s.defineVariable(getVariableIdentifier(), getTypeExpression());
-    assertTrue(s.containsIdentifier(getVariableIdentifier()));
+    assertTrue(s.isVariableDefined(getVariableIdentifier()));
+  }
+  
+  @Test
+  public void testIsVariableDefined_false() {
+    Scope s = new Scope();
+    assertFalse(s.isVariableDefined(getVariableIdentifier()));
   }
 
   @Test
