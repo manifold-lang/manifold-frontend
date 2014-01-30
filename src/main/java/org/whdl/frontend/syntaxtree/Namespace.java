@@ -26,15 +26,4 @@ public class Namespace {
   // TODO(murphy)
   // public Set<CompilationUnit> getCompilationUnits();
 
-  public boolean isVariableDefined(VariableIdentifier identifier) {
-    // can only search public identifiers
-    return publicScope.isVariableDefined(identifier);
-  }
-
-  public Variable getVariable(VariableIdentifier identifier)
-      throws VariableNotDefinedException {
-    // can only search public identifiers
-    return publicScope.getVariable(identifier);
-  }
-
 }

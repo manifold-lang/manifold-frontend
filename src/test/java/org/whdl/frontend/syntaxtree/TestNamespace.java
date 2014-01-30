@@ -35,44 +35,4 @@ public class TestNamespace {
     assertNotSame("private scope and public scope not distinct", priv, pub);
   }
 
-  @Test
-  public void isVariableDefined_publicScope_success()
-      throws MultipleDefinitionException {
-    Namespace n = new Namespace(getNamespaceIdentifier());
-    n.getPublicScope().defineVariable(getVariableIdentifier(),
-        getTypeExpression());
-    assertTrue(n.isVariableDefined(getVariableIdentifier()));
-  }
-
-  @Test
-  public void isVariableDefined_privateScope_fail()
-      throws MultipleDefinitionException {
-    Namespace n = new Namespace(getNamespaceIdentifier());
-    n.getPrivateScope().defineVariable(getVariableIdentifier(),
-        getTypeExpression());
-    assertFalse(n.isVariableDefined(getVariableIdentifier()));
-  }
-
-  @Test
-  public void getVariable_publicScope_success()
-      throws MultipleDefinitionException, VariableNotDefinedException {
-    // depends on correctness of Scope
-    Namespace n = new Namespace(getNamespaceIdentifier());
-    n.getPublicScope().defineVariable(getVariableIdentifier(),
-        getTypeExpression());
-    Variable v = n.getVariable(getVariableIdentifier());
-    assertEquals(getVariableIdentifier(), v.getIdentifier());
-  }
-
-  @Test(expected = VariableNotDefinedException.class)
-  public void getVariable_privateScope_throwsVariableNotDefined()
-      throws MultipleDefinitionException, VariableNotDefinedException {
-    // depends on correctness of Scope
-    Namespace n = new Namespace(getNamespaceIdentifier());
-    n.getPrivateScope().defineVariable(getVariableIdentifier(),
-        getTypeExpression());
-    Variable v = n.getVariable(getVariableIdentifier());
-    fail("somehow retrieved a variable defined in a private scope");
-  }
-
 }
