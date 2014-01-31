@@ -24,28 +24,9 @@ public class TestVariableNotAssignedException {
   private VariableIdentifier getVariableIdentifierInstance() {
     return new VariableIdentifier(getNamespaceIdentifierInstance(), "foo");
   }
-  
-  // because we just need something that returns a type, without bringing too
-  // much else into the works
-  // FIXME(lucas) Remove this once we have an actual LiteralExpression
-  static private class FacadeExpression extends Expression {
-    
-    private Value value;
- 
-    public FacadeExpression(Value value) {
-      this.value = value;
-    }
-
-    @Override
-    public Value evaluate() { return value; }
-
-    @Override
-    public TypeValue getType() { return value.getType(); }
- 
-  }
 
   private Expression getTypeExpression(){
-    return new FacadeExpression(BitTypeValue.getInstance());
+    return new LiteralExpression(BitTypeValue.getInstance());
   }
   
   private Variable v_inst = null; 
