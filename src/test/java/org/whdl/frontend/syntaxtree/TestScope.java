@@ -1,9 +1,7 @@
 package org.whdl.frontend.syntaxtree;
 
 import static org.junit.Assert.*;
-
 import java.util.ArrayList;
-
 import org.junit.Test;
 
 public class TestScope {
@@ -25,10 +23,8 @@ public class TestScope {
   }
 
   private VariableIdentifier getVariableIdentifier() {
-    VariableIdentifier id = new VariableIdentifier(
-        getNamespaceIdentifier(),
-        "foo"
-    );
+    VariableIdentifier id = new VariableIdentifier(getNamespaceIdentifier(),
+        "foo");
 
     return id;
   }
@@ -53,6 +49,19 @@ public class TestScope {
     Scope s = new Scope();
     s.defineVariable(getVariableIdentifier(), getTypeExpression());
     s.defineVariable(getVariableIdentifier(), getTypeExpression());
+  }
+
+  @Test
+  public void testIsVariableDefined_true() throws MultipleDefinitionException {
+    Scope s = new Scope();
+    s.defineVariable(getVariableIdentifier(), getTypeExpression());
+    assertTrue(s.isVariableDefined(getVariableIdentifier()));
+  }
+  
+  @Test
+  public void testIsVariableDefined_false() {
+    Scope s = new Scope();
+    assertFalse(s.isVariableDefined(getVariableIdentifier()));
   }
 
   @Test
@@ -84,7 +93,6 @@ public class TestScope {
 
   @Test
   public void testGetVariable_ParentScope() throws MultipleDefinitionException {
-    // implicitly tests defineVariable()
     Scope s1 = new Scope();
     Scope s2 = new Scope(s1);
     s1.defineVariable(getVariableIdentifier(), getTypeExpression());

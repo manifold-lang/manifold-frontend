@@ -14,3 +14,25 @@ buildscript {
 }
 
 apply plugin: 'jacoco'
+
+jacoco {
+  toolVersion = "0.6.3.201306030806"
+  reportsDir = file("$buildDir/reports/jacoco")
+}
+
+test {
+  jacoco {
+    append = false
+    destinationFile = file("$buildDir/jacoco/jacocoTest.exec")
+    classDumpFile = file("$buildDir/jacoco/classpathdumps")
+  }
+}
+
+jacocoTestReport {
+  reports {
+    xml.enabled false
+    csv.enabled false
+    html.destination "${buildDir}/reports/jacoco"
+  }
+}
+
