@@ -8,17 +8,10 @@ import org.junit.Test;
 
 public class TestVariableNotAssignedException {
 
-  private NamespaceIdentifier namespaceIdentifierInstance;
-
   private NamespaceIdentifier getNamespaceIdentifierInstance() {
-    if (namespaceIdentifierInstance == null) {
-      ArrayList<String> name = new ArrayList<String>(1);
-      name.add("whdl");
-
-      namespaceIdentifierInstance = new NamespaceIdentifier(name);
-    }
-
-    return namespaceIdentifierInstance;
+    ArrayList<String> name = new ArrayList<String>(1);
+    name.add("whdl");
+    return new NamespaceIdentifier(name);
   }
 
   private VariableIdentifier getVariableIdentifierInstance() {
@@ -29,12 +22,8 @@ public class TestVariableNotAssignedException {
     return new LiteralExpression(BitTypeValue.getInstance());
   }
   
-  private Variable v_inst = null; 
   public Variable getVariableInstance(){
-    if(v_inst == null){
-      v_inst = new Variable(getVariableIdentifierInstance(), getTypeExpression());
-    }
-    return v_inst;
+    return new Variable(getVariableIdentifierInstance(), getTypeExpression());
   }
   
   public VariableNotAssignedException getInstance(){

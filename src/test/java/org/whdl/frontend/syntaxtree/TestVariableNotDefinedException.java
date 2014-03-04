@@ -8,17 +8,10 @@ import org.junit.Test;
 
 public class TestVariableNotDefinedException {
 
-  private NamespaceIdentifier namespaceIdentifierInstance;
-
   private NamespaceIdentifier getNamespaceIdentifierInstance() {
-    if (namespaceIdentifierInstance == null) {
-      ArrayList<String> name = new ArrayList<String>(1);
-      name.add("whdl");
-
-      namespaceIdentifierInstance = new NamespaceIdentifier(name);
-    }
-
-    return namespaceIdentifierInstance;
+    ArrayList<String> name = new ArrayList<String>(1);
+    name.add("whdl");
+    return new NamespaceIdentifier(name);
   }
 
   private VariableIdentifier getVariableIdentifierInstance() {
