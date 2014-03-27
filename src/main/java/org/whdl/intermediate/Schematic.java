@@ -9,6 +9,9 @@ import org.whdl.intermediate.definitions.EndpointDefinition;
 import org.whdl.intermediate.definitions.NodeDefinition;
 import org.whdl.intermediate.definitions.TypeDefinition;
 import org.whdl.intermediate.exceptions.MultipleDefinitionException;
+import org.whdl.intermediate.types.BooleanType;
+import org.whdl.intermediate.types.IntegerType;
+import org.whdl.intermediate.types.StringType;
 
 /**
  * A Schematic contains all the information needed by the intermediate representation.
@@ -34,6 +37,8 @@ public class Schematic {
     this.name = name;
     
     this.typeDefinitions = new HashMap<String, TypeDefinition>();
+    populateDefaultTypeDefinitions();
+    
     this.nodeDefinitions = new HashMap<String, NodeDefinition>();
     this.connectionDefinitions = new HashMap<String, ConnectionDefinition>();
     this.constraintDefinitions = new HashMap<String, ConstraintDefinition>();
@@ -41,6 +46,25 @@ public class Schematic {
     this.nodes = new HashMap<String, Node>();
     this.connections = new HashMap<String, Connection>();
     this.constraints = new HashMap<String, Constraint>();
+  }
+  
+  /*
+   * Add "library standard" type definitions for basic types
+   * such as integer, string, and boolean.
+   * Every class in .intermediate.types should be represented in here.
+   */
+  private void populateDefaultTypeDefinitions(){
+    TypeDefinition boolType = new TypeDefinition("Bool", new BooleanType());
+    TypeDefinition intType = new TypeDefinition("Int", new IntegerType());    
+    TypeDefinition stringType = new TypeDefinition("String", new StringType());
+    try{
+      addTypeDefinition(boolType);
+      addTypeDefinition(intType);
+      addTypeDefinition(stringType);
+    }catch(MultipleDefinitionException mde){
+      // this should not actually be possible unless there is something wrong with the compiler itself
+      throw new InternalError("could not create default type definitions (" + mde.getMessage() + ")");
+    }
   }
   
   public void addTypeDefinition(TypeDefinition td) throws MultipleDefinitionException{
