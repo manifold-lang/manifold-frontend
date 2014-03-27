@@ -5,6 +5,9 @@ import java.util.Map;
 
 public class EndpointDefinition {
   private String typename;
+  public String getTypename(){
+    return typename;
+  }
   private Map<String, TypeDefinition> attributes;
   
   public EndpointDefinition(String typename){

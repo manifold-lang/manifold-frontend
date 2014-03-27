@@ -7,6 +7,9 @@ import org.whdl.intermediate.Expression;
 
 public class ConstraintDefinition {
   private String typename;
+  public String getTypename(){
+    return typename;
+  }
   private Map<String, TypeDefinition> arguments;
   private Expression constraintExpr;
   

@@ -5,6 +5,9 @@ import java.util.Map;
 
 public class NodeDefinition {
   private String typename;
+  public String getTypename(){
+    return typename;
+  }
   private Map<String, TypeDefinition> attributes;
   private Map<String, EndpointDefinition> endpoints;
   
