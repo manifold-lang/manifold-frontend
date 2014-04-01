@@ -69,31 +69,41 @@ public class Schematic {
   
   public void addTypeDefinition(TypeDefinition td) throws MultipleDefinitionException{
     String key = td.getTypename();
-    if(typeDefinitions.containsKey(key)) throw new MultipleDefinitionException("type-definition", key);
+    if(typeDefinitions.containsKey(key)){
+      throw new MultipleDefinitionException("type-definition", key);
+    }
     typeDefinitions.put(key, td);
   }
   
   public void addEndpointDefinition(EndpointDefinition ed) throws MultipleDefinitionException{
     String key = ed.getTypename();
-    if(endpointDefinitions.containsKey(key)) throw new MultipleDefinitionException("endpoint-definition",key);
+    if(endpointDefinitions.containsKey(key)){
+      throw new MultipleDefinitionException("endpoint-definition", key);
+    }
     endpointDefinitions.put(key, ed);
   }
   
   public void addNodeDefinition(NodeDefinition nd) throws MultipleDefinitionException{
     String key = nd.getTypename();
-    if(nodeDefinitions.containsKey(key)) throw new MultipleDefinitionException("node-definition",key);
+    if(nodeDefinitions.containsKey(key)){
+      throw new MultipleDefinitionException("node-definition", key);
+    }
     nodeDefinitions.put(key, nd);
   }
   
   public void addConnectionDefinition(ConnectionDefinition cd) throws MultipleDefinitionException{
     String key = cd.getTypename();
-    if(connectionDefinitions.containsKey(key)) throw new MultipleDefinitionException("connection-definition",key);
+    if(connectionDefinitions.containsKey(key)){
+      throw new MultipleDefinitionException("connection-definition", key);
+    }
     connectionDefinitions.put(key, cd);
   }
   
   public void addConstraintDefinition(ConstraintDefinition cd) throws MultipleDefinitionException{
     String key = cd.getTypename();
-    if(constraintDefinitions.containsKey(key)) throw new MultipleDefinitionException("constraint-definition",key);
+    if(constraintDefinitions.containsKey(key)){
+      throw new MultipleDefinitionException("constraint-definition", key);
+    }
     constraintDefinitions.put(key, cd);
   }
   
