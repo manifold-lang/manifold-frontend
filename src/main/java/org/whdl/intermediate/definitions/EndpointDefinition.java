@@ -3,15 +3,13 @@ package org.whdl.intermediate.definitions;
 import java.util.HashMap;
 import java.util.Map;
 
-public class EndpointDefinition {
-  private String typename;
-  public String getTypename(){
-    return typename;
-  }
+import org.whdl.intermediate.Definition;
+
+public class EndpointDefinition extends Definition {
   private Map<String, TypeDefinition> attributes;
   
   public EndpointDefinition(String typename){
-    this.typename = typename;
+    super(typename);
     this.attributes = new HashMap<String, TypeDefinition>();
   }
 }
