@@ -9,9 +9,7 @@ import org.whdl.intermediate.definitions.EndpointDefinition;
 import org.whdl.intermediate.definitions.NodeDefinition;
 import org.whdl.intermediate.definitions.TypeDefinition;
 import org.whdl.intermediate.exceptions.MultipleDefinitionException;
-import org.whdl.intermediate.types.BooleanType;
-import org.whdl.intermediate.types.IntegerType;
-import org.whdl.intermediate.types.StringType;
+import org.whdl.intermediate.types.PrimitiveType;
 
 /**
  * A Schematic contains all the information needed by the intermediate representation.
@@ -54,9 +52,9 @@ public class Schematic {
    * Every class in .intermediate.types should be represented in here.
    */
   private void populateDefaultTypeDefinitions(){
-    TypeDefinition boolType = new TypeDefinition("Bool", new BooleanType());
-    TypeDefinition intType = new TypeDefinition("Int", new IntegerType());    
-    TypeDefinition stringType = new TypeDefinition("String", new StringType());
+    TypeDefinition boolType = new TypeDefinition("Bool", PrimitiveType.BOOLEAN);
+    TypeDefinition intType = new TypeDefinition("Int", PrimitiveType.INTEGER);    
+    TypeDefinition stringType = new TypeDefinition("String", PrimitiveType.STRING);
     try{
       addTypeDefinition(boolType);
       addTypeDefinition(intType);
