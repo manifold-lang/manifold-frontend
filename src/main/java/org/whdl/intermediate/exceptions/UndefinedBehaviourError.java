@@ -1,6 +1,6 @@
 package org.whdl.intermediate.exceptions;
 
-public class InternalError extends Error {
+public class UndefinedBehaviourError extends Error {
 
   /**
    * 
@@ -9,7 +9,7 @@ public class InternalError extends Error {
 
   private String msg;
   
-  public InternalError(String msg){
+  public UndefinedBehaviourError(String msg){
     this.msg = msg;
   }
   

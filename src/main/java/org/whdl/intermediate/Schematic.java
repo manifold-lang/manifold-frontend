@@ -9,6 +9,7 @@ import org.whdl.intermediate.definitions.EndpointDefinition;
 import org.whdl.intermediate.definitions.NodeDefinition;
 import org.whdl.intermediate.definitions.TypeDefinition;
 import org.whdl.intermediate.exceptions.MultipleDefinitionException;
+import org.whdl.intermediate.exceptions.UndefinedBehaviourError;
 import org.whdl.intermediate.types.PrimitiveType;
 
 /**
@@ -61,7 +62,7 @@ public class Schematic {
       addTypeDefinition(stringType);
     }catch(MultipleDefinitionException mde){
       // this should not actually be possible unless there is something wrong with the compiler itself
-      throw new InternalError("could not create default type definitions (" + mde.getMessage() + ")");
+      throw new UndefinedBehaviourError("could not create default type definitions (" + mde.getMessage() + ")");
     }
   }
   
