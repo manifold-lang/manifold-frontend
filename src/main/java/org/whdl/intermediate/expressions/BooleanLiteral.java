@@ -6,7 +6,7 @@ import org.whdl.intermediate.Expression;
 import org.whdl.intermediate.Type;
 import org.whdl.intermediate.types.PrimitiveType;
 
-public class BooleanLiteral implements Expression {
+public class BooleanLiteral extends Expression {
 
   private Boolean val;
   public BooleanLiteral(Boolean val){
@@ -15,7 +15,7 @@ public class BooleanLiteral implements Expression {
   
   @Override
   public Type accept(ExprTypeVisitor v) {
-    return PrimitiveType.BOOLEAN;
+    return v.visit(this);
   }
   
   @Override

@@ -6,7 +6,7 @@ import org.whdl.intermediate.Expression;
 import org.whdl.intermediate.Type;
 import org.whdl.intermediate.types.PrimitiveType;
 
-public class StringLiteral implements Expression {
+public class StringLiteral extends Expression {
 
   private String val;
   public StringLiteral(String val){
@@ -15,7 +15,7 @@ public class StringLiteral implements Expression {
   
   @Override
   public Type accept(ExprTypeVisitor v) {
-    return PrimitiveType.STRING;
+    return v.visit(this);
   }
 
   @Override

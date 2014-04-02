@@ -12,7 +12,7 @@ public class TestExprTypeVisitor {
     Expression e = new BooleanLiteral(true);
     ExprTypeVisitor v = new ExprTypeVisitor();
     Type expected = PrimitiveType.BOOLEAN;
-    Type actual = v.visit(e);
+    Type actual = e.accept(v);
     assertEquals(expected, actual);
   }
 
@@ -21,7 +21,7 @@ public class TestExprTypeVisitor {
     Expression e = new IntegerLiteral(1);
     ExprTypeVisitor v = new ExprTypeVisitor();
     Type expected = PrimitiveType.INTEGER;
-    Type actual = v.visit(e);
+    Type actual = e.accept(v);
     assertEquals(expected, actual);
   }
   
@@ -30,7 +30,7 @@ public class TestExprTypeVisitor {
     Expression e = new StringLiteral("foo");
     ExprTypeVisitor v = new ExprTypeVisitor();
     Type expected = PrimitiveType.STRING;
-    Type actual = v.visit(e);
+    Type actual = e.accept(v);
     assertEquals(expected, actual);
   }
   
