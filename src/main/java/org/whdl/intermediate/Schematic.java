@@ -37,7 +37,8 @@ public class Schematic {
     
     this.typeDefinitions = new HashMap<String, TypeDefinition>();
     populateDefaultTypeDefinitions();
-    
+
+    this.endpointDefinitions = new HashMap<String, EndpointDefinition>();
     this.nodeDefinitions = new HashMap<String, NodeDefinition>();
     this.connectionDefinitions = new HashMap<String, ConnectionDefinition>();
     this.constraintDefinitions = new HashMap<String, ConstraintDefinition>();
