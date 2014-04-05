@@ -12,6 +12,12 @@ public abstract class Expression {
     }
   }
   public void setType(Type t){
+    if(t == null){
+      throw new UndefinedBehaviourError("attempted to set the type of an Expression to null");
+    }
+    if(this.type != null){
+      throw new UndefinedBehaviourError("attempted to change the type of an Expression whose type was already assigned");
+    }
     this.type = t;
   }
   
