@@ -105,7 +105,7 @@ public class TestSchematic {
   @Test
   public void testAddConstraintDef() throws MultipleDefinitionException {
     Schematic s = new Schematic("test");
-    ConstraintDefinition e1 = new ConstraintDefinition("c1", new BooleanLiteral(true));
+    ConstraintDefinition e1 = new ConstraintDefinition("c1");
     s.addConstraintDefinition(e1);
   }
   
@@ -114,13 +114,33 @@ public class TestSchematic {
     // We should not be able to add two constraint definitions whose first argument is the same string.
     Schematic s = new Schematic("test");
     try{
-      ConstraintDefinition e1 = new ConstraintDefinition("foo", new BooleanLiteral(true));
+      ConstraintDefinition e1 = new ConstraintDefinition("foo");
       s.addConstraintDefinition(e1);
     }catch(MultipleDefinitionException mde){
       fail("exception thrown too early: " + mde.getMessage());
     }
-    ConstraintDefinition e2 = new ConstraintDefinition("foo", new BooleanLiteral(false));
+    ConstraintDefinition e2 = new ConstraintDefinition("foo");
     s.addConstraintDefinition(e2);
   }
 
+  @Test
+  public void testSeparationOfNamespaces_DomainObjects() throws MultipleDefinitionException{
+    // We should be able to add one of each of a TypeDefinition, ConstraintDefinition,
+    // ConnectionDefinition, NodeDefinition, and EndpointDefinition with the same name
+    // without encountering a "multiple definition" exception.
+    Schematic s = new Schematic("test");
+    
+    TypeDefinition t1 = new TypeDefinition("foo", PrimitiveType.STRING);
+    ConstraintDefinition ct1 = new ConstraintDefinition("foo");
+    ConnectionDefinition cn1 = new ConnectionDefinition("foo");
+    NodeDefinition n1 = new NodeDefinition("foo");
+    EndpointDefinition e1 = new EndpointDefinition("foo");
+    
+    s.addTypeDefinition(t1);
+    s.addConstraintDefinition(ct1);
+    s.addConnectionDefinition(cn1);
+    s.addNodeDefinition(n1);
+    s.addEndpointDefinition(e1);
+  }
+  
 }
