@@ -1,9 +1,5 @@
-package org.whdl.intermediate.expressions;
+package org.whdl.intermediate;
 
-import org.whdl.intermediate.ExprEvalVisitor;
-import org.whdl.intermediate.ExprTypeVisitor;
-import org.whdl.intermediate.Expression;
-import org.whdl.intermediate.Type;
 import org.whdl.intermediate.types.PrimitiveType;
 
 public class BooleanLiteral extends Expression {

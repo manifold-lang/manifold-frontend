@@ -6,7 +6,6 @@ import org.junit.Test;
 import org.whdl.intermediate.definitions.*;
 import org.whdl.intermediate.exceptions.*;
 import org.whdl.intermediate.types.*;
-import org.whdl.intermediate.expressions.*;
 
 public class TestSchematic {
 

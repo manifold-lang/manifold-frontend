@@ -1,6 +1,5 @@
 package org.whdl.intermediate;
 
-import org.whdl.intermediate.expressions.*;
 import org.whdl.intermediate.types.*;
 
 public class ExprTypeVisitor {
