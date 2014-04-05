@@ -11,6 +11,6 @@ public class MultipleDefinitionException extends Exception {
   }
   @Override
   public String getMessage(){
-    return "multiple definitions of " + kind +  "'" + typename + "'";
+    return "multiple definitions of " + kind +  " '" + typename + "'";
   }
 }
