@@ -9,7 +9,7 @@ import org.whdl.intermediate.DomainObject;
 public class ConstraintDefinition extends Definition {
   private Map<String, TypeDefinition> arguments;
   
-  public ConstraintDefinition(String typename, DomainObject constraintExpr){
+  public ConstraintDefinition(String typename){
     super(typename);
     this.arguments = new HashMap<String, TypeDefinition>();
   }
