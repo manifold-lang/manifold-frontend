@@ -2,7 +2,7 @@ package org.whdl.intermediate;
 
 import org.whdl.intermediate.exceptions.UndefinedBehaviourError;
 
-public abstract class Expression {
+public abstract class DomainObject {
   private Type type = null;
   public Type getType(){
     if(type == null){
@@ -21,6 +21,5 @@ public abstract class Expression {
     this.type = t;
   }
   
-  public abstract Type accept(ExprTypeVisitor v);
-  public abstract Object accept(ExprEvalVisitor v);
+  public abstract Type accept(DomainObjectTypeVisitor v);
 }

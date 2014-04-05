@@ -2,7 +2,7 @@ package org.whdl.intermediate;
 
 import org.whdl.intermediate.types.PrimitiveType;
 
-public class BooleanLiteral extends Expression {
+public class BooleanLiteral extends DomainObject {
 
   private Boolean val;
   public BooleanLiteral(Boolean val){
@@ -10,13 +10,8 @@ public class BooleanLiteral extends Expression {
   }
   
   @Override
-  public Type accept(ExprTypeVisitor v) {
+  public Type accept(DomainObjectTypeVisitor v) {
     return v.visit(this);
-  }
-  
-  @Override
-  public Object accept(ExprEvalVisitor v){
-    return val;
   }
 
 }

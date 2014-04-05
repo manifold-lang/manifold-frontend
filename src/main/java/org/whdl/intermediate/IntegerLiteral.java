@@ -2,7 +2,7 @@ package org.whdl.intermediate;
 
 import org.whdl.intermediate.types.PrimitiveType;
 
-public class IntegerLiteral extends Expression {
+public class IntegerLiteral extends DomainObject {
 
   private Integer val;
   public IntegerLiteral(Integer val){
@@ -10,13 +10,8 @@ public class IntegerLiteral extends Expression {
   }
   
   @Override
-  public Type accept(ExprTypeVisitor v){
+  public Type accept(DomainObjectTypeVisitor v){
     return v.visit(this);
-  }
-
-  @Override
-  public Object accept(ExprEvalVisitor v){
-    return val;
   }
   
 }

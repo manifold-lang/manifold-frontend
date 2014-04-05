@@ -2,7 +2,7 @@ package org.whdl.intermediate;
 
 import org.whdl.intermediate.types.*;
 
-public class ExprTypeVisitor {
+public class DomainObjectTypeVisitor {
 
   public Type visit(BooleanLiteral e){
     return PrimitiveType.BOOLEAN;

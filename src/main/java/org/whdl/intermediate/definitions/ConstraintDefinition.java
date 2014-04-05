@@ -4,12 +4,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.whdl.intermediate.Definition;
-import org.whdl.intermediate.Expression;
+import org.whdl.intermediate.DomainObject;
 
 public class ConstraintDefinition extends Definition {
   private Map<String, TypeDefinition> arguments;
   
-  public ConstraintDefinition(String typename, Expression constraintExpr){
+  public ConstraintDefinition(String typename, DomainObject constraintExpr){
     super(typename);
     this.arguments = new HashMap<String, TypeDefinition>();
   }
