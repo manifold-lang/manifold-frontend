@@ -3,14 +3,26 @@ package org.whdl.intermediate;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Constraint {
+import org.whdl.intermediate.definitions.ConnectionDefinition;
+import org.whdl.intermediate.definitions.ConstraintDefinition;
+
+public class Constraint extends DomainObject {
   private String instanceName;
-  private String typename;
+  private ConstraintDefinition definition;
+  public ConstraintDefinition getDefinition(){
+    return this.definition;
+  }
+  
   private Map<String, DomainObject> arguments;  
   
-  public Constraint(String instanceName, String typename){
+  public Constraint(String instanceName, ConstraintDefinition definition){
     this.instanceName = instanceName;
-    this.typename = typename;
+    this.definition = definition;
     this.arguments = new HashMap<String, DomainObject>();
+  }
+
+  @Override
+  public Type accept(DomainObjectTypeVisitor v) {
+    return v.visit(this);
   }
 }
