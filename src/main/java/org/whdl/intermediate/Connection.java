@@ -13,14 +13,14 @@ public class Connection extends Value {
   }
   
   private Map<String, Value> attributes;
-  private Endpoint eFrom, eTo;
+  private Endpoint endpointFrom, endpointTo;
   
-  public Connection(String instanceName, ConnectionDefinition definition, Endpoint eFrom, Endpoint eTo){
+  public Connection(String instanceName, ConnectionDefinition definition, Endpoint endpointFrom, Endpoint endpointTo){
     this.instanceName = instanceName;
     this.definition = definition;
     this.attributes = new HashMap<String, Value>();
-    this.eFrom = eFrom;
-    this.eTo = eTo;
+    this.endpointFrom = endpointFrom;
+    this.endpointTo = endpointTo;
   }
 
   @Override
