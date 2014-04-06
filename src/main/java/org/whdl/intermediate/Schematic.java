@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.whdl.intermediate.exceptions.MultipleDefinitionException;
 import org.whdl.intermediate.exceptions.UndefinedBehaviourError;
+import org.whdl.intermediate.exceptions.UndeclaredIdentifierException;
 import org.whdl.intermediate.types.PrimitiveType;
 
 /**
@@ -70,12 +71,28 @@ public class Schematic {
     typeTypeDefinitions.put(key, td);
   }
   
+  public TypeTypeDefinition getTypeTypeDefinition(String typename) throws UndeclaredIdentifierException {
+    if(typeTypeDefinitions.containsKey(typename)){
+      return typeTypeDefinitions.get(typename);
+    }else{
+      throw new UndeclaredIdentifierException(typename);
+    }
+  }
+  
   public void addEndpointTypeDefinition(EndpointTypeDefinition ed) throws MultipleDefinitionException{
     String key = ed.getTypename();
     if(endpointTypeDefinitions.containsKey(key)){
       throw new MultipleDefinitionException("endpoint-definition", key);
     }
     endpointTypeDefinitions.put(key, ed);
+  }
+  
+  public EndpointTypeDefinition getEndpointTypeDefinition(String typename) throws UndeclaredIdentifierException {
+    if(endpointTypeDefinitions.containsKey(typename)){
+      return endpointTypeDefinitions.get(typename);
+    }else{
+      throw new UndeclaredIdentifierException(typename);
+    }
   }
   
   public void addNodeTypeDefinition(NodeTypeDefinition nd) throws MultipleDefinitionException{
@@ -86,6 +103,14 @@ public class Schematic {
     nodeTypeDefinitions.put(key, nd);
   }
   
+  public NodeTypeDefinition getNodeTypeDefinition(String typename) throws UndeclaredIdentifierException {
+    if(nodeTypeDefinitions.containsKey(typename)){
+      return nodeTypeDefinitions.get(typename);
+    }else{
+      throw new UndeclaredIdentifierException(typename);
+    }
+  }
+  
   public void addConnectionTypeDefinition(ConnectionTypeDefinition cd) throws MultipleDefinitionException{
     String key = cd.getTypename();
     if(connectionTypeDefinitions.containsKey(key)){
@@ -94,12 +119,28 @@ public class Schematic {
     connectionTypeDefinitions.put(key, cd);
   }
   
+  public ConnectionTypeDefinition getConnectionTypeDefinition(String typename) throws UndeclaredIdentifierException {
+    if(connectionTypeDefinitions.containsKey(typename)){
+      return connectionTypeDefinitions.get(typename);
+    }else{
+      throw new UndeclaredIdentifierException(typename);
+    }
+  }
+  
   public void addConstraintTypeDefinition(ConstraintTypeDefinition cd) throws MultipleDefinitionException{
     String key = cd.getTypename();
     if(constraintTypeDefinitions.containsKey(key)){
       throw new MultipleDefinitionException("constraint-definition", key);
     }
     constraintTypeDefinitions.put(key, cd);
+  }
+  
+  public ConstraintTypeDefinition getConstraintTypeDefinition(String typename) throws UndeclaredIdentifierException {
+    if(constraintTypeDefinitions.containsKey(typename)){
+      return constraintTypeDefinitions.get(typename);
+    }else{
+      throw new UndeclaredIdentifierException(typename);
+    }
   }
   
   // FIXME do we add nodes as a function of their node definition right away, or just record that the node "will" exist with such-and-such definition and elaborate it later?

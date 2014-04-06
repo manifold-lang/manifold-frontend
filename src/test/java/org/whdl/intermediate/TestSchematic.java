@@ -39,6 +39,21 @@ public class TestSchematic {
   }
   
   @Test
+  public void testGetTypeDef() throws UndeclaredIdentifierException, MultipleDefinitionException{
+    Schematic s = new Schematic("test");
+    TypeTypeDefinition expected = new TypeTypeDefinition("foo", new PrimitiveType(PrimitiveType.PrimitiveKind.INTEGER));
+    s.addTypeTypeDefinition(expected);
+    TypeTypeDefinition actual = s.getTypeTypeDefinition("foo");
+    assertEquals(expected, actual);
+  }
+  
+  @Test(expected=UndeclaredIdentifierException.class)
+  public void testGetTypeDef_notDeclared() throws UndeclaredIdentifierException {
+    Schematic s = new Schematic("test");
+    TypeTypeDefinition bogus = s.getTypeTypeDefinition("does-not-exist");
+  }
+  
+  @Test
   public void testAddEndpointDef() throws MultipleDefinitionException {
     Schematic s = new Schematic("test");
     EndpointTypeDefinition e1 = new EndpointTypeDefinition("n1");
@@ -57,6 +72,21 @@ public class TestSchematic {
     }
     EndpointTypeDefinition n2 = new EndpointTypeDefinition("foo");
     s.addEndpointTypeDefinition(n2);
+  }
+  
+  @Test
+  public void testGetEndpointDef() throws UndeclaredIdentifierException, MultipleDefinitionException{
+    Schematic s = new Schematic("test");
+    EndpointTypeDefinition expected = new EndpointTypeDefinition("foo");
+    s.addEndpointTypeDefinition(expected);
+    EndpointTypeDefinition actual = s.getEndpointTypeDefinition("foo");
+    assertEquals(expected, actual);
+  }
+  
+  @Test(expected=UndeclaredIdentifierException.class)
+  public void testGetEndpointDef_notDeclared() throws UndeclaredIdentifierException {
+    Schematic s = new Schematic("test");
+    EndpointTypeDefinition bogus = s.getEndpointTypeDefinition("does-not-exist");
   }
   
   @Test
@@ -81,6 +111,21 @@ public class TestSchematic {
   }
   
   @Test
+  public void testGetNodeDef() throws UndeclaredIdentifierException, MultipleDefinitionException{
+    Schematic s = new Schematic("test");
+    NodeTypeDefinition expected = new NodeTypeDefinition("foo");
+    s.addNodeTypeDefinition(expected);
+    NodeTypeDefinition actual = s.getNodeTypeDefinition("foo");
+    assertEquals(expected, actual);
+  }
+  
+  @Test(expected=UndeclaredIdentifierException.class)
+  public void testGetNodeDef_notDeclared() throws UndeclaredIdentifierException {
+    Schematic s = new Schematic("test");
+    NodeTypeDefinition bogus = s.getNodeTypeDefinition("does-not-exist");
+  }
+  
+  @Test
   public void testAddConnectionDef() throws MultipleDefinitionException {
     Schematic s = new Schematic("test");
     ConnectionTypeDefinition c1 = new ConnectionTypeDefinition("c1");
@@ -99,6 +144,21 @@ public class TestSchematic {
     }
     ConnectionTypeDefinition c2 = new ConnectionTypeDefinition("foo");
     s.addConnectionTypeDefinition(c2);
+  }
+  
+  @Test
+  public void testGetConnectionDef() throws UndeclaredIdentifierException, MultipleDefinitionException{
+    Schematic s = new Schematic("test");
+    ConnectionTypeDefinition expected = new ConnectionTypeDefinition("foo");
+    s.addConnectionTypeDefinition(expected);
+    ConnectionTypeDefinition actual = s.getConnectionTypeDefinition("foo");
+    assertEquals(expected, actual);
+  }
+  
+  @Test(expected=UndeclaredIdentifierException.class)
+  public void testGetConnectionDef_notDeclared() throws UndeclaredIdentifierException {
+    Schematic s = new Schematic("test");
+    ConnectionTypeDefinition bogus = s.getConnectionTypeDefinition("does-not-exist");
   }
   
   @Test
@@ -123,7 +183,22 @@ public class TestSchematic {
   }
 
   @Test
-  public void testSeparationOfNamespaces_DomainObjects() throws MultipleDefinitionException{
+  public void testGetConstraintDef() throws UndeclaredIdentifierException, MultipleDefinitionException{
+    Schematic s = new Schematic("test");
+    ConstraintTypeDefinition expected = new ConstraintTypeDefinition("foo");
+    s.addConstraintTypeDefinition(expected);
+    ConstraintTypeDefinition actual = s.getConstraintTypeDefinition("foo");
+    assertEquals(expected, actual);
+  }
+  
+  @Test(expected=UndeclaredIdentifierException.class)
+  public void testGetConstraintDef_notDeclared() throws UndeclaredIdentifierException {
+    Schematic s = new Schematic("test");
+    ConstraintTypeDefinition bogus = s.getConstraintTypeDefinition("does-not-exist");
+  }
+  
+  @Test
+  public void testSeparationOfNamespaces_Definitions() throws MultipleDefinitionException{
     // We should be able to add one of each of a TypeDefinition, ConstraintDefinition,
     // ConnectionDefinition, NodeDefinition, and EndpointDefinition with the same name
     // without encountering a "multiple definition" exception.
