@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Connection extends Value {
-  private String instanceName;
   private ConnectionTypeDefinition definition;
   public ConnectionTypeDefinition getDefinition(){
     return this.definition;
@@ -14,7 +13,7 @@ public class Connection extends Value {
   private Endpoint endpointFrom, endpointTo;
   
   public Connection(String instanceName, ConnectionTypeDefinition definition, Endpoint endpointFrom, Endpoint endpointTo){
-    this.instanceName = instanceName;
+    super(instanceName);
     this.definition = definition;
     this.attributes = new HashMap<String, Value>();
     this.endpointFrom = endpointFrom;

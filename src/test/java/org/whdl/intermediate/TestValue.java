@@ -45,4 +45,13 @@ public class TestValue {
     dom.setType(expected);
   }
   
+  @Test
+  public void testGetInstanceName(){
+    NodeTypeDefinition nDef = new NodeTypeDefinition("nod");
+    String expected = "nod-1";
+    Value dom = new Node(expected, nDef);
+    String actual = dom.getInstanceName();
+    assertEquals(expected, actual);
+  }
+  
 }

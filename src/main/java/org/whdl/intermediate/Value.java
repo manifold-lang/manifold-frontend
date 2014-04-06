@@ -21,4 +21,12 @@ public abstract class Value {
   }
   
   public abstract Type acceptVisitor(ValueTypeVisitor v);
+  
+  private String instanceName;
+  public String getInstanceName(){
+    return instanceName;
+  }
+  public Value(String instanceName){
+    this.instanceName = instanceName;
+  }
 }

@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Node extends Value{
-  private String instanceName;
   private NodeTypeDefinition definition;
   public NodeTypeDefinition getDefinition(){
     return this.definition;
@@ -14,7 +13,7 @@ public class Node extends Value{
   private Map<String, Endpoint> endpoints;
   
   public Node(String instanceName, NodeTypeDefinition definition){
-    this.instanceName = instanceName;
+    super(instanceName);
     this.definition = definition;
     this.attributes = new HashMap<String, Value>();
     this.endpoints = new HashMap<String, Endpoint>();
