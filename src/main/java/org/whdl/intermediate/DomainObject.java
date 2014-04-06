@@ -21,5 +21,5 @@ public abstract class DomainObject {
     this.type = t;
   }
   
-  public abstract Type accept(DomainObjectTypeVisitor v);
+  public abstract Type acceptVisitor(DomainObjectTypeVisitor v);
 }

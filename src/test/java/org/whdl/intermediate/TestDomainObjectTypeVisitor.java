@@ -16,7 +16,7 @@ public class TestDomainObjectTypeVisitor {
     DomainObject e = new BooleanLiteral(true);
     DomainObjectTypeVisitor v = new DomainObjectTypeVisitor();
     Type expected = PrimitiveType.BOOLEAN;
-    Type actual = e.accept(v);
+    Type actual = e.acceptVisitor(v);
     assertEquals(expected, actual);
   }
 
@@ -25,7 +25,7 @@ public class TestDomainObjectTypeVisitor {
     DomainObject e = new IntegerLiteral(1);
     DomainObjectTypeVisitor v = new DomainObjectTypeVisitor();
     Type expected = PrimitiveType.INTEGER;
-    Type actual = e.accept(v);
+    Type actual = e.acceptVisitor(v);
     assertEquals(expected, actual);
   }
   
@@ -34,7 +34,7 @@ public class TestDomainObjectTypeVisitor {
     DomainObject e = new StringLiteral("foo");
     DomainObjectTypeVisitor v = new DomainObjectTypeVisitor();
     Type expected = PrimitiveType.STRING;
-    Type actual = e.accept(v);
+    Type actual = e.acceptVisitor(v);
     assertEquals(expected, actual);
   }
   
@@ -53,7 +53,7 @@ public class TestDomainObjectTypeVisitor {
     DomainObject e = new Connection("foo-1", cDef, e1, e2);
     
     Type expected = new ConnectionType("foo");
-    Type actual = e.accept(v);
+    Type actual = e.acceptVisitor(v);
     assertEquals(expected, actual);
   }
   
@@ -65,7 +65,7 @@ public class TestDomainObjectTypeVisitor {
     DomainObject e = new Constraint("con-1", cDef);
     
     Type expected = new ConstraintType("con");
-    Type actual = e.accept(v);
+    Type actual = e.acceptVisitor(v);
     assertEquals(expected, actual);
   }
   
@@ -80,7 +80,7 @@ public class TestDomainObjectTypeVisitor {
     DomainObject e = new Endpoint("ept-1", eDef, n1);
     
     Type expected = new EndpointType("ept");
-    Type actual = e.accept(v);
+    Type actual = e.acceptVisitor(v);
     assertEquals(expected, actual);
   }
   
@@ -92,7 +92,7 @@ public class TestDomainObjectTypeVisitor {
     DomainObject e = new Node("nod-1", nDef);
     
     Type expected = new NodeType("nod");
-    Type actual = e.accept(v);
+    Type actual = e.acceptVisitor(v);
     assertEquals(expected, actual);
   }
   

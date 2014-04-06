@@ -10,7 +10,7 @@ public class IntegerLiteral extends DomainObject {
   }
   
   @Override
-  public Type accept(DomainObjectTypeVisitor v){
+  public Type acceptVisitor(DomainObjectTypeVisitor v){
     return v.visit(this);
   }
   
