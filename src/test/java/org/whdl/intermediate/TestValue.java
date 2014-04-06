@@ -3,7 +3,6 @@ package org.whdl.intermediate;
 import static org.junit.Assert.*;
 
 import org.junit.Test;
-import org.whdl.intermediate.definitions.NodeDefinition;
 import org.whdl.intermediate.exceptions.UndefinedBehaviourError;
 import org.whdl.intermediate.types.NodeType;
 
@@ -11,7 +10,7 @@ public class TestValue {
 
   @Test
   public void testSetAndRetrieveType() {
-    NodeDefinition nDef = new NodeDefinition("nod");
+    NodeTypeDefinition nDef = new NodeTypeDefinition("nod");
     Value dom = new Node("nod-1", nDef);
     Type expected = new NodeType("nod");
     dom.setType(expected);
@@ -21,14 +20,14 @@ public class TestValue {
 
   @Test(expected=UndefinedBehaviourError.class)
   public void testSetTypeToNull_undefined(){
-    NodeDefinition nDef = new NodeDefinition("nod");
+    NodeTypeDefinition nDef = new NodeTypeDefinition("nod");
     Value dom = new Node("nod-1", nDef);
     dom.setType(null);
   }
   
   @Test(expected=UndefinedBehaviourError.class)
   public void testGetTypeBeforeSet_undefined(){
-    NodeDefinition nDef = new NodeDefinition("nod");
+    NodeTypeDefinition nDef = new NodeTypeDefinition("nod");
     Value dom = new Node("nod-1", nDef);
     
     Type bogus = dom.getType();
@@ -36,7 +35,7 @@ public class TestValue {
   
   @Test(expected = UndefinedBehaviourError.class)
   public void testSetTypeTwice_undefined(){
-    NodeDefinition nDef = new NodeDefinition("nod");
+    NodeTypeDefinition nDef = new NodeTypeDefinition("nod");
     Value dom = new Node("nod-1", nDef);
     
     Type expected = new NodeType("nod");

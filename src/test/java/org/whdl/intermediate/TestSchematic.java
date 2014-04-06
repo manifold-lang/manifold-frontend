@@ -3,7 +3,6 @@ package org.whdl.intermediate;
 import static org.junit.Assert.*;
 
 import org.junit.Test;
-import org.whdl.intermediate.definitions.*;
 import org.whdl.intermediate.exceptions.*;
 import org.whdl.intermediate.types.*;
 
@@ -12,8 +11,8 @@ public class TestSchematic {
   @Test
   public void testAddTypeDef() throws MultipleDefinitionException {
     Schematic s = new Schematic("test");
-    TypeDefinition t1 = new TypeDefinition("foo", PrimitiveType.INTEGER);
-    s.addTypeDefinition(t1);
+    TypeTypeDefinition t1 = new TypeTypeDefinition("foo", PrimitiveType.INTEGER);
+    s.addTypeTypeDefinition(t1);
   }
   
   @Test(expected = MultipleDefinitionException.class)
@@ -21,13 +20,13 @@ public class TestSchematic {
     // We should not be able to add two type definitions whose first argument is the same string.
     Schematic s = new Schematic("test");
     try{
-      TypeDefinition t1 = new TypeDefinition("foo", PrimitiveType.INTEGER);
-      s.addTypeDefinition(t1);
+      TypeTypeDefinition t1 = new TypeTypeDefinition("foo", PrimitiveType.INTEGER);
+      s.addTypeTypeDefinition(t1);
     }catch(MultipleDefinitionException mde){
       fail("exception thrown too early: " + mde.getMessage());
     }
-    TypeDefinition t2 = new TypeDefinition("foo", PrimitiveType.STRING);
-    s.addTypeDefinition(t2);
+    TypeTypeDefinition t2 = new TypeTypeDefinition("foo", PrimitiveType.STRING);
+    s.addTypeTypeDefinition(t2);
   }
   
   @Test(expected = MultipleDefinitionException.class)
@@ -35,15 +34,15 @@ public class TestSchematic {
     // Suppose we create a new Schematic and then try to redefine the meaning of "Int".
     // Since "Int" is a built-in type, this should result in a MultipleDefinitionException being thrown.
     Schematic s = new Schematic("test");
-    TypeDefinition td = new TypeDefinition("Int", PrimitiveType.STRING);
-    s.addTypeDefinition(td);
+    TypeTypeDefinition td = new TypeTypeDefinition("Int", PrimitiveType.STRING);
+    s.addTypeTypeDefinition(td);
   }
   
   @Test
   public void testAddEndpointDef() throws MultipleDefinitionException {
     Schematic s = new Schematic("test");
-    EndpointDefinition e1 = new EndpointDefinition("n1");
-    s.addEndpointDefinition(e1);
+    EndpointTypeDefinition e1 = new EndpointTypeDefinition("n1");
+    s.addEndpointTypeDefinition(e1);
   }
   
   @Test(expected=MultipleDefinitionException.class)
@@ -51,20 +50,20 @@ public class TestSchematic {
     // We should not be able to add two endpoint definitions whose first argument is the same string.
     Schematic s = new Schematic("test");
     try{
-      EndpointDefinition n1 = new EndpointDefinition("foo");
-      s.addEndpointDefinition(n1);
+      EndpointTypeDefinition n1 = new EndpointTypeDefinition("foo");
+      s.addEndpointTypeDefinition(n1);
     }catch(MultipleDefinitionException mde){
       fail("exception thrown too early: " + mde.getMessage());
     }
-    EndpointDefinition n2 = new EndpointDefinition("foo");
-    s.addEndpointDefinition(n2);
+    EndpointTypeDefinition n2 = new EndpointTypeDefinition("foo");
+    s.addEndpointTypeDefinition(n2);
   }
   
   @Test
   public void testAddNodeDef() throws MultipleDefinitionException {
     Schematic s = new Schematic("test");
-    NodeDefinition n1 = new NodeDefinition("n1");
-    s.addNodeDefinition(n1);
+    NodeTypeDefinition n1 = new NodeTypeDefinition("n1");
+    s.addNodeTypeDefinition(n1);
   }
   
   @Test(expected=MultipleDefinitionException.class)
@@ -72,20 +71,20 @@ public class TestSchematic {
     // We should not be able to add two node definitions whose first argument is the same string.
     Schematic s = new Schematic("test");
     try{
-      NodeDefinition n1 = new NodeDefinition("foo");
-      s.addNodeDefinition(n1);
+      NodeTypeDefinition n1 = new NodeTypeDefinition("foo");
+      s.addNodeTypeDefinition(n1);
     }catch(MultipleDefinitionException mde){
       fail("exception thrown too early: " + mde.getMessage());
     }
-    NodeDefinition n2 = new NodeDefinition("foo");
-    s.addNodeDefinition(n2);
+    NodeTypeDefinition n2 = new NodeTypeDefinition("foo");
+    s.addNodeTypeDefinition(n2);
   }
   
   @Test
   public void testAddConnectionDef() throws MultipleDefinitionException {
     Schematic s = new Schematic("test");
-    ConnectionDefinition c1 = new ConnectionDefinition("c1");
-    s.addConnectionDefinition(c1);
+    ConnectionTypeDefinition c1 = new ConnectionTypeDefinition("c1");
+    s.addConnectionTypeDefinition(c1);
   }
   
   @Test(expected=MultipleDefinitionException.class)
@@ -93,20 +92,20 @@ public class TestSchematic {
     // We should not be able to add two connection definitions whose first argument is the same string.
     Schematic s = new Schematic("test");
     try{
-      ConnectionDefinition c1 = new ConnectionDefinition("foo");
-      s.addConnectionDefinition(c1);
+      ConnectionTypeDefinition c1 = new ConnectionTypeDefinition("foo");
+      s.addConnectionTypeDefinition(c1);
     }catch(MultipleDefinitionException mde){
       fail("exception thrown too early: " + mde.getMessage());
     }
-    ConnectionDefinition c2 = new ConnectionDefinition("foo");
-    s.addConnectionDefinition(c2);
+    ConnectionTypeDefinition c2 = new ConnectionTypeDefinition("foo");
+    s.addConnectionTypeDefinition(c2);
   }
   
   @Test
   public void testAddConstraintDef() throws MultipleDefinitionException {
     Schematic s = new Schematic("test");
-    ConstraintDefinition e1 = new ConstraintDefinition("c1");
-    s.addConstraintDefinition(e1);
+    ConstraintTypeDefinition e1 = new ConstraintTypeDefinition("c1");
+    s.addConstraintTypeDefinition(e1);
   }
   
   @Test(expected=MultipleDefinitionException.class)
@@ -114,13 +113,13 @@ public class TestSchematic {
     // We should not be able to add two constraint definitions whose first argument is the same string.
     Schematic s = new Schematic("test");
     try{
-      ConstraintDefinition e1 = new ConstraintDefinition("foo");
-      s.addConstraintDefinition(e1);
+      ConstraintTypeDefinition e1 = new ConstraintTypeDefinition("foo");
+      s.addConstraintTypeDefinition(e1);
     }catch(MultipleDefinitionException mde){
       fail("exception thrown too early: " + mde.getMessage());
     }
-    ConstraintDefinition e2 = new ConstraintDefinition("foo");
-    s.addConstraintDefinition(e2);
+    ConstraintTypeDefinition e2 = new ConstraintTypeDefinition("foo");
+    s.addConstraintTypeDefinition(e2);
   }
 
   @Test
@@ -130,17 +129,17 @@ public class TestSchematic {
     // without encountering a "multiple definition" exception.
     Schematic s = new Schematic("test");
     
-    TypeDefinition t1 = new TypeDefinition("foo", PrimitiveType.STRING);
-    ConstraintDefinition ct1 = new ConstraintDefinition("foo");
-    ConnectionDefinition cn1 = new ConnectionDefinition("foo");
-    NodeDefinition n1 = new NodeDefinition("foo");
-    EndpointDefinition e1 = new EndpointDefinition("foo");
+    TypeTypeDefinition t1 = new TypeTypeDefinition("foo", PrimitiveType.STRING);
+    ConstraintTypeDefinition ct1 = new ConstraintTypeDefinition("foo");
+    ConnectionTypeDefinition cn1 = new ConnectionTypeDefinition("foo");
+    NodeTypeDefinition n1 = new NodeTypeDefinition("foo");
+    EndpointTypeDefinition e1 = new EndpointTypeDefinition("foo");
     
-    s.addTypeDefinition(t1);
-    s.addConstraintDefinition(ct1);
-    s.addConnectionDefinition(cn1);
-    s.addNodeDefinition(n1);
-    s.addEndpointDefinition(e1);
+    s.addTypeTypeDefinition(t1);
+    s.addConstraintTypeDefinition(ct1);
+    s.addConnectionTypeDefinition(cn1);
+    s.addNodeTypeDefinition(n1);
+    s.addEndpointTypeDefinition(e1);
   }
   
 }

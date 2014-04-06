@@ -3,10 +3,6 @@ package org.whdl.intermediate;
 import static org.junit.Assert.*;
 
 import org.junit.Test;
-import org.whdl.intermediate.definitions.ConnectionDefinition;
-import org.whdl.intermediate.definitions.ConstraintDefinition;
-import org.whdl.intermediate.definitions.EndpointDefinition;
-import org.whdl.intermediate.definitions.NodeDefinition;
 import org.whdl.intermediate.types.*;
 
 public class TestValueTypeVisitor {
@@ -42,14 +38,14 @@ public class TestValueTypeVisitor {
   public void testVisitConnection(){
     ValueTypeVisitor v = new ValueTypeVisitor();
     
-    NodeDefinition nDef = new NodeDefinition("nod");
+    NodeTypeDefinition nDef = new NodeTypeDefinition("nod");
     Node n1 = new Node("nod-1", nDef);
     
-    EndpointDefinition eDef = new EndpointDefinition("ept");
+    EndpointTypeDefinition eDef = new EndpointTypeDefinition("ept");
     Endpoint e1 = new Endpoint("ept-1", eDef, n1);
     Endpoint e2 = new Endpoint("ept-2", eDef, n1);
     
-    ConnectionDefinition cDef = new ConnectionDefinition("foo");
+    ConnectionTypeDefinition cDef = new ConnectionTypeDefinition("foo");
     Value e = new Connection("foo-1", cDef, e1, e2);
     
     Type expected = new ConnectionType("foo");
@@ -61,7 +57,7 @@ public class TestValueTypeVisitor {
   public void testVisitConstraint(){
     ValueTypeVisitor v = new ValueTypeVisitor();
     
-    ConstraintDefinition cDef = new ConstraintDefinition("con");
+    ConstraintTypeDefinition cDef = new ConstraintTypeDefinition("con");
     Value e = new Constraint("con-1", cDef);
     
     Type expected = new ConstraintType("con");
@@ -73,10 +69,10 @@ public class TestValueTypeVisitor {
   public void testVisitEndpoint(){
     ValueTypeVisitor v = new ValueTypeVisitor();
     
-    NodeDefinition nDef = new NodeDefinition("nod");
+    NodeTypeDefinition nDef = new NodeTypeDefinition("nod");
     Node n1 = new Node("nod-1", nDef);
     
-    EndpointDefinition eDef = new EndpointDefinition("ept");
+    EndpointTypeDefinition eDef = new EndpointTypeDefinition("ept");
     Value e = new Endpoint("ept-1", eDef, n1);
     
     Type expected = new EndpointType("ept");
@@ -88,7 +84,7 @@ public class TestValueTypeVisitor {
   public void testVisitNode(){
     ValueTypeVisitor v = new ValueTypeVisitor();
     
-    NodeDefinition nDef = new NodeDefinition("nod");
+    NodeTypeDefinition nDef = new NodeTypeDefinition("nod");
     Value e = new Node("nod-1", nDef);
     
     Type expected = new NodeType("nod");

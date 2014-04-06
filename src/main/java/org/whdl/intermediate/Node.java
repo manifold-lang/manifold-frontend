@@ -3,20 +3,17 @@ package org.whdl.intermediate;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.whdl.intermediate.definitions.ConnectionDefinition;
-import org.whdl.intermediate.definitions.NodeDefinition;
-
 public class Node extends Value{
   private String instanceName;
-  private NodeDefinition definition;
-  public NodeDefinition getDefinition(){
+  private NodeTypeDefinition definition;
+  public NodeTypeDefinition getDefinition(){
     return this.definition;
   }
   
   private Map<String, Value> attributes;
   private Map<String, Endpoint> endpoints;
   
-  public Node(String instanceName, NodeDefinition definition){
+  public Node(String instanceName, NodeTypeDefinition definition){
     this.instanceName = instanceName;
     this.definition = definition;
     this.attributes = new HashMap<String, Value>();

@@ -3,11 +3,6 @@ package org.whdl.intermediate;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.whdl.intermediate.definitions.ConnectionDefinition;
-import org.whdl.intermediate.definitions.ConstraintDefinition;
-import org.whdl.intermediate.definitions.EndpointDefinition;
-import org.whdl.intermediate.definitions.NodeDefinition;
-import org.whdl.intermediate.definitions.TypeDefinition;
 import org.whdl.intermediate.exceptions.MultipleDefinitionException;
 import org.whdl.intermediate.exceptions.UndefinedBehaviourError;
 import org.whdl.intermediate.types.PrimitiveType;
@@ -21,11 +16,11 @@ public class Schematic {
   private String name;
   
   // Maps containing object definitions for this schematic; they are all indexed by the (string) type-name of the object.
-  private Map<String, TypeDefinition> typeDefinitions;
-  private Map<String, EndpointDefinition> endpointDefinitions;
-  private Map<String, NodeDefinition> nodeDefinitions;
-  private Map<String, ConnectionDefinition> connectionDefinitions;
-  private Map<String, ConstraintDefinition> constraintDefinitions;
+  private Map<String, TypeTypeDefinition> typeTypeDefinitions;
+  private Map<String, EndpointTypeDefinition> endpointTypeDefinitions;
+  private Map<String, NodeTypeDefinition> nodeTypeDefinitions;
+  private Map<String, ConnectionTypeDefinition> connectionTypeDefinitions;
+  private Map<String, ConstraintTypeDefinition> constraintTypeDefinitions;
   
   // Maps containing instantiated objects for this schematic; they are all indexed by the (string) instance-name of the object.
   private Map<String, Node> nodes;
@@ -35,13 +30,13 @@ public class Schematic {
   public Schematic(String name){
     this.name = name;
     
-    this.typeDefinitions = new HashMap<String, TypeDefinition>();
+    this.typeTypeDefinitions = new HashMap<String, TypeTypeDefinition>();
     populateDefaultTypeDefinitions();
 
-    this.endpointDefinitions = new HashMap<String, EndpointDefinition>();
-    this.nodeDefinitions = new HashMap<String, NodeDefinition>();
-    this.connectionDefinitions = new HashMap<String, ConnectionDefinition>();
-    this.constraintDefinitions = new HashMap<String, ConstraintDefinition>();
+    this.endpointTypeDefinitions = new HashMap<String, EndpointTypeDefinition>();
+    this.nodeTypeDefinitions = new HashMap<String, NodeTypeDefinition>();
+    this.connectionTypeDefinitions = new HashMap<String, ConnectionTypeDefinition>();
+    this.constraintTypeDefinitions = new HashMap<String, ConstraintTypeDefinition>();
 
     this.nodes = new HashMap<String, Node>();
     this.connections = new HashMap<String, Connection>();
@@ -54,57 +49,57 @@ public class Schematic {
    * Every class in .intermediate.types should be represented in here.
    */
   private void populateDefaultTypeDefinitions(){
-    TypeDefinition boolType = new TypeDefinition("Bool", PrimitiveType.BOOLEAN);
-    TypeDefinition intType = new TypeDefinition("Int", PrimitiveType.INTEGER);    
-    TypeDefinition stringType = new TypeDefinition("String", PrimitiveType.STRING);
+    TypeTypeDefinition boolType = new TypeTypeDefinition("Bool", PrimitiveType.BOOLEAN);
+    TypeTypeDefinition intType = new TypeTypeDefinition("Int", PrimitiveType.INTEGER);    
+    TypeTypeDefinition stringType = new TypeTypeDefinition("String", PrimitiveType.STRING);
     try{
-      addTypeDefinition(boolType);
-      addTypeDefinition(intType);
-      addTypeDefinition(stringType);
+      addTypeTypeDefinition(boolType);
+      addTypeTypeDefinition(intType);
+      addTypeTypeDefinition(stringType);
     }catch(MultipleDefinitionException mde){
       // this should not actually be possible unless there is something wrong with the compiler itself
       throw new UndefinedBehaviourError("could not create default type definitions (" + mde.getMessage() + ")");
     }
   }
   
-  public void addTypeDefinition(TypeDefinition td) throws MultipleDefinitionException{
+  public void addTypeTypeDefinition(TypeTypeDefinition td) throws MultipleDefinitionException{
     String key = td.getTypename();
-    if(typeDefinitions.containsKey(key)){
+    if(typeTypeDefinitions.containsKey(key)){
       throw new MultipleDefinitionException("type-definition", key);
     }
-    typeDefinitions.put(key, td);
+    typeTypeDefinitions.put(key, td);
   }
   
-  public void addEndpointDefinition(EndpointDefinition ed) throws MultipleDefinitionException{
+  public void addEndpointTypeDefinition(EndpointTypeDefinition ed) throws MultipleDefinitionException{
     String key = ed.getTypename();
-    if(endpointDefinitions.containsKey(key)){
+    if(endpointTypeDefinitions.containsKey(key)){
       throw new MultipleDefinitionException("endpoint-definition", key);
     }
-    endpointDefinitions.put(key, ed);
+    endpointTypeDefinitions.put(key, ed);
   }
   
-  public void addNodeDefinition(NodeDefinition nd) throws MultipleDefinitionException{
+  public void addNodeTypeDefinition(NodeTypeDefinition nd) throws MultipleDefinitionException{
     String key = nd.getTypename();
-    if(nodeDefinitions.containsKey(key)){
+    if(nodeTypeDefinitions.containsKey(key)){
       throw new MultipleDefinitionException("node-definition", key);
     }
-    nodeDefinitions.put(key, nd);
+    nodeTypeDefinitions.put(key, nd);
   }
   
-  public void addConnectionDefinition(ConnectionDefinition cd) throws MultipleDefinitionException{
+  public void addConnectionTypeDefinition(ConnectionTypeDefinition cd) throws MultipleDefinitionException{
     String key = cd.getTypename();
-    if(connectionDefinitions.containsKey(key)){
+    if(connectionTypeDefinitions.containsKey(key)){
       throw new MultipleDefinitionException("connection-definition", key);
     }
-    connectionDefinitions.put(key, cd);
+    connectionTypeDefinitions.put(key, cd);
   }
   
-  public void addConstraintDefinition(ConstraintDefinition cd) throws MultipleDefinitionException{
+  public void addConstraintTypeDefinition(ConstraintTypeDefinition cd) throws MultipleDefinitionException{
     String key = cd.getTypename();
-    if(constraintDefinitions.containsKey(key)){
+    if(constraintTypeDefinitions.containsKey(key)){
       throw new MultipleDefinitionException("constraint-definition", key);
     }
-    constraintDefinitions.put(key, cd);
+    constraintTypeDefinitions.put(key, cd);
   }
   
   // FIXME do we add nodes as a function of their node definition right away, or just record that the node "will" exist with such-and-such definition and elaborate it later?
