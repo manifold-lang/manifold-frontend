@@ -11,7 +11,7 @@ public class TestSchematic {
   @Test
   public void testAddTypeDef() throws MultipleDefinitionException {
     Schematic s = new Schematic("test");
-    TypeTypeDefinition t1 = new TypeTypeDefinition("foo", PrimitiveType.INTEGER);
+    TypeTypeDefinition t1 = new TypeTypeDefinition("foo", new PrimitiveType(PrimitiveType.PrimitiveKind.INTEGER));
     s.addTypeTypeDefinition(t1);
   }
   
@@ -20,12 +20,12 @@ public class TestSchematic {
     // We should not be able to add two type definitions whose first argument is the same string.
     Schematic s = new Schematic("test");
     try{
-      TypeTypeDefinition t1 = new TypeTypeDefinition("foo", PrimitiveType.INTEGER);
+      TypeTypeDefinition t1 = new TypeTypeDefinition("foo", new PrimitiveType(PrimitiveType.PrimitiveKind.INTEGER));
       s.addTypeTypeDefinition(t1);
     }catch(MultipleDefinitionException mde){
       fail("exception thrown too early: " + mde.getMessage());
     }
-    TypeTypeDefinition t2 = new TypeTypeDefinition("foo", PrimitiveType.STRING);
+    TypeTypeDefinition t2 = new TypeTypeDefinition("foo", new PrimitiveType(PrimitiveType.PrimitiveKind.STRING));
     s.addTypeTypeDefinition(t2);
   }
   
@@ -34,7 +34,7 @@ public class TestSchematic {
     // Suppose we create a new Schematic and then try to redefine the meaning of "Int".
     // Since "Int" is a built-in type, this should result in a MultipleDefinitionException being thrown.
     Schematic s = new Schematic("test");
-    TypeTypeDefinition td = new TypeTypeDefinition("Int", PrimitiveType.STRING);
+    TypeTypeDefinition td = new TypeTypeDefinition("Int", new PrimitiveType(PrimitiveType.PrimitiveKind.STRING));
     s.addTypeTypeDefinition(td);
   }
   
@@ -129,7 +129,7 @@ public class TestSchematic {
     // without encountering a "multiple definition" exception.
     Schematic s = new Schematic("test");
     
-    TypeTypeDefinition t1 = new TypeTypeDefinition("foo", PrimitiveType.STRING);
+    TypeTypeDefinition t1 = new TypeTypeDefinition("foo", new PrimitiveType(PrimitiveType.PrimitiveKind.STRING));
     ConstraintTypeDefinition ct1 = new ConstraintTypeDefinition("foo");
     ConnectionTypeDefinition cn1 = new ConnectionTypeDefinition("foo");
     NodeTypeDefinition n1 = new NodeTypeDefinition("foo");

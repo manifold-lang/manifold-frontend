@@ -11,7 +11,7 @@ public class TestValueTypeVisitor {
   public void testVisitBooleanLiteral() {
     Value e = new BooleanValue(true);
     ValueTypeVisitor v = new ValueTypeVisitor();
-    Type expected = PrimitiveType.BOOLEAN;
+    Type expected = new PrimitiveType(PrimitiveType.PrimitiveKind.BOOLEAN);
     Type actual = e.acceptVisitor(v);
     assertEquals(expected, actual);
   }
@@ -20,7 +20,7 @@ public class TestValueTypeVisitor {
   public void testVisitIntegerLiteral() {
     Value e = new IntegerValue(1);
     ValueTypeVisitor v = new ValueTypeVisitor();
-    Type expected = PrimitiveType.INTEGER;
+    Type expected = new PrimitiveType(PrimitiveType.PrimitiveKind.INTEGER);
     Type actual = e.acceptVisitor(v);
     assertEquals(expected, actual);
   }
@@ -29,7 +29,7 @@ public class TestValueTypeVisitor {
   public void testVisitStringLiteral() {
     Value e = new StringValue("foo");
     ValueTypeVisitor v = new ValueTypeVisitor();
-    Type expected = PrimitiveType.STRING;
+    Type expected = new PrimitiveType(PrimitiveType.PrimitiveKind.STRING);
     Type actual = e.acceptVisitor(v);
     assertEquals(expected, actual);
   }

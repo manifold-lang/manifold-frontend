@@ -2,7 +2,7 @@ package org.whdl.intermediate.types;
 
 import org.whdl.intermediate.Type;
 
-public class EndpointType implements Type {
+public class EndpointType extends Type {
   private String definitionName;
   
   public EndpointType(String definitionName){

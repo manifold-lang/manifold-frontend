@@ -2,7 +2,7 @@ package org.whdl.intermediate.types;
 
 import org.whdl.intermediate.Type;
 
-public class NodeType implements Type {
+public class NodeType extends Type {
   private String definitionName;
   
   public NodeType(String definitionName){

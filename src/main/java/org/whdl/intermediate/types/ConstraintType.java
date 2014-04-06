@@ -2,7 +2,7 @@ package org.whdl.intermediate.types;
 
 import org.whdl.intermediate.Type;
 
-public class ConstraintType implements Type {
+public class ConstraintType extends Type {
   private String definitionName;
   
   public ConstraintType(String definitionName){

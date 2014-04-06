@@ -5,15 +5,15 @@ import org.whdl.intermediate.types.*;
 public class ValueTypeVisitor {
 
   public Type visit(BooleanValue e){
-    return PrimitiveType.BOOLEAN;
+    return new PrimitiveType(PrimitiveType.PrimitiveKind.BOOLEAN);
   }
   
   public Type visit(IntegerValue e){
-    return PrimitiveType.INTEGER;
+    return new PrimitiveType(PrimitiveType.PrimitiveKind.INTEGER);
   }
   
   public Type visit(StringValue e){
-    return PrimitiveType.STRING;
+    return new PrimitiveType(PrimitiveType.PrimitiveKind.STRING);
   }
 
   public Type visit(Node node) {

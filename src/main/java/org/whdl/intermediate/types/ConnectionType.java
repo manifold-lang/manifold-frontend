@@ -2,7 +2,7 @@ package org.whdl.intermediate.types;
 
 import org.whdl.intermediate.Type;
 
-public class ConnectionType implements Type {
+public class ConnectionType extends Type {
   private String definitionName;
   
   public ConnectionType(String definitionName){

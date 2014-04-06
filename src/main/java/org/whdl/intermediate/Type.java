@@ -1,5 +1,5 @@
 package org.whdl.intermediate;
 
-public interface Type {
+public abstract class Type {
   
 }

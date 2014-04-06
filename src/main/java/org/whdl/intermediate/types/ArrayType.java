@@ -2,7 +2,7 @@ package org.whdl.intermediate.types;
 
 import org.whdl.intermediate.Type;
 
-public class ArrayType implements Type {
+public class ArrayType extends Type {
   private Type elementType;
   public Type getElementType(){
     return this.elementType;
