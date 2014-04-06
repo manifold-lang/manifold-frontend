@@ -1,7 +1,5 @@
 package org.whdl.intermediate;
 
-import org.whdl.intermediate.types.*;
-
 public class ValueTypeVisitor {
 
   public Type visit(BooleanValue e){

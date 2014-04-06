@@ -3,7 +3,6 @@ package org.whdl.intermediate;
 import static org.junit.Assert.*;
 
 import org.junit.Test;
-import org.whdl.intermediate.types.*;
 
 public class TestValueTypeVisitor {
 

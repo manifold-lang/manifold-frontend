@@ -1,4 +1,4 @@
-package org.whdl.intermediate.exceptions;
+package org.whdl.intermediate;
 
 public class MultipleDefinitionException extends Exception {
   private static final long serialVersionUID = -5366240749138487225L;

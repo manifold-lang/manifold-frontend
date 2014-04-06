@@ -3,11 +3,6 @@ package org.whdl.intermediate;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.whdl.intermediate.exceptions.MultipleDefinitionException;
-import org.whdl.intermediate.exceptions.UndefinedBehaviourError;
-import org.whdl.intermediate.exceptions.UndeclaredIdentifierException;
-import org.whdl.intermediate.types.PrimitiveType;
-
 /**
  * A Schematic contains all the information needed by the intermediate representation.
  * This includes type definitions, node/connection definitions, node/connection instantiations,

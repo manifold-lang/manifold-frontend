@@ -1,4 +1,4 @@
-package org.whdl.intermediate.exceptions;
+package org.whdl.intermediate;
 
 public class UndefinedBehaviourError extends Error {
 

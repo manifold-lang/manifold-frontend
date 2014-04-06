@@ -1,6 +1,5 @@
-package org.whdl.intermediate.types;
+package org.whdl.intermediate;
 
-import org.whdl.intermediate.Type;
 
 public class PrimitiveType extends Type{
   public enum PrimitiveKind {

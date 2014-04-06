@@ -1,11 +1,10 @@
-package org.whdl.intermediate.types;
+package org.whdl.intermediate;
 
-import org.whdl.intermediate.Type;
 
-public class ConnectionType extends Type {
+public class ConstraintType extends Type {
   private String definitionName;
   
-  public ConnectionType(String definitionName){
+  public ConstraintType(String definitionName){
     this.definitionName = definitionName;
   }
 
@@ -29,7 +28,7 @@ public class ConnectionType extends Type {
     if (getClass() != obj.getClass()) {
       return false;
     }
-    ConnectionType other = (ConnectionType) obj;
+    ConstraintType other = (ConstraintType) obj;
     if (definitionName == null) {
       if (other.definitionName != null) {
         return false;

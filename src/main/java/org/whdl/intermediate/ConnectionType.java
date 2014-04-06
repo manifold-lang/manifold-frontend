@@ -1,11 +1,10 @@
-package org.whdl.intermediate.types;
+package org.whdl.intermediate;
 
-import org.whdl.intermediate.Type;
 
-public class NodeType extends Type {
+public class ConnectionType extends Type {
   private String definitionName;
   
-  public NodeType(String definitionName){
+  public ConnectionType(String definitionName){
     this.definitionName = definitionName;
   }
 
@@ -29,7 +28,7 @@ public class NodeType extends Type {
     if (getClass() != obj.getClass()) {
       return false;
     }
-    NodeType other = (NodeType) obj;
+    ConnectionType other = (ConnectionType) obj;
     if (definitionName == null) {
       if (other.definitionName != null) {
         return false;

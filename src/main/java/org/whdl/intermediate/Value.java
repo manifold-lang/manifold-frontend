@@ -1,6 +1,5 @@
 package org.whdl.intermediate;
 
-import org.whdl.intermediate.exceptions.UndefinedBehaviourError;
 
 public abstract class Value {
   private Type type = null;

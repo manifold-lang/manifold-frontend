@@ -1,6 +1,5 @@
 package org.whdl.intermediate;
 
-import org.whdl.intermediate.types.PrimitiveType;
 
 public class BooleanValue extends Value {
 

@@ -1,11 +1,10 @@
-package org.whdl.intermediate.types;
+package org.whdl.intermediate;
 
-import org.whdl.intermediate.Type;
 
-public class ConstraintType extends Type {
+public class NodeType extends Type {
   private String definitionName;
   
-  public ConstraintType(String definitionName){
+  public NodeType(String definitionName){
     this.definitionName = definitionName;
   }
 
@@ -29,7 +28,7 @@ public class ConstraintType extends Type {
     if (getClass() != obj.getClass()) {
       return false;
     }
-    ConstraintType other = (ConstraintType) obj;
+    NodeType other = (NodeType) obj;
     if (definitionName == null) {
       if (other.definitionName != null) {
         return false;

@@ -1,4 +1,4 @@
-package org.whdl.intermediate.exceptions;
+package org.whdl.intermediate;
 
 public class UndeclaredIdentifierException extends Exception {
   private static final long serialVersionUID = -5785755001929744865L;
