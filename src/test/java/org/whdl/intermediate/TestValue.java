@@ -7,12 +7,12 @@ import org.whdl.intermediate.definitions.NodeDefinition;
 import org.whdl.intermediate.exceptions.UndefinedBehaviourError;
 import org.whdl.intermediate.types.NodeType;
 
-public class TestDomainObject {
+public class TestValue {
 
   @Test
   public void testSetAndRetrieveType() {
     NodeDefinition nDef = new NodeDefinition("nod");
-    DomainObject dom = new Node("nod-1", nDef);
+    Value dom = new Node("nod-1", nDef);
     Type expected = new NodeType("nod");
     dom.setType(expected);
     Type actual = dom.getType();
@@ -22,14 +22,14 @@ public class TestDomainObject {
   @Test(expected=UndefinedBehaviourError.class)
   public void testSetTypeToNull_undefined(){
     NodeDefinition nDef = new NodeDefinition("nod");
-    DomainObject dom = new Node("nod-1", nDef);
+    Value dom = new Node("nod-1", nDef);
     dom.setType(null);
   }
   
   @Test(expected=UndefinedBehaviourError.class)
   public void testGetTypeBeforeSet_undefined(){
     NodeDefinition nDef = new NodeDefinition("nod");
-    DomainObject dom = new Node("nod-1", nDef);
+    Value dom = new Node("nod-1", nDef);
     
     Type bogus = dom.getType();
   }
@@ -37,7 +37,7 @@ public class TestDomainObject {
   @Test(expected = UndefinedBehaviourError.class)
   public void testSetTypeTwice_undefined(){
     NodeDefinition nDef = new NodeDefinition("nod");
-    DomainObject dom = new Node("nod-1", nDef);
+    Value dom = new Node("nod-1", nDef);
     
     Type expected = new NodeType("nod");
     try{

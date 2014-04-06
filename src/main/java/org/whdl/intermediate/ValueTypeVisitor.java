@@ -2,17 +2,17 @@ package org.whdl.intermediate;
 
 import org.whdl.intermediate.types.*;
 
-public class DomainObjectTypeVisitor {
+public class ValueTypeVisitor {
 
-  public Type visit(BooleanLiteral e){
+  public Type visit(BooleanValue e){
     return PrimitiveType.BOOLEAN;
   }
   
-  public Type visit(IntegerLiteral e){
+  public Type visit(IntegerValue e){
     return PrimitiveType.INTEGER;
   }
   
-  public Type visit(StringLiteral e){
+  public Type visit(StringValue e){
     return PrimitiveType.STRING;
   }
 

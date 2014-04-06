@@ -2,15 +2,15 @@ package org.whdl.intermediate;
 
 import org.whdl.intermediate.types.PrimitiveType;
 
-public class BooleanLiteral extends DomainObject {
+public class BooleanValue extends Value {
 
   private Boolean val;
-  public BooleanLiteral(Boolean val){
+  public BooleanValue(Boolean val){
     this.val = val;
   }
   
   @Override
-  public Type acceptVisitor(DomainObjectTypeVisitor v) {
+  public Type acceptVisitor(ValueTypeVisitor v) {
     return v.visit(this);
   }
 

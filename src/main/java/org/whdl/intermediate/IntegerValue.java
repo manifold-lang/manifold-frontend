@@ -2,15 +2,15 @@ package org.whdl.intermediate;
 
 import org.whdl.intermediate.types.PrimitiveType;
 
-public class IntegerLiteral extends DomainObject {
+public class IntegerValue extends Value {
 
   private Integer val;
-  public IntegerLiteral(Integer val){
+  public IntegerValue(Integer val){
     this.val = val;
   }
   
   @Override
-  public Type acceptVisitor(DomainObjectTypeVisitor v){
+  public Type acceptVisitor(ValueTypeVisitor v){
     return v.visit(this);
   }
   
