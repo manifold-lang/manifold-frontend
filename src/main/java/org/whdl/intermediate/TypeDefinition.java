@@ -9,4 +9,6 @@ public abstract class TypeDefinition {
   public TypeDefinition(String typename){
     this.typename = typename;
   }
+  
+  public abstract Value instantiate(String instanceName);
 }

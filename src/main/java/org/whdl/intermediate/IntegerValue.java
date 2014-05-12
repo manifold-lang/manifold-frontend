@@ -1,17 +1,14 @@
 package org.whdl.intermediate;
 
+import org.whdl.intermediate.PrimitiveType.PrimitiveKind;
+
 
 public class IntegerValue extends Value {
 
   private Integer val;
   public IntegerValue(String instanceName, Integer val){
-    super(instanceName);
+    super(new PrimitiveType(PrimitiveKind.INTEGER), instanceName);
     this.val = val;
-  }
-  
-  @Override
-  public Type acceptVisitor(ValueTypeVisitor v){
-    return v.visit(this);
   }
   
 }

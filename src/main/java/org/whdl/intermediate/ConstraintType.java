@@ -2,10 +2,10 @@ package org.whdl.intermediate;
 
 
 public class ConstraintType extends Type {
-  private String definitionName;
+  private ConstraintTypeDefinition definition;
   
-  public ConstraintType(String definitionName){
-    this.definitionName = definitionName;
+  public ConstraintType(ConstraintTypeDefinition definition){
+    this.definition = definition;
   }
 
   @Override
@@ -13,7 +13,7 @@ public class ConstraintType extends Type {
     final int prime = 31;
     int result = 1;
     result = prime * result
-        + ((definitionName == null) ? 0 : definitionName.hashCode());
+        + ((definition == null) ? 0 : definition.hashCode());
     return result;
   }
 
@@ -29,13 +29,20 @@ public class ConstraintType extends Type {
       return false;
     }
     ConstraintType other = (ConstraintType) obj;
-    if (definitionName == null) {
-      if (other.definitionName != null) {
+    if (definition == null) {
+      if (other.definition != null) {
         return false;
       }
-    } else if (!definitionName.equals(other.definitionName)) {
+    } else if (!definition.equals(other.definition)) {
       return false;
     }
     return true;
   }
+  
+  @Override
+  public Value instantiate(String instanceName){
+    // look up the Definition of this ConstraintType and instantiate that
+    return definition.instantiate(instanceName);
+  }
+  
 }

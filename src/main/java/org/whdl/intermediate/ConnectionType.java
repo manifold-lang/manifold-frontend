@@ -2,10 +2,10 @@ package org.whdl.intermediate;
 
 
 public class ConnectionType extends Type {
-  private String definitionName;
+  private ConnectionTypeDefinition definition;
   
-  public ConnectionType(String definitionName){
-    this.definitionName = definitionName;
+  public ConnectionType(ConnectionTypeDefinition definition){
+    this.definition = definition;
   }
 
   @Override
@@ -13,7 +13,7 @@ public class ConnectionType extends Type {
     final int prime = 31;
     int result = 1;
     result = prime * result
-        + ((definitionName == null) ? 0 : definitionName.hashCode());
+        + ((definition == null) ? 0 : definition.hashCode());
     return result;
   }
 
@@ -29,13 +29,19 @@ public class ConnectionType extends Type {
       return false;
     }
     ConnectionType other = (ConnectionType) obj;
-    if (definitionName == null) {
-      if (other.definitionName != null) {
+    if (definition == null) {
+      if (other.definition != null) {
         return false;
       }
-    } else if (!definitionName.equals(other.definitionName)) {
+    } else if (!definition.equals(other.definition)) {
       return false;
     }
     return true;
+  }
+  
+  @Override
+  public Value instantiate(String instanceName){
+    // look up the Definition of this ConnectionType and instantiate that
+    return definition.instantiate(instanceName);
   }
 }

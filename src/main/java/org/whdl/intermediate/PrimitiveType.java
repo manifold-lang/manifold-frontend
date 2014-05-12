@@ -39,6 +39,21 @@ public class PrimitiveType extends Type{
     }
     return true;
   }
+
+  @Override
+  public Value instantiate(String instanceName) {
+    switch(kind){
+    case BOOLEAN:
+      return new BooleanValue(instanceName, false);
+    case INTEGER:
+      return new IntegerValue(instanceName, 0);
+    case STRING:
+      return new StringValue(instanceName, "");
+    default:
+      throw new UnsupportedOperationException(
+          "attempted to instantiate primitive type '" + kind.toString() + "' that does not have an associated Value object");
+    }
+  }
   
   
 }

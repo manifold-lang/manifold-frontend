@@ -9,16 +9,22 @@ public class Constraint extends Value {
     return this.definition;
   }
   
-  private Map<String, Value> arguments;  
+  private Map<String, Value> arguments;
+  public Value getArgument(String argName) throws UndeclaredIdentifierException{
+    if(arguments.containsKey(argName)){
+      return arguments.get(argName);
+    }else{
+      throw new UndeclaredIdentifierException("no argument named '" + argName + "'");
+    }
+  }
+  public void setArgument(String argName, Value argValue){
+    arguments.put(argName, argValue);
+  }
   
   public Constraint(String instanceName, ConstraintTypeDefinition definition){
-    super(instanceName);
+    super(new ConstraintType(definition), instanceName);
     this.definition = definition;
     this.arguments = new HashMap<String, Value>();
   }
 
-  @Override
-  public Type acceptVisitor(ValueTypeVisitor v) {
-    return v.visit(this);
-  }
 }

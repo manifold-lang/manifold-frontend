@@ -8,4 +8,9 @@ public class TypeTypeDefinition extends TypeDefinition {
     super(typename);
     this.type = type;
   }
+
+  @Override
+  public Value instantiate(String instanceName) {
+    return type.instantiate(instanceName);
+  }
 }
