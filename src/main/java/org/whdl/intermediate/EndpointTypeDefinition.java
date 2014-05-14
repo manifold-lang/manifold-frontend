@@ -24,5 +24,10 @@ public class EndpointTypeDefinition extends TypeDefinition {
     }
     return ept;
   }
+
+  public void addAttribute(String attrName, TypeTypeDefinition attrType) {
+    // FIXME multiple additions of the same attribute?
+    attributes.put(attrName, attrType);
+  }
   
 }
