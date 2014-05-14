@@ -29,7 +29,7 @@ public class TestPrimitiveType {
   }
 
   @Test
-  public void testEqualsObject_true() {
+  public void testEquals_true() {
     // two PrimitiveTypes are equal if their kinds are equal
     PrimitiveType p1 = new PrimitiveType(PrimitiveKind.INTEGER);
     PrimitiveType p2 = new PrimitiveType(PrimitiveKind.INTEGER);
@@ -37,7 +37,7 @@ public class TestPrimitiveType {
   }
   
   @Test
-  public void testEqualsObject_false() {
+  public void testEquals_false() {
     // two PrimitiveTypes are equal if their kinds are equal
     PrimitiveType p1 = new PrimitiveType(PrimitiveKind.INTEGER);
     PrimitiveType p2 = new PrimitiveType(PrimitiveKind.BOOLEAN);
