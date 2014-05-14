@@ -44,7 +44,6 @@ public class ArrayType extends Type {
 
   @Override
   public Value instantiate(String instanceName) {
-    // TODO(murphy)
-    throw new UnsupportedOperationException("not yet implemented");
+    return new ArrayValue(elementType, instanceName);
   }
 }
