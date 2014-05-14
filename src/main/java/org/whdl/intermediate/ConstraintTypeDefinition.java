@@ -25,4 +25,9 @@ public class ConstraintTypeDefinition extends TypeDefinition {
     return con;
   }
   
+  public void addArgument(String argName, TypeTypeDefinition argType) {
+    // FIXME multiple additions of the same attribute?
+    arguments.put(argName, argType);
+  }
+  
 }

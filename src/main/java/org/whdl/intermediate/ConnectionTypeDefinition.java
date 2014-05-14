@@ -25,4 +25,9 @@ public class ConnectionTypeDefinition extends TypeDefinition {
     return con;
   }
   
+  public void addAttribute(String attrName, TypeTypeDefinition attrType) {
+    // FIXME multiple additions of the same attribute?
+    attributes.put(attrName, attrType);
+  }
+  
 }

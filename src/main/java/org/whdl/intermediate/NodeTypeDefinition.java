@@ -27,4 +27,9 @@ public class NodeTypeDefinition extends TypeDefinition {
     return node;
   }
   
+  public void addAttribute(String attrName, TypeTypeDefinition attrType) {
+    // FIXME multiple additions of the same attribute?
+    attributes.put(attrName, attrType);
+  }
+  
 }
