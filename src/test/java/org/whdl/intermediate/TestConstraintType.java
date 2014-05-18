@@ -4,11 +4,11 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-public class TestConstraintTypeDefinition {
+public class TestConstraintType {
 
   @Test
   public void testInstantiate_no_arguments() {
-    ConstraintTypeDefinition conTypeDef = new ConstraintTypeDefinition("foo");
+    ConstraintType conTypeDef = new ConstraintType("foo");
     Value con = conTypeDef.instantiate();
     // the Value we receive must be a Constraint
     assertTrue("instanted value is not a Constraint", con instanceof Constraint);
@@ -16,9 +16,9 @@ public class TestConstraintTypeDefinition {
 
   @Test
   public void testInstantiate_with_arguments() throws UndeclaredIdentifierException {
-    ConstraintTypeDefinition conTypeDef = new ConstraintTypeDefinition("foo");
+    ConstraintType conTypeDef = new ConstraintType("foo");
     // add one simple attribute
-    TypeTypeDefinition attrTTD = new TypeTypeDefinition("attr-type", new PrimitiveType(PrimitiveType.PrimitiveKind.BOOLEAN));
+    UserDefinedType attrTTD = new UserDefinedType("attr-type", new PrimitiveType(PrimitiveType.PrimitiveKind.BOOLEAN));
     conTypeDef.addArgument("attr", attrTTD);
     
     Constraint con = (Constraint)conTypeDef.instantiate();

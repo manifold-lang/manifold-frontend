@@ -11,6 +11,7 @@ public class PrimitiveType extends Type{
   private PrimitiveKind kind;
   
   public PrimitiveType(PrimitiveKind kind){
+    super(kind.toString());
     this.kind = kind;
   }
 

@@ -1,10 +1,10 @@
 package org.whdl.intermediate;
 
 
-public class TypeTypeDefinition extends TypeDefinition {
+public class UserDefinedType extends Type {
   private Type type;
   
-  public TypeTypeDefinition(String typename, Type type){
+  public UserDefinedType(String typename, Type type){
     super(typename);
     this.type = type;
   }

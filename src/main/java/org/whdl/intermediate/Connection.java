@@ -4,11 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Connection extends Value {
-  private ConnectionTypeDefinition definition;
-  public ConnectionTypeDefinition getDefinition(){
-    return this.definition;
-  }
-  
+ 
   private Map<String, Value> attributes;
   public Value getAttribute(String attrName) throws UndeclaredIdentifierException{
     if(attributes.containsKey(attrName)){
@@ -22,9 +18,8 @@ public class Connection extends Value {
   }
   private Endpoint endpointFrom = null, endpointTo = null;
   
-  public Connection(ConnectionTypeDefinition definition){
-    super(new ConnectionType(definition));
-    this.definition = definition;
+  public Connection(ConnectionType type){
+    super(type);
     this.attributes = new HashMap<String, Value>();
   }
 

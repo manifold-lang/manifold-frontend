@@ -6,13 +6,7 @@ import org.junit.Test;
 
 public class TestConstraint {
 
-  private static final ConstraintTypeDefinition defaultConstraintDefinition = new ConstraintTypeDefinition("foo");
-  
-  @Test
-  public void testGetDefinition() {
-    Constraint ept = new Constraint(defaultConstraintDefinition);
-    assertEquals(defaultConstraintDefinition, ept.getDefinition());
-  }
+  private static final ConstraintType defaultConstraintDefinition = new ConstraintType("foo");
 
   @Test
   public void testGetArgument() throws UndeclaredIdentifierException {

@@ -4,11 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Constraint extends Value {
-  private ConstraintTypeDefinition definition;
-  public ConstraintTypeDefinition getDefinition(){
-    return this.definition;
-  }
-  
+ 
   private Map<String, Value> arguments;
   public Value getArgument(String argName) throws UndeclaredIdentifierException{
     if(arguments.containsKey(argName)){
@@ -21,9 +17,8 @@ public class Constraint extends Value {
     arguments.put(argName, argValue);
   }
   
-  public Constraint(ConstraintTypeDefinition definition){
-    super(new ConstraintType(definition));
-    this.definition = definition;
+  public Constraint(ConstraintType type){
+    super(type);
     this.arguments = new HashMap<String, Value>();
   }
 

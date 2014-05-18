@@ -6,13 +6,7 @@ import org.junit.Test;
 
 public class TestEndpoint {
 
-  private static final EndpointTypeDefinition defaultEndpointDefinition = new EndpointTypeDefinition("foo");
-  
-  @Test
-  public void testGetDefinition() {
-    Endpoint ept = new Endpoint(defaultEndpointDefinition);
-    assertEquals(defaultEndpointDefinition, ept.getDefinition());
-  }
+  private static final EndpointType defaultEndpointDefinition = new EndpointType("foo");
 
   @Test
   public void testGetAttribute() throws UndeclaredIdentifierException {

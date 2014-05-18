@@ -12,11 +12,11 @@ public class Schematic {
   private String name;
   
   // Maps containing object definitions for this schematic; they are all indexed by the (string) type-name of the object.
-  private Map<String, TypeTypeDefinition> typeTypeDefinitions;
-  private Map<String, EndpointTypeDefinition> endpointTypeDefinitions;
-  private Map<String, NodeTypeDefinition> nodeTypeDefinitions;
-  private Map<String, ConnectionTypeDefinition> connectionTypeDefinitions;
-  private Map<String, ConstraintTypeDefinition> constraintTypeDefinitions;
+  private Map<String, UserDefinedType> userDefinedTypes;
+  private Map<String, EndpointType> endpointTypes;
+  private Map<String, NodeType> nodeTypes;
+  private Map<String, ConnectionType> connectionTypes;
+  private Map<String, ConstraintType> constraintTypes;
   
   // Maps containing instantiated objects for this schematic; they are all indexed by the (string) instance-name of the object.
   private Map<String, Node> nodes;
@@ -26,13 +26,13 @@ public class Schematic {
   public Schematic(String name){
     this.name = name;
     
-    this.typeTypeDefinitions = new HashMap<String, TypeTypeDefinition>();
+    this.userDefinedTypes = new HashMap<String, UserDefinedType>();
     populateDefaultTypeDefinitions();
 
-    this.endpointTypeDefinitions = new HashMap<String, EndpointTypeDefinition>();
-    this.nodeTypeDefinitions = new HashMap<String, NodeTypeDefinition>();
-    this.connectionTypeDefinitions = new HashMap<String, ConnectionTypeDefinition>();
-    this.constraintTypeDefinitions = new HashMap<String, ConstraintTypeDefinition>();
+    this.endpointTypes = new HashMap<String, EndpointType>();
+    this.nodeTypes = new HashMap<String, NodeType>();
+    this.connectionTypes = new HashMap<String, ConnectionType>();
+    this.constraintTypes = new HashMap<String, ConstraintType>();
 
     this.nodes = new HashMap<String, Node>();
     this.connections = new HashMap<String, Connection>();
@@ -45,9 +45,9 @@ public class Schematic {
    * Every class in .intermediate.types should be represented in here.
    */
   private void populateDefaultTypeDefinitions(){
-    TypeTypeDefinition boolType = new TypeTypeDefinition("Bool", new PrimitiveType(PrimitiveType.PrimitiveKind.BOOLEAN));
-    TypeTypeDefinition intType = new TypeTypeDefinition("Int", new PrimitiveType(PrimitiveType.PrimitiveKind.INTEGER));    
-    TypeTypeDefinition stringType = new TypeTypeDefinition("String", new PrimitiveType(PrimitiveType.PrimitiveKind.STRING));
+    UserDefinedType boolType = new UserDefinedType("Bool", new PrimitiveType(PrimitiveType.PrimitiveKind.BOOLEAN));
+    UserDefinedType intType = new UserDefinedType("Int", new PrimitiveType(PrimitiveType.PrimitiveKind.INTEGER));    
+    UserDefinedType stringType = new UserDefinedType("String", new PrimitiveType(PrimitiveType.PrimitiveKind.STRING));
     try{
       addTypeTypeDefinition(boolType);
       addTypeTypeDefinition(intType);
@@ -58,81 +58,81 @@ public class Schematic {
     }
   }
   
-  public void addTypeTypeDefinition(TypeTypeDefinition td) throws MultipleDefinitionException{
+  public void addTypeTypeDefinition(UserDefinedType td) throws MultipleDefinitionException{
     String key = td.getTypename();
-    if(typeTypeDefinitions.containsKey(key)){
+    if(userDefinedTypes.containsKey(key)){
       throw new MultipleDefinitionException("type-definition", key);
     }
-    typeTypeDefinitions.put(key, td);
+    userDefinedTypes.put(key, td);
   }
   
-  public TypeTypeDefinition getTypeTypeDefinition(String typename) throws UndeclaredIdentifierException {
-    if(typeTypeDefinitions.containsKey(typename)){
-      return typeTypeDefinitions.get(typename);
+  public UserDefinedType getTypeTypeDefinition(String typename) throws UndeclaredIdentifierException {
+    if(userDefinedTypes.containsKey(typename)){
+      return userDefinedTypes.get(typename);
     }else{
       throw new UndeclaredIdentifierException(typename);
     }
   }
   
-  public void addEndpointTypeDefinition(EndpointTypeDefinition ed) throws MultipleDefinitionException{
+  public void addEndpointTypeDefinition(EndpointType ed) throws MultipleDefinitionException{
     String key = ed.getTypename();
-    if(endpointTypeDefinitions.containsKey(key)){
+    if(endpointTypes.containsKey(key)){
       throw new MultipleDefinitionException("endpoint-definition", key);
     }
-    endpointTypeDefinitions.put(key, ed);
+    endpointTypes.put(key, ed);
   }
   
-  public EndpointTypeDefinition getEndpointTypeDefinition(String typename) throws UndeclaredIdentifierException {
-    if(endpointTypeDefinitions.containsKey(typename)){
-      return endpointTypeDefinitions.get(typename);
+  public EndpointType getEndpointTypeDefinition(String typename) throws UndeclaredIdentifierException {
+    if(endpointTypes.containsKey(typename)){
+      return endpointTypes.get(typename);
     }else{
       throw new UndeclaredIdentifierException(typename);
     }
   }
   
-  public void addNodeTypeDefinition(NodeTypeDefinition nd) throws MultipleDefinitionException{
+  public void addNodeTypeDefinition(NodeType nd) throws MultipleDefinitionException{
     String key = nd.getTypename();
-    if(nodeTypeDefinitions.containsKey(key)){
+    if(nodeTypes.containsKey(key)){
       throw new MultipleDefinitionException("node-definition", key);
     }
-    nodeTypeDefinitions.put(key, nd);
+    nodeTypes.put(key, nd);
   }
   
-  public NodeTypeDefinition getNodeTypeDefinition(String typename) throws UndeclaredIdentifierException {
-    if(nodeTypeDefinitions.containsKey(typename)){
-      return nodeTypeDefinitions.get(typename);
+  public NodeType getNodeTypeDefinition(String typename) throws UndeclaredIdentifierException {
+    if(nodeTypes.containsKey(typename)){
+      return nodeTypes.get(typename);
     }else{
       throw new UndeclaredIdentifierException(typename);
     }
   }
   
-  public void addConnectionTypeDefinition(ConnectionTypeDefinition cd) throws MultipleDefinitionException{
+  public void addConnectionTypeDefinition(ConnectionType cd) throws MultipleDefinitionException{
     String key = cd.getTypename();
-    if(connectionTypeDefinitions.containsKey(key)){
+    if(connectionTypes.containsKey(key)){
       throw new MultipleDefinitionException("connection-definition", key);
     }
-    connectionTypeDefinitions.put(key, cd);
+    connectionTypes.put(key, cd);
   }
   
-  public ConnectionTypeDefinition getConnectionTypeDefinition(String typename) throws UndeclaredIdentifierException {
-    if(connectionTypeDefinitions.containsKey(typename)){
-      return connectionTypeDefinitions.get(typename);
+  public ConnectionType getConnectionTypeDefinition(String typename) throws UndeclaredIdentifierException {
+    if(connectionTypes.containsKey(typename)){
+      return connectionTypes.get(typename);
     }else{
       throw new UndeclaredIdentifierException(typename);
     }
   }
   
-  public void addConstraintTypeDefinition(ConstraintTypeDefinition cd) throws MultipleDefinitionException{
+  public void addConstraintTypeDefinition(ConstraintType cd) throws MultipleDefinitionException{
     String key = cd.getTypename();
-    if(constraintTypeDefinitions.containsKey(key)){
+    if(constraintTypes.containsKey(key)){
       throw new MultipleDefinitionException("constraint-definition", key);
     }
-    constraintTypeDefinitions.put(key, cd);
+    constraintTypes.put(key, cd);
   }
   
-  public ConstraintTypeDefinition getConstraintTypeDefinition(String typename) throws UndeclaredIdentifierException {
-    if(constraintTypeDefinitions.containsKey(typename)){
-      return constraintTypeDefinitions.get(typename);
+  public ConstraintType getConstraintTypeDefinition(String typename) throws UndeclaredIdentifierException {
+    if(constraintTypes.containsKey(typename)){
+      return constraintTypes.get(typename);
     }else{
       throw new UndeclaredIdentifierException(typename);
     }

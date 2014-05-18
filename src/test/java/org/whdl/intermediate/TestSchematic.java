@@ -9,7 +9,7 @@ public class TestSchematic {
   @Test
   public void testAddTypeDef() throws MultipleDefinitionException {
     Schematic s = new Schematic("test");
-    TypeTypeDefinition t1 = new TypeTypeDefinition("foo", new PrimitiveType(PrimitiveType.PrimitiveKind.INTEGER));
+    UserDefinedType t1 = new UserDefinedType("foo", new PrimitiveType(PrimitiveType.PrimitiveKind.INTEGER));
     s.addTypeTypeDefinition(t1);
   }
   
@@ -18,12 +18,12 @@ public class TestSchematic {
     // We should not be able to add two type definitions whose first argument is the same string.
     Schematic s = new Schematic("test");
     try{
-      TypeTypeDefinition t1 = new TypeTypeDefinition("foo", new PrimitiveType(PrimitiveType.PrimitiveKind.INTEGER));
+      UserDefinedType t1 = new UserDefinedType("foo", new PrimitiveType(PrimitiveType.PrimitiveKind.INTEGER));
       s.addTypeTypeDefinition(t1);
     }catch(MultipleDefinitionException mde){
       fail("exception thrown too early: " + mde.getMessage());
     }
-    TypeTypeDefinition t2 = new TypeTypeDefinition("foo", new PrimitiveType(PrimitiveType.PrimitiveKind.STRING));
+    UserDefinedType t2 = new UserDefinedType("foo", new PrimitiveType(PrimitiveType.PrimitiveKind.STRING));
     s.addTypeTypeDefinition(t2);
   }
   
@@ -32,29 +32,29 @@ public class TestSchematic {
     // Suppose we create a new Schematic and then try to redefine the meaning of "Int".
     // Since "Int" is a built-in type, this should result in a MultipleDefinitionException being thrown.
     Schematic s = new Schematic("test");
-    TypeTypeDefinition td = new TypeTypeDefinition("Int", new PrimitiveType(PrimitiveType.PrimitiveKind.STRING));
+    UserDefinedType td = new UserDefinedType("Int", new PrimitiveType(PrimitiveType.PrimitiveKind.STRING));
     s.addTypeTypeDefinition(td);
   }
   
   @Test
   public void testGetTypeDef() throws UndeclaredIdentifierException, MultipleDefinitionException{
     Schematic s = new Schematic("test");
-    TypeTypeDefinition expected = new TypeTypeDefinition("foo", new PrimitiveType(PrimitiveType.PrimitiveKind.INTEGER));
+    UserDefinedType expected = new UserDefinedType("foo", new PrimitiveType(PrimitiveType.PrimitiveKind.INTEGER));
     s.addTypeTypeDefinition(expected);
-    TypeTypeDefinition actual = s.getTypeTypeDefinition("foo");
+    UserDefinedType actual = s.getTypeTypeDefinition("foo");
     assertEquals(expected, actual);
   }
   
   @Test(expected=UndeclaredIdentifierException.class)
   public void testGetTypeDef_notDeclared() throws UndeclaredIdentifierException {
     Schematic s = new Schematic("test");
-    TypeTypeDefinition bogus = s.getTypeTypeDefinition("does-not-exist");
+    UserDefinedType bogus = s.getTypeTypeDefinition("does-not-exist");
   }
   
   @Test
   public void testAddEndpointDef() throws MultipleDefinitionException {
     Schematic s = new Schematic("test");
-    EndpointTypeDefinition e1 = new EndpointTypeDefinition("n1");
+    EndpointType e1 = new EndpointType("n1");
     s.addEndpointTypeDefinition(e1);
   }
   
@@ -63,34 +63,34 @@ public class TestSchematic {
     // We should not be able to add two endpoint definitions whose first argument is the same string.
     Schematic s = new Schematic("test");
     try{
-      EndpointTypeDefinition n1 = new EndpointTypeDefinition("foo");
+      EndpointType n1 = new EndpointType("foo");
       s.addEndpointTypeDefinition(n1);
     }catch(MultipleDefinitionException mde){
       fail("exception thrown too early: " + mde.getMessage());
     }
-    EndpointTypeDefinition n2 = new EndpointTypeDefinition("foo");
+    EndpointType n2 = new EndpointType("foo");
     s.addEndpointTypeDefinition(n2);
   }
   
   @Test
   public void testGetEndpointDef() throws UndeclaredIdentifierException, MultipleDefinitionException{
     Schematic s = new Schematic("test");
-    EndpointTypeDefinition expected = new EndpointTypeDefinition("foo");
+    EndpointType expected = new EndpointType("foo");
     s.addEndpointTypeDefinition(expected);
-    EndpointTypeDefinition actual = s.getEndpointTypeDefinition("foo");
+    EndpointType actual = s.getEndpointTypeDefinition("foo");
     assertEquals(expected, actual);
   }
   
   @Test(expected=UndeclaredIdentifierException.class)
   public void testGetEndpointDef_notDeclared() throws UndeclaredIdentifierException {
     Schematic s = new Schematic("test");
-    EndpointTypeDefinition bogus = s.getEndpointTypeDefinition("does-not-exist");
+    EndpointType bogus = s.getEndpointTypeDefinition("does-not-exist");
   }
   
   @Test
   public void testAddNodeDef() throws MultipleDefinitionException {
     Schematic s = new Schematic("test");
-    NodeTypeDefinition n1 = new NodeTypeDefinition("n1");
+    NodeType n1 = new NodeType("n1");
     s.addNodeTypeDefinition(n1);
   }
   
@@ -99,34 +99,34 @@ public class TestSchematic {
     // We should not be able to add two node definitions whose first argument is the same string.
     Schematic s = new Schematic("test");
     try{
-      NodeTypeDefinition n1 = new NodeTypeDefinition("foo");
+      NodeType n1 = new NodeType("foo");
       s.addNodeTypeDefinition(n1);
     }catch(MultipleDefinitionException mde){
       fail("exception thrown too early: " + mde.getMessage());
     }
-    NodeTypeDefinition n2 = new NodeTypeDefinition("foo");
+    NodeType n2 = new NodeType("foo");
     s.addNodeTypeDefinition(n2);
   }
   
   @Test
   public void testGetNodeDef() throws UndeclaredIdentifierException, MultipleDefinitionException{
     Schematic s = new Schematic("test");
-    NodeTypeDefinition expected = new NodeTypeDefinition("foo");
+    NodeType expected = new NodeType("foo");
     s.addNodeTypeDefinition(expected);
-    NodeTypeDefinition actual = s.getNodeTypeDefinition("foo");
+    NodeType actual = s.getNodeTypeDefinition("foo");
     assertEquals(expected, actual);
   }
   
   @Test(expected=UndeclaredIdentifierException.class)
   public void testGetNodeDef_notDeclared() throws UndeclaredIdentifierException {
     Schematic s = new Schematic("test");
-    NodeTypeDefinition bogus = s.getNodeTypeDefinition("does-not-exist");
+    NodeType bogus = s.getNodeTypeDefinition("does-not-exist");
   }
   
   @Test
   public void testAddConnectionDef() throws MultipleDefinitionException {
     Schematic s = new Schematic("test");
-    ConnectionTypeDefinition c1 = new ConnectionTypeDefinition("c1");
+    ConnectionType c1 = new ConnectionType("c1");
     s.addConnectionTypeDefinition(c1);
   }
   
@@ -135,34 +135,34 @@ public class TestSchematic {
     // We should not be able to add two connection definitions whose first argument is the same string.
     Schematic s = new Schematic("test");
     try{
-      ConnectionTypeDefinition c1 = new ConnectionTypeDefinition("foo");
+      ConnectionType c1 = new ConnectionType("foo");
       s.addConnectionTypeDefinition(c1);
     }catch(MultipleDefinitionException mde){
       fail("exception thrown too early: " + mde.getMessage());
     }
-    ConnectionTypeDefinition c2 = new ConnectionTypeDefinition("foo");
+    ConnectionType c2 = new ConnectionType("foo");
     s.addConnectionTypeDefinition(c2);
   }
   
   @Test
   public void testGetConnectionDef() throws UndeclaredIdentifierException, MultipleDefinitionException{
     Schematic s = new Schematic("test");
-    ConnectionTypeDefinition expected = new ConnectionTypeDefinition("foo");
+    ConnectionType expected = new ConnectionType("foo");
     s.addConnectionTypeDefinition(expected);
-    ConnectionTypeDefinition actual = s.getConnectionTypeDefinition("foo");
+    ConnectionType actual = s.getConnectionTypeDefinition("foo");
     assertEquals(expected, actual);
   }
   
   @Test(expected=UndeclaredIdentifierException.class)
   public void testGetConnectionDef_notDeclared() throws UndeclaredIdentifierException {
     Schematic s = new Schematic("test");
-    ConnectionTypeDefinition bogus = s.getConnectionTypeDefinition("does-not-exist");
+    ConnectionType bogus = s.getConnectionTypeDefinition("does-not-exist");
   }
   
   @Test
   public void testAddConstraintDef() throws MultipleDefinitionException {
     Schematic s = new Schematic("test");
-    ConstraintTypeDefinition e1 = new ConstraintTypeDefinition("c1");
+    ConstraintType e1 = new ConstraintType("c1");
     s.addConstraintTypeDefinition(e1);
   }
   
@@ -171,28 +171,28 @@ public class TestSchematic {
     // We should not be able to add two constraint definitions whose first argument is the same string.
     Schematic s = new Schematic("test");
     try{
-      ConstraintTypeDefinition e1 = new ConstraintTypeDefinition("foo");
+      ConstraintType e1 = new ConstraintType("foo");
       s.addConstraintTypeDefinition(e1);
     }catch(MultipleDefinitionException mde){
       fail("exception thrown too early: " + mde.getMessage());
     }
-    ConstraintTypeDefinition e2 = new ConstraintTypeDefinition("foo");
+    ConstraintType e2 = new ConstraintType("foo");
     s.addConstraintTypeDefinition(e2);
   }
 
   @Test
   public void testGetConstraintDef() throws UndeclaredIdentifierException, MultipleDefinitionException{
     Schematic s = new Schematic("test");
-    ConstraintTypeDefinition expected = new ConstraintTypeDefinition("foo");
+    ConstraintType expected = new ConstraintType("foo");
     s.addConstraintTypeDefinition(expected);
-    ConstraintTypeDefinition actual = s.getConstraintTypeDefinition("foo");
+    ConstraintType actual = s.getConstraintTypeDefinition("foo");
     assertEquals(expected, actual);
   }
   
   @Test(expected=UndeclaredIdentifierException.class)
   public void testGetConstraintDef_notDeclared() throws UndeclaredIdentifierException {
     Schematic s = new Schematic("test");
-    ConstraintTypeDefinition bogus = s.getConstraintTypeDefinition("does-not-exist");
+    ConstraintType bogus = s.getConstraintTypeDefinition("does-not-exist");
   }
   
   @Test
@@ -202,11 +202,11 @@ public class TestSchematic {
     // without encountering a "multiple definition" exception.
     Schematic s = new Schematic("test");
     
-    TypeTypeDefinition t1 = new TypeTypeDefinition("foo", new PrimitiveType(PrimitiveType.PrimitiveKind.STRING));
-    ConstraintTypeDefinition ct1 = new ConstraintTypeDefinition("foo");
-    ConnectionTypeDefinition cn1 = new ConnectionTypeDefinition("foo");
-    NodeTypeDefinition n1 = new NodeTypeDefinition("foo");
-    EndpointTypeDefinition e1 = new EndpointTypeDefinition("foo");
+    UserDefinedType t1 = new UserDefinedType("foo", new PrimitiveType(PrimitiveType.PrimitiveKind.STRING));
+    ConstraintType ct1 = new ConstraintType("foo");
+    ConnectionType cn1 = new ConnectionType("foo");
+    NodeType n1 = new NodeType("foo");
+    EndpointType e1 = new EndpointType("foo");
     
     s.addTypeTypeDefinition(t1);
     s.addConstraintTypeDefinition(ct1);

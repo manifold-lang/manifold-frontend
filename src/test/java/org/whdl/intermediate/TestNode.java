@@ -6,14 +6,8 @@ import org.junit.Test;
 
 public class TestNode {
 
-  private static final NodeTypeDefinition defaultNodeDefinition = new NodeTypeDefinition("foo");
-  private static final EndpointTypeDefinition defaultEndpointDefinition = new EndpointTypeDefinition("ept");
-  
-  @Test
-  public void testGetDefinition() {
-    Node n = new Node(defaultNodeDefinition);
-    assertEquals(defaultNodeDefinition, n.getDefinition());
-  }
+  private static final NodeType defaultNodeDefinition = new NodeType("foo");
+  private static final EndpointType defaultEndpointDefinition = new EndpointType("ept");
 
   @Test
   public void testGetAttribute() throws UndeclaredIdentifierException {

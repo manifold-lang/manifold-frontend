@@ -8,9 +8,9 @@ public class TestValue {
 
   @Test
   public void testRetrieveType() {
-    NodeTypeDefinition nDef = new NodeTypeDefinition("nod");
+    NodeType nDef = new NodeType("nod");
     Value dom = new Node(nDef);
-    Type expected = new NodeType(nDef);
+    Type expected = nDef;
     Type actual = dom.getType();
     assertEquals(expected, actual);
   }

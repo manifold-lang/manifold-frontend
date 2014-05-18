@@ -8,9 +8,9 @@ public class ArrayValue extends Value {
   private Type elementType;
   private List<Value> contents = null;
   
-  public ArrayValue(Type elementType){
-    super(new ArrayType(elementType));
-    this.elementType = elementType;
+  public ArrayValue(ArrayType t){
+    super(t);
+    this.elementType = t.getElementType();
   }
   
   public void setContents(List<Value> newContents) throws TypeException{

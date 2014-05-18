@@ -6,13 +6,7 @@ import org.junit.Test;
 
 public class TestConnection {
 
-  private static final ConnectionTypeDefinition defaultConnectionDefinition = new ConnectionTypeDefinition("foo");
-  
-  @Test
-  public void testGetDefinition() {
-    Connection ept = new Connection(defaultConnectionDefinition);
-    assertEquals(defaultConnectionDefinition, ept.getDefinition());
-  }
+  private static final ConnectionType defaultConnectionDefinition = new ConnectionType("foo");
 
   @Test
   public void testGetAttribute() throws UndeclaredIdentifierException {

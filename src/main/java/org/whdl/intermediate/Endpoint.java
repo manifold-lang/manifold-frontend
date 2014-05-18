@@ -4,11 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Endpoint extends Value {
-  private EndpointTypeDefinition definition;
-  public EndpointTypeDefinition getDefinition(){
-    return this.definition;
-  }
-  
+ 
   private Map<String, Value> attributes;
   public Value getAttribute(String attrName) throws UndeclaredIdentifierException{
     if(attributes.containsKey(attrName)){
@@ -22,9 +18,8 @@ public class Endpoint extends Value {
   }
   private Node parent = null;
   
-  public Endpoint(EndpointTypeDefinition definition){
-    super(new EndpointType(definition));
-    this.definition = definition;
+  public Endpoint(EndpointType type){
+    super(type);
     this.attributes = new HashMap<String, Value>();
   }
 

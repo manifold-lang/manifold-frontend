@@ -4,11 +4,11 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-public class TestEndpointTypeDefinition {
+public class TestEndpointType {
 
   @Test
   public void testInstantiate_no_attributes() {
-    EndpointTypeDefinition eptTypeDef = new EndpointTypeDefinition("foo");
+    EndpointType eptTypeDef = new EndpointType("foo");
     Value ept = eptTypeDef.instantiate();
     // the Value we receive must be an Endpoint
     assertTrue("instanted value is not an Endpoint", ept instanceof Endpoint);
@@ -16,9 +16,9 @@ public class TestEndpointTypeDefinition {
 
   @Test
   public void testInstantiate_with_attributes() throws UndeclaredIdentifierException {
-    EndpointTypeDefinition eptTypeDef = new EndpointTypeDefinition("foo");
+    EndpointType eptTypeDef = new EndpointType("foo");
     // add one simple attribute
-    TypeTypeDefinition attrTTD = new TypeTypeDefinition("attr-type", new PrimitiveType(PrimitiveType.PrimitiveKind.BOOLEAN));
+    UserDefinedType attrTTD = new UserDefinedType("attr-type", new PrimitiveType(PrimitiveType.PrimitiveKind.BOOLEAN));
     eptTypeDef.addAttribute("attr", attrTTD);
     
     Endpoint ept = (Endpoint)eptTypeDef.instantiate();

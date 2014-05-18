@@ -4,11 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Node extends Value{
-  private NodeTypeDefinition definition;
-  public NodeTypeDefinition getDefinition(){
-    return this.definition;
-  }
-  
   private Map<String, Value> attributes;
   public Value getAttribute(String attrName) throws UndeclaredIdentifierException{
     if(attributes.containsKey(attrName)){
@@ -33,9 +28,8 @@ public class Node extends Value{
     endpoints.put(eptName, eptValue);
   }
   
-  public Node(NodeTypeDefinition definition){
-    super(new NodeType(definition));
-    this.definition = definition;
+  public Node(Type type){
+    super(type);
     this.attributes = new HashMap<String, Value>();
     this.endpoints = new HashMap<String, Endpoint>();
   }

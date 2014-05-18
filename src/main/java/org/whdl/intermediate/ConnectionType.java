@@ -1,47 +1,33 @@
 package org.whdl.intermediate;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+
 
 public class ConnectionType extends Type {
-  private ConnectionTypeDefinition definition;
+  private Map<String, UserDefinedType> attributes;
   
-  public ConnectionType(ConnectionTypeDefinition definition){
-    this.definition = definition;
+  public ConnectionType(String typename){
+    super(typename);
+    this.attributes = new HashMap<String, UserDefinedType>();
   }
 
   @Override
-  public int hashCode() {
-    final int prime = 31;
-    int result = 1;
-    result = prime * result
-        + ((definition == null) ? 0 : definition.hashCode());
-    return result;
-  }
-
-  @Override
-  public boolean equals(Object obj) {
-    if (this == obj) {
-      return true;
+  public Value instantiate() {
+    Connection con = new Connection(this);
+    // elaborate default attributes
+    for(Entry<String, UserDefinedType> attr : attributes.entrySet()){
+      String attrName = attr.getKey();
+      UserDefinedType attrTypeValue = attr.getValue();
+      Value attrValue = attrTypeValue.instantiate();
+      con.setAttribute(attrName, attrValue);
     }
-    if (obj == null) {
-      return false;
-    }
-    if (getClass() != obj.getClass()) {
-      return false;
-    }
-    ConnectionType other = (ConnectionType) obj;
-    if (definition == null) {
-      if (other.definition != null) {
-        return false;
-      }
-    } else if (!definition.equals(other.definition)) {
-      return false;
-    }
-    return true;
+    return con;
   }
   
-  @Override
-  public Value instantiate(){
-    // look up the Definition of this ConnectionType and instantiate that
-    return definition.instantiate();
+  public void addAttribute(String attrName, UserDefinedType attrType) {
+    // FIXME multiple additions of the same attribute?
+    attributes.put(attrName, attrType);
   }
 }
