@@ -15,13 +15,13 @@ public class NodeTypeDefinition extends TypeDefinition {
   }
   
   @Override
-  public Value instantiate(String instanceName) {
-    Node node = new Node(instanceName, this);
+  public Value instantiate() {
+    Node node = new Node(this);
     // elaborate default attributes
     for(Entry<String, TypeTypeDefinition> attr : attributes.entrySet()){
       String attrName = attr.getKey();
       TypeTypeDefinition attrTypeValue = attr.getValue();
-      Value attrValue = attrTypeValue.instantiate(attrName);
+      Value attrValue = attrTypeValue.instantiate();
       node.setAttribute(attrName, attrValue);
     }
     return node;

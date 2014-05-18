@@ -22,8 +22,8 @@ public class Endpoint extends Value {
   }
   private Node parent = null;
   
-  public Endpoint(String instanceName, EndpointTypeDefinition definition){
-    super(new EndpointType(definition), instanceName);
+  public Endpoint(EndpointTypeDefinition definition){
+    super(new EndpointType(definition));
     this.definition = definition;
     this.attributes = new HashMap<String, Value>();
   }

@@ -4,8 +4,8 @@ public class ArrayValue extends Value {
 
   private Type elementType;
   
-  public ArrayValue(Type elementType, String instanceName){
-    super(new ArrayType(elementType), instanceName);
+  public ArrayValue(Type elementType){
+    super(new ArrayType(elementType));
     this.elementType = elementType;
   }
   

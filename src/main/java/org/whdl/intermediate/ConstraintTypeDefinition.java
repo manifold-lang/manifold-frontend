@@ -13,13 +13,13 @@ public class ConstraintTypeDefinition extends TypeDefinition {
   }
   
   @Override
-  public Value instantiate(String instanceName) {
-    Constraint con = new Constraint(instanceName, this);
+  public Value instantiate() {
+    Constraint con = new Constraint(this);
     // elaborate default arguments
     for(Entry<String, TypeTypeDefinition> arg : arguments.entrySet()){
       String argName = arg.getKey();
       TypeTypeDefinition argTypeValue = arg.getValue();
-      Value argValue = argTypeValue.instantiate(argName);
+      Value argValue = argTypeValue.instantiate();
       con.setArgument(argName, argValue);
     }
     return con;

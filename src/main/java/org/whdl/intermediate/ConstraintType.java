@@ -40,9 +40,9 @@ public class ConstraintType extends Type {
   }
   
   @Override
-  public Value instantiate(String instanceName){
+  public Value instantiate(){
     // look up the Definition of this ConstraintType and instantiate that
-    return definition.instantiate(instanceName);
+    return definition.instantiate();
   }
   
 }

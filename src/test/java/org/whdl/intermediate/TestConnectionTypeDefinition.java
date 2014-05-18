@@ -9,7 +9,7 @@ public class TestConnectionTypeDefinition {
   @Test
   public void testInstantiate_no_attributes() {
     ConnectionTypeDefinition conTypeDef = new ConnectionTypeDefinition("foo");
-    Value con = conTypeDef.instantiate("con");
+    Value con = conTypeDef.instantiate();
     // the Value we receive must be a Connection
     assertTrue("instanted value is not a Connection", con instanceof Connection);
   }
@@ -21,7 +21,7 @@ public class TestConnectionTypeDefinition {
     TypeTypeDefinition attrTTD = new TypeTypeDefinition("attr-type", new PrimitiveType(PrimitiveType.PrimitiveKind.BOOLEAN));
     conTypeDef.addAttribute("attr", attrTTD);
     
-    Connection con = (Connection)conTypeDef.instantiate("ept");
+    Connection con = (Connection)conTypeDef.instantiate();
     Value attr = con.getAttribute("attr"); // it is sufficient that we return /something/ without throwing an exception
   }
   

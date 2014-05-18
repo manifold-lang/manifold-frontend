@@ -40,8 +40,8 @@ public class ConnectionType extends Type {
   }
   
   @Override
-  public Value instantiate(String instanceName){
+  public Value instantiate(){
     // look up the Definition of this ConnectionType and instantiate that
-    return definition.instantiate(instanceName);
+    return definition.instantiate();
   }
 }

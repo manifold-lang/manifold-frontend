@@ -13,13 +13,13 @@ public class EndpointTypeDefinition extends TypeDefinition {
   }
   
   @Override
-  public Value instantiate(String instanceName) {
-    Endpoint ept = new Endpoint(instanceName, this);
+  public Value instantiate() {
+    Endpoint ept = new Endpoint(this);
     // elaborate default attributes
     for(Entry<String, TypeTypeDefinition> attr : attributes.entrySet()){
       String attrName = attr.getKey();
       TypeTypeDefinition attrTypeValue = attr.getValue();
-      Value attrValue = attrTypeValue.instantiate(attrName);
+      Value attrValue = attrTypeValue.instantiate();
       ept.setAttribute(attrName, attrValue);
     }
     return ept;

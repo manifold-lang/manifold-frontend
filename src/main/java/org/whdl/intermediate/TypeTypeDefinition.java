@@ -10,7 +10,7 @@ public class TypeTypeDefinition extends TypeDefinition {
   }
 
   @Override
-  public Value instantiate(String instanceName) {
-    return type.instantiate(instanceName);
+  public Value instantiate() {
+    return type.instantiate();
   }
 }

@@ -10,14 +10,14 @@ public class TestConstraint {
   
   @Test
   public void testGetDefinition() {
-    Constraint ept = new Constraint("foo-1", defaultConstraintDefinition);
+    Constraint ept = new Constraint(defaultConstraintDefinition);
     assertEquals(defaultConstraintDefinition, ept.getDefinition());
   }
 
   @Test
   public void testGetArgument() throws UndeclaredIdentifierException {
-    Constraint ept = new Constraint("foo-1", defaultConstraintDefinition);
-    Value v = new BooleanValue("v", true);
+    Constraint ept = new Constraint(defaultConstraintDefinition);
+    Value v = new BooleanValue(true);
     ept.setArgument("v", v);
     Value vActual = ept.getArgument("v");
     assertEquals(v, vActual);
@@ -25,24 +25,24 @@ public class TestConstraint {
 
   @Test(expected=org.whdl.intermediate.UndeclaredIdentifierException.class)
   public void testGetArgument_nonexistent() throws UndeclaredIdentifierException {
-    Constraint ept = new Constraint("foo-1", defaultConstraintDefinition);
+    Constraint ept = new Constraint(defaultConstraintDefinition);
     Value vBogus = ept.getArgument("bogus");
   }
   
   @Test
   public void testSetArgument() {
-    Constraint ept = new Constraint("foo-1", defaultConstraintDefinition);
-    Value v = new BooleanValue("v", true);
+    Constraint ept = new Constraint(defaultConstraintDefinition);
+    Value v = new BooleanValue(true);
     ept.setArgument("v", v);
   }
   
   @Test
   public void testSetArgument_multiple_set() {
     // setting an Argument twice should just work
-    Constraint ept = new Constraint("foo-1", defaultConstraintDefinition);
-    Value v = new BooleanValue("v", true);
+    Constraint ept = new Constraint(defaultConstraintDefinition);
+    Value v = new BooleanValue(true);
     ept.setArgument("v", v);
-    Value v2 = new BooleanValue("v", false);
+    Value v2 = new BooleanValue(false);
     ept.setArgument("v", v2);
   }
 

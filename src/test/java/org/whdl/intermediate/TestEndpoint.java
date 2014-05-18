@@ -10,14 +10,14 @@ public class TestEndpoint {
   
   @Test
   public void testGetDefinition() {
-    Endpoint ept = new Endpoint("foo-1", defaultEndpointDefinition);
+    Endpoint ept = new Endpoint(defaultEndpointDefinition);
     assertEquals(defaultEndpointDefinition, ept.getDefinition());
   }
 
   @Test
   public void testGetAttribute() throws UndeclaredIdentifierException {
-    Endpoint ept = new Endpoint("foo-1", defaultEndpointDefinition);
-    Value v = new BooleanValue("v", true);
+    Endpoint ept = new Endpoint(defaultEndpointDefinition);
+    Value v = new BooleanValue(true);
     ept.setAttribute("v", v);
     Value vActual = ept.getAttribute("v");
     assertEquals(v, vActual);
@@ -25,24 +25,24 @@ public class TestEndpoint {
 
   @Test(expected=org.whdl.intermediate.UndeclaredIdentifierException.class)
   public void testGetAttribute_nonexistent() throws UndeclaredIdentifierException {
-    Endpoint ept = new Endpoint("foo-1", defaultEndpointDefinition);
+    Endpoint ept = new Endpoint(defaultEndpointDefinition);
     Value vBogus = ept.getAttribute("bogus");
   }
   
   @Test
   public void testSetAttribute() {
-    Endpoint ept = new Endpoint("foo-1", defaultEndpointDefinition);
-    Value v = new BooleanValue("v", true);
+    Endpoint ept = new Endpoint(defaultEndpointDefinition);
+    Value v = new BooleanValue(true);
     ept.setAttribute("v", v);
   }
   
   @Test
   public void testSetAttribute_multiple_set() {
     // setting an attribute twice should just work
-    Endpoint ept = new Endpoint("foo-1", defaultEndpointDefinition);
-    Value v = new BooleanValue("v", true);
+    Endpoint ept = new Endpoint(defaultEndpointDefinition);
+    Value v = new BooleanValue(true);
     ept.setAttribute("v", v);
-    Value v2 = new BooleanValue("v", false);
+    Value v2 = new BooleanValue(false);
     ept.setAttribute("v", v2);
   }
 

@@ -10,21 +10,21 @@ public class TestPrimitiveType {
   @Test
   public void testInstantiateBoolean() {
     PrimitiveType pType = new PrimitiveType(PrimitiveKind.BOOLEAN);
-    Value v = pType.instantiate("foo");
+    Value v = pType.instantiate();
     assertTrue("instantiated value not a BooleanValue", v instanceof BooleanValue);
   }
   
   @Test
   public void testInstantiateInteger() {
     PrimitiveType pType = new PrimitiveType(PrimitiveKind.INTEGER);
-    Value v = pType.instantiate("foo");
+    Value v = pType.instantiate();
     assertTrue("instantiated value not an IntegerValue", v instanceof IntegerValue);
   }
   
   @Test
   public void testInstantiateString() {
     PrimitiveType pType = new PrimitiveType(PrimitiveKind.STRING);
-    Value v = pType.instantiate("foo");
+    Value v = pType.instantiate();
     assertTrue("instantiated value not a StringValue", v instanceof StringValue);
   }
 

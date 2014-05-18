@@ -9,7 +9,7 @@ public class TestConstraintTypeDefinition {
   @Test
   public void testInstantiate_no_arguments() {
     ConstraintTypeDefinition conTypeDef = new ConstraintTypeDefinition("foo");
-    Value con = conTypeDef.instantiate("con");
+    Value con = conTypeDef.instantiate();
     // the Value we receive must be a Constraint
     assertTrue("instanted value is not a Constraint", con instanceof Constraint);
   }
@@ -21,7 +21,7 @@ public class TestConstraintTypeDefinition {
     TypeTypeDefinition attrTTD = new TypeTypeDefinition("attr-type", new PrimitiveType(PrimitiveType.PrimitiveKind.BOOLEAN));
     conTypeDef.addArgument("attr", attrTTD);
     
-    Constraint con = (Constraint)conTypeDef.instantiate("ept");
+    Constraint con = (Constraint)conTypeDef.instantiate();
     Value attr = con.getArgument("attr"); // it is sufficient that we return /something/ without throwing an exception
   }
   

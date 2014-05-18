@@ -13,13 +13,13 @@ public class ConnectionTypeDefinition extends TypeDefinition {
   }
 
   @Override
-  public Value instantiate(String instanceName) {
-    Connection con = new Connection(instanceName, this);
+  public Value instantiate() {
+    Connection con = new Connection(this);
     // elaborate default attributes
     for(Entry<String, TypeTypeDefinition> attr : attributes.entrySet()){
       String attrName = attr.getKey();
       TypeTypeDefinition attrTypeValue = attr.getValue();
-      Value attrValue = attrTypeValue.instantiate(attrName);
+      Value attrValue = attrTypeValue.instantiate();
       con.setAttribute(attrName, attrValue);
     }
     return con;

@@ -10,14 +10,14 @@ public class TestConnection {
   
   @Test
   public void testGetDefinition() {
-    Connection ept = new Connection("foo-1", defaultConnectionDefinition);
+    Connection ept = new Connection(defaultConnectionDefinition);
     assertEquals(defaultConnectionDefinition, ept.getDefinition());
   }
 
   @Test
   public void testGetAttribute() throws UndeclaredIdentifierException {
-    Connection ept = new Connection("foo-1", defaultConnectionDefinition);
-    Value v = new BooleanValue("v", true);
+    Connection ept = new Connection(defaultConnectionDefinition);
+    Value v = new BooleanValue(true);
     ept.setAttribute("v", v);
     Value vActual = ept.getAttribute("v");
     assertEquals(v, vActual);
@@ -25,24 +25,24 @@ public class TestConnection {
 
   @Test(expected=org.whdl.intermediate.UndeclaredIdentifierException.class)
   public void testGetAttribute_nonexistent() throws UndeclaredIdentifierException {
-    Connection ept = new Connection("foo-1", defaultConnectionDefinition);
+    Connection ept = new Connection(defaultConnectionDefinition);
     Value vBogus = ept.getAttribute("bogus");
   }
   
   @Test
   public void testSetAttribute() {
-    Connection ept = new Connection("foo-1", defaultConnectionDefinition);
-    Value v = new BooleanValue("v", true);
+    Connection ept = new Connection(defaultConnectionDefinition);
+    Value v = new BooleanValue(true);
     ept.setAttribute("v", v);
   }
   
   @Test
   public void testSetAttribute_multiple_set() {
     // setting an attribute twice should just work
-    Connection ept = new Connection("foo-1", defaultConnectionDefinition);
-    Value v = new BooleanValue("v", true);
+    Connection ept = new Connection(defaultConnectionDefinition);
+    Value v = new BooleanValue(true);
     ept.setAttribute("v", v);
-    Value v2 = new BooleanValue("v", false);
+    Value v2 = new BooleanValue(false);
     ept.setAttribute("v", v2);
   }
 

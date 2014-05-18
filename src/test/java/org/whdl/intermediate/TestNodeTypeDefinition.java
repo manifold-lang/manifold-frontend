@@ -9,7 +9,7 @@ public class TestNodeTypeDefinition {
   @Test
   public void testInstantiate_no_attributes() {
     NodeTypeDefinition nodeTypeDef = new NodeTypeDefinition("foo");
-    Value node = nodeTypeDef.instantiate("con");
+    Value node = nodeTypeDef.instantiate();
     // the Value we receive must be a Node
     assertTrue("instanted value is not a Node", node instanceof Node);
   }
@@ -21,7 +21,7 @@ public class TestNodeTypeDefinition {
     TypeTypeDefinition attrTTD = new TypeTypeDefinition("attr-type", new PrimitiveType(PrimitiveType.PrimitiveKind.BOOLEAN));
     nodeTypeDef.addAttribute("attr", attrTTD);
     
-    Node node = (Node)nodeTypeDef.instantiate("ept");
+    Node node = (Node)nodeTypeDef.instantiate();
     Value attr = node.getAttribute("attr"); // it is sufficient that we return /something/ without throwing an exception
   }
   

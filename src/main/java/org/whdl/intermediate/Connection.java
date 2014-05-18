@@ -22,8 +22,8 @@ public class Connection extends Value {
   }
   private Endpoint endpointFrom = null, endpointTo = null;
   
-  public Connection(String instanceName, ConnectionTypeDefinition definition){
-    super(new ConnectionType(definition), instanceName);
+  public Connection(ConnectionTypeDefinition definition){
+    super(new ConnectionType(definition));
     this.definition = definition;
     this.attributes = new HashMap<String, Value>();
   }

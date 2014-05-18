@@ -7,12 +7,7 @@ public abstract class Value {
     return type;
   }
   
-  private String instanceName;
-  public String getInstanceName(){
-    return instanceName;
-  }
-  public Value(Type type, String instanceName){
+  public Value(Type type){
     this.type = type;
-    this.instanceName = instanceName;
   }
 }

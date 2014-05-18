@@ -10,5 +10,5 @@ public abstract class TypeDefinition {
     this.typename = typename;
   }
   
-  public abstract Value instantiate(String instanceName);
+  public abstract Value instantiate();
 }

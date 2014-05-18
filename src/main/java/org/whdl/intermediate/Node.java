@@ -33,8 +33,8 @@ public class Node extends Value{
     endpoints.put(eptName, eptValue);
   }
   
-  public Node(String instanceName, NodeTypeDefinition definition){
-    super(new NodeType(definition), instanceName);
+  public Node(NodeTypeDefinition definition){
+    super(new NodeType(definition));
     this.definition = definition;
     this.attributes = new HashMap<String, Value>();
     this.endpoints = new HashMap<String, Endpoint>();

@@ -21,8 +21,8 @@ public class Constraint extends Value {
     arguments.put(argName, argValue);
   }
   
-  public Constraint(String instanceName, ConstraintTypeDefinition definition){
-    super(new ConstraintType(definition), instanceName);
+  public Constraint(ConstraintTypeDefinition definition){
+    super(new ConstraintType(definition));
     this.definition = definition;
     this.arguments = new HashMap<String, Value>();
   }

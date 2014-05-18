@@ -43,7 +43,7 @@ public class ArrayType extends Type {
   }
 
   @Override
-  public Value instantiate(String instanceName) {
-    return new ArrayValue(elementType, instanceName);
+  public Value instantiate() {
+    return new ArrayValue(elementType);
   }
 }
