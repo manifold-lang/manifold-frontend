@@ -8,7 +8,7 @@ public class TestNodeType {
 
   @Test
   public void testInstantiate_no_attributes() {
-    NodeType nodeTypeDef = new NodeType("foo");
+    NodeType nodeTypeDef = new NodeType();
     Value node = nodeTypeDef.instantiate();
     // the Value we receive must be a Node
     assertTrue("instanted value is not a Node", node instanceof Node);
@@ -16,9 +16,9 @@ public class TestNodeType {
 
   @Test
   public void testInstantiate_with_attributes() throws UndeclaredIdentifierException {
-    NodeType nodeTypeDef = new NodeType("foo");
+    NodeType nodeTypeDef = new NodeType();
     // add one simple attribute
-    UserDefinedType attrTTD = new UserDefinedType("attr-type", new PrimitiveType(PrimitiveType.PrimitiveKind.BOOLEAN));
+    UserDefinedType attrTTD = new UserDefinedType(new PrimitiveType(PrimitiveType.PrimitiveKind.BOOLEAN));
     nodeTypeDef.addAttribute("attr", attrTTD);
     
     Node node = (Node)nodeTypeDef.instantiate();

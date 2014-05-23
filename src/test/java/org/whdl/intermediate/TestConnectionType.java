@@ -8,7 +8,7 @@ public class TestConnectionType {
 
   @Test
   public void testInstantiate_no_attributes() {
-    ConnectionType conTypeDef = new ConnectionType("foo");
+    ConnectionType conTypeDef = new ConnectionType();
     Value con = conTypeDef.instantiate();
     // the Value we receive must be a Connection
     assertTrue("instanted value is not a Connection", con instanceof Connection);
@@ -16,9 +16,9 @@ public class TestConnectionType {
 
   @Test
   public void testInstantiate_with_attributes() throws UndeclaredIdentifierException {
-    ConnectionType conTypeDef = new ConnectionType("foo");
+    ConnectionType conTypeDef = new ConnectionType();
     // add one simple attribute
-    UserDefinedType attrTTD = new UserDefinedType("attr-type", new PrimitiveType(PrimitiveType.PrimitiveKind.BOOLEAN));
+    UserDefinedType attrTTD = new UserDefinedType(new PrimitiveType(PrimitiveType.PrimitiveKind.BOOLEAN));
     conTypeDef.addAttribute("attr", attrTTD);
     
     Connection con = (Connection)conTypeDef.instantiate();

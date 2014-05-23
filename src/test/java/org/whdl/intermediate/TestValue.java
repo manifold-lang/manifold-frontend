@@ -8,7 +8,7 @@ public class TestValue {
 
   @Test
   public void testRetrieveType() {
-    NodeType nDef = new NodeType("nod");
+    NodeType nDef = new NodeType();
     Value dom = new Node(nDef);
     Type expected = nDef;
     Type actual = dom.getType();

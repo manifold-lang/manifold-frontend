@@ -9,8 +9,7 @@ public class NodeType extends Type {
   private Map<String, UserDefinedType> attributes;
   private Map<String, EndpointType> endpoints;
   
-  public NodeType(String typename){
-    super(typename);
+  public NodeType(){
     this.attributes = new HashMap<String, UserDefinedType>();
     this.endpoints = new HashMap<String, EndpointType>();
   }

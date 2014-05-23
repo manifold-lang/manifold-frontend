@@ -7,8 +7,7 @@ public class ArrayType extends Type {
     return this.elementType;
   }
   
-  public ArrayType(String typename, Type elementType){
-    super(typename);
+  public ArrayType(Type elementType){
     this.elementType = elementType;
   }
 

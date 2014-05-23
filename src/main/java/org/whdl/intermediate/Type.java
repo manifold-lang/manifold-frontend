@@ -1,15 +1,6 @@
 package org.whdl.intermediate;
 
 public abstract class Type {
-
-  private String typename;
-  public String getTypename() {
-    return typename;
-  }
-  
-  public Type(String typename){
-    this.typename = typename;
-  }
 	
   public abstract Value instantiate();
   

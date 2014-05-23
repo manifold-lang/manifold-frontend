@@ -8,8 +8,7 @@ import java.util.Map.Entry;
 public class ConnectionType extends Type {
   private Map<String, UserDefinedType> attributes;
   
-  public ConnectionType(String typename){
-    super(typename);
+  public ConnectionType(){
     this.attributes = new HashMap<String, UserDefinedType>();
   }
 

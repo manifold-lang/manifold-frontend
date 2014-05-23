@@ -8,8 +8,7 @@ import java.util.Map.Entry;
 public class EndpointType extends Type {
   private Map<String, UserDefinedType> attributes;
   
-  public EndpointType(String typename){
-    super(typename);
+  public EndpointType(){
     this.attributes = new HashMap<String, UserDefinedType>();
   }
   

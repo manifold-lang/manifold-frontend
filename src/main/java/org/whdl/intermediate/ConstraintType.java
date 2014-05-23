@@ -8,8 +8,7 @@ import java.util.Map.Entry;
 public class ConstraintType extends Type {
   private Map<String, UserDefinedType> arguments;
   
-  public ConstraintType(String typename){
-    super(typename);
+  public ConstraintType(){
     this.arguments = new HashMap<String, UserDefinedType>();
 
   }

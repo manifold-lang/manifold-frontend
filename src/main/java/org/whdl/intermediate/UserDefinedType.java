@@ -4,8 +4,7 @@ package org.whdl.intermediate;
 public class UserDefinedType extends Type {
   private Type type;
   
-  public UserDefinedType(String typename, Type type){
-    super(typename);
+  public UserDefinedType(Type type){
     this.type = type;
   }
 
