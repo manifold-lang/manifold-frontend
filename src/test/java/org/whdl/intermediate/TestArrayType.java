@@ -7,7 +7,7 @@ import org.junit.Test;
 public class TestArrayType {
 
   @Test
-  public void testInstantiate() {
+  public void testInstantiate() throws TypeMismatchException {
     PrimitiveType elementType = new PrimitiveType(PrimitiveType.PrimitiveKind.BOOLEAN);
     ArrayType aType = new ArrayType(elementType);
     Value v = aType.instantiate();

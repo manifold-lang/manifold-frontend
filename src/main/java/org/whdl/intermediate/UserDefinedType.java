@@ -9,7 +9,7 @@ public class UserDefinedType extends Type {
   }
 
   @Override
-  public Value instantiate() {
+  public Value instantiate() throws TypeMismatchException {
     return type.instantiate();
   }
 }

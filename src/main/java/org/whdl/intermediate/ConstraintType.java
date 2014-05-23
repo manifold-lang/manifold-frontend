@@ -14,7 +14,7 @@ public class ConstraintType extends Type {
   }
   
   @Override
-  public Value instantiate() {
+  public Value instantiate() throws TypeMismatchException {
     Constraint con = new Constraint(this);
     // elaborate default arguments
     for(Entry<String, UserDefinedType> arg : arguments.entrySet()){

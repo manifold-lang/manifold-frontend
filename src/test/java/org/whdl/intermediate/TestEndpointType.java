@@ -7,7 +7,7 @@ import org.junit.Test;
 public class TestEndpointType {
 
   @Test
-  public void testInstantiate_no_attributes() {
+  public void testInstantiate_no_attributes() throws TypeMismatchException {
     EndpointType eptTypeDef = new EndpointType();
     Value ept = eptTypeDef.instantiate();
     // the Value we receive must be an Endpoint
@@ -15,7 +15,7 @@ public class TestEndpointType {
   }
 
   @Test
-  public void testInstantiate_with_attributes() throws UndeclaredIdentifierException {
+  public void testInstantiate_with_attributes() throws UndeclaredIdentifierException, TypeMismatchException {
     EndpointType eptTypeDef = new EndpointType();
     // add one simple attribute
     UserDefinedType attrTTD = new UserDefinedType(new PrimitiveType(PrimitiveType.PrimitiveKind.BOOLEAN));

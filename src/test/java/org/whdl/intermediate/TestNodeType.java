@@ -7,7 +7,7 @@ import org.junit.Test;
 public class TestNodeType {
 
   @Test
-  public void testInstantiate_no_attributes() {
+  public void testInstantiate_no_attributes() throws TypeMismatchException {
     NodeType nodeTypeDef = new NodeType();
     Value node = nodeTypeDef.instantiate();
     // the Value we receive must be a Node
@@ -15,7 +15,7 @@ public class TestNodeType {
   }
 
   @Test
-  public void testInstantiate_with_attributes() throws UndeclaredIdentifierException {
+  public void testInstantiate_with_attributes() throws UndeclaredIdentifierException, TypeMismatchException {
     NodeType nodeTypeDef = new NodeType();
     // add one simple attribute
     UserDefinedType attrTTD = new UserDefinedType(new PrimitiveType(PrimitiveType.PrimitiveKind.BOOLEAN));

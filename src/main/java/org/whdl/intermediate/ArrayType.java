@@ -1,5 +1,8 @@
 package org.whdl.intermediate;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class ArrayType extends Type {
   private Type elementType;
@@ -12,7 +15,12 @@ public class ArrayType extends Type {
   }
 
   @Override
-  public Value instantiate() {
-    return new ArrayValue(this);
+  public Value instantiate() throws TypeMismatchException{
+    // FIXME is it correct to assume the array is empty if we have no contents? or should we throw an exception?
+    return new ArrayValue(this, new ArrayList<Value>());
+  }
+  
+  public Value instantiate(List<Value> contents) throws TypeMismatchException {
+    return new ArrayValue(this, contents);
   }
 }

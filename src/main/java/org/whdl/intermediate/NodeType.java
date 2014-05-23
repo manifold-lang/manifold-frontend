@@ -15,7 +15,7 @@ public class NodeType extends Type {
   }
   
   @Override
-  public Value instantiate() {
+  public Value instantiate() throws TypeMismatchException {
     Node node = new Node(this);
     // elaborate default attributes
     for(Entry<String, UserDefinedType> attr : attributes.entrySet()){

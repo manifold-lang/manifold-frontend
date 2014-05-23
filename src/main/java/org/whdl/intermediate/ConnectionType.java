@@ -13,7 +13,7 @@ public class ConnectionType extends Type {
   }
 
   @Override
-  public Value instantiate() {
+  public Value instantiate() throws TypeMismatchException {
     Connection con = new Connection(this);
     // elaborate default attributes
     for(Entry<String, UserDefinedType> attr : attributes.entrySet()){

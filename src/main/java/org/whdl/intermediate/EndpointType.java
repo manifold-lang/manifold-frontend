@@ -13,7 +13,7 @@ public class EndpointType extends Type {
   }
   
   @Override
-  public Value instantiate() {
+  public Value instantiate() throws TypeMismatchException {
     Endpoint ept = new Endpoint(this);
     // elaborate default attributes
     for(Entry<String, UserDefinedType> attr : attributes.entrySet()){

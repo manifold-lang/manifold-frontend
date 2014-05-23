@@ -8,21 +8,22 @@ public class ArrayValue extends Value {
   private Type elementType;
   private List<Value> contents = null;
   
-  public ArrayValue(ArrayType t){
+  public ArrayValue(ArrayType t, List<Value> contents) throws TypeMismatchException{
     super(t);
     this.elementType = t.getElementType();
+    // type-check contents -- every Value must have type 'elementType'
+    for(Value v : contents){
+      Type vt = v.getType();
+      if(!vt.equals(elementType)){
+        throw new TypeMismatchException(elementType, vt);
+      }
+    }
+    // now we can copy the new list into our object
+    this.contents = new ArrayList<Value>(contents);
   }
-  
-  public void setContents(List<Value> newContents) throws TypeException{
-	  // type-check contents -- every Value must have type 'elementType'
-	  for(Value v : newContents){
-		  Type t = v.getType();
-		  if(!t.equals(elementType)){
-			  throw new TypeException(elementType.toString(), t.toString());
-		  }
-	  }
-	  // now we can copy the new list into our object
-	  contents = new ArrayList<Value>(newContents);
+
+  public Type getElementType(){
+    return this.elementType;
   }
   
   public Value get(Integer i){

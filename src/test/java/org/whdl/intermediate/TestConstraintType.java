@@ -7,7 +7,7 @@ import org.junit.Test;
 public class TestConstraintType {
 
   @Test
-  public void testInstantiate_no_arguments() {
+  public void testInstantiate_no_arguments() throws TypeMismatchException {
     ConstraintType conTypeDef = new ConstraintType();
     Value con = conTypeDef.instantiate();
     // the Value we receive must be a Constraint
@@ -15,7 +15,7 @@ public class TestConstraintType {
   }
 
   @Test
-  public void testInstantiate_with_arguments() throws UndeclaredIdentifierException {
+  public void testInstantiate_with_arguments() throws UndeclaredIdentifierException, TypeMismatchException {
     ConstraintType conTypeDef = new ConstraintType();
     // add one simple attribute
     UserDefinedType attrTTD = new UserDefinedType(new PrimitiveType(PrimitiveType.PrimitiveKind.BOOLEAN));
