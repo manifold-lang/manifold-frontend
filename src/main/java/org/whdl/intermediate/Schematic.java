@@ -12,7 +12,7 @@ public class Schematic {
   private String name;
   
   // Maps containing object definitions for this schematic; they are all indexed by the (string) type-name of the object.
-  private Map<String, UserDefinedType> userDefinedTypes;
+  private Map<String, Type> userDefinedTypes;
   private Map<String, EndpointType> endpointTypes;
   private Map<String, NodeType> nodeTypes;
   private Map<String, ConnectionType> connectionTypes;
@@ -26,7 +26,7 @@ public class Schematic {
   public Schematic(String name){
     this.name = name;
     
-    this.userDefinedTypes = new HashMap<String, UserDefinedType>();
+    this.userDefinedTypes = new HashMap<String, Type>();
     populateDefaultTypeDefinitions();
 
     this.endpointTypes = new HashMap<String, EndpointType>();
@@ -45,27 +45,27 @@ public class Schematic {
    * Every class in .intermediate.types should be represented in here.
    */
   private void populateDefaultTypeDefinitions(){
-    UserDefinedType boolType = new UserDefinedType(new BooleanType());
-    UserDefinedType intType = new UserDefinedType(new IntegerType());    
-    UserDefinedType stringType = new UserDefinedType(new StringType());
+    Type boolType = new BooleanType();
+    Type intType = new IntegerType();    
+    Type stringType = new StringType();
     try{
-      addTypeTypeDefinition("Bool", boolType);
-      addTypeTypeDefinition("Int", intType);
-      addTypeTypeDefinition("String", stringType);
+      addUserDefinedTypeDefinition("Bool", boolType);
+      addUserDefinedTypeDefinition("Int", intType);
+      addUserDefinedTypeDefinition("String", stringType);
     }catch(MultipleDefinitionException mde){
       // this should not actually be possible unless there is something wrong with the compiler itself
       throw new UndefinedBehaviourError("could not create default type definitions (" + mde.getMessage() + ")");
     }
   }
   
-  public void addTypeTypeDefinition(String typename, UserDefinedType td) throws MultipleDefinitionException{
+  public void addUserDefinedTypeDefinition(String typename, Type td) throws MultipleDefinitionException{
     if(userDefinedTypes.containsKey(typename)){
       throw new MultipleDefinitionException("type-definition", typename);
     }
     userDefinedTypes.put(typename, td);
   }
   
-  public UserDefinedType getTypeTypeDefinition(String typename) throws UndeclaredIdentifierException {
+  public Type getUserDefinedTypeDefinition(String typename) throws UndeclaredIdentifierException {
     if(userDefinedTypes.containsKey(typename)){
       return userDefinedTypes.get(typename);
     }else{

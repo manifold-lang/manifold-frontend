@@ -6,27 +6,10 @@ import java.util.Map.Entry;
 
 
 public class ConnectionType extends Type {
-  private Map<String, UserDefinedType> attributes;
+  private Map<String, Type> attributes;
   
-  public ConnectionType(){
-    this.attributes = new HashMap<String, UserDefinedType>();
-  }
-
-  @Override
-  public Value instantiate() throws TypeMismatchException {
-    Connection con = new Connection(this);
-    // elaborate default attributes
-    for(Entry<String, UserDefinedType> attr : attributes.entrySet()){
-      String attrName = attr.getKey();
-      UserDefinedType attrTypeValue = attr.getValue();
-      Value attrValue = attrTypeValue.instantiate();
-      con.setAttribute(attrName, attrValue);
-    }
-    return con;
+  public ConnectionType(Map<String, Type> attributes){
+    this.attributes = new HashMap<String, Type>(attributes);
   }
   
-  public void addAttribute(String attrName, UserDefinedType attrType) {
-    // FIXME multiple additions of the same attribute?
-    attributes.put(attrName, attrType);
-  }
 }

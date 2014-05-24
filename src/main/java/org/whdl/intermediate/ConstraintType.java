@@ -6,29 +6,11 @@ import java.util.Map.Entry;
 
 
 public class ConstraintType extends Type {
-  private Map<String, UserDefinedType> arguments;
+  private Map<String, Type> arguments;
   
-  public ConstraintType(){
-    this.arguments = new HashMap<String, UserDefinedType>();
+  public ConstraintType(Map<String, Type> arguments){
+    this.arguments = new HashMap<String, Type>(arguments);
 
-  }
-  
-  @Override
-  public Value instantiate() throws TypeMismatchException {
-    Constraint con = new Constraint(this);
-    // elaborate default arguments
-    for(Entry<String, UserDefinedType> arg : arguments.entrySet()){
-      String argName = arg.getKey();
-      UserDefinedType argTypeValue = arg.getValue();
-      Value argValue = argTypeValue.instantiate();
-      con.setArgument(argName, argValue);
-    }
-    return con;
-  }
-  
-  public void addArgument(String argName, UserDefinedType argType) {
-    // FIXME multiple additions of the same attribute?
-    arguments.put(argName, argType);
   }
   
 }

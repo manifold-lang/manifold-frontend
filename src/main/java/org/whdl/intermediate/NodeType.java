@@ -6,30 +6,12 @@ import java.util.Map.Entry;
 
 public class NodeType extends Type {
  
-  private Map<String, UserDefinedType> attributes;
+  private Map<String, Type> attributes;
   private Map<String, EndpointType> endpoints;
   
-  public NodeType(){
-    this.attributes = new HashMap<String, UserDefinedType>();
-    this.endpoints = new HashMap<String, EndpointType>();
-  }
-  
-  @Override
-  public Value instantiate() throws TypeMismatchException {
-    Node node = new Node(this);
-    // elaborate default attributes
-    for(Entry<String, UserDefinedType> attr : attributes.entrySet()){
-      String attrName = attr.getKey();
-      UserDefinedType attrTypeValue = attr.getValue();
-      Value attrValue = attrTypeValue.instantiate();
-      node.setAttribute(attrName, attrValue);
-    }
-    return node;
-  }
-  
-  public void addAttribute(String attrName, UserDefinedType attrType) {
-    // FIXME multiple additions of the same attribute?
-    attributes.put(attrName, attrType);
+  public NodeType(Map<String, Type> attributes, Map<String, EndpointType> endpoints){
+    this.attributes = new HashMap<String, Type>(attributes);
+    this.endpoints = new HashMap<String, EndpointType>(endpoints);
   }
   
 }

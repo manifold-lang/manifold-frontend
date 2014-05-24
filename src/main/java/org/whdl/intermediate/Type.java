@@ -1,8 +1,6 @@
 package org.whdl.intermediate;
 
 public abstract class Type {
-	
-  public abstract Value instantiate() throws TypeMismatchException;
   
   @Override
   public boolean equals(Object other){
