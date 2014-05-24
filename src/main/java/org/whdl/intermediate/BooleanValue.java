@@ -1,13 +1,10 @@
 package org.whdl.intermediate;
 
-import org.whdl.intermediate.PrimitiveType.PrimitiveKind;
-
-
 public class BooleanValue extends Value {
 
   private Boolean val;
-  public BooleanValue(Boolean val){
-    super(new PrimitiveType(PrimitiveKind.BOOLEAN));
+  public BooleanValue(Type t, Boolean val){
+    super(t);
     this.val = val;
   }
 

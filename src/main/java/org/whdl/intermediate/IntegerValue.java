@@ -1,13 +1,11 @@
 package org.whdl.intermediate;
 
-import org.whdl.intermediate.PrimitiveType.PrimitiveKind;
-
 
 public class IntegerValue extends Value {
 
   private Integer val;
-  public IntegerValue(Integer val){
-    super(new PrimitiveType(PrimitiveKind.INTEGER));
+  public IntegerValue(Type t, Integer val){
+    super(t);
     this.val = val;
   }
   

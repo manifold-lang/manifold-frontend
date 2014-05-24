@@ -45,9 +45,9 @@ public class Schematic {
    * Every class in .intermediate.types should be represented in here.
    */
   private void populateDefaultTypeDefinitions(){
-    UserDefinedType boolType = new UserDefinedType(new PrimitiveType(PrimitiveType.PrimitiveKind.BOOLEAN));
-    UserDefinedType intType = new UserDefinedType(new PrimitiveType(PrimitiveType.PrimitiveKind.INTEGER));    
-    UserDefinedType stringType = new UserDefinedType(new PrimitiveType(PrimitiveType.PrimitiveKind.STRING));
+    UserDefinedType boolType = new UserDefinedType(new BooleanType());
+    UserDefinedType intType = new UserDefinedType(new IntegerType());    
+    UserDefinedType stringType = new UserDefinedType(new StringType());
     try{
       addTypeTypeDefinition("Bool", boolType);
       addTypeTypeDefinition("Int", intType);
