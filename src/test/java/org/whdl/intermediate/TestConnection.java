@@ -2,16 +2,18 @@ package org.whdl.intermediate;
 
 import static org.junit.Assert.*;
 
+import java.util.HashMap;
+
 import org.junit.Test;
 
 public class TestConnection {
 
-  private static final ConnectionType defaultConnectionDefinition = new ConnectionType();
+  private static final ConnectionType defaultConnectionDefinition = new ConnectionType(new HashMap<String, Type>());
 
   @Test
   public void testGetAttribute() throws UndeclaredIdentifierException {
     Connection ept = new Connection(defaultConnectionDefinition);
-    Value v = new BooleanValue(true);
+    Value v = new BooleanValue(new BooleanType(), true);
     ept.setAttribute("v", v);
     Value vActual = ept.getAttribute("v");
     assertEquals(v, vActual);
@@ -26,7 +28,7 @@ public class TestConnection {
   @Test
   public void testSetAttribute() {
     Connection ept = new Connection(defaultConnectionDefinition);
-    Value v = new BooleanValue(true);
+    Value v = new BooleanValue(new BooleanType(), true);
     ept.setAttribute("v", v);
   }
   
@@ -34,9 +36,10 @@ public class TestConnection {
   public void testSetAttribute_multiple_set() {
     // setting an attribute twice should just work
     Connection ept = new Connection(defaultConnectionDefinition);
-    Value v = new BooleanValue(true);
+    Type boolType = new BooleanType();
+    Value v = new BooleanValue(boolType, true);
     ept.setAttribute("v", v);
-    Value v2 = new BooleanValue(false);
+    Value v2 = new BooleanValue(boolType, false);
     ept.setAttribute("v", v2);
   }
 

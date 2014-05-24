@@ -2,17 +2,19 @@ package org.whdl.intermediate;
 
 import static org.junit.Assert.*;
 
+import java.util.HashMap;
+
 import org.junit.Test;
 
 public class TestNode {
 
-  private static final NodeType defaultNodeDefinition = new NodeType();
-  private static final EndpointType defaultEndpointDefinition = new EndpointType();
+  private static final NodeType defaultNodeDefinition = new NodeType(new HashMap<String, Type>(), new HashMap<String, EndpointType>());
+  private static final EndpointType defaultEndpointDefinition = new EndpointType(new HashMap<String, Type>());
 
   @Test
   public void testGetAttribute() throws UndeclaredIdentifierException {
     Node n = new Node(defaultNodeDefinition);
-    Value v = new BooleanValue(true);
+    Value v = new BooleanValue(new BooleanType(), true);
     n.setAttribute("abc", v);
     Value vActual = n.getAttribute("abc");
     assertEquals(v, vActual);
@@ -27,17 +29,18 @@ public class TestNode {
   @Test
   public void testSetAttribute() {
     Node n = new Node(defaultNodeDefinition);
-    Value v = new BooleanValue(true);
+    Value v = new BooleanValue(new BooleanType(), true);
     n.setAttribute("abc", v);
   }
   
   @Test
   public void testSetAttribute_multiple_set() {
     // setting an attribute and then setting it again should just work
+    Type boolType = new BooleanType();
     Node n = new Node(defaultNodeDefinition);
-    Value v = new BooleanValue(true);
+    Value v = new BooleanValue(boolType, true);
     n.setAttribute("abc", v);
-    v = new BooleanValue(false);
+    v = new BooleanValue(boolType, false);
     n.setAttribute("abc", v);
   }
 
