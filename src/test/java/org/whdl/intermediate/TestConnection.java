@@ -9,11 +9,12 @@ import org.junit.Test;
 public class TestConnection {
 
   private static final ConnectionType defaultConnectionDefinition = new ConnectionType(new HashMap<String, Type>());
+  private static final Type boolType = BooleanType.getInstance();
 
   @Test
   public void testGetAttribute() throws UndeclaredIdentifierException {
     Connection ept = new Connection(defaultConnectionDefinition);
-    Value v = new BooleanValue(new BooleanType(), true);
+    Value v = new BooleanValue(boolType, true);
     ept.setAttribute("v", v);
     Value vActual = ept.getAttribute("v");
     assertEquals(v, vActual);
@@ -28,7 +29,7 @@ public class TestConnection {
   @Test
   public void testSetAttribute() {
     Connection ept = new Connection(defaultConnectionDefinition);
-    Value v = new BooleanValue(new BooleanType(), true);
+    Value v = new BooleanValue(boolType, true);
     ept.setAttribute("v", v);
   }
   
@@ -36,7 +37,6 @@ public class TestConnection {
   public void testSetAttribute_multiple_set() {
     // setting an attribute twice should just work
     Connection ept = new Connection(defaultConnectionDefinition);
-    Type boolType = new BooleanType();
     Value v = new BooleanValue(boolType, true);
     ept.setAttribute("v", v);
     Value v2 = new BooleanValue(boolType, false);

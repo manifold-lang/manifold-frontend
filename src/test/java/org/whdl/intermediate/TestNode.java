@@ -10,11 +10,12 @@ public class TestNode {
 
   private static final NodeType defaultNodeDefinition = new NodeType(new HashMap<String, Type>(), new HashMap<String, EndpointType>());
   private static final EndpointType defaultEndpointDefinition = new EndpointType(new HashMap<String, Type>());
+  private static final Type boolType = BooleanType.getInstance();
 
   @Test
   public void testGetAttribute() throws UndeclaredIdentifierException {
     Node n = new Node(defaultNodeDefinition);
-    Value v = new BooleanValue(new BooleanType(), true);
+    Value v = new BooleanValue(boolType, true);
     n.setAttribute("abc", v);
     Value vActual = n.getAttribute("abc");
     assertEquals(v, vActual);
@@ -29,14 +30,13 @@ public class TestNode {
   @Test
   public void testSetAttribute() {
     Node n = new Node(defaultNodeDefinition);
-    Value v = new BooleanValue(new BooleanType(), true);
+    Value v = new BooleanValue(boolType, true);
     n.setAttribute("abc", v);
   }
   
   @Test
   public void testSetAttribute_multiple_set() {
     // setting an attribute and then setting it again should just work
-    Type boolType = new BooleanType();
     Node n = new Node(defaultNodeDefinition);
     Value v = new BooleanValue(boolType, true);
     n.setAttribute("abc", v);
