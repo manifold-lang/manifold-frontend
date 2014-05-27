@@ -4,24 +4,23 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Endpoint extends Value {
-  private String instanceName;
-  private EndpointTypeDefinition definition;
-  public EndpointTypeDefinition getDefinition(){
-    return this.definition;
-  }
-  
+ 
   private Map<String, Value> attributes;
-  private Node parent;
+  public Value getAttribute(String attrName) throws UndeclaredIdentifierException{
+    if(attributes.containsKey(attrName)){
+      return attributes.get(attrName);
+    }else{
+      throw new UndeclaredIdentifierException("no attribute named '" + attrName + "'");
+    }
+  }
+  public void setAttribute(String attrName, Value attrValue){
+    attributes.put(attrName, attrValue);
+  }
+  private Node parent = null;
   
-  public Endpoint(String instanceName, EndpointTypeDefinition definition, Node parent){
-    this.instanceName = instanceName;
-    this.definition = definition;
+  public Endpoint(EndpointType type){
+    super(type);
     this.attributes = new HashMap<String, Value>();
-    this.parent = parent;
   }
 
-  @Override
-  public Type acceptVisitor(ValueTypeVisitor v) {
-    return v.visit(this);
-  }
 }

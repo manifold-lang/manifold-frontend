@@ -4,25 +4,23 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Connection extends Value {
-  private String instanceName;
-  private ConnectionTypeDefinition definition;
-  public ConnectionTypeDefinition getDefinition(){
-    return this.definition;
-  }
-  
+ 
   private Map<String, Value> attributes;
-  private Endpoint endpointFrom, endpointTo;
+  public Value getAttribute(String attrName) throws UndeclaredIdentifierException{
+    if(attributes.containsKey(attrName)){
+      return attributes.get(attrName);
+    }else{
+      throw new UndeclaredIdentifierException("no attribute named '" + attrName + "'");
+    }
+  }
+  public void setAttribute(String attrName, Value attrValue){
+    attributes.put(attrName, attrValue);
+  }
+  private Endpoint endpointFrom = null, endpointTo = null;
   
-  public Connection(String instanceName, ConnectionTypeDefinition definition, Endpoint endpointFrom, Endpoint endpointTo){
-    this.instanceName = instanceName;
-    this.definition = definition;
+  public Connection(ConnectionType type){
+    super(type);
     this.attributes = new HashMap<String, Value>();
-    this.endpointFrom = endpointFrom;
-    this.endpointTo = endpointTo;
   }
 
-  @Override
-  public Type acceptVisitor(ValueTypeVisitor v) {
-    return v.visit(this);
-  }
 }
