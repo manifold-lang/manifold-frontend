@@ -8,14 +8,19 @@ public class TestAtomicTypes {
   
   @Test
   public void testEquality() {
-    Type p1 = new BooleanType();
-    Type p2 = new IntegerType();
-    // two types are equal iff they are the same object
-    assertEquals(p1, p1);
-    assertEquals(p2, p2);
+    BooleanType p1 = BooleanType.getInstance();
+    IntegerType p2 = IntegerType.getInstance();
+    StringType p3 = StringType.getInstance();
+    // Primitive types are singletons.
+    assertEquals(p1, BooleanType.getInstance());
+    assertEquals(p2, IntegerType.getInstance());
+    assertEquals(p3, StringType.getInstance());
+    // Two types are equal iff they are the same object
     assertNotEquals(p1, p2);
-    Type p3 = new BooleanType();
     assertNotEquals(p1, p3);
+    assertNotEquals(p2, p3);
+    // Equality function doesn't fail for null.
+    assertFalse(p1.equals(null));
   }
 
 }

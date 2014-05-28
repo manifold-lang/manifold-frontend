@@ -11,7 +11,7 @@ public class TestSchematic {
   @Test
   public void testAddTypeDef() throws MultipleDefinitionException {
     Schematic s = new Schematic("test");
-    Type t1 = new IntegerType();
+    Type t1 = IntegerType.getInstance();
     s.addUserDefinedTypeDefinition("foo", t1);
   }
   
@@ -20,12 +20,12 @@ public class TestSchematic {
     // We should not be able to add two type definitions whose first argument is the same string.
     Schematic s = new Schematic("test");
     try{
-      Type t1 = new IntegerType();
+      Type t1 = IntegerType.getInstance();
       s.addUserDefinedTypeDefinition("foo", t1);
     }catch(MultipleDefinitionException mde){
       fail("exception thrown too early: " + mde.getMessage());
     }
-    Type t2 = new IntegerType();
+    Type t2 = IntegerType.getInstance();
     s.addUserDefinedTypeDefinition("foo", t2);
   }
   
@@ -34,14 +34,14 @@ public class TestSchematic {
     // Suppose we create a new Schematic and then try to redefine the meaning of "Int".
     // Since "Int" is a built-in type, this should result in a MultipleDefinitionException being thrown.
     Schematic s = new Schematic("test");
-    Type td = new StringType();
+    Type td = StringType.getInstance();
     s.addUserDefinedTypeDefinition("Int", td);
   }
   
   @Test
   public void testGetTypeDef() throws UndeclaredIdentifierException, MultipleDefinitionException{
     Schematic s = new Schematic("test");
-    Type expected = new IntegerType();
+    Type expected = IntegerType.getInstance();
     s.addUserDefinedTypeDefinition("foo", expected);
     Type actual = s.getUserDefinedTypeDefinition("foo");
     assertEquals(expected, actual);
@@ -204,7 +204,7 @@ public class TestSchematic {
     // without encountering a "multiple definition" exception.
     Schematic s = new Schematic("test");
     
-    Type t1 = new StringType();
+    Type t1 = StringType.getInstance();
     ConstraintType ct1 = new ConstraintType(new HashMap<String, Type>());
     ConnectionType cn1 = new ConnectionType(new HashMap<String, Type>());
     NodeType n1 = new NodeType(new HashMap<String, Type>(), new HashMap<String, EndpointType>());

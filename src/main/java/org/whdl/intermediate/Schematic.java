@@ -45,9 +45,9 @@ public class Schematic {
    * Every class in .intermediate.types should be represented in here.
    */
   private void populateDefaultTypeDefinitions(){
-    Type boolType = new BooleanType();
-    Type intType = new IntegerType();    
-    Type stringType = new StringType();
+    Type boolType = BooleanType.getInstance();
+    Type intType = IntegerType.getInstance();
+    Type stringType = StringType.getInstance();
     try{
       addUserDefinedTypeDefinition("Bool", boolType);
       addUserDefinedTypeDefinition("Int", intType);
