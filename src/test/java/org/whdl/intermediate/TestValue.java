@@ -10,7 +10,7 @@ public class TestValue {
 
   @Test
   public void testRetrieveType() {
-    NodeType nDef = new NodeType(new HashMap<String, Type>(), new HashMap<String, EndpointType>());
+    NodeType nDef = new NodeType(new HashMap<String, Type>(), new HashMap<String, PortType>());
     Value dom = new Node(nDef);
     Type expected = nDef;
     Type actual = dom.getType();

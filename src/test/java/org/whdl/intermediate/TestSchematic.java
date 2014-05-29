@@ -56,8 +56,8 @@ public class TestSchematic {
   @Test
   public void testAddEndpointDef() throws MultipleDefinitionException {
     Schematic s = new Schematic("test");
-    EndpointType e1 = new EndpointType(new HashMap<String, Type>());
-    s.addEndpointTypeDefinition("n1",e1);
+    PortType e1 = new PortType(new HashMap<String, Type>());
+    s.addPortTypeDefinition("n1",e1);
   }
   
   @Test(expected=MultipleDefinitionException.class)
@@ -65,34 +65,34 @@ public class TestSchematic {
     // We should not be able to add two endpoint definitions whose first argument is the same string.
     Schematic s = new Schematic("test");
     try{
-      EndpointType n1 = new EndpointType(new HashMap<String, Type>());
-      s.addEndpointTypeDefinition("foo", n1);
+      PortType n1 = new PortType(new HashMap<String, Type>());
+      s.addPortTypeDefinition("foo", n1);
     }catch(MultipleDefinitionException mde){
       fail("exception thrown too early: " + mde.getMessage());
     }
-    EndpointType n2 = new EndpointType(new HashMap<String, Type>());
-    s.addEndpointTypeDefinition("foo", n2);
+    PortType n2 = new PortType(new HashMap<String, Type>());
+    s.addPortTypeDefinition("foo", n2);
   }
   
   @Test
   public void testGetEndpointDef() throws UndeclaredIdentifierException, MultipleDefinitionException{
     Schematic s = new Schematic("test");
-    EndpointType expected = new EndpointType(new HashMap<String, Type>());
-    s.addEndpointTypeDefinition("foo", expected);
-    EndpointType actual = s.getEndpointTypeDefinition("foo");
+    PortType expected = new PortType(new HashMap<String, Type>());
+    s.addPortTypeDefinition("foo", expected);
+    PortType actual = s.getPortTypeDefinition("foo");
     assertEquals(expected, actual);
   }
   
   @Test(expected=UndeclaredIdentifierException.class)
   public void testGetEndpointDef_notDeclared() throws UndeclaredIdentifierException {
     Schematic s = new Schematic("test");
-    EndpointType bogus = s.getEndpointTypeDefinition("does-not-exist");
+    PortType bogus = s.getPortTypeDefinition("does-not-exist");
   }
   
   @Test
   public void testAddNodeDef() throws MultipleDefinitionException {
     Schematic s = new Schematic("test");
-    NodeType n1 = new NodeType(new HashMap<String, Type>(), new HashMap<String, EndpointType>());
+    NodeType n1 = new NodeType(new HashMap<String, Type>(), new HashMap<String, PortType>());
     s.addNodeTypeDefinition("n1", n1);
   }
   
@@ -101,19 +101,19 @@ public class TestSchematic {
     // We should not be able to add two node definitions whose first argument is the same string.
     Schematic s = new Schematic("test");
     try{
-      NodeType n1 = new NodeType(new HashMap<String, Type>(), new HashMap<String, EndpointType>());
+      NodeType n1 = new NodeType(new HashMap<String, Type>(), new HashMap<String, PortType>());
       s.addNodeTypeDefinition("foo", n1);
     }catch(MultipleDefinitionException mde){
       fail("exception thrown too early: " + mde.getMessage());
     }
-    NodeType n2 = new NodeType(new HashMap<String, Type>(), new HashMap<String, EndpointType>());
+    NodeType n2 = new NodeType(new HashMap<String, Type>(), new HashMap<String, PortType>());
     s.addNodeTypeDefinition("foo", n2);
   }
   
   @Test
   public void testGetNodeDef() throws UndeclaredIdentifierException, MultipleDefinitionException{
     Schematic s = new Schematic("test");
-    NodeType expected = new NodeType(new HashMap<String, Type>(), new HashMap<String, EndpointType>());
+    NodeType expected = new NodeType(new HashMap<String, Type>(), new HashMap<String, PortType>());
     s.addNodeTypeDefinition("foo", expected);
     NodeType actual = s.getNodeTypeDefinition("foo");
     assertEquals(expected, actual);
@@ -207,14 +207,14 @@ public class TestSchematic {
     Type t1 = StringType.getInstance();
     ConstraintType ct1 = new ConstraintType(new HashMap<String, Type>());
     ConnectionType cn1 = new ConnectionType(new HashMap<String, Type>());
-    NodeType n1 = new NodeType(new HashMap<String, Type>(), new HashMap<String, EndpointType>());
-    EndpointType e1 = new EndpointType(new HashMap<String, Type>());
+    NodeType n1 = new NodeType(new HashMap<String, Type>(), new HashMap<String, PortType>());
+    PortType e1 = new PortType(new HashMap<String, Type>());
     
     s.addUserDefinedTypeDefinition("foo", t1);
     s.addConstraintTypeDefinition("foo", ct1);
     s.addConnectionTypeDefinition("foo", cn1);
     s.addNodeTypeDefinition("foo", n1);
-    s.addEndpointTypeDefinition("foo", e1);
+    s.addPortTypeDefinition("foo", e1);
   }
   
 }

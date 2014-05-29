@@ -13,7 +13,7 @@ public class Schematic {
   
   // Maps containing object definitions for this schematic; they are all indexed by the (string) type-name of the object.
   private Map<String, Type> userDefinedTypes;
-  private Map<String, EndpointType> endpointTypes;
+  private Map<String, PortType> portTypes;
   private Map<String, NodeType> nodeTypes;
   private Map<String, ConnectionType> connectionTypes;
   private Map<String, ConstraintType> constraintTypes;
@@ -29,7 +29,7 @@ public class Schematic {
     this.userDefinedTypes = new HashMap<String, Type>();
     populateDefaultTypeDefinitions();
 
-    this.endpointTypes = new HashMap<String, EndpointType>();
+    this.portTypes = new HashMap<String, PortType>();
     this.nodeTypes = new HashMap<String, NodeType>();
     this.connectionTypes = new HashMap<String, ConnectionType>();
     this.constraintTypes = new HashMap<String, ConstraintType>();
@@ -73,16 +73,16 @@ public class Schematic {
     }
   }
   
-  public void addEndpointTypeDefinition(String typename, EndpointType ed) throws MultipleDefinitionException{
-    if(endpointTypes.containsKey(typename)){
+  public void addPortTypeDefinition(String typename, PortType portType) throws MultipleDefinitionException{
+    if(portTypes.containsKey(typename)){
       throw new MultipleDefinitionException("endpoint-definition", typename);
     }
-    endpointTypes.put(typename, ed);
+    portTypes.put(typename, portType);
   }
   
-  public EndpointType getEndpointTypeDefinition(String typename) throws UndeclaredIdentifierException {
-    if(endpointTypes.containsKey(typename)){
-      return endpointTypes.get(typename);
+  public PortType getPortTypeDefinition(String typename) throws UndeclaredIdentifierException {
+    if(portTypes.containsKey(typename)){
+      return portTypes.get(typename);
     }else{
       throw new UndeclaredIdentifierException(typename);
     }

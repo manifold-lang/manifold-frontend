@@ -16,7 +16,7 @@ public class Connection extends Value {
   public void setAttribute(String attrName, Value attrValue){
     attributes.put(attrName, attrValue);
   }
-  private Endpoint endpointFrom = null, endpointTo = null;
+  private Port endpointFrom = null, endpointTo = null;
   
   public Connection(ConnectionType type){
     super(type);

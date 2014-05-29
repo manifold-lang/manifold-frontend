@@ -3,7 +3,7 @@ package org.whdl.intermediate;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Endpoint extends Value {
+public class Port extends Value {
  
   private Map<String, Value> attributes;
   public Value getAttribute(String attrName) throws UndeclaredIdentifierException{
@@ -18,7 +18,7 @@ public class Endpoint extends Value {
   }
   private Node parent = null;
   
-  public Endpoint(EndpointType type){
+  public Port(PortType type){
     super(type);
     this.attributes = new HashMap<String, Value>();
   }

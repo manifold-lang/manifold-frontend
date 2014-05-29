@@ -8,8 +8,8 @@ import org.junit.Test;
 
 public class TestNode {
 
-  private static final NodeType defaultNodeDefinition = new NodeType(new HashMap<String, Type>(), new HashMap<String, EndpointType>());
-  private static final EndpointType defaultEndpointDefinition = new EndpointType(new HashMap<String, Type>());
+  private static final NodeType defaultNodeDefinition = new NodeType(new HashMap<String, Type>(), new HashMap<String, PortType>());
+  private static final PortType defaultEndpointDefinition = new PortType(new HashMap<String, Type>());
   private static final Type boolType = BooleanType.getInstance();
 
   @Test
@@ -47,21 +47,21 @@ public class TestNode {
   @Test
   public void testGetEndpoint() throws UndeclaredIdentifierException {
     Node n = new Node(defaultNodeDefinition);
-    Endpoint ept1 = new Endpoint(defaultEndpointDefinition);
+    Port ept1 = new Port(defaultEndpointDefinition);
     n.setEndpoint("ept1", ept1);
-    Endpoint eptActual = n.getEndpoint("ept1");
+    Port eptActual = n.getEndpoint("ept1");
     assertEquals(ept1, eptActual);
   }
   
   @Test(expected=org.whdl.intermediate.UndeclaredIdentifierException.class)
   public void testGetEndpoint_nonexistent() throws UndeclaredIdentifierException {
     Node n = new Node(defaultNodeDefinition);
-    Endpoint eptBogus = n.getEndpoint("bogus");  }
+    Port eptBogus = n.getEndpoint("bogus");  }
 
   @Test
   public void testSetEndpoint() {
     Node n = new Node(defaultNodeDefinition);
-    Endpoint ept1 = new Endpoint(defaultEndpointDefinition);
+    Port ept1 = new Port(defaultEndpointDefinition);
     n.setEndpoint("ept1", ept1);
   }
   
@@ -69,9 +69,9 @@ public class TestNode {
   public void testSetEndpoint_multiple_set() {
     // setting an endpoint and then setting it again should just work
     Node n = new Node(defaultNodeDefinition);
-    Endpoint ept1 = new Endpoint(defaultEndpointDefinition);
+    Port ept1 = new Port(defaultEndpointDefinition);
     n.setEndpoint("ept1", ept1);
-    Endpoint ept2 = new Endpoint(defaultEndpointDefinition);
+    Port ept2 = new Port(defaultEndpointDefinition);
     n.setEndpoint("ept1", ept2);
   }
 
