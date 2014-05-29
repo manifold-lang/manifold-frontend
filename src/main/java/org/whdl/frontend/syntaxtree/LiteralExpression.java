@@ -18,7 +18,7 @@ public class LiteralExpression extends Expression {
 	}
 
 	@Override
-	public void verify() {
+	public void verify() throws Exception{
 		value.verify();
 	}
 

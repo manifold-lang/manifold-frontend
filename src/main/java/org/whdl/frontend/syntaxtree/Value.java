@@ -8,7 +8,7 @@ public abstract class Value {
    * Executed during formal verification pass. Any errors should result in an
    * exception.
    */
-  public abstract void verify();
+  public abstract void verify() throws Exception;
   
   /*
    * Returns true if this value can be evaulated at compiletime.
