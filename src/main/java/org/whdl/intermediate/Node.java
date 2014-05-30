@@ -16,22 +16,22 @@ public class Node extends Value{
     attributes.put(attrName, attrValue);
   }
   
-  private Map<String, Port> endpoints;
-  public Port getEndpoint(String eptName) throws UndeclaredIdentifierException{
-    if(endpoints.containsKey(eptName)){
-      return endpoints.get(eptName);
+  private Map<String, Port> ports;
+  public Port getPort(String portName) throws UndeclaredIdentifierException{
+    if(ports.containsKey(portName)){
+      return ports.get(portName);
     }else{
-      throw new UndeclaredIdentifierException("no endpoint named '" + eptName + "'");
+      throw new UndeclaredIdentifierException("no port named '" + portName + "'");
     }
   }
-  public void setEndpoint(String eptName, Port eptValue){
-    endpoints.put(eptName, eptValue);
+  public void setPort(String portName, Port portValue){
+    ports.put(portName, portValue);
   }
   
   public Node(Type type){
     super(type);
     this.attributes = new HashMap<String, Value>();
-    this.endpoints = new HashMap<String, Port>();
+    this.ports = new HashMap<String, Port>();
   }
 
 }

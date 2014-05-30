@@ -75,7 +75,7 @@ public class Schematic {
   
   public void addPortTypeDefinition(String typename, PortType portType) throws MultipleDefinitionException{
     if(portTypes.containsKey(typename)){
-      throw new MultipleDefinitionException("endpoint-definition", typename);
+      throw new MultipleDefinitionException("port-definition", typename);
     }
     portTypes.put(typename, portType);
   }

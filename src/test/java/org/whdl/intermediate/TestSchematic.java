@@ -54,15 +54,15 @@ public class TestSchematic {
   }
   
   @Test
-  public void testAddEndpointDef() throws MultipleDefinitionException {
+  public void testAddPortDef() throws MultipleDefinitionException {
     Schematic s = new Schematic("test");
     PortType e1 = new PortType(new HashMap<String, Type>());
     s.addPortTypeDefinition("n1",e1);
   }
   
   @Test(expected=MultipleDefinitionException.class)
-  public void testAddEndpointDef_multipleDefinitions() throws MultipleDefinitionException {
-    // We should not be able to add two endpoint definitions whose first argument is the same string.
+  public void testAddPortDef_multipleDefinitions() throws MultipleDefinitionException {
+    // We should not be able to add two port definitions whose first argument is the same string.
     Schematic s = new Schematic("test");
     try{
       PortType n1 = new PortType(new HashMap<String, Type>());
@@ -75,7 +75,7 @@ public class TestSchematic {
   }
   
   @Test
-  public void testGetEndpointDef() throws UndeclaredIdentifierException, MultipleDefinitionException{
+  public void testGetPortDef() throws UndeclaredIdentifierException, MultipleDefinitionException{
     Schematic s = new Schematic("test");
     PortType expected = new PortType(new HashMap<String, Type>());
     s.addPortTypeDefinition("foo", expected);
@@ -84,7 +84,7 @@ public class TestSchematic {
   }
   
   @Test(expected=UndeclaredIdentifierException.class)
-  public void testGetEndpointDef_notDeclared() throws UndeclaredIdentifierException {
+  public void testGetPortDef_notDeclared() throws UndeclaredIdentifierException {
     Schematic s = new Schematic("test");
     PortType bogus = s.getPortTypeDefinition("does-not-exist");
   }
@@ -200,7 +200,7 @@ public class TestSchematic {
   @Test
   public void testSeparationOfNamespaces_Definitions() throws MultipleDefinitionException{
     // We should be able to add one of each of a TypeDefinition, ConstraintDefinition,
-    // ConnectionDefinition, NodeDefinition, and EndpointDefinition with the same name
+    // ConnectionDefinition, NodeDefinition, and PortDefinition with the same name
     // without encountering a "multiple definition" exception.
     Schematic s = new Schematic("test");
     
