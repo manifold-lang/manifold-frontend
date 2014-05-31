@@ -47,32 +47,32 @@ public class TestNode {
   @Test
   public void testGetPort() throws UndeclaredIdentifierException {
     Node n = new Node(defaultNodeDefinition);
-    Port ept1 = new Port(defaultPortDefinition);
-    n.setPort("ept1", ept1);
-    Port eptActual = n.getPort("ept1");
-    assertEquals(ept1, eptActual);
+    Port pt1 = new Port(defaultPortDefinition);
+    n.setPort("pt1", pt1);
+    Port eptActual = n.getPort("pt1");
+    assertEquals(pt1, eptActual);
   }
   
   @Test(expected=org.whdl.intermediate.UndeclaredIdentifierException.class)
   public void testGetPort_nonexistent() throws UndeclaredIdentifierException {
     Node n = new Node(defaultNodeDefinition);
-    Port eptBogus = n.getPort("bogus");  }
+    Port ptBogus = n.getPort("bogus");  }
 
   @Test
   public void testSetPort() {
     Node n = new Node(defaultNodeDefinition);
-    Port ept1 = new Port(defaultPortDefinition);
-    n.setPort("ept1", ept1);
+    Port pt1 = new Port(defaultPortDefinition);
+    n.setPort("pt1", pt1);
   }
   
   @Test
   public void testSetPort_multiple_set() {
     // setting a port and then setting it again should just work
     Node n = new Node(defaultNodeDefinition);
-    Port ept1 = new Port(defaultPortDefinition);
-    n.setPort("ept1", ept1);
-    Port ept2 = new Port(defaultPortDefinition);
-    n.setPort("ept1", ept2);
+    Port pt1 = new Port(defaultPortDefinition);
+    n.setPort("pt1", pt1);
+    Port pt2 = new Port(defaultPortDefinition);
+    n.setPort("pt1", pt2);
   }
 
 }
