@@ -1,8 +1,10 @@
 package org.whdl.intermediate;
 
+import static org.junit.Assert.assertTrue;
+
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
+import java.io.StringWriter;
 import java.util.HashMap;
 
 import org.junit.Before;
@@ -10,28 +12,46 @@ import org.junit.Test;
 
 public class TestSerialization {
 
+  private static final String TEST_SCHEMATIC_NAME = "dogematics";
+  private static final String TEST_TYPE_NAME = "very type";
+  private static final String TEST_CONSTRAINT_TYPE_NAME = "much constraint";
+  private static final String TEST_NODE_TYPE_NAME = "such node";
+  private static final String TEST_PORT_TYPE_NAME = "wow port";
+  private static final String TEST_PORT_TYPE_ATTRIBUTE_NAME = "much attributes";
+
   private Schematic testSchematic;
 
   @Before
   public void setup() throws MultipleDefinitionException {
 
-    testSchematic = new Schematic("test");
+    testSchematic = new Schematic(TEST_SCHEMATIC_NAME);
     Type t1 = IntegerType.getInstance();
-    testSchematic.addUserDefinedTypeDefinition("type1", t1);
+    testSchematic.addUserDefinedTypeDefinition(TEST_TYPE_NAME, t1);
 
     ConstraintType c1 = new ConstraintType(new HashMap<String, Type>());
-    testSchematic.addConstraintTypeDefinition("constraint1", c1);
+    testSchematic.addConstraintTypeDefinition(TEST_CONSTRAINT_TYPE_NAME, c1);
     NodeType n1 = new NodeType(new HashMap<String, Type>(), new HashMap<String, PortType>());
-    testSchematic.addNodeTypeDefinition("node1", n1);
+    testSchematic.addNodeTypeDefinition(TEST_NODE_TYPE_NAME, n1);
 
     HashMap<String, Type> attributes = new HashMap<String, Type>();
-    attributes.put("imakey", t1);
+    attributes.put(TEST_PORT_TYPE_ATTRIBUTE_NAME, t1);
     PortType e1 = new PortType(attributes);
-    testSchematic.addPortTypeDefinition("n1", e1);
+    testSchematic.addPortTypeDefinition(TEST_PORT_TYPE_NAME, e1);
   }
 
   @Test
   public void testAddConstraintDef() throws IOException {
-    testSchematic.serialize(new BufferedWriter(new OutputStreamWriter(System.out)), true);
+    StringWriter outbuffer = new StringWriter();
+    testSchematic.serialize(new BufferedWriter(outbuffer));
+    String result = outbuffer.toString();
+
+    assertTrue(result.contains(TEST_SCHEMATIC_NAME));
+    assertTrue(result.contains(TEST_TYPE_NAME));
+    assertTrue(result.contains(TEST_CONSTRAINT_TYPE_NAME));
+    assertTrue(result.contains(TEST_NODE_TYPE_NAME));
+    assertTrue(result.contains(TEST_PORT_TYPE_NAME));
+    assertTrue(result.contains(TEST_PORT_TYPE_ATTRIBUTE_NAME));
+
+    System.out.println(result);
   }
 }
