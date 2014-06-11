@@ -1,4 +1,13 @@
 language: java
 
+jdk:
+- oraclejdk7
+
 notifications:
   flowdock: 7d74281204f1157d62da6c815741d2fe
+
+env:
+- TERM=dumb
+
+after_success:
+- gradle jacocoTestReport coveralls
