@@ -1,12 +1,17 @@
 package org.whdl.intermediate;
 
+import java.io.BufferedWriter;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 /**
- * A Schematic contains all the information needed by the intermediate representation.
- * This includes type definitions, node/connection definitions, node/connection instantiations,
- * and constraint definitions/instantiations.
+ * A Schematic contains all the information needed by the intermediate
+ * representation. This includes type definitions, node/connection definitions,
+ * node/connection instantiations, and constraint definitions/instantiations.
  */
 public class Schematic {
   private String name;
@@ -22,8 +27,8 @@ public class Schematic {
   private Map<String, Node> nodes;
   private Map<String, Connection> connections;
   private Map<String, Constraint> constraints;
-  
-  public Schematic(String name){
+
+  public Schematic(String name) {
     this.name = name;
     
     this.userDefinedTypes = new HashMap<String, Type>();
@@ -38,11 +43,11 @@ public class Schematic {
     this.connections = new HashMap<String, Connection>();
     this.constraints = new HashMap<String, Constraint>();
   }
-  
+
   /*
-   * Add "library standard" type definitions for basic types
-   * such as integer, string, and boolean.
-   * Every class in .intermediate.types should be represented in here.
+   * Add "library standard" type definitions for basic types such as integer,
+   * string, and boolean. Every class in .intermediate.types should be
+   * represented in here.
    */
   private void populateDefaultTypeDefinitions(){
     Type boolType = BooleanType.getInstance();
@@ -106,6 +111,7 @@ public class Schematic {
   public void addConnectionTypeDefinition(String typename, ConnectionType cd) throws MultipleDefinitionException{
     if(connectionTypes.containsKey(typename)){
       throw new MultipleDefinitionException("connection-definition", typename);
+
     }
     connectionTypes.put(typename, cd);
   }
@@ -177,5 +183,24 @@ public class Schematic {
       throw new UndeclaredIdentifierException(instanceName);
     }
   }
-  
+
+  // FIXME do we add nodes as a function of their node definition right away, or
+  // just record that the node "will" exist with such-and-such definition and
+  // elaborate it later?
+
+  public void serialize(BufferedWriter out, boolean pretty) throws IOException {
+    Gson gson;
+    if (pretty) {
+      gson = new GsonBuilder().setPrettyPrinting().create();
+    } else {
+      gson = new Gson();
+    }
+    out.write(gson.toJson(this));
+    out.flush();
+  }
+
+  public void serialize(BufferedWriter out) throws IOException {
+    serialize(out, false);
+  }
+
 }
