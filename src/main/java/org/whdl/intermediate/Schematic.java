@@ -133,6 +133,49 @@ public class Schematic {
     }
   }
   
-  // FIXME do we add nodes as a function of their node definition right away, or just record that the node "will" exist with such-and-such definition and elaborate it later?
+  public void addNode(String instanceName, Node node) throws MultipleInstantiationException {
+    if(nodes.containsKey(instanceName)){
+      throw new MultipleInstantiationException("node", instanceName);
+    }
+    nodes.put(instanceName, node);
+  }
+  
+  public Node getNode(String instanceName) throws UndeclaredIdentifierException {
+    if(nodes.containsKey(instanceName)){
+      return nodes.get(instanceName);
+    }else{
+      throw new UndeclaredIdentifierException(instanceName);
+    }
+  }
+  
+  public void addConnection(String instanceName, Connection conn) throws MultipleInstantiationException {
+    if(connections.containsKey(instanceName)){
+      throw new MultipleInstantiationException("connection", instanceName);
+    }
+    connections.put(instanceName, conn);
+  }
+  
+  public Connection getConnection(String instanceName) throws UndeclaredIdentifierException {
+    if(connections.containsKey(instanceName)){
+      return connections.get(instanceName);
+    }else{
+      throw new UndeclaredIdentifierException(instanceName);
+    }
+  }
+  
+  public void addConstraint(String instanceName, Constraint constraint) throws MultipleInstantiationException {
+    if(constraints.containsKey(instanceName)){
+      throw new MultipleInstantiationException("constraint", instanceName);
+    }
+    constraints.put(instanceName, constraint);
+  }
+  
+  public Constraint getConstraint(String instanceName) throws UndeclaredIdentifierException {
+    if(constraints.containsKey(instanceName)){
+      return constraints.get(instanceName);
+    }else{
+      throw new UndeclaredIdentifierException(instanceName);
+    }
+  }
   
 }
