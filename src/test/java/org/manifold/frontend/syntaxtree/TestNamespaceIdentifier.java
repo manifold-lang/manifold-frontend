@@ -3,7 +3,6 @@ package org.manifold.frontend.syntaxtree;
 import static org.junit.Assert.*;
 
 import org.junit.Test;
-import org.manifold.frontend.syntaxtree.NamespaceIdentifier;
 
 import java.util.ArrayList;
 
@@ -25,7 +24,7 @@ public class TestNamespaceIdentifier {
 
   @Test
   public void testListConstructor() {
-    ArrayList<String> name = new ArrayList<String>(3);
+    ArrayList<String> name = new ArrayList<>(3);
     name.add("whdl");
     name.add("is");
     name.add("cool");
@@ -37,22 +36,22 @@ public class TestNamespaceIdentifier {
     assertEquals(identifier.getName().get(2), "cool");
   }
 
-  @Test(expected=UnsupportedOperationException.class)
+  @Test(expected = UnsupportedOperationException.class)
   public void testGetNameImmutable() {
     getInstance().getName().add("NOT!");
   }
 
   @Test
   public void testToString(){
-	  String separator = NamespaceIdentifier.getSeparator();
-	  String expected = "whdl" + separator + "is" + separator + "cool";
-	  String actual = getInstance().toString();
-	  assertEquals(expected, actual);
+    String separator = NamespaceIdentifier.getSeparator();
+    String expected = "whdl" + separator + "is" + separator + "cool";
+    String actual = getInstance().toString();
+    assertEquals(expected, actual);
   }
 
   @Test
   public void isEmpty_true() {
-    NamespaceIdentifier name = new NamespaceIdentifier(new ArrayList<String>());
+    NamespaceIdentifier name = new NamespaceIdentifier(new ArrayList<>());
     assertTrue(name.isEmpty());
   }
 

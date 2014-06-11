@@ -2,14 +2,14 @@ package org.manifold.intermediate;
 
 import static org.junit.Assert.assertTrue;
 
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
+
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.HashMap;
-
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
 
 public class TestSerialization {
 
@@ -34,24 +34,27 @@ public class TestSerialization {
   private Schematic testSchematic;
 
   @Before
-  public void setup() throws MultipleDefinitionException, UndeclaredIdentifierException, MultipleAssignmentException {
+  public void setup()
+      throws MultipleDefinitionException, UndeclaredIdentifierException,
+      MultipleAssignmentException {
+  
     testSchematic = new Schematic(TEST_SCHEMATIC_NAME);
 
     // port type
-    PortType din = new PortType(new HashMap<String, Type>());
-    PortType dout = new PortType(new HashMap<String, Type>());
+    PortType din = new PortType(new HashMap<>());
+    PortType dout = new PortType(new HashMap<>());
     testSchematic.addPortType(DIGITAL_IN, din);
     testSchematic.addPortType(DIGITAL_OUT, dout);
 
     // node type
-    HashMap<String, PortType> dinPortMap = new HashMap<String, PortType>();
+    HashMap<String, PortType> dinPortMap = new HashMap<>();
     dinPortMap.put(IN_PORT_NAME, din);
 
-    HashMap<String, PortType> doutPortMap = new HashMap<String, PortType>();
+    HashMap<String, PortType> doutPortMap = new HashMap<>();
     doutPortMap.put(OUT_PORT_NAME, dout);
 
-    NodeType dinNodeType = new NodeType(new HashMap<String, Type>(), dinPortMap);
-    NodeType doutNodeType = new NodeType(new HashMap<String, Type>(), doutPortMap);
+    NodeType dinNodeType = new NodeType(new HashMap<>(), dinPortMap);
+    NodeType doutNodeType = new NodeType(new HashMap<>(), doutPortMap);
 
     testSchematic.addNodeType(IN_NODE_NAME, dinNodeType);
     testSchematic.addNodeType(OUT_NODE_NAME, doutNodeType);
@@ -61,8 +64,12 @@ public class TestSerialization {
     Node outNode = new Node(doutNodeType);
 
     // connection
-    ConnectionType conType = new ConnectionType(new HashMap<String, Type>());
-    Connection con = new Connection(conType, inNode.getPort(IN_PORT_NAME), outNode.getPort(OUT_PORT_NAME));
+    ConnectionType conType = new ConnectionType(new HashMap<>());
+    Connection con = new Connection(
+        conType,
+        inNode.getPort(IN_PORT_NAME),
+        outNode.getPort(OUT_PORT_NAME)
+    );
     
     testSchematic.addConnection(CONNECTION_NAME, con);
   }

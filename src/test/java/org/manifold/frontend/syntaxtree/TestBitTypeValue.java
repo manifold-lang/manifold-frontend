@@ -1,11 +1,9 @@
 package org.manifold.frontend.syntaxtree;
 
+import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.junit.Assert.*;
 
 import org.junit.Test;
-import org.manifold.frontend.syntaxtree.BitTypeValue;
-
-import static org.hamcrest.CoreMatchers.instanceOf;
 
 public class TestBitTypeValue {
 

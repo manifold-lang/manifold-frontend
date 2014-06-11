@@ -4,10 +4,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Attributes {
-  private Map<String, Value> data;
+  private final Map<String, Value> data;
 
   public Attributes() {
-    data = new HashMap<String, Value>();
+    data = new HashMap<>();
   }
 
   public Value get(String attrName) throws UndeclaredAttributeException {

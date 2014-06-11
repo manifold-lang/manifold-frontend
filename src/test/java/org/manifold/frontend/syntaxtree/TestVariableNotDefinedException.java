@@ -2,17 +2,14 @@ package org.manifold.frontend.syntaxtree;
 
 import static org.junit.Assert.*;
 
-import java.util.ArrayList;
-
 import org.junit.Test;
-import org.manifold.frontend.syntaxtree.NamespaceIdentifier;
-import org.manifold.frontend.syntaxtree.VariableIdentifier;
-import org.manifold.frontend.syntaxtree.VariableNotDefinedException;
+
+import java.util.ArrayList;
 
 public class TestVariableNotDefinedException {
 
   private NamespaceIdentifier getNamespaceIdentifierInstance() {
-    ArrayList<String> name = new ArrayList<String>(1);
+    ArrayList<String> name = new ArrayList<>(1);
     name.add("whdl");
     return new NamespaceIdentifier(name);
   }

@@ -3,7 +3,7 @@ package org.manifold.frontend.syntaxtree;
 public class VariableNotAssignedException extends Exception {
   private static final long serialVersionUID = 1L;
   
-  private Variable variable;
+  private final Variable variable;
   public VariableNotAssignedException(Variable var){
     this.variable = var;
   }

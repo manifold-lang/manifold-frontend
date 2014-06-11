@@ -3,16 +3,6 @@ package org.manifold.frontend.syntaxtree;
 import static org.junit.Assert.*;
 
 import org.junit.Test;
-import org.manifold.frontend.syntaxtree.BitTypeValue;
-import org.manifold.frontend.syntaxtree.BitValue;
-import org.manifold.frontend.syntaxtree.Expression;
-import org.manifold.frontend.syntaxtree.LiteralExpression;
-import org.manifold.frontend.syntaxtree.MultipleAssignmentException;
-import org.manifold.frontend.syntaxtree.NamespaceIdentifier;
-import org.manifold.frontend.syntaxtree.TypeMismatchException;
-import org.manifold.frontend.syntaxtree.Variable;
-import org.manifold.frontend.syntaxtree.VariableIdentifier;
-import org.manifold.frontend.syntaxtree.VariableNotAssignedException;
 
 public class TestVariable {
     private NamespaceIdentifier getNamespaceIdentifier() {
@@ -46,7 +36,7 @@ public class TestVariable {
       assertEquals(getVariable().getType(), getTypeExpression().evaluate());
     }
     
-    @Test(expected=VariableNotAssignedException.class)
+    @Test(expected = VariableNotAssignedException.class)
     public void testGetValueUnassigned() throws VariableNotAssignedException {
       Variable v = getVariable();
       assertFalse(v.isAssigned());
@@ -62,14 +52,14 @@ public class TestVariable {
       assertEquals(getValueExpression().evaluate(), v.getValue());
     }
     
-    @Test(expected=MultipleAssignmentException.class)
+    @Test(expected = MultipleAssignmentException.class)
     public void testSetValueMultiple() throws MultipleAssignmentException {
       Variable v = getVariable();
       v.setValue(getValueExpression());
       v.setValue(getValueExpression());
     }
     
-    @Test(expected=TypeMismatchException.class)
+    @Test(expected = TypeMismatchException.class)
     public void verify_nontypeThrow() throws
         TypeMismatchException,
         MultipleAssignmentException {
@@ -81,7 +71,7 @@ public class TestVariable {
       v.verify();
     }
     
-    @Test(expected=TypeMismatchException.class)
+    @Test(expected = TypeMismatchException.class)
     public void verify_typeMismatchThrow() throws
         TypeMismatchException,
         MultipleAssignmentException {

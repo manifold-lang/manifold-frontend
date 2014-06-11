@@ -3,19 +3,6 @@ package org.manifold.frontend.syntaxtree;
 import static org.junit.Assert.*;
 
 import org.junit.Test;
-import org.manifold.frontend.syntaxtree.BitTypeValue;
-import org.manifold.frontend.syntaxtree.BitValue;
-import org.manifold.frontend.syntaxtree.Expression;
-import org.manifold.frontend.syntaxtree.LiteralExpression;
-import org.manifold.frontend.syntaxtree.MultipleAssignmentException;
-import org.manifold.frontend.syntaxtree.MultipleDefinitionException;
-import org.manifold.frontend.syntaxtree.NamespaceIdentifier;
-import org.manifold.frontend.syntaxtree.Scope;
-import org.manifold.frontend.syntaxtree.TypeMismatchException;
-import org.manifold.frontend.syntaxtree.Variable;
-import org.manifold.frontend.syntaxtree.VariableIdentifier;
-import org.manifold.frontend.syntaxtree.VariableNotAssignedException;
-import org.manifold.frontend.syntaxtree.VariableNotDefinedException;
 
 public class TestScope {
 
@@ -36,8 +23,10 @@ public class TestScope {
   }
 
   private VariableIdentifier getVariableIdentifier() {
-    VariableIdentifier id = new VariableIdentifier(getNamespaceIdentifier(),
-        "foo");
+    VariableIdentifier id = new VariableIdentifier(
+      getNamespaceIdentifier(),
+      "foo"
+    );
 
     return id;
   }
@@ -46,7 +35,7 @@ public class TestScope {
     return new LiteralExpression(BitTypeValue.getInstance());
   }
 
-  // FIXME(lucas) return an instance of the type
+  // TODO(lucas) return an instance of the type
   private Expression getValueExpression() {
     return new LiteralExpression(BitValue.getInstance(true));
   }
@@ -70,7 +59,7 @@ public class TestScope {
     s.defineVariable(getVariableIdentifier(), getTypeExpression());
     assertTrue(s.isVariableDefined(getVariableIdentifier()));
   }
-  
+
   @Test
   public void testIsVariableDefined_false() {
     Scope s = new Scope();

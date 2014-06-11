@@ -13,12 +13,13 @@ public class BitValue extends Value {
     }
   }
 
-  private boolean value;
+  private final boolean value;
 
   private BitValue(boolean value) {
     this.value = value;
   }
 
+  @Override
   public TypeValue getType() {
     return BitTypeValue.getInstance();
   }
@@ -27,12 +28,15 @@ public class BitValue extends Value {
     return value;
   }
   
+  @Override
   public void verify() {}
   
+  @Override
   public boolean isCompiletimeEvaluable() {
     return true;
   }
   
+  @Override
   public boolean isSynthesizable() {
     return true;
   }

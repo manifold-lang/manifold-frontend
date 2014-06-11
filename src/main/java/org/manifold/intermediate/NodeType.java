@@ -1,13 +1,13 @@
 package org.manifold.intermediate;
 
-import java.util.Map;
-
 import com.google.common.collect.ImmutableMap;
+
+import java.util.Map;
 
 public class NodeType extends Type {
 
-  private Map<String, Type> attributes;
-  private Map<String, PortType> ports;
+  private final Map<String, Type> attributes;
+  private final Map<String, PortType> ports;
 
   public NodeType(Map<String, Type> attributes, Map<String, PortType> ports) {
     this.attributes = ImmutableMap.copyOf(attributes);

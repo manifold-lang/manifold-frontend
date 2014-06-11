@@ -2,14 +2,15 @@ package org.manifold.intermediate;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.HashMap;
-
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.HashMap;
+
 public class TestNode {
 
-  private static final PortType defaultPortDefinition = new PortType(new HashMap<String, Type>());
+  private static final PortType defaultPortDefinition =
+      new PortType(new HashMap<>());
   private static final Type boolType = BooleanType.getInstance();
   private static final String PORT_NAME = "testport";
   private static final String PORT_ATTR_KEY = "the truth will set you free";
@@ -20,7 +21,7 @@ public class TestNode {
   public void setup() {
     HashMap<String, PortType> portMap = new HashMap<>();
     portMap.put(PORT_NAME, defaultPortDefinition);
-    n = new Node(new NodeType(new HashMap<String, Type>(), portMap));
+    n = new Node(new NodeType(new HashMap<>(), portMap));
   }
 
   @Test
@@ -32,7 +33,8 @@ public class TestNode {
   }
 
   @Test(expected = org.manifold.intermediate.UndeclaredAttributeException.class)
-  public void testGetAttribute_nonexistent() throws UndeclaredAttributeException {
+  public void testGetAttribute_nonexistent()
+      throws UndeclaredAttributeException {
     Value vBogus = n.getAttribute("bogus");
   }
 
@@ -57,13 +59,14 @@ public class TestNode {
     assertEquals(defaultPortDefinition, port.getType());
   }
 
-  @Test(expected = org.manifold.intermediate.UndeclaredIdentifierException.class)
+  @Test(expected = UndeclaredIdentifierException.class)
   public void testGetPort_nonexistent() throws UndeclaredIdentifierException {
     Port ptBogus = n.getPort("bogus");
   }
 
   @Test
-  public void testSetPortAttribute() throws UndeclaredIdentifierException, UndeclaredAttributeException {
+  public void testSetPortAttribute()
+      throws UndeclaredIdentifierException, UndeclaredAttributeException {
     Value v = new BooleanValue(boolType, true);
     n.getPort(PORT_NAME);
     n.setPortAttributes(PORT_NAME, PORT_ATTR_KEY, v);
