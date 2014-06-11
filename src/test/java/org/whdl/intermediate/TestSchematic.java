@@ -218,21 +218,21 @@ public class TestSchematic {
   }
   
   @Test
-  public void testAddNode() throws UndeclaredIdentifierException, MultipleInstantiationException{
+  public void testAddNode() throws UndeclaredIdentifierException, MultipleAssignmentException{
     Schematic s = new Schematic("test");
     NodeType n1_type = new NodeType(new HashMap<String, Type>(), new HashMap<String, PortType>());
     Node n1 = new Node(n1_type);
     s.addNode("n1", n1);
   }
   
-  @Test(expected=org.whdl.intermediate.MultipleInstantiationException.class)
-  public void testAddNode_multipleInstantiation() throws MultipleInstantiationException{
+  @Test(expected=org.whdl.intermediate.MultipleAssignmentException.class)
+  public void testAddNode_multipleInstantiation() throws MultipleAssignmentException{
     Schematic s = new Schematic("test");
     NodeType n1_type = new NodeType(new HashMap<String, Type>(), new HashMap<String, PortType>());
     try{
       Node n1 = new Node(n1_type);
       s.addNode("n1", n1);
-    }catch(MultipleInstantiationException mie){
+    }catch(MultipleAssignmentException mie){
       fail("exception thrown too early");
     }
     Node n1_dup = new Node(n1_type);
@@ -240,7 +240,7 @@ public class TestSchematic {
   }
   
   @Test
-  public void testGetNode() throws MultipleInstantiationException, UndeclaredIdentifierException{
+  public void testGetNode() throws MultipleAssignmentException, UndeclaredIdentifierException{
     Schematic s = new Schematic("test");
     NodeType n1_type = new NodeType(new HashMap<String, Type>(), new HashMap<String, PortType>());
     Node n1 = new Node(n1_type);
@@ -257,21 +257,21 @@ public class TestSchematic {
   }
   
   @Test
-  public void testAddConnection() throws MultipleInstantiationException{
+  public void testAddConnection() throws MultipleAssignmentException{
     Schematic s = new Schematic("test");
     ConnectionType c1_type = new ConnectionType(new HashMap<String,Type>());
     Connection c1 = new Connection(c1_type);
     s.addConnection("c1", c1);
   }
   
-  @Test(expected=org.whdl.intermediate.MultipleInstantiationException.class)
-  public void testAddConnection_multipleInstantiation() throws MultipleInstantiationException{
+  @Test(expected=org.whdl.intermediate.MultipleAssignmentException.class)
+  public void testAddConnection_multipleInstantiation() throws MultipleAssignmentException{
     Schematic s = new Schematic("test");
     ConnectionType c1_type = new ConnectionType(new HashMap<String,Type>());
     try{
       Connection c1 = new Connection(c1_type);
       s.addConnection("c1", c1);
-    }catch(MultipleInstantiationException mie){
+    }catch(MultipleAssignmentException mie){
       fail("exception thrown too early");
     }
     Connection c1_dup = new Connection(c1_type);
@@ -279,7 +279,7 @@ public class TestSchematic {
   }
   
   @Test
-  public void testGetConnection() throws MultipleInstantiationException, UndeclaredIdentifierException{
+  public void testGetConnection() throws MultipleAssignmentException, UndeclaredIdentifierException{
     Schematic s = new Schematic("test");
     ConnectionType c1_type = new ConnectionType(new HashMap<String,Type>());
     Connection c1 = new Connection(c1_type);
@@ -295,21 +295,21 @@ public class TestSchematic {
   }
   
   @Test
-  public void testAddConstraint() throws MultipleInstantiationException{
+  public void testAddConstraint() throws MultipleAssignmentException{
     Schematic s = new Schematic("test");
     ConstraintType c1_type = new ConstraintType(new HashMap<String,Type>());
     Constraint c1 = new Constraint(c1_type);
     s.addConstraint("c1", c1);
   }
   
-  @Test(expected=org.whdl.intermediate.MultipleInstantiationException.class)
-  public void testAddConstraint_multipleInstantiation() throws MultipleInstantiationException{
+  @Test(expected=org.whdl.intermediate.MultipleAssignmentException.class)
+  public void testAddConstraint_multipleInstantiation() throws MultipleAssignmentException{
     Schematic s = new Schematic("test");
     ConstraintType c1_type = new ConstraintType(new HashMap<String,Type>());
     try{
       Constraint c1 = new Constraint(c1_type);
       s.addConstraint("c1", c1);
-    }catch(MultipleInstantiationException mie){
+    }catch(MultipleAssignmentException mie){
       fail("exception thrown too early");
     }
     Constraint c1_dup = new Constraint(c1_type);
@@ -317,7 +317,7 @@ public class TestSchematic {
   }
   
   @Test
-  public void testGetConstraint() throws MultipleInstantiationException, UndeclaredIdentifierException{
+  public void testGetConstraint() throws MultipleAssignmentException, UndeclaredIdentifierException{
     Schematic s = new Schematic("test");
     ConstraintType c1_type = new ConstraintType(new HashMap<String,Type>());
     Constraint c1 = new Constraint(c1_type);

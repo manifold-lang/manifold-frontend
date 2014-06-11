@@ -139,9 +139,9 @@ public class Schematic {
     }
   }
   
-  public void addNode(String instanceName, Node node) throws MultipleInstantiationException {
+  public void addNode(String instanceName, Node node) throws MultipleAssignmentException {
     if(nodes.containsKey(instanceName)){
-      throw new MultipleInstantiationException("node", instanceName);
+      throw new MultipleAssignmentException("node", instanceName);
     }
     nodes.put(instanceName, node);
   }
@@ -154,9 +154,9 @@ public class Schematic {
     }
   }
   
-  public void addConnection(String instanceName, Connection conn) throws MultipleInstantiationException {
+  public void addConnection(String instanceName, Connection conn) throws MultipleAssignmentException {
     if(connections.containsKey(instanceName)){
-      throw new MultipleInstantiationException("connection", instanceName);
+      throw new MultipleAssignmentException("connection", instanceName);
     }
     connections.put(instanceName, conn);
   }
@@ -169,9 +169,9 @@ public class Schematic {
     }
   }
   
-  public void addConstraint(String instanceName, Constraint constraint) throws MultipleInstantiationException {
+  public void addConstraint(String instanceName, Constraint constraint) throws MultipleAssignmentException {
     if(constraints.containsKey(instanceName)){
-      throw new MultipleInstantiationException("constraint", instanceName);
+      throw new MultipleAssignmentException("constraint", instanceName);
     }
     constraints.put(instanceName, constraint);
   }
