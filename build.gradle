@@ -27,8 +27,7 @@ buildscript {
 apply plugin: 'jacoco'
 
 jacoco {
-  toolVersion = "0.6.3.201306030806"
-//  toolVersion = "0.7.1.201405082137"
+  toolVersion = "0.7.1.201405082137"
   reportsDir = file("$buildDir/reports/jacoco")
 }
 
