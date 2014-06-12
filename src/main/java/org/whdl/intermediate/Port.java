@@ -2,10 +2,10 @@ package org.whdl.intermediate;
 
 public class Port extends Value {
 
-  private AttributeSet attributes;
+  private Attributes attributes;
   private Node parent = null;
 
-  public Value getAttribute(String attrName) throws UndeclaredIdentifierException{
+  public Value getAttribute(String attrName) throws UndeclaredAttributeException {
     return attributes.get(attrName);
   }
   public void setAttribute(String attrName, Value attrValue){
@@ -14,7 +14,7 @@ public class Port extends Value {
 
   public Port(PortType type){
     super(type);
-    this.attributes = new AttributeSet();
+    this.attributes = new Attributes();
   }
 
 }

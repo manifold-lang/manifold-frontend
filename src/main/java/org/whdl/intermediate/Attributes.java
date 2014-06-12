@@ -3,19 +3,18 @@ package org.whdl.intermediate;
 import java.util.HashMap;
 import java.util.Map;
 
-public class AttributeSet {
+public class Attributes {
   private Map<String, Value> data;
 
-  public AttributeSet() {
+  public Attributes() {
     data = new HashMap<String, Value>();
   }
 
-  public Value get(String attrName) throws UndeclaredIdentifierException {
+  public Value get(String attrName) throws UndeclaredAttributeException {
     if (data.containsKey(attrName)) {
       return data.get(attrName);
     } else {
-      throw new UndeclaredIdentifierException("no attribute named '" + attrName
-          + "'");
+      throw new UndeclaredAttributeException(attrName);
     }
   }
 

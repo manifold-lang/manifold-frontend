@@ -4,8 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Node extends Value{
-  private AttributeSet attributes;
-  public Value getAttribute(String attrName) throws UndeclaredIdentifierException{
+  private Attributes attributes;
+
+  public Value getAttribute(String attrName) throws UndeclaredAttributeException {
     return attributes.get(attrName);
   }
 
@@ -27,7 +28,7 @@ public class Node extends Value{
 
   public Node(Type type){
     super(type);
-    this.attributes = new AttributeSet();
+    this.attributes = new Attributes();
     this.ports = new HashMap<String, Port>();
   }
 
