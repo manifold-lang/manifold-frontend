@@ -138,6 +138,51 @@ public class Schematic {
       throw new UndeclaredIdentifierException(typename);
     }
   }
+  
+  public void addNode(String instanceName, Node node) throws MultipleAssignmentException {
+    if(nodes.containsKey(instanceName)){
+      throw new MultipleAssignmentException("node", instanceName);
+    }
+    nodes.put(instanceName, node);
+  }
+  
+  public Node getNode(String instanceName) throws UndeclaredIdentifierException {
+    if(nodes.containsKey(instanceName)){
+      return nodes.get(instanceName);
+    }else{
+      throw new UndeclaredIdentifierException(instanceName);
+    }
+  }
+  
+  public void addConnection(String instanceName, Connection conn) throws MultipleAssignmentException {
+    if(connections.containsKey(instanceName)){
+      throw new MultipleAssignmentException("connection", instanceName);
+    }
+    connections.put(instanceName, conn);
+  }
+  
+  public Connection getConnection(String instanceName) throws UndeclaredIdentifierException {
+    if(connections.containsKey(instanceName)){
+      return connections.get(instanceName);
+    }else{
+      throw new UndeclaredIdentifierException(instanceName);
+    }
+  }
+  
+  public void addConstraint(String instanceName, Constraint constraint) throws MultipleAssignmentException {
+    if(constraints.containsKey(instanceName)){
+      throw new MultipleAssignmentException("constraint", instanceName);
+    }
+    constraints.put(instanceName, constraint);
+  }
+  
+  public Constraint getConstraint(String instanceName) throws UndeclaredIdentifierException {
+    if(constraints.containsKey(instanceName)){
+      return constraints.get(instanceName);
+    }else{
+      throw new UndeclaredIdentifierException(instanceName);
+    }
+  }
 
   // FIXME do we add nodes as a function of their node definition right away, or
   // just record that the node "will" exist with such-and-such definition and
@@ -157,4 +202,5 @@ public class Schematic {
   public void serialize(BufferedWriter out) throws IOException {
     serialize(out, false);
   }
+
 }

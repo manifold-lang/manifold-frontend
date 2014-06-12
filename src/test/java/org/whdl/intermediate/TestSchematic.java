@@ -217,4 +217,120 @@ public class TestSchematic {
     s.addPortTypeDefinition("foo", e1);
   }
   
+  @Test
+  public void testAddNode() throws UndeclaredIdentifierException, MultipleAssignmentException{
+    Schematic s = new Schematic("test");
+    NodeType n1_type = new NodeType(new HashMap<String, Type>(), new HashMap<String, PortType>());
+    Node n1 = new Node(n1_type);
+    s.addNode("n1", n1);
+  }
+  
+  @Test(expected=org.whdl.intermediate.MultipleAssignmentException.class)
+  public void testAddNode_multipleInstantiation() throws MultipleAssignmentException{
+    Schematic s = new Schematic("test");
+    NodeType n1_type = new NodeType(new HashMap<String, Type>(), new HashMap<String, PortType>());
+    try{
+      Node n1 = new Node(n1_type);
+      s.addNode("n1", n1);
+    }catch(MultipleAssignmentException mie){
+      fail("exception thrown too early");
+    }
+    Node n1_dup = new Node(n1_type);
+    s.addNode("n1", n1_dup);
+  }
+  
+  @Test
+  public void testGetNode() throws MultipleAssignmentException, UndeclaredIdentifierException{
+    Schematic s = new Schematic("test");
+    NodeType n1_type = new NodeType(new HashMap<String, Type>(), new HashMap<String, PortType>());
+    Node n1 = new Node(n1_type);
+    s.addNode("n1", n1);
+    
+    Node actual = s.getNode("n1");
+    assertSame(n1, actual);
+  }
+  
+  @Test(expected=org.whdl.intermediate.UndeclaredIdentifierException.class)
+  public void testGetNode_notInstantiated() throws UndeclaredIdentifierException{
+    Schematic s = new Schematic("test");
+    s.getNode("bogus");
+  }
+  
+  @Test
+  public void testAddConnection() throws MultipleAssignmentException{
+    Schematic s = new Schematic("test");
+    ConnectionType c1_type = new ConnectionType(new HashMap<String,Type>());
+    Connection c1 = new Connection(c1_type);
+    s.addConnection("c1", c1);
+  }
+  
+  @Test(expected=org.whdl.intermediate.MultipleAssignmentException.class)
+  public void testAddConnection_multipleInstantiation() throws MultipleAssignmentException{
+    Schematic s = new Schematic("test");
+    ConnectionType c1_type = new ConnectionType(new HashMap<String,Type>());
+    try{
+      Connection c1 = new Connection(c1_type);
+      s.addConnection("c1", c1);
+    }catch(MultipleAssignmentException mie){
+      fail("exception thrown too early");
+    }
+    Connection c1_dup = new Connection(c1_type);
+    s.addConnection("c1", c1_dup);
+  }
+  
+  @Test
+  public void testGetConnection() throws MultipleAssignmentException, UndeclaredIdentifierException{
+    Schematic s = new Schematic("test");
+    ConnectionType c1_type = new ConnectionType(new HashMap<String,Type>());
+    Connection c1 = new Connection(c1_type);
+    s.addConnection("c1", c1);
+    Connection actual = s.getConnection("c1");
+    assertSame(c1, actual);
+  }
+  
+  @Test(expected=org.whdl.intermediate.UndeclaredIdentifierException.class)
+  public void testGetConnection_notInstantiated() throws UndeclaredIdentifierException{
+    Schematic s = new Schematic("test");
+    s.getConnection("bogus");
+  }
+  
+  @Test
+  public void testAddConstraint() throws MultipleAssignmentException{
+    Schematic s = new Schematic("test");
+    ConstraintType c1_type = new ConstraintType(new HashMap<String,Type>());
+    Constraint c1 = new Constraint(c1_type);
+    s.addConstraint("c1", c1);
+  }
+  
+  @Test(expected=org.whdl.intermediate.MultipleAssignmentException.class)
+  public void testAddConstraint_multipleInstantiation() throws MultipleAssignmentException{
+    Schematic s = new Schematic("test");
+    ConstraintType c1_type = new ConstraintType(new HashMap<String,Type>());
+    try{
+      Constraint c1 = new Constraint(c1_type);
+      s.addConstraint("c1", c1);
+    }catch(MultipleAssignmentException mie){
+      fail("exception thrown too early");
+    }
+    Constraint c1_dup = new Constraint(c1_type);
+    s.addConstraint("c1", c1_dup);
+  }
+  
+  @Test
+  public void testGetConstraint() throws MultipleAssignmentException, UndeclaredIdentifierException{
+    Schematic s = new Schematic("test");
+    ConstraintType c1_type = new ConstraintType(new HashMap<String,Type>());
+    Constraint c1 = new Constraint(c1_type);
+    s.addConstraint("c1", c1);
+    
+    Constraint actual = s.getConstraint("c1");
+    assertSame(c1, actual);
+  }
+  
+  @Test(expected=org.whdl.intermediate.UndeclaredIdentifierException.class)
+  public void testGetConstraint_notInstantiated() throws UndeclaredIdentifierException{
+    Schematic s = new Schematic("test");
+    s.getConstraint("bogus");
+  }
+  
 }
