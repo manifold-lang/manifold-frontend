@@ -82,7 +82,7 @@ public class TestVariableIdentifier {
   @Test
   public void toString_notNamespaced() {
     VariableIdentifier identifier = new VariableIdentifier(
-      new NamespaceIdentifier(new ArrayList()),
+      new NamespaceIdentifier(new ArrayList<String>()),
       "foo"
     );
     

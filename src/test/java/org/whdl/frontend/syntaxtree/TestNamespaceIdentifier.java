@@ -2,7 +2,6 @@ package org.whdl.frontend.syntaxtree;
 
 import static org.junit.Assert.*;
 import org.junit.Test;
-import java.lang.UnsupportedOperationException;
 import java.util.ArrayList;
 
 public class TestNamespaceIdentifier {
@@ -10,7 +9,7 @@ public class TestNamespaceIdentifier {
   private NamespaceIdentifier getInstance() {
     return new NamespaceIdentifier("whdl:is:cool");
   }
-  
+
   @Test
   public void testStringConstructor() {
     NamespaceIdentifier identifier = new NamespaceIdentifier("whdl:is:cool");
@@ -20,7 +19,7 @@ public class TestNamespaceIdentifier {
     assertEquals(identifier.getName().get(1), "is");
     assertEquals(identifier.getName().get(2), "cool");
   }
-  
+
   @Test
   public void testListConstructor() {
     ArrayList<String> name = new ArrayList<String>(3);
@@ -47,29 +46,29 @@ public class TestNamespaceIdentifier {
 	  String actual = getInstance().toString();
 	  assertEquals(expected, actual);
   }
-  
+
   @Test
   public void isEmpty_true() {
-    NamespaceIdentifier name = new NamespaceIdentifier(new ArrayList());
+    NamespaceIdentifier name = new NamespaceIdentifier(new ArrayList<String>());
     assertTrue(name.isEmpty());
   }
-  
+
   @Test
   public void isEmpty_false() {
     assertFalse(getInstance().isEmpty());
   }
-  
+
   @Test
   public void equals_true() {
     assertTrue(getInstance().equals(getInstance()));
   }
-  
+
   @Test
   public void equals_itself_true() {
     NamespaceIdentifier id = getInstance();
     assertTrue(id.equals(id));
   }
-  
+
   @Test
   public void equals_type_false() {
     assertFalse(getInstance().equals("foo"));
