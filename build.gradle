@@ -1,5 +1,7 @@
 apply plugin: 'java'
 apply plugin: 'eclipse'
+apply plugin: 'jacoco'
+apply plugin: 'coveralls'
 
 repositories {
   mavenCentral()
@@ -12,8 +14,14 @@ dependencies {
 }
 
 buildscript {
-  repositories { mavenCentral() }
-  dependencies { classpath 'org.ajoberstar:gradle-jacoco:0.2.0' }
+  repositories {
+    mavenCentral()
+  }
+
+  dependencies {
+    classpath 'org.ajoberstar:gradle-jacoco:0.2.0'
+    classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:0.3.0'
+  }
 }
 
 apply plugin: 'jacoco'
@@ -34,9 +42,9 @@ test {
 
 jacocoTestReport {
   reports {
-    xml.enabled false
-    csv.enabled false
-    html.destination "${buildDir}/reports/jacoco"
+    xml.enabled = true
+    csv.enabled = false
+    html.destination = "${buildDir}/reports/jacoco"
   }
 }
 
