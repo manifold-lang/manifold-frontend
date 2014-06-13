@@ -2,7 +2,6 @@ package org.whdl.frontend.syntaxtree;
 
 import static org.junit.Assert.*;
 import org.junit.Test;
-import java.lang.UnsupportedOperationException;
 import java.util.ArrayList;
 
 public class TestVariableIdentifier {
@@ -83,7 +82,7 @@ public class TestVariableIdentifier {
   @Test
   public void toString_notNamespaced() {
     VariableIdentifier identifier = new VariableIdentifier(
-      new NamespaceIdentifier(new ArrayList()),
+      new NamespaceIdentifier(new ArrayList<String>()),
       "foo"
     );
     
