@@ -1,6 +1,6 @@
 package org.whdl.intermediate;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.util.HashMap;
 
@@ -13,16 +13,16 @@ public class TestNode {
   private static final Type boolType = BooleanType.getInstance();
 
   @Test
-  public void testGetAttribute() throws UndeclaredIdentifierException {
+  public void testGetAttribute() throws UndeclaredAttributeException {
     Node n = new Node(defaultNodeDefinition);
     Value v = new BooleanValue(boolType, true);
     n.setAttribute("abc", v);
     Value vActual = n.getAttribute("abc");
     assertEquals(v, vActual);
   }
-  
-  @Test(expected=org.whdl.intermediate.UndeclaredIdentifierException.class)
-  public void testGetAttribute_nonexistent() throws UndeclaredIdentifierException {
+
+  @Test(expected = org.whdl.intermediate.UndeclaredAttributeException.class)
+  public void testGetAttribute_nonexistent() throws UndeclaredAttributeException {
     Node n = new Node(defaultNodeDefinition);
     Value vBogus = n.getAttribute("bogus");
   }
@@ -33,7 +33,7 @@ public class TestNode {
     Value v = new BooleanValue(boolType, true);
     n.setAttribute("abc", v);
   }
-  
+
   @Test
   public void testSetAttribute_multiple_set() {
     // setting an attribute and then setting it again should just work
@@ -52,11 +52,12 @@ public class TestNode {
     Port eptActual = n.getPort("pt1");
     assertEquals(pt1, eptActual);
   }
-  
-  @Test(expected=org.whdl.intermediate.UndeclaredIdentifierException.class)
+
+  @Test(expected = org.whdl.intermediate.UndeclaredIdentifierException.class)
   public void testGetPort_nonexistent() throws UndeclaredIdentifierException {
     Node n = new Node(defaultNodeDefinition);
-    Port ptBogus = n.getPort("bogus");  }
+    Port ptBogus = n.getPort("bogus");
+  }
 
   @Test
   public void testSetPort() {
@@ -64,7 +65,7 @@ public class TestNode {
     Port pt1 = new Port(defaultPortDefinition);
     n.setPort("pt1", pt1);
   }
-  
+
   @Test
   public void testSetPort_multiple_set() {
     // setting a port and then setting it again should just work

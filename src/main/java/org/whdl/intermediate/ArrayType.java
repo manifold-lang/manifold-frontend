@@ -1,8 +1,5 @@
 package org.whdl.intermediate;
 
-import java.util.ArrayList;
-import java.util.List;
-
 
 public class ArrayType extends Type {
   private Type elementType;

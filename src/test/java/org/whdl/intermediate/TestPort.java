@@ -1,6 +1,6 @@
 package org.whdl.intermediate;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.util.HashMap;
 
@@ -12,7 +12,7 @@ public class TestPort {
   private static final Type boolType = BooleanType.getInstance();
 
   @Test
-  public void testGetAttribute() throws UndeclaredIdentifierException {
+  public void testGetAttribute() throws UndeclaredAttributeException {
     Port port = new Port(defaultPortType);
     Value v = new BooleanValue(boolType, true);
     port.setAttribute("v", v);
@@ -20,19 +20,19 @@ public class TestPort {
     assertEquals(v, vActual);
   }
 
-  @Test(expected=org.whdl.intermediate.UndeclaredIdentifierException.class)
-  public void testGetAttribute_nonexistent() throws UndeclaredIdentifierException {
+  @Test(expected = org.whdl.intermediate.UndeclaredAttributeException.class)
+  public void testGetAttribute_nonexistent() throws UndeclaredAttributeException {
     Port port = new Port(defaultPortType);
     Value vBogus = port.getAttribute("bogus");
   }
-  
+
   @Test
   public void testSetAttribute() {
     Port port = new Port(defaultPortType);
     Value v = new BooleanValue(boolType, true);
     port.setAttribute("v", v);
   }
-  
+
   @Test
   public void testSetAttribute_multiple_set() {
     // setting an attribute twice should just work
