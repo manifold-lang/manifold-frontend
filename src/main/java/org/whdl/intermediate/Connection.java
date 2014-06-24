@@ -1,5 +1,6 @@
 package org.whdl.intermediate;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 
 public class Connection extends Value {
 
@@ -11,11 +12,26 @@ public class Connection extends Value {
   public void setAttribute(String attrName, Value attrValue){
     attributes.put(attrName, attrValue);
   }
+  
   private Port portFrom = null, portTo = null;
+  
+  public Port getFrom() {
+    return portFrom;
+  }
+  
+  public Port getTo() {
+    return portTo;
+  }
 
-  public Connection(ConnectionType type){
+  public Connection(ConnectionType type, Port from, Port to){
     super(type);
     this.attributes = new Attributes();
+    this.portFrom = checkNotNull(from);
+    this.portTo = checkNotNull(to);
+    
+    if (from == to) {
+      throw new UndefinedBehaviourError("Cannot create connection from a port to itself");
+    }
   }
 
 }

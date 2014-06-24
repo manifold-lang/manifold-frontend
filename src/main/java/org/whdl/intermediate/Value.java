@@ -1,5 +1,6 @@
 package org.whdl.intermediate;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 
 public abstract class Value {
   private Type type = null;
@@ -8,6 +9,6 @@ public abstract class Value {
   }
   
   public Value(Type type){
-    this.type = type;
+    this.type = checkNotNull(type);
   }
 }

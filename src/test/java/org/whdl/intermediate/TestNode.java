@@ -4,17 +4,27 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.HashMap;
 
+import org.junit.Before;
 import org.junit.Test;
 
 public class TestNode {
 
-  private static final NodeType defaultNodeDefinition = new NodeType(new HashMap<String, Type>(), new HashMap<String, PortType>());
   private static final PortType defaultPortDefinition = new PortType(new HashMap<String, Type>());
   private static final Type boolType = BooleanType.getInstance();
+  private static final String PORT_NAME = "testport";
+  private static final String PORT_ATTR_KEY = "the truth will set you free";
+  
+  private Node n;
+  
+  @Before
+  public void setup() {
+    HashMap<String, PortType> portMap = new HashMap<>();
+    portMap.put(PORT_NAME, defaultPortDefinition);
+    n = new Node(new NodeType(new HashMap<String, Type>(), portMap));
+  }
 
   @Test
   public void testGetAttribute() throws UndeclaredAttributeException {
-    Node n = new Node(defaultNodeDefinition);
     Value v = new BooleanValue(boolType, true);
     n.setAttribute("abc", v);
     Value vActual = n.getAttribute("abc");
@@ -23,13 +33,11 @@ public class TestNode {
 
   @Test(expected = org.whdl.intermediate.UndeclaredAttributeException.class)
   public void testGetAttribute_nonexistent() throws UndeclaredAttributeException {
-    Node n = new Node(defaultNodeDefinition);
     Value vBogus = n.getAttribute("bogus");
   }
 
   @Test
   public void testSetAttribute() {
-    Node n = new Node(defaultNodeDefinition);
     Value v = new BooleanValue(boolType, true);
     n.setAttribute("abc", v);
   }
@@ -37,7 +45,6 @@ public class TestNode {
   @Test
   public void testSetAttribute_multiple_set() {
     // setting an attribute and then setting it again should just work
-    Node n = new Node(defaultNodeDefinition);
     Value v = new BooleanValue(boolType, true);
     n.setAttribute("abc", v);
     v = new BooleanValue(boolType, false);
@@ -46,34 +53,20 @@ public class TestNode {
 
   @Test
   public void testGetPort() throws UndeclaredIdentifierException {
-    Node n = new Node(defaultNodeDefinition);
-    Port pt1 = new Port(defaultPortDefinition);
-    n.setPort("pt1", pt1);
-    Port eptActual = n.getPort("pt1");
-    assertEquals(pt1, eptActual);
+    Port port = n.getPort(PORT_NAME);
+    assertEquals(defaultPortDefinition, port.getType());
   }
 
   @Test(expected = org.whdl.intermediate.UndeclaredIdentifierException.class)
   public void testGetPort_nonexistent() throws UndeclaredIdentifierException {
-    Node n = new Node(defaultNodeDefinition);
     Port ptBogus = n.getPort("bogus");
   }
 
   @Test
-  public void testSetPort() {
-    Node n = new Node(defaultNodeDefinition);
-    Port pt1 = new Port(defaultPortDefinition);
-    n.setPort("pt1", pt1);
+  public void testSetPortAttribute() throws UndeclaredIdentifierException, UndeclaredAttributeException {
+    Value v = new BooleanValue(boolType, true);
+    n.getPort(PORT_NAME);
+    n.setPortAttributes(PORT_NAME, PORT_ATTR_KEY, v);
+    assertEquals(v, n.getPort(PORT_NAME).getAttribute(PORT_ATTR_KEY));
   }
-
-  @Test
-  public void testSetPort_multiple_set() {
-    // setting a port and then setting it again should just work
-    Node n = new Node(defaultNodeDefinition);
-    Port pt1 = new Port(defaultPortDefinition);
-    n.setPort("pt1", pt1);
-    Port pt2 = new Port(defaultPortDefinition);
-    n.setPort("pt1", pt2);
-  }
-
 }

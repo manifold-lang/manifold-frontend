@@ -1,12 +1,33 @@
 package org.whdl.intermediate;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.fail;
 
 import java.util.HashMap;
 
+import org.junit.Before;
 import org.junit.Test;
 
 public class TestSchematic {
+  
+  private static final PortType defaultPortDefinition = new PortType(new HashMap<String, Type>());
+  private static final String PORT_NAME1 = "P1";
+  private static final String PORT_NAME2 = "P2";
+  
+  private Node n;
+  private Port p1, p2;
+  
+  @Before
+  public void setup() throws UndeclaredIdentifierException {
+    HashMap<String, PortType> portMap = new HashMap<>();
+    portMap.put(PORT_NAME1, defaultPortDefinition);
+    portMap.put(PORT_NAME2, defaultPortDefinition);
+    n = new Node(new NodeType(new HashMap<String, Type>(), portMap));
+    
+    p1 = n.getPort(PORT_NAME1);
+    p2 = n.getPort(PORT_NAME2);
+  }
 
   @Test
   public void testAddTypeDef() throws MultipleDefinitionException {
@@ -260,7 +281,7 @@ public class TestSchematic {
   public void testAddConnection() throws MultipleAssignmentException{
     Schematic s = new Schematic("test");
     ConnectionType c1_type = new ConnectionType(new HashMap<String,Type>());
-    Connection c1 = new Connection(c1_type);
+    Connection c1 = new Connection(c1_type, p1, p2);
     s.addConnection("c1", c1);
   }
   
@@ -269,12 +290,12 @@ public class TestSchematic {
     Schematic s = new Schematic("test");
     ConnectionType c1_type = new ConnectionType(new HashMap<String,Type>());
     try{
-      Connection c1 = new Connection(c1_type);
+      Connection c1 = new Connection(c1_type, p1, p2);
       s.addConnection("c1", c1);
     }catch(MultipleAssignmentException mie){
       fail("exception thrown too early");
     }
-    Connection c1_dup = new Connection(c1_type);
+    Connection c1_dup = new Connection(c1_type, p1, p2);
     s.addConnection("c1", c1_dup);
   }
   
@@ -282,7 +303,7 @@ public class TestSchematic {
   public void testGetConnection() throws MultipleAssignmentException, UndeclaredIdentifierException{
     Schematic s = new Schematic("test");
     ConnectionType c1_type = new ConnectionType(new HashMap<String,Type>());
-    Connection c1 = new Connection(c1_type);
+    Connection c1 = new Connection(c1_type, p1, p2);
     s.addConnection("c1", c1);
     Connection actual = s.getConnection("c1");
     assertSame(c1, actual);

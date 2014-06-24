@@ -4,6 +4,7 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -25,6 +26,7 @@ public class Schematic {
   
   // Maps containing instantiated objects for this schematic; they are all indexed by the (string) instance-name of the object.
   private Map<String, Node> nodes;
+  private Map<Node, String> reverseNodeMap;
   private Map<String, Connection> connections;
   private Map<String, Constraint> constraints;
 
@@ -40,6 +42,7 @@ public class Schematic {
     this.constraintTypes = new HashMap<String, ConstraintType>();
 
     this.nodes = new HashMap<String, Node>();
+    this.reverseNodeMap = new HashMap<>();
     this.connections = new HashMap<String, Connection>();
     this.constraints = new HashMap<String, Constraint>();
   }
@@ -140,10 +143,11 @@ public class Schematic {
   }
   
   public void addNode(String instanceName, Node node) throws MultipleAssignmentException {
-    if(nodes.containsKey(instanceName)){
+    if(nodes.containsKey(instanceName) || reverseNodeMap.containsKey(node)){
       throw new MultipleAssignmentException("node", instanceName);
     }
     nodes.put(instanceName, node);
+    reverseNodeMap.put(node, instanceName);
   }
   
   public Node getNode(String instanceName) throws UndeclaredIdentifierException {
@@ -152,6 +156,13 @@ public class Schematic {
     }else{
       throw new UndeclaredIdentifierException(instanceName);
     }
+  }
+  
+  public String getNodeName(Node instance) {
+    if(reverseNodeMap.containsKey(instance)) {
+      return reverseNodeMap.get(instance);
+    }
+    throw new NoSuchElementException();
   }
   
   public void addConnection(String instanceName, Connection conn) throws MultipleAssignmentException {

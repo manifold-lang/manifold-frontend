@@ -5,7 +5,6 @@ import java.util.Map;
 
 public class Node extends Value{
   private Attributes attributes;
-
   public Value getAttribute(String attrName) throws UndeclaredAttributeException {
     return attributes.get(attrName);
   }
@@ -22,14 +21,24 @@ public class Node extends Value{
       throw new UndeclaredIdentifierException("no port named '" + portName + "'");
     }
   }
-  public void setPort(String portName, Port portValue){
-    ports.put(portName, portValue);
+  public void setPortAttributes(String portName, String attrName, Value attrValue) throws UndeclaredIdentifierException{
+    if(ports.containsKey(portName)) {
+      ports.get(portName).setAttribute(attrName, attrValue);
+    } else {
+      throw new UndeclaredIdentifierException("no port named '" + portName + "'");
+    }
   }
 
-  public Node(Type type){
+  public Node(NodeType type){
     super(type);
     this.attributes = new Attributes();
     this.ports = new HashMap<String, Port>();
+
+    if (type.getPorts() != null) {
+      for (Map.Entry<String, PortType> portEntry : type.getPorts().entrySet()) {
+        this.ports.put(portEntry.getKey(), new Port(portEntry.getValue(), this));
+      }
+    }
   }
 
 }
