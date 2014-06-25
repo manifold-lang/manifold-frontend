@@ -26,7 +26,7 @@ public class TestSchematic {
   public void testAddTypeDef() throws MultipleDefinitionException {
     Schematic s = new Schematic("test");
     Type t1 = IntegerType.getInstance();
-    s.addUserDefinedTypeDefinition("foo", t1);
+    s.addUserDefinedType("foo", t1);
   }
   
   @Test(expected = MultipleDefinitionException.class)
@@ -35,12 +35,12 @@ public class TestSchematic {
     Schematic s = new Schematic("test");
     try{
       Type t1 = IntegerType.getInstance();
-      s.addUserDefinedTypeDefinition("foo", t1);
+      s.addUserDefinedType("foo", t1);
     }catch(MultipleDefinitionException mde){
       fail("exception thrown too early: " + mde.getMessage());
     }
     Type t2 = IntegerType.getInstance();
-    s.addUserDefinedTypeDefinition("foo", t2);
+    s.addUserDefinedType("foo", t2);
   }
   
   @Test(expected = MultipleDefinitionException.class)
@@ -49,29 +49,29 @@ public class TestSchematic {
     // Since "Int" is a built-in type, this should result in a MultipleDefinitionException being thrown.
     Schematic s = new Schematic("test");
     Type td = StringType.getInstance();
-    s.addUserDefinedTypeDefinition("Int", td);
+    s.addUserDefinedType("Int", td);
   }
   
   @Test
   public void testGetTypeDef() throws UndeclaredIdentifierException, MultipleDefinitionException{
     Schematic s = new Schematic("test");
     Type expected = IntegerType.getInstance();
-    s.addUserDefinedTypeDefinition("foo", expected);
-    Type actual = s.getUserDefinedTypeDefinition("foo");
+    s.addUserDefinedType("foo", expected);
+    Type actual = s.getUserDefinedType("foo");
     assertEquals(expected, actual);
   }
   
   @Test(expected=UndeclaredIdentifierException.class)
   public void testGetTypeDef_notDeclared() throws UndeclaredIdentifierException {
     Schematic s = new Schematic("test");
-    Type bogus = s.getUserDefinedTypeDefinition("does-not-exist");
+    Type bogus = s.getUserDefinedType("does-not-exist");
   }
   
   @Test
   public void testAddPortDef() throws MultipleDefinitionException {
     Schematic s = new Schematic("test");
     PortType e1 = new PortType(new HashMap<String, Type>());
-    s.addPortTypeDefinition("n1",e1);
+    s.addPortType("n1",e1);
   }
   
   @Test(expected=MultipleDefinitionException.class)
@@ -80,34 +80,34 @@ public class TestSchematic {
     Schematic s = new Schematic("test");
     try{
       PortType n1 = new PortType(new HashMap<String, Type>());
-      s.addPortTypeDefinition("foo", n1);
+      s.addPortType("foo", n1);
     }catch(MultipleDefinitionException mde){
       fail("exception thrown too early: " + mde.getMessage());
     }
     PortType n2 = new PortType(new HashMap<String, Type>());
-    s.addPortTypeDefinition("foo", n2);
+    s.addPortType("foo", n2);
   }
   
   @Test
   public void testGetPortDef() throws UndeclaredIdentifierException, MultipleDefinitionException{
     Schematic s = new Schematic("test");
     PortType expected = new PortType(new HashMap<String, Type>());
-    s.addPortTypeDefinition("foo", expected);
-    PortType actual = s.getPortTypeDefinition("foo");
+    s.addPortType("foo", expected);
+    PortType actual = s.getPortType("foo");
     assertEquals(expected, actual);
   }
   
   @Test(expected=UndeclaredIdentifierException.class)
   public void testGetPortDef_notDeclared() throws UndeclaredIdentifierException {
     Schematic s = new Schematic("test");
-    PortType bogus = s.getPortTypeDefinition("does-not-exist");
+    PortType bogus = s.getPortType("does-not-exist");
   }
   
   @Test
   public void testAddNodeDef() throws MultipleDefinitionException {
     Schematic s = new Schematic("test");
     NodeType n1 = new NodeType(new HashMap<String, Type>(), new HashMap<String, PortType>());
-    s.addNodeTypeDefinition("n1", n1);
+    s.addNodeType("n1", n1);
   }
   
   @Test(expected=MultipleDefinitionException.class)
@@ -116,34 +116,34 @@ public class TestSchematic {
     Schematic s = new Schematic("test");
     try{
       NodeType n1 = new NodeType(new HashMap<String, Type>(), new HashMap<String, PortType>());
-      s.addNodeTypeDefinition("foo", n1);
+      s.addNodeType("foo", n1);
     }catch(MultipleDefinitionException mde){
       fail("exception thrown too early: " + mde.getMessage());
     }
     NodeType n2 = new NodeType(new HashMap<String, Type>(), new HashMap<String, PortType>());
-    s.addNodeTypeDefinition("foo", n2);
+    s.addNodeType("foo", n2);
   }
   
   @Test
   public void testGetNodeDef() throws UndeclaredIdentifierException, MultipleDefinitionException{
     Schematic s = new Schematic("test");
     NodeType expected = new NodeType(new HashMap<String, Type>(), new HashMap<String, PortType>());
-    s.addNodeTypeDefinition("foo", expected);
-    NodeType actual = s.getNodeTypeDefinition("foo");
+    s.addNodeType("foo", expected);
+    NodeType actual = s.getNodeType("foo");
     assertEquals(expected, actual);
   }
   
   @Test(expected=UndeclaredIdentifierException.class)
   public void testGetNodeDef_notDeclared() throws UndeclaredIdentifierException {
     Schematic s = new Schematic("test");
-    NodeType bogus = s.getNodeTypeDefinition("does-not-exist");
+    NodeType bogus = s.getNodeType("does-not-exist");
   }
   
   @Test
   public void testAddConnectionDef() throws MultipleDefinitionException {
     Schematic s = new Schematic("test");
     ConnectionType c1 = new ConnectionType(new HashMap<String, Type>());
-    s.addConnectionTypeDefinition("c1", c1);
+    s.addConnectionType("c1", c1);
   }
   
   @Test(expected=MultipleDefinitionException.class)
@@ -152,34 +152,34 @@ public class TestSchematic {
     Schematic s = new Schematic("test");
     try{
       ConnectionType c1 = new ConnectionType(new HashMap<String, Type>());
-      s.addConnectionTypeDefinition("foo", c1);
+      s.addConnectionType("foo", c1);
     }catch(MultipleDefinitionException mde){
       fail("exception thrown too early: " + mde.getMessage());
     }
     ConnectionType c2 = new ConnectionType(new HashMap<String, Type>());
-    s.addConnectionTypeDefinition("foo", c2);
+    s.addConnectionType("foo", c2);
   }
   
   @Test
   public void testGetConnectionDef() throws UndeclaredIdentifierException, MultipleDefinitionException{
     Schematic s = new Schematic("test");
     ConnectionType expected = new ConnectionType(new HashMap<String, Type>());
-    s.addConnectionTypeDefinition("foo", expected);
-    ConnectionType actual = s.getConnectionTypeDefinition("foo");
+    s.addConnectionType("foo", expected);
+    ConnectionType actual = s.getConnectionType("foo");
     assertEquals(expected, actual);
   }
   
   @Test(expected=UndeclaredIdentifierException.class)
   public void testGetConnectionDef_notDeclared() throws UndeclaredIdentifierException {
     Schematic s = new Schematic("test");
-    ConnectionType bogus = s.getConnectionTypeDefinition("does-not-exist");
+    ConnectionType bogus = s.getConnectionType("does-not-exist");
   }
   
   @Test
   public void testAddConstraintDef() throws MultipleDefinitionException {
     Schematic s = new Schematic("test");
     ConstraintType e1 = new ConstraintType(new HashMap<String, Type>());
-    s.addConstraintTypeDefinition("e1", e1);
+    s.addConstraintType("e1", e1);
   }
   
   @Test(expected=MultipleDefinitionException.class)
@@ -188,27 +188,27 @@ public class TestSchematic {
     Schematic s = new Schematic("test");
     try{
       ConstraintType e1 = new ConstraintType(new HashMap<String, Type>());
-      s.addConstraintTypeDefinition("foo", e1);
+      s.addConstraintType("foo", e1);
     }catch(MultipleDefinitionException mde){
       fail("exception thrown too early: " + mde.getMessage());
     }
     ConstraintType e2 = new ConstraintType(new HashMap<String, Type>());
-    s.addConstraintTypeDefinition("foo", e2);
+    s.addConstraintType("foo", e2);
   }
 
   @Test
   public void testGetConstraintDef() throws UndeclaredIdentifierException, MultipleDefinitionException{
     Schematic s = new Schematic("test");
     ConstraintType expected = new ConstraintType(new HashMap<String, Type>());
-    s.addConstraintTypeDefinition("foo", expected);
-    ConstraintType actual = s.getConstraintTypeDefinition("foo");
+    s.addConstraintType("foo", expected);
+    ConstraintType actual = s.getConstraintType("foo");
     assertEquals(expected, actual);
   }
   
   @Test(expected=UndeclaredIdentifierException.class)
   public void testGetConstraintDef_notDeclared() throws UndeclaredIdentifierException {
     Schematic s = new Schematic("test");
-    ConstraintType bogus = s.getConstraintTypeDefinition("does-not-exist");
+    ConstraintType bogus = s.getConstraintType("does-not-exist");
   }
   
   @Test
@@ -224,11 +224,11 @@ public class TestSchematic {
     NodeType n1 = new NodeType(new HashMap<String, Type>(), new HashMap<String, PortType>());
     PortType e1 = new PortType(new HashMap<String, Type>());
     
-    s.addUserDefinedTypeDefinition("foo", t1);
-    s.addConstraintTypeDefinition("foo", ct1);
-    s.addConnectionTypeDefinition("foo", cn1);
-    s.addNodeTypeDefinition("foo", n1);
-    s.addPortTypeDefinition("foo", e1);
+    s.addUserDefinedType("foo", t1);
+    s.addConstraintType("foo", ct1);
+    s.addConnectionType("foo", cn1);
+    s.addNodeType("foo", n1);
+    s.addPortType("foo", e1);
   }
   
   @Test

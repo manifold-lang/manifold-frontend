@@ -33,17 +33,17 @@ public class TestSerialization {
 
     testSchematic = new Schematic(TEST_SCHEMATIC_NAME);
     Type t1 = IntegerType.getInstance();
-    testSchematic.addUserDefinedTypeDefinition(TEST_TYPE_NAME, t1);
+    testSchematic.addUserDefinedType(TEST_TYPE_NAME, t1);
 
     ConstraintType c1 = new ConstraintType(new HashMap<String, Type>());
-    testSchematic.addConstraintTypeDefinition(TEST_CONSTRAINT_TYPE_NAME, c1);
+    testSchematic.addConstraintType(TEST_CONSTRAINT_TYPE_NAME, c1);
     NodeType n1 = new NodeType(new HashMap<String, Type>(), new HashMap<String, PortType>());
-    testSchematic.addNodeTypeDefinition(TEST_NODE_TYPE_NAME, n1);
+    testSchematic.addNodeType(TEST_NODE_TYPE_NAME, n1);
 
     HashMap<String, Type> attributes = new HashMap<String, Type>();
     attributes.put(TEST_PORT_TYPE_ATTRIBUTE_NAME, t1);
     PortType e1 = new PortType(attributes);
-    testSchematic.addPortTypeDefinition(TEST_PORT_TYPE_NAME, e1);
+    testSchematic.addPortType(TEST_PORT_TYPE_NAME, e1);
   }
 
   @Test
