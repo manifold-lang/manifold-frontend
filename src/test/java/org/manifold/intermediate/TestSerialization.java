@@ -40,8 +40,8 @@ public class TestSerialization {
     // port type
     PortType din = new PortType(new HashMap<String, Type>());
     PortType dout = new PortType(new HashMap<String, Type>());
-    testSchematic.addPortTypeDefinition(DIGITAL_IN, din);
-    testSchematic.addPortTypeDefinition(DIGITAL_OUT, dout);
+    testSchematic.addPortType(DIGITAL_IN, din);
+    testSchematic.addPortType(DIGITAL_OUT, dout);
 
     // node type
     HashMap<String, PortType> dinPortMap = new HashMap<String, PortType>();
@@ -53,8 +53,8 @@ public class TestSerialization {
     NodeType dinNodeType = new NodeType(new HashMap<String, Type>(), dinPortMap);
     NodeType doutNodeType = new NodeType(new HashMap<String, Type>(), doutPortMap);
 
-    testSchematic.addNodeTypeDefinition(IN_NODE_NAME, dinNodeType);
-    testSchematic.addNodeTypeDefinition(OUT_NODE_NAME, doutNodeType);
+    testSchematic.addNodeType(IN_NODE_NAME, dinNodeType);
+    testSchematic.addNodeType(OUT_NODE_NAME, doutNodeType);
 
     // node
     Node inNode = new Node(dinNodeType);

@@ -34,7 +34,7 @@ public class Schematic {
     this.name = name;
     
     this.userDefinedTypes = new HashMap<String, Type>();
-    populateDefaultTypeDefinitions();
+    populateDefaultType();
 
     this.portTypes = new HashMap<String, PortType>();
     this.nodeTypes = new HashMap<String, NodeType>();
@@ -52,28 +52,28 @@ public class Schematic {
    * string, and boolean. Every class in .intermediate.types should be
    * represented in here.
    */
-  private void populateDefaultTypeDefinitions(){
+  private void populateDefaultType(){
     Type boolType = BooleanType.getInstance();
     Type intType = IntegerType.getInstance();
     Type stringType = StringType.getInstance();
     try{
-      addUserDefinedTypeDefinition("Bool", boolType);
-      addUserDefinedTypeDefinition("Int", intType);
-      addUserDefinedTypeDefinition("String", stringType);
+      addUserDefinedType("Bool", boolType);
+      addUserDefinedType("Int", intType);
+      addUserDefinedType("String", stringType);
     }catch(MultipleDefinitionException mde){
       // this should not actually be possible unless there is something wrong with the compiler itself
       throw new UndefinedBehaviourError("could not create default type definitions (" + mde.getMessage() + ")");
     }
   }
   
-  public void addUserDefinedTypeDefinition(String typename, Type td) throws MultipleDefinitionException{
+  public void addUserDefinedType(String typename, Type td) throws MultipleDefinitionException{
     if(userDefinedTypes.containsKey(typename)){
       throw new MultipleDefinitionException("type-definition", typename);
     }
     userDefinedTypes.put(typename, td);
   }
   
-  public Type getUserDefinedTypeDefinition(String typename) throws UndeclaredIdentifierException {
+  public Type getUserDefinedType(String typename) throws UndeclaredIdentifierException {
     if(userDefinedTypes.containsKey(typename)){
       return userDefinedTypes.get(typename);
     }else{
@@ -81,14 +81,14 @@ public class Schematic {
     }
   }
   
-  public void addPortTypeDefinition(String typename, PortType portType) throws MultipleDefinitionException{
+  public void addPortType(String typename, PortType portType) throws MultipleDefinitionException{
     if(portTypes.containsKey(typename)){
       throw new MultipleDefinitionException("port-definition", typename);
     }
     portTypes.put(typename, portType);
   }
   
-  public PortType getPortTypeDefinition(String typename) throws UndeclaredIdentifierException {
+  public PortType getPortType(String typename) throws UndeclaredIdentifierException {
     if(portTypes.containsKey(typename)){
       return portTypes.get(typename);
     }else{
@@ -96,14 +96,14 @@ public class Schematic {
     }
   }
   
-  public void addNodeTypeDefinition(String typename, NodeType nd) throws MultipleDefinitionException{
+  public void addNodeType(String typename, NodeType nd) throws MultipleDefinitionException{
     if(nodeTypes.containsKey(typename)){
       throw new MultipleDefinitionException("node-definition", typename);
     }
     nodeTypes.put(typename, nd);
   }
   
-  public NodeType getNodeTypeDefinition(String typename) throws UndeclaredIdentifierException {
+  public NodeType getNodeType(String typename) throws UndeclaredIdentifierException {
     if(nodeTypes.containsKey(typename)){
       return nodeTypes.get(typename);
     }else{
@@ -111,7 +111,7 @@ public class Schematic {
     }
   }
   
-  public void addConnectionTypeDefinition(String typename, ConnectionType cd) throws MultipleDefinitionException{
+  public void addConnectionType(String typename, ConnectionType cd) throws MultipleDefinitionException{
     if(connectionTypes.containsKey(typename)){
       throw new MultipleDefinitionException("connection-definition", typename);
 
@@ -119,7 +119,7 @@ public class Schematic {
     connectionTypes.put(typename, cd);
   }
   
-  public ConnectionType getConnectionTypeDefinition(String typename) throws UndeclaredIdentifierException {
+  public ConnectionType getConnectionType(String typename) throws UndeclaredIdentifierException {
     if(connectionTypes.containsKey(typename)){
       return connectionTypes.get(typename);
     }else{
@@ -127,14 +127,14 @@ public class Schematic {
     }
   }
   
-  public void addConstraintTypeDefinition(String typename, ConstraintType cd) throws MultipleDefinitionException{
+  public void addConstraintType(String typename, ConstraintType cd) throws MultipleDefinitionException{
     if(constraintTypes.containsKey(typename)){
       throw new MultipleDefinitionException("constraint-definition", typename);
     }
     constraintTypes.put(typename, cd);
   }
   
-  public ConstraintType getConstraintTypeDefinition(String typename) throws UndeclaredIdentifierException {
+  public ConstraintType getConstraintType(String typename) throws UndeclaredIdentifierException {
     if(constraintTypes.containsKey(typename)){
       return constraintTypes.get(typename);
     }else{
