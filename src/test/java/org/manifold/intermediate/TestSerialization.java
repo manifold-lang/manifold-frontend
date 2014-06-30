@@ -10,16 +10,6 @@ import java.util.HashMap;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.manifold.intermediate.Connection;
-import org.manifold.intermediate.ConnectionType;
-import org.manifold.intermediate.MultipleAssignmentException;
-import org.manifold.intermediate.MultipleDefinitionException;
-import org.manifold.intermediate.Node;
-import org.manifold.intermediate.NodeType;
-import org.manifold.intermediate.PortType;
-import org.manifold.intermediate.Schematic;
-import org.manifold.intermediate.Type;
-import org.manifold.intermediate.UndeclaredIdentifierException;
 
 public class TestSerialization {
 

@@ -6,18 +6,6 @@ import java.util.HashMap;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.manifold.intermediate.BooleanType;
-import org.manifold.intermediate.BooleanValue;
-import org.manifold.intermediate.Connection;
-import org.manifold.intermediate.ConnectionType;
-import org.manifold.intermediate.Node;
-import org.manifold.intermediate.NodeType;
-import org.manifold.intermediate.PortType;
-import org.manifold.intermediate.Type;
-import org.manifold.intermediate.UndeclaredAttributeException;
-import org.manifold.intermediate.UndeclaredIdentifierException;
-import org.manifold.intermediate.UndefinedBehaviourError;
-import org.manifold.intermediate.Value;
 
 public class TestConnection {
   private static final PortType defaultPortDefinition = new PortType(new HashMap<String, Type>());

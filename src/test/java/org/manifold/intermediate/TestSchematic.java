@@ -8,21 +8,6 @@ import java.util.HashMap;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.manifold.intermediate.Connection;
-import org.manifold.intermediate.ConnectionType;
-import org.manifold.intermediate.Constraint;
-import org.manifold.intermediate.ConstraintType;
-import org.manifold.intermediate.IntegerType;
-import org.manifold.intermediate.MultipleAssignmentException;
-import org.manifold.intermediate.MultipleDefinitionException;
-import org.manifold.intermediate.Node;
-import org.manifold.intermediate.NodeType;
-import org.manifold.intermediate.Port;
-import org.manifold.intermediate.PortType;
-import org.manifold.intermediate.Schematic;
-import org.manifold.intermediate.StringType;
-import org.manifold.intermediate.Type;
-import org.manifold.intermediate.UndeclaredIdentifierException;
 
 public class TestSchematic {
   
