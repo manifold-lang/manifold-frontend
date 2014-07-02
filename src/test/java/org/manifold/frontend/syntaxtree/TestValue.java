@@ -1,3 +1,3 @@
 package org.manifold.frontend.syntaxtree;
 
-public class TestValue {}
+public class TestValue { }

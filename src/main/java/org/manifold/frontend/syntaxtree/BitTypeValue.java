@@ -8,7 +8,7 @@ public class BitTypeValue extends TypeValue {
     return instance;
   }
 
-  private BitTypeValue() {}
+  private BitTypeValue() { }
 
-  public void verify() {}
+  public void verify() { }
 }

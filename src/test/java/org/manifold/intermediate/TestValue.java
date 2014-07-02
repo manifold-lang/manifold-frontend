@@ -16,5 +16,5 @@ public class TestValue {
     Type actual = dom.getType();
     assertEquals(expected, actual);
   }
-  
+
 }

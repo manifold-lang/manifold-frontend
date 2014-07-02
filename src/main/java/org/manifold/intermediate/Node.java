@@ -3,11 +3,11 @@ package org.manifold.intermediate;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Node extends Value{
-  
+public class Node extends Value {
+
   private final Attributes attributes;
   private final Map<String, Port> ports;
-  
+
   public Value getAttribute(String attrName)
       throws UndeclaredAttributeException {
     return attributes.get(attrName);
@@ -17,7 +17,7 @@ public class Node extends Value{
     attributes.put(attrName, attrValue);
   }
 
-  
+
   public Port getPort(String portName) throws UndeclaredIdentifierException{
     if (ports.containsKey(portName)){
       return ports.get(portName);
@@ -32,7 +32,7 @@ public class Node extends Value{
       String attrName,
       Value attrValue
   ) throws UndeclaredIdentifierException {
- 
+
     if (ports.containsKey(portName)) {
       ports.get(portName).setAttribute(attrName, attrValue);
     } else {

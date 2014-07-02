@@ -27,15 +27,15 @@ public class BitValue extends Value {
   public boolean toBoolean() {
     return value;
   }
-  
+
   @Override
-  public void verify() {}
-  
+  public void verify() { }
+
   @Override
   public boolean isCompiletimeEvaluable() {
     return true;
   }
-  
+
   @Override
   public boolean isSynthesizable() {
     return true;
