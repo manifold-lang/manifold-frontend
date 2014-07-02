@@ -8,14 +8,8 @@ import java.io.StringWriter;
 import java.util.HashMap;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
-import org.manifold.intermediate.ConstraintType;
-import org.manifold.intermediate.IntegerType;
-import org.manifold.intermediate.MultipleDefinitionException;
-import org.manifold.intermediate.NodeType;
-import org.manifold.intermediate.PortType;
-import org.manifold.intermediate.Schematic;
-import org.manifold.intermediate.Type;
 
 public class TestSerialization {
 
@@ -26,28 +20,56 @@ public class TestSerialization {
   private static final String TEST_PORT_TYPE_NAME = "wow port";
   private static final String TEST_PORT_TYPE_ATTRIBUTE_NAME = "much attributes";
 
+  private static final String IN_PORT_NAME = "in_port_name";
+  private static final String OUT_PORT_NAME = "out_port_name";
+
+  private static final String DIGITAL_IN = "digital_in";
+  private static final String DIGITAL_OUT = "digital_out";
+
+  private static final String IN_NODE_NAME = "in_node_name";
+  private static final String OUT_NODE_NAME = "out_node_name";
+  
+  private static final String CONNECTION_NAME = "wire";
+
   private Schematic testSchematic;
 
   @Before
-  public void setup() throws MultipleDefinitionException {
-
+  public void setup() throws MultipleDefinitionException, UndeclaredIdentifierException, MultipleAssignmentException {
     testSchematic = new Schematic(TEST_SCHEMATIC_NAME);
-    Type t1 = IntegerType.getInstance();
-    testSchematic.addUserDefinedType(TEST_TYPE_NAME, t1);
 
-    ConstraintType c1 = new ConstraintType(new HashMap<String, Type>());
-    testSchematic.addConstraintType(TEST_CONSTRAINT_TYPE_NAME, c1);
-    NodeType n1 = new NodeType(new HashMap<String, Type>(), new HashMap<String, PortType>());
-    testSchematic.addNodeType(TEST_NODE_TYPE_NAME, n1);
+    // port type
+    PortType din = new PortType(new HashMap<String, Type>());
+    PortType dout = new PortType(new HashMap<String, Type>());
+    testSchematic.addPortType(DIGITAL_IN, din);
+    testSchematic.addPortType(DIGITAL_OUT, dout);
 
-    HashMap<String, Type> attributes = new HashMap<String, Type>();
-    attributes.put(TEST_PORT_TYPE_ATTRIBUTE_NAME, t1);
-    PortType e1 = new PortType(attributes);
-    testSchematic.addPortType(TEST_PORT_TYPE_NAME, e1);
+    // node type
+    HashMap<String, PortType> dinPortMap = new HashMap<String, PortType>();
+    dinPortMap.put(IN_PORT_NAME, din);
+
+    HashMap<String, PortType> doutPortMap = new HashMap<String, PortType>();
+    doutPortMap.put(OUT_PORT_NAME, dout);
+
+    NodeType dinNodeType = new NodeType(new HashMap<String, Type>(), dinPortMap);
+    NodeType doutNodeType = new NodeType(new HashMap<String, Type>(), doutPortMap);
+
+    testSchematic.addNodeType(IN_NODE_NAME, dinNodeType);
+    testSchematic.addNodeType(OUT_NODE_NAME, doutNodeType);
+
+    // node
+    Node inNode = new Node(dinNodeType);
+    Node outNode = new Node(doutNodeType);
+
+    // connection
+    ConnectionType conType = new ConnectionType(new HashMap<String, Type>());
+    Connection con = new Connection(conType, inNode.getPort(IN_PORT_NAME), outNode.getPort(OUT_PORT_NAME));
+    
+    testSchematic.addConnection(CONNECTION_NAME, con);
   }
 
+  @Ignore
   @Test
-  public void testAddConstraintDef() throws IOException {
+  public void testSerialize() throws IOException {
     StringWriter outbuffer = new StringWriter();
     testSchematic.serialize(new BufferedWriter(outbuffer));
     String result = outbuffer.toString();
