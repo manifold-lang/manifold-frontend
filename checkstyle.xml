@@ -28,6 +28,17 @@ page at http://checkstyle.sourceforge.net/config.html -->
 
     <!--
 
+    INDENTATION CHECKS
+
+    -->
+
+    <module name="Indentation">
+      <property name="basicOffset" value="2"/>
+      <property name="throwsIndent" value="4"/>
+    </module>
+
+    <!--
+
     IMPORT CHECKS
 
     -->

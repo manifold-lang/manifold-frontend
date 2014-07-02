@@ -192,7 +192,7 @@ public class Schematic {
   }
   
   public Connection getConnection(String instanceName)
-       throws UndeclaredIdentifierException {
+      throws UndeclaredIdentifierException {
     if (connections.containsKey(instanceName)){
       return connections.get(instanceName);
     } else {

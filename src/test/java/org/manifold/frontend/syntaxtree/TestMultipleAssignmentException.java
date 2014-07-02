@@ -18,15 +18,15 @@ public class TestMultipleAssignmentException {
     return new VariableIdentifier(getNamespaceIdentifierInstance(), "foo");
   }
 
-  private Expression getTypeExpression(){
+  private Expression getTypeExpression() {
     return new LiteralExpression(BitTypeValue.getInstance());
   }
   
-  public Variable getVariableInstance(){
-      return new Variable(getVariableIdentifierInstance(), getTypeExpression());
+  public Variable getVariableInstance() {
+    return new Variable(getVariableIdentifierInstance(), getTypeExpression());
   }
   
-  public MultipleAssignmentException getInstance(){
+  public MultipleAssignmentException getInstance() {
     return new MultipleAssignmentException(getVariableInstance());
   }
   
