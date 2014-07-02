@@ -3,14 +3,15 @@ package org.manifold.intermediate;
 
 public class Constraint extends Value {
 
-  private Attributes attributes;
+  private final Attributes attributes;
 
-  public Value getAttribute(String attrName) throws UndeclaredAttributeException {
+  public Value getAttribute(String attrName) throws
+      UndeclaredAttributeException {
     return attributes.get(attrName);
   }
 
-  public void setAttribute(String AttrName, Value AttrValue) {
-    attributes.put(AttrName, AttrValue);
+  public void setAttribute(String attrName, Value attrValue) {
+    attributes.put(attrName, attrValue);
   }
 
   public Constraint(ConstraintType type){

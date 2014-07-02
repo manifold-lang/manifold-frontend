@@ -4,9 +4,10 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 public class Connection extends Value {
 
-  private Attributes attributes;
+  private final Attributes attributes;
 
-  public Value getAttribute(String attrName) throws UndeclaredAttributeException {
+  public Value getAttribute(String attrName) throws
+      UndeclaredAttributeException {
     return attributes.get(attrName);
   }
   public void setAttribute(String attrName, Value attrValue){
@@ -30,7 +31,9 @@ public class Connection extends Value {
     this.portTo = checkNotNull(to);
     
     if (from == to) {
-      throw new UndefinedBehaviourError("Cannot create connection from a port to itself");
+      throw new UndefinedBehaviourError(
+        "Cannot create connection from a port to itself"
+      );
     }
   }
 

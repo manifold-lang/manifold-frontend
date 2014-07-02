@@ -3,13 +3,6 @@ package org.manifold.frontend.syntaxtree;
 import static org.junit.Assert.*;
 
 import org.junit.Test;
-import org.manifold.frontend.syntaxtree.BitTypeValue;
-import org.manifold.frontend.syntaxtree.Expression;
-import org.manifold.frontend.syntaxtree.LiteralExpression;
-import org.manifold.frontend.syntaxtree.Namespace;
-import org.manifold.frontend.syntaxtree.NamespaceIdentifier;
-import org.manifold.frontend.syntaxtree.Scope;
-import org.manifold.frontend.syntaxtree.VariableIdentifier;
 
 public class TestNamespace {
 
@@ -18,8 +11,10 @@ public class TestNamespace {
   }
 
   private VariableIdentifier getVariableIdentifier() {
-    VariableIdentifier id = new VariableIdentifier(getNamespaceIdentifier(),
-        "foo");
+    VariableIdentifier id = new VariableIdentifier(
+      getNamespaceIdentifier(),
+      "foo"
+    );
 
     return id;
   }

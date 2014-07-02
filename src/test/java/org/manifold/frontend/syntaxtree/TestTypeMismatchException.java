@@ -3,11 +3,6 @@ package org.manifold.frontend.syntaxtree;
 import static org.junit.Assert.*;
 
 import org.junit.Test;
-import org.manifold.frontend.syntaxtree.BitTypeValue;
-import org.manifold.frontend.syntaxtree.BitValue;
-import org.manifold.frontend.syntaxtree.TypeMismatchException;
-import org.manifold.frontend.syntaxtree.TypeValue;
-import org.manifold.frontend.syntaxtree.Value;
 
 public class TestTypeMismatchException {
 
@@ -20,7 +15,10 @@ public class TestTypeMismatchException {
   }
   
   public TypeMismatchException getInstance(){
-    return new TypeMismatchException(getTypeValueInstance(), getValueInstance());
+    return new TypeMismatchException(
+        getTypeValueInstance(),
+        getValueInstance()
+    );
   }
   
   @Test

@@ -1,12 +1,10 @@
 package org.manifold.intermediate;
 
+import com.google.common.collect.ImmutableMap;
 import java.util.Map;
 
-import com.google.common.collect.ImmutableMap;
-
-
 public class PortType extends Type {
-  private Map<String, Type> attributes;
+  private final Map<String, Type> attributes;
   
   public PortType(Map<String, Type> attributes){
     this.attributes = ImmutableMap.copyOf(attributes);

@@ -2,14 +2,14 @@ package org.manifold.intermediate;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.HashMap;
-
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.HashMap;
+
 public class TestPort {
 
-  private static final PortType defaultPortType = new PortType(new HashMap<String, Type>());
+  private static final PortType defaultPortType = new PortType(new HashMap<>());
   private static final Type boolType = BooleanType.getInstance();
   private static final String PORT_NAME = "testport";
   
@@ -20,8 +20,8 @@ public class TestPort {
   public void setup() {
     HashMap<String, PortType> portMap = new HashMap<>();
     portMap.put(PORT_NAME, defaultPortType);
-    parent = new Node(new NodeType(new HashMap<String, Type>(), portMap));
     
+    parent = new Node(new NodeType(new HashMap<>(), portMap));
     port = new Port(defaultPortType, parent);
   }
 
@@ -34,7 +34,8 @@ public class TestPort {
   }
 
   @Test(expected = org.manifold.intermediate.UndeclaredAttributeException.class)
-  public void testGetAttribute_nonexistent() throws UndeclaredAttributeException {
+  public void testGetAttribute_nonexistent()
+      throws UndeclaredAttributeException {
     Value vBogus = port.getAttribute("bogus");
   }
 

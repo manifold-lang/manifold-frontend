@@ -1,8 +1,8 @@
 package org.manifold.frontend.syntaxtree;
 
 public class Variable {
-  private VariableIdentifier identifier;
-  private Expression typeExpression;
+  private final VariableIdentifier identifier;
+  private final Expression typeExpression;
 
   private boolean assigned = false;
   private Expression valueExpression;

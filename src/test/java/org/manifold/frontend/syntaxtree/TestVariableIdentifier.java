@@ -3,8 +3,6 @@ package org.manifold.frontend.syntaxtree;
 import static org.junit.Assert.*;
 
 import org.junit.Test;
-import org.manifold.frontend.syntaxtree.NamespaceIdentifier;
-import org.manifold.frontend.syntaxtree.VariableIdentifier;
 
 import java.util.ArrayList;
 
@@ -68,7 +66,7 @@ public class TestVariableIdentifier {
     
   @Test
   public void equals_false_namespace() {
-    ArrayList<String> namespaceName = new ArrayList<String>(1);
+    ArrayList<String> namespaceName = new ArrayList<>(1);
     namespaceName.add("bogus");
     
     VariableIdentifier v = new VariableIdentifier(
@@ -86,7 +84,7 @@ public class TestVariableIdentifier {
   @Test
   public void toString_notNamespaced() {
     VariableIdentifier identifier = new VariableIdentifier(
-      new NamespaceIdentifier(new ArrayList<String>()),
+      new NamespaceIdentifier(new ArrayList<>()),
       "foo"
     );
     

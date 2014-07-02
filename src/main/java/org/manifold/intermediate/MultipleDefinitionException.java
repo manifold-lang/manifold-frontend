@@ -1,10 +1,11 @@
 package org.manifold.intermediate;
 
 public class MultipleDefinitionException extends Exception {
+  
   private static final long serialVersionUID = -5366240749138487225L;
-
-  private String kind;
-  private String typename;
+  private final String kind;
+  private final String typename;
+  
   public MultipleDefinitionException(String kind, String typename){
     this.kind = kind;
     this.typename = typename;
@@ -13,4 +14,5 @@ public class MultipleDefinitionException extends Exception {
   public String getMessage(){
     return "multiple definitions of " + kind +  " '" + typename + "'";
   }
+
 }

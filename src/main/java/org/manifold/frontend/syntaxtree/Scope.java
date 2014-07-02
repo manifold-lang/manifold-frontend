@@ -4,14 +4,16 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Scope {
-  private Scope parentScope;
-  private Map<VariableIdentifier, Variable> symbolTable = new HashMap<VariableIdentifier, Variable>();
+  private final Scope parentScope;
+  private final Map<VariableIdentifier, Variable> symbolTable;
 
   public Scope(Scope parentScope) {
+    this.symbolTable = new HashMap<>();
     this.parentScope = parentScope;
   }
 
   public Scope() {
+    this.symbolTable = new HashMap<>();
     this.parentScope = null;
   }
 
@@ -21,9 +23,9 @@ public class Scope {
 
   public void defineVariable(VariableIdentifier identifier,
       Expression typeExpression) throws MultipleDefinitionException {
-    // FIXME this does not handle namespaces correctly
+    // TODO this does not handle namespaces correctly
     if (symbolTable.containsKey(identifier)) {
-      // FIXME this does not handle functions with different type
+      // TODO this does not handle functions with different type
       // signatures correctly
       throw new MultipleDefinitionException(identifier);
     }
@@ -50,7 +52,7 @@ public class Scope {
 
   public Variable getVariable(VariableIdentifier identifier)
       throws VariableNotDefinedException {
-    // FIXME this does not handle namespaces correctly
+    // TODO this does not handle namespaces correctly
     Variable v = symbolTable.get(identifier);
     if (v == null) {
       // no such variable in this scope; check parent scope

@@ -2,6 +2,7 @@ apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'jacoco'
 apply plugin: 'coveralls'
+apply plugin: 'checkstyle'
 
 repositories {
   mavenCentral()
@@ -47,3 +48,9 @@ jacocoTestReport {
   }
 }
 
+checkstyle {
+  configFile = new File(rootDir, "checkstyle.xml")
+  ignoreFailures = false
+  showViolations = true
+  toolVersion = "5.7"
+}

@@ -2,20 +2,14 @@ package org.manifold.intermediate;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.HashMap;
-
 import org.junit.Test;
-import org.manifold.intermediate.BooleanType;
-import org.manifold.intermediate.BooleanValue;
-import org.manifold.intermediate.Constraint;
-import org.manifold.intermediate.ConstraintType;
-import org.manifold.intermediate.Type;
-import org.manifold.intermediate.UndeclaredAttributeException;
-import org.manifold.intermediate.Value;
+
+import java.util.HashMap;
 
 public class TestConstraint {
 
-  private static final ConstraintType defaultConstraintDefinition = new ConstraintType(new HashMap<String, Type>());
+  private static final ConstraintType defaultConstraintDefinition =
+      new ConstraintType(new HashMap<>());
   private static final Type boolType = BooleanType.getInstance();
 
   @Test
@@ -29,7 +23,7 @@ public class TestConstraint {
 
   @Test(expected = org.manifold.intermediate.UndeclaredAttributeException.class)
   public void testGetAttribute_nonexistent()
- throws UndeclaredAttributeException {
+      throws UndeclaredAttributeException {
     Constraint ept = new Constraint(defaultConstraintDefinition);
     Value vBogus = ept.getAttribute("bogus");
   }

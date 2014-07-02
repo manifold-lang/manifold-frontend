@@ -4,10 +4,11 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 public class Port extends Value {
 
-  private Attributes attributes;
-  private Node parent;
+  private final Attributes attributes;
+  private final Node parent;
 
-  public Value getAttribute(String attrName) throws UndeclaredAttributeException {
+  public Value getAttribute(String attrName)
+      throws UndeclaredAttributeException {
     return attributes.get(attrName);
   }
   public void setAttribute(String attrName, Value attrValue){
