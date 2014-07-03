@@ -2,14 +2,14 @@ package org.manifold.intermediate;
 
 import static org.junit.Assert.assertTrue;
 
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.HashMap;
+
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
 
 public class TestSerialization {
 
@@ -36,7 +36,7 @@ public class TestSerialization {
   @Before
   public void setup()
       throws MultipleDefinitionException, UndeclaredIdentifierException,
-      MultipleAssignmentException {
+      MultipleAssignmentException, UndeclaredAttributeException {
   
     testSchematic = new Schematic(TEST_SCHEMATIC_NAME);
 
@@ -60,15 +60,16 @@ public class TestSerialization {
     testSchematic.addNodeType(OUT_NODE_NAME, doutNodeType);
 
     // node
-    Node inNode = new Node(dinNodeType);
-    Node outNode = new Node(doutNodeType);
+    Node inNode = new Node(dinNodeType, new HashMap<>(), new HashMap<>());
+    Node outNode = new Node(doutNodeType, new HashMap<>(), new HashMap<>());
 
     // connection
     ConnectionType conType = new ConnectionType(new HashMap<>());
     Connection con = new Connection(
         conType,
         inNode.getPort(IN_PORT_NAME),
-        outNode.getPort(OUT_PORT_NAME)
+        outNode.getPort(OUT_PORT_NAME),
+        new HashMap<>()
     );
     
     testSchematic.addConnection(CONNECTION_NAME, con);

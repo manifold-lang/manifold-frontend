@@ -7,7 +7,10 @@ import static org.junit.Assert.fail;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.google.common.collect.ImmutableMap;
+
 import java.util.HashMap;
+import java.util.Map;
 
 public class TestSchematic {
   
@@ -20,11 +23,12 @@ public class TestSchematic {
   private Port p1, p2;
   
   @Before
-  public void setup() throws UndeclaredIdentifierException {
+  public void setup() throws UndeclaredIdentifierException, UndeclaredAttributeException {
     HashMap<String, PortType> portMap = new HashMap<>();
     portMap.put(PORT_NAME1, defaultPortDefinition);
     portMap.put(PORT_NAME2, defaultPortDefinition);
-    n = new Node(new NodeType(new HashMap<>(), portMap));
+    Map<String, Map<String, Value>> portAttrMap = ImmutableMap.of(PORT_NAME1, ImmutableMap.of(), PORT_NAME2, ImmutableMap.of());
+    n = new Node(new NodeType(new HashMap<>(), portMap), new HashMap<>(), portAttrMap);
     
     p1 = n.getPort(PORT_NAME1);
     p2 = n.getPort(PORT_NAME2);
@@ -266,35 +270,35 @@ public class TestSchematic {
   
   @Test
   public void testAddNode()
-      throws UndeclaredIdentifierException, MultipleAssignmentException{
+      throws Exception {
     Schematic s = new Schematic("test");
     NodeType n1Type = new NodeType(new HashMap<>(), new HashMap<>());
-    Node n1 = new Node(n1Type);
+    Node n1 = new Node(n1Type, new HashMap<>(), new HashMap<>());
     s.addNode("n1", n1);
   }
   
   @Test(expected = org.manifold.intermediate.MultipleAssignmentException.class)
   public void testAddNode_multipleInstantiation()
-      throws MultipleAssignmentException {
+      throws Exception {
     Schematic s = new Schematic("test");
     NodeType n1Type = new NodeType(new HashMap<>(), new HashMap<>());
     try {
-      Node n1 = new Node(n1Type);
+      Node n1 = new Node(n1Type, new HashMap<>(), new HashMap<>());
       s.addNode("n1", n1);
     } catch (MultipleAssignmentException mie) {
       fail("exception thrown too early");
     }
-    Node n1Dup = new Node(n1Type);
+    Node n1Dup = new Node(n1Type, new HashMap<>(), new HashMap<>());
     s.addNode("n1", n1Dup);
   }
   
   @Test
   public void testGetNode()
-      throws MultipleAssignmentException, UndeclaredIdentifierException {
+      throws Exception {
     
     Schematic s = new Schematic("test");
     NodeType n1Type = new NodeType(new HashMap<>(), new HashMap<>());
-    Node n1 = new Node(n1Type);
+    Node n1 = new Node(n1Type, new HashMap<>(), new HashMap<>());
     s.addNode("n1", n1);
     
     Node actual = s.getNode("n1");
@@ -309,34 +313,32 @@ public class TestSchematic {
   }
   
   @Test
-  public void testAddConnection() throws MultipleAssignmentException{
+  public void testAddConnection() throws MultipleAssignmentException, UndeclaredAttributeException{
     Schematic s = new Schematic("test");
     ConnectionType c1Type = new ConnectionType(new HashMap<>());
-    Connection c1 = new Connection(c1Type, p1, p2);
+    Connection c1 = new Connection(c1Type, p1, p2, new HashMap<>());
     s.addConnection("c1", c1);
   }
   
   @Test(expected = org.manifold.intermediate.MultipleAssignmentException.class)
-  public void testAddConnection_multipleInstantiation()
-      throws MultipleAssignmentException{
+  public void testAddConnection_multipleInstantiation() throws UndeclaredAttributeException, MultipleAssignmentException {
     Schematic s = new Schematic("test");
     ConnectionType c1Type = new ConnectionType(new HashMap<>());
     try {
-      Connection c1 = new Connection(c1Type, p1, p2);
+      Connection c1 = new Connection(c1Type, p1, p2, new HashMap<>());
       s.addConnection("c1", c1);
     } catch (MultipleAssignmentException mie) {
       fail("exception thrown too early");
     }
-    Connection c1Dup = new Connection(c1Type, p1, p2);
+    Connection c1Dup = new Connection(c1Type, p1, p2, new HashMap<>());
     s.addConnection("c1", c1Dup);
   }
   
   @Test
-  public void testGetConnection()
-      throws MultipleAssignmentException, UndeclaredIdentifierException{
+  public void testGetConnection() throws Exception{
     Schematic s = new Schematic("test");
     ConnectionType c1Type = new ConnectionType(new HashMap<>());
-    Connection c1 = new Connection(c1Type, p1, p2);
+    Connection c1 = new Connection(c1Type, p1, p2, new HashMap<>());
     s.addConnection("c1", c1);
     Connection actual = s.getConnection("c1");
     assertSame(c1, actual);
@@ -350,36 +352,36 @@ public class TestSchematic {
   }
   
   @Test
-  public void testAddConstraint() throws MultipleAssignmentException{
+  public void testAddConstraint() throws MultipleAssignmentException, UndeclaredAttributeException{
     Schematic s = new Schematic("test");
     ConstraintType c1Type = new ConstraintType(new HashMap<>());
-    Constraint c1 = new Constraint(c1Type);
+    Constraint c1 = new Constraint(c1Type, new HashMap<>());
     s.addConstraint("c1", c1);
   }
   
   @Test(expected = MultipleAssignmentException.class)
   public void testAddConstraint_multipleInstantiation()
-      throws MultipleAssignmentException{
+      throws MultipleAssignmentException, UndeclaredAttributeException{
     Schematic s = new Schematic("test");
     ConstraintType c1Type = new ConstraintType(new HashMap<>());
     
     try {
-      Constraint c1 = new Constraint(c1Type);
+      Constraint c1 = new Constraint(c1Type, new HashMap<>());
       s.addConstraint("c1", c1);
     } catch (MultipleAssignmentException mie) {
       fail("exception thrown too early");
     }
     
-    Constraint c1Dup = new Constraint(c1Type);
+    Constraint c1Dup = new Constraint(c1Type, new HashMap<>());
     s.addConstraint("c1", c1Dup);
   }
   
   @Test
   public void testGetConstraint()
-      throws MultipleAssignmentException, UndeclaredIdentifierException{
+      throws MultipleAssignmentException, UndeclaredIdentifierException, UndeclaredAttributeException{
     Schematic s = new Schematic("test");
     ConstraintType c1Type = new ConstraintType(new HashMap<>());
-    Constraint c1 = new Constraint(c1Type);
+    Constraint c1 = new Constraint(c1Type, new HashMap<>());
     s.addConstraint("c1", c1);
     
     Constraint actual = s.getConstraint("c1");

@@ -13,46 +13,35 @@ public class Node extends Value {
     return attributes.get(attrName);
   }
 
-  public void setAttribute(String attrName, Value attrValue) {
-    attributes.put(attrName, attrValue);
-  }
-
-
   public Port getPort(String portName) throws UndeclaredIdentifierException{
     if (ports.containsKey(portName)){
       return ports.get(portName);
     } else {
-      throw new UndeclaredIdentifierException(
-        "no port named '" + portName + "'"
-      );
-    }
-  }
-  public void setPortAttributes(
-      String portName,
-      String attrName,
-      Value attrValue
-  ) throws UndeclaredIdentifierException {
-
-    if (ports.containsKey(portName)) {
-      ports.get(portName).setAttribute(attrName, attrValue);
-    } else {
-      throw new UndeclaredIdentifierException(
-        "no port named '" + portName + "'"
-      );
+      throw new UndeclaredIdentifierException(portName);
     }
   }
 
-  public Node(NodeType type){
+  public Node(NodeType type, Map<String, Value> attrs, Map<String, Map<String, Value>> portAttrMaps) throws UndeclaredIdentifierException, UndeclaredAttributeException {
     super(type);
-    this.attributes = new Attributes();
+    this.attributes = new Attributes(type.getAttributes(), attrs);
     this.ports = new HashMap<>();
 
-    if (type.getPorts() != null) {
+    final Map<String, PortType> portTypes = type.getPorts();
+    if (portTypes != null) {
+      for (String portName: portAttrMaps.keySet()) {
+        if (!portTypes.containsKey(portName)) {
+          throw new UndeclaredIdentifierException(portName);
+        }
+      }
       for (Map.Entry<String, PortType> portEntry : type.getPorts().entrySet()) {
-        this.ports.put(
-          portEntry.getKey(),
-          new Port(portEntry.getValue(), this)
-        );
+        String portName = portEntry.getKey();
+        PortType portType = portEntry.getValue();
+        Map<String, Value> portAttrs = portAttrMaps.get(portName);
+        if (portAttrs == null) {
+          // TODO(TysonAndre): throw something more appropriate than UndeclaredIdentifierException?
+          throw new UndeclaredIdentifierException(portName);
+        }
+        this.ports.put(portName, new Port(portType, this, portAttrs));
       }
     }
   }

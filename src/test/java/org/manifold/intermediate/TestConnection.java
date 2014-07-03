@@ -2,14 +2,16 @@ package org.manifold.intermediate;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.HashMap;
+import com.google.common.collect.ImmutableMap;
 
 public class TestConnection {
-  private static final PortType defaultPortDefinition = 
-      new PortType(new HashMap<>());
+  private static final PortType defaultPortDefinition = new PortType(new HashMap<>());
   private static final Type boolType = BooleanType.getInstance();
   private static final String PORT_NAME1 = "testport";
   private static final String PORT_NAME2 = "another port";
@@ -17,58 +19,58 @@ public class TestConnection {
   private Node n;
   private ConnectionType conType;
   private Connection ept;
+  private Value v;
   
   @Before
-  public void setup() throws UndeclaredIdentifierException {
-    HashMap<String, PortType> portMap = new HashMap<>();
-    portMap.put(PORT_NAME1, defaultPortDefinition);
-    portMap.put(PORT_NAME2, defaultPortDefinition);
-    n = new Node(new NodeType(new HashMap<>(), portMap));
+  public void setup() throws UndeclaredIdentifierException, UndeclaredAttributeException {
+    Map<String, PortType> portMap = ImmutableMap.of(
+        PORT_NAME1, defaultPortDefinition,
+        PORT_NAME2, defaultPortDefinition);
+    Map<String, Map<String, Value>> portAttrMap = ImmutableMap.of(
+        PORT_NAME1, ImmutableMap.of(),
+        PORT_NAME2, ImmutableMap.of());
+    n = new Node(new NodeType(new HashMap<>(), portMap), new HashMap<>(), portAttrMap);
+    v = new BooleanValue(boolType, true);
+    conType = new ConnectionType(ImmutableMap.of("v", BooleanType.getInstance()));
     
-    conType = new ConnectionType(new HashMap<>());
-    ept = new Connection(conType, n.getPort(PORT_NAME1), n.getPort(PORT_NAME2));
+    ept = new Connection(conType, n.getPort(PORT_NAME1), n.getPort(PORT_NAME2), ImmutableMap.of("v", v));
   }
 
   @Test(expected = UndefinedBehaviourError.class)
   public void testIncorrectPortConnection()
-      throws UndefinedBehaviourError, UndeclaredIdentifierException {
+      throws UndefinedBehaviourError, UndeclaredIdentifierException, UndeclaredAttributeException {
     
-    Connection con = new Connection(
+    new Connection(
       conType,
       n.getPort(PORT_NAME1),
-      n.getPort(PORT_NAME1)
+      n.getPort(PORT_NAME1),
+      ImmutableMap.of("v", v)
     );
   }
 
   @Test
-  public void testGetAttribute() throws UndeclaredAttributeException {
-    Value v = new BooleanValue(boolType, true);
-    ept.setAttribute("v", v);
-    Value vActual = ept.getAttribute("v");
-    assertEquals(v, vActual);
+  public void testGetAttribute() throws UndeclaredAttributeException, UndeclaredIdentifierException {
+    assertEquals(v, ept.getAttribute("v"));
   }
 
   @Test(expected = org.manifold.intermediate.UndeclaredAttributeException.class)
   public void testGetAttribute_nonexistent()
       throws UndeclaredAttributeException {
-    Value vBogus = ept.getAttribute("bogus");
+    ept.getAttribute("bogus");
   }
 
-  @Test
-  public void testSetAttribute() {
+  @Test(expected = org.manifold.intermediate.UndeclaredAttributeException.class)
+  public void testCreateWithMissingAttribute() throws UndeclaredIdentifierException, UndeclaredAttributeException {
+    new Connection(conType, n.getPort(PORT_NAME1), n.getPort(PORT_NAME2), ImmutableMap.of());
+  }
+
+  @Test(expected = org.manifold.intermediate.UndeclaredAttributeException.class)
+  public void testCreateWithInvalidAttribute() throws UndeclaredIdentifierException, UndeclaredAttributeException {
     Value v = new BooleanValue(boolType, true);
-    ept.setAttribute("v", v);
+    new Connection(conType, n.getPort(PORT_NAME1), n.getPort(PORT_NAME2), 
+        ImmutableMap.of("v", v, "bogus", v));
   }
-
-  @Test
-  public void testSetAttribute_multiple_set() {
-    // setting an attribute twice should just work
-    Value v = new BooleanValue(boolType, true);
-    ept.setAttribute("v", v);
-    Value v2 = new BooleanValue(boolType, false);
-    ept.setAttribute("v", v2);
-  }
-
+  
   @Test
   public void testGetPort() throws UndeclaredIdentifierException {
     assertEquals(n.getPort(PORT_NAME1), ept.getFrom());
