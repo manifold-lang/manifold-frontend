@@ -21,14 +21,16 @@ public class Node extends Value {
     }
   }
 
-  public Node(NodeType type, Map<String, Value> attrs, Map<String, Map<String, Value>> portAttrMaps) throws UndeclaredIdentifierException, UndeclaredAttributeException {
+  public Node(NodeType type, Map<String, Value> attrs,
+      Map<String, Map<String, Value>> portAttrMaps)
+      throws UndeclaredIdentifierException, UndeclaredAttributeException {
     super(type);
     this.attributes = new Attributes(type.getAttributes(), attrs);
     this.ports = new HashMap<>();
 
     final Map<String, PortType> portTypes = type.getPorts();
     if (portTypes != null) {
-      for (String portName: portAttrMaps.keySet()) {
+      for (String portName : portAttrMaps.keySet()) {
         if (!portTypes.containsKey(portName)) {
           throw new UndeclaredIdentifierException(portName);
         }
@@ -38,12 +40,12 @@ public class Node extends Value {
         PortType portType = portEntry.getValue();
         Map<String, Value> portAttrs = portAttrMaps.get(portName);
         if (portAttrs == null) {
-          // TODO(TysonAndre): throw something more appropriate than UndeclaredIdentifierException?
+          // TODO(TysonAndre): throw something more appropriate
+          // than UndeclaredIdentifierException?
           throw new UndeclaredIdentifierException(portName);
         }
         this.ports.put(portName, new Port(portType, this, portAttrs));
       }
     }
   }
-
 }

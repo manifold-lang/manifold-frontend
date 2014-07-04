@@ -18,7 +18,8 @@ public class Port extends Value {
     return parent;
   }
 
-  public Port(PortType type, Node parent, Map<String, Value> attrMap) throws UndeclaredAttributeException {
+  public Port(PortType type, Node parent, Map<String, Value> attrMap)
+      throws UndeclaredAttributeException {
     super(type);
     this.attributes = new Attributes(type.getAttributes(), attrMap);
     this.parent = checkNotNull(parent);

@@ -11,7 +11,8 @@ public class Constraint extends Value {
     return attributes.get(attrName);
   }
 
-  public Constraint(ConstraintType type, Map<String, Value> attrs) throws UndeclaredAttributeException {
+  public Constraint(ConstraintType type, Map<String, Value> attrs)
+      throws UndeclaredAttributeException {
     super(type);
     this.attributes = new Attributes(type.getAttributes(), attrs);
   }

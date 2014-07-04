@@ -23,7 +23,8 @@ public class Connection extends Value {
     return portTo;
   }
 
-  public Connection(ConnectionType type, Port from, Port to, Map<String, Value> attrs) 
+  public Connection(ConnectionType type, Port from, Port to,
+      Map<String, Value> attrs)
       throws UndeclaredAttributeException {
     super(type);
     this.attributes = new Attributes(type.getAttributes(), attrs);

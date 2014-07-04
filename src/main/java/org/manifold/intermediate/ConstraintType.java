@@ -1,8 +1,8 @@
 package org.manifold.intermediate;
 
-import java.util.Map;
-
 import com.google.common.collect.ImmutableMap;
+
+import java.util.Map;
 
 
 public class ConstraintType extends Type {
