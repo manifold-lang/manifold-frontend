@@ -8,7 +8,7 @@ public class Attributes {
   private final Map<String, Value> data;
 
   public Attributes(Map<String, Type> types, Map<String, Value> data)
-      throws UndeclaredAttributeException {
+      throws UndeclaredAttributeException, InvalidAttributeException {
     for (Map.Entry<String, Type> entry : types.entrySet()) {
       String attrName = entry.getKey();
       if (!data.containsKey(attrName)) {
@@ -18,9 +18,7 @@ public class Attributes {
     }
     for (String attrName : data.keySet()) {
       if (!types.containsKey(attrName)) {
-        // TODO: Should this be a different type,
-        // or should there be a common base class?
-        throw new UndeclaredAttributeException(attrName);
+        throw new InvalidAttributeException(attrName);
       }
     }
     this.data = ImmutableMap.copyOf(data);

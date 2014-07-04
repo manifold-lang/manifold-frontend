@@ -2,10 +2,10 @@ package org.manifold.intermediate;
 
 import static org.junit.Assert.assertEquals;
 
+import com.google.common.collect.ImmutableMap;
+
 import org.junit.Before;
 import org.junit.Test;
-
-import com.google.common.collect.ImmutableMap;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,7 +13,8 @@ import java.util.Map;
 public class TestPort {
 
   private static final Type boolType = BooleanType.getInstance();
-  private static final PortType defaultPortType = new PortType(ImmutableMap.of("v", boolType));
+  private static final PortType defaultPortType =
+      new PortType(ImmutableMap.of("v", boolType));
   private static final String PORT_NAME = "testport";
   private static final Value v = new BooleanValue(boolType, true);
   
@@ -21,12 +22,11 @@ public class TestPort {
   private Port port;
   
   @Before
-  public void setup() throws UndeclaredIdentifierException, UndeclaredAttributeException {
-    HashMap<String, PortType> portTypeMap = new HashMap<>();
-    portTypeMap.put(PORT_NAME, defaultPortType);
-    
-    Map<String, Map<String, Value>> portMap = new HashMap<>();
-    portMap.put(PORT_NAME, ImmutableMap.of("v", v));
+  public void setup() throws SchematicException {
+    Map<String, PortType> portTypeMap =
+        ImmutableMap.of(PORT_NAME, defaultPortType);
+    Map<String, Map<String, Value>> portMap =
+        ImmutableMap.of(PORT_NAME, ImmutableMap.of("v", v));
     NodeType parentType = new NodeType(new HashMap<>(), portTypeMap);
     parent = new Node(parentType, new HashMap<>(), portMap);
     port = parent.getPort(PORT_NAME);

@@ -1,6 +1,6 @@
 package org.manifold.intermediate;
 
-public class UndeclaredIdentifierException extends Exception {
+public class UndeclaredIdentifierException extends SchematicException {
   private static final long serialVersionUID = -5785755001929744865L;
   public String identifier;
   

@@ -1,6 +1,6 @@
 package org.manifold.intermediate;
 
-public class UndeclaredAttributeException extends Exception {
+public class UndeclaredAttributeException extends SchematicException {
   private static final long serialVersionUID = 3901819872140384623L;
 
   public String name;

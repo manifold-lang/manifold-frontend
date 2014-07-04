@@ -25,7 +25,7 @@ public class Connection extends Value {
 
   public Connection(ConnectionType type, Port from, Port to,
       Map<String, Value> attrs)
-      throws UndeclaredAttributeException {
+      throws UndeclaredAttributeException, InvalidAttributeException {
     super(type);
     this.attributes = new Attributes(type.getAttributes(), attrs);
     this.portFrom = checkNotNull(from);

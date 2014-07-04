@@ -4,10 +4,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.fail;
 
+import com.google.common.collect.ImmutableMap;
+
 import org.junit.Before;
 import org.junit.Test;
-
-import com.google.common.collect.ImmutableMap;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -23,12 +23,15 @@ public class TestSchematic {
   private Port p1, p2;
   
   @Before
-  public void setup() throws UndeclaredIdentifierException, UndeclaredAttributeException {
-    HashMap<String, PortType> portMap = new HashMap<>();
-    portMap.put(PORT_NAME1, defaultPortDefinition);
-    portMap.put(PORT_NAME2, defaultPortDefinition);
-    Map<String, Map<String, Value>> portAttrMap = ImmutableMap.of(PORT_NAME1, ImmutableMap.of(), PORT_NAME2, ImmutableMap.of());
-    n = new Node(new NodeType(new HashMap<>(), portMap), new HashMap<>(), portAttrMap);
+  public void setup() throws SchematicException {
+    Map<String, PortType> portMap = ImmutableMap.of(
+        PORT_NAME1, defaultPortDefinition,
+        PORT_NAME2, defaultPortDefinition);
+    Map<String, Map<String, Value>> portAttrMap = ImmutableMap.of(
+        PORT_NAME1, ImmutableMap.of(),
+        PORT_NAME2, ImmutableMap.of());
+    NodeType nType = new NodeType(new HashMap<>(), portMap);
+    n = new Node(nType, new HashMap<>(), portAttrMap);
     
     p1 = n.getPort(PORT_NAME1);
     p2 = n.getPort(PORT_NAME2);
@@ -269,8 +272,7 @@ public class TestSchematic {
   }
   
   @Test
-  public void testAddNode()
-      throws Exception {
+  public void testAddNode() throws SchematicException {
     Schematic s = new Schematic("test");
     NodeType n1Type = new NodeType(new HashMap<>(), new HashMap<>());
     Node n1 = new Node(n1Type, new HashMap<>(), new HashMap<>());
@@ -278,8 +280,7 @@ public class TestSchematic {
   }
   
   @Test(expected = org.manifold.intermediate.MultipleAssignmentException.class)
-  public void testAddNode_multipleInstantiation()
-      throws Exception {
+  public void testAddNode_multipleInstantiation() throws SchematicException {
     Schematic s = new Schematic("test");
     NodeType n1Type = new NodeType(new HashMap<>(), new HashMap<>());
     try {
@@ -293,9 +294,7 @@ public class TestSchematic {
   }
   
   @Test
-  public void testGetNode()
-      throws Exception {
-    
+  public void testGetNode() throws SchematicException {
     Schematic s = new Schematic("test");
     NodeType n1Type = new NodeType(new HashMap<>(), new HashMap<>());
     Node n1 = new Node(n1Type, new HashMap<>(), new HashMap<>());
@@ -313,7 +312,7 @@ public class TestSchematic {
   }
   
   @Test
-  public void testAddConnection() throws MultipleAssignmentException, UndeclaredAttributeException{
+  public void testAddConnection() throws SchematicException {
     Schematic s = new Schematic("test");
     ConnectionType c1Type = new ConnectionType(new HashMap<>());
     Connection c1 = new Connection(c1Type, p1, p2, new HashMap<>());
@@ -321,7 +320,8 @@ public class TestSchematic {
   }
   
   @Test(expected = org.manifold.intermediate.MultipleAssignmentException.class)
-  public void testAddConnection_multipleInstantiation() throws UndeclaredAttributeException, MultipleAssignmentException {
+  public void testAddConnection_multipleInstantiation()
+      throws SchematicException {
     Schematic s = new Schematic("test");
     ConnectionType c1Type = new ConnectionType(new HashMap<>());
     try {
@@ -335,7 +335,7 @@ public class TestSchematic {
   }
   
   @Test
-  public void testGetConnection() throws Exception{
+  public void testGetConnection() throws SchematicException {
     Schematic s = new Schematic("test");
     ConnectionType c1Type = new ConnectionType(new HashMap<>());
     Connection c1 = new Connection(c1Type, p1, p2, new HashMap<>());
@@ -346,13 +346,13 @@ public class TestSchematic {
   
   @Test(expected = UndeclaredIdentifierException.class)
   public void testGetConnection_notInstantiated()
-      throws UndeclaredIdentifierException{
+      throws UndeclaredIdentifierException {
     Schematic s = new Schematic("test");
     s.getConnection("bogus");
   }
   
   @Test
-  public void testAddConstraint() throws MultipleAssignmentException, UndeclaredAttributeException{
+  public void testAddConstraint() throws SchematicException {
     Schematic s = new Schematic("test");
     ConstraintType c1Type = new ConstraintType(new HashMap<>());
     Constraint c1 = new Constraint(c1Type, new HashMap<>());
@@ -361,7 +361,7 @@ public class TestSchematic {
   
   @Test(expected = MultipleAssignmentException.class)
   public void testAddConstraint_multipleInstantiation()
-      throws MultipleAssignmentException, UndeclaredAttributeException{
+      throws SchematicException {
     Schematic s = new Schematic("test");
     ConstraintType c1Type = new ConstraintType(new HashMap<>());
     
@@ -377,8 +377,7 @@ public class TestSchematic {
   }
   
   @Test
-  public void testGetConstraint()
-      throws MultipleAssignmentException, UndeclaredIdentifierException, UndeclaredAttributeException{
+  public void testGetConstraint() throws SchematicException {
     Schematic s = new Schematic("test");
     ConstraintType c1Type = new ConstraintType(new HashMap<>());
     Constraint c1 = new Constraint(c1Type, new HashMap<>());

@@ -2,14 +2,14 @@ package org.manifold.intermediate;
 
 import static org.junit.Assert.assertTrue;
 
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
+
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.HashMap;
-
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
 
 public class TestSerialization {
 
@@ -34,10 +34,8 @@ public class TestSerialization {
   private Schematic testSchematic;
 
   @Before
-  public void setup()
-      throws MultipleDefinitionException, UndeclaredIdentifierException,
-      MultipleAssignmentException, UndeclaredAttributeException {
-  
+  public void setup() throws SchematicException {
+
     testSchematic = new Schematic(TEST_SCHEMATIC_NAME);
 
     // port type

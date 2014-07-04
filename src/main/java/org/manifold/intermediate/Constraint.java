@@ -12,7 +12,7 @@ public class Constraint extends Value {
   }
 
   public Constraint(ConstraintType type, Map<String, Value> attrs)
-      throws UndeclaredAttributeException {
+      throws UndeclaredAttributeException, InvalidAttributeException {
     super(type);
     this.attributes = new Attributes(type.getAttributes(), attrs);
   }
