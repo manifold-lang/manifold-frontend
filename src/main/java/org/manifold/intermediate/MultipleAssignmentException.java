@@ -1,6 +1,6 @@
 package org.manifold.intermediate;
 
-public class MultipleAssignmentException extends Exception {
+public class MultipleAssignmentException extends SchematicException {
 
   private static final long serialVersionUID = 5454612285640527276L;
   private final String instanceKind;

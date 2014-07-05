@@ -2,6 +2,8 @@ package org.manifold.intermediate;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import java.util.Map;
+
 public class Connection extends Value {
 
   private final Attributes attributes;
@@ -9,9 +11,6 @@ public class Connection extends Value {
   public Value getAttribute(String attrName) throws
       UndeclaredAttributeException {
     return attributes.get(attrName);
-  }
-  public void setAttribute(String attrName, Value attrValue){
-    attributes.put(attrName, attrValue);
   }
   
   private Port portFrom = null, portTo = null;
@@ -24,9 +23,11 @@ public class Connection extends Value {
     return portTo;
   }
 
-  public Connection(ConnectionType type, Port from, Port to){
+  public Connection(ConnectionType type, Port from, Port to,
+      Map<String, Value> attrs)
+      throws UndeclaredAttributeException, InvalidAttributeException {
     super(type);
-    this.attributes = new Attributes();
+    this.attributes = new Attributes(type.getAttributes(), attrs);
     this.portFrom = checkNotNull(from);
     this.portTo = checkNotNull(to);
     

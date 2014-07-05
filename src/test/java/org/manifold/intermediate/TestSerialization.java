@@ -34,10 +34,8 @@ public class TestSerialization {
   private Schematic testSchematic;
 
   @Before
-  public void setup()
-      throws MultipleDefinitionException, UndeclaredIdentifierException,
-      MultipleAssignmentException {
-  
+  public void setup() throws SchematicException {
+
     testSchematic = new Schematic(TEST_SCHEMATIC_NAME);
 
     // port type
@@ -60,15 +58,16 @@ public class TestSerialization {
     testSchematic.addNodeType(OUT_NODE_NAME, doutNodeType);
 
     // node
-    Node inNode = new Node(dinNodeType);
-    Node outNode = new Node(doutNodeType);
+    Node inNode = new Node(dinNodeType, new HashMap<>(), new HashMap<>());
+    Node outNode = new Node(doutNodeType, new HashMap<>(), new HashMap<>());
 
     // connection
     ConnectionType conType = new ConnectionType(new HashMap<>());
     Connection con = new Connection(
         conType,
         inNode.getPort(IN_PORT_NAME),
-        outNode.getPort(OUT_PORT_NAME)
+        outNode.getPort(OUT_PORT_NAME),
+        new HashMap<>()
     );
     
     testSchematic.addConnection(CONNECTION_NAME, con);

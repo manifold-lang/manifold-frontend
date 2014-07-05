@@ -2,6 +2,8 @@ package org.manifold.intermediate;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import java.util.Map;
+
 public class Port extends Value {
 
   private final Attributes attributes;
@@ -11,17 +13,15 @@ public class Port extends Value {
       throws UndeclaredAttributeException {
     return attributes.get(attrName);
   }
-  public void setAttribute(String attrName, Value attrValue){
-    attributes.put(attrName, attrValue);
-  }
-  
+
   public Node getParent() {
     return parent;
   }
 
-  public Port(PortType type, Node parent){
+  public Port(PortType type, Node parent, Map<String, Value> attrMap)
+      throws UndeclaredAttributeException, InvalidAttributeException {
     super(type);
-    this.attributes = new Attributes();
+    this.attributes = new Attributes(type.getAttributes(), attrMap);
     this.parent = checkNotNull(parent);
   }
 }

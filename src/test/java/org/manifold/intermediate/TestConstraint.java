@@ -2,47 +2,42 @@ package org.manifold.intermediate;
 
 import static org.junit.Assert.assertEquals;
 
-import org.junit.Test;
+import com.google.common.collect.ImmutableMap;
 
-import java.util.HashMap;
+import org.junit.Test;
 
 public class TestConstraint {
 
-  private static final ConstraintType defaultConstraintDefinition =
-      new ConstraintType(new HashMap<>());
   private static final Type boolType = BooleanType.getInstance();
+  private static final ConstraintType defaultConstraintDefinition =
+      new ConstraintType(ImmutableMap.of("v", boolType));
 
   @Test
-  public void testGetAttribute() throws UndeclaredAttributeException {
-    Constraint ept = new Constraint(defaultConstraintDefinition);
+  public void testGetAttribute() throws SchematicException {
     Value v = new BooleanValue(boolType, true);
-    ept.setAttribute("v", v);
+    Constraint ept = new Constraint(defaultConstraintDefinition,
+        ImmutableMap.of("v", v));
     Value vActual = ept.getAttribute("v");
     assertEquals(v, vActual);
   }
 
   @Test(expected = org.manifold.intermediate.UndeclaredAttributeException.class)
-  public void testGetAttribute_nonexistent()
-      throws UndeclaredAttributeException {
-    Constraint ept = new Constraint(defaultConstraintDefinition);
-    Value vBogus = ept.getAttribute("bogus");
-  }
-
-  @Test
-  public void testSetAttribute() {
-    Constraint ept = new Constraint(defaultConstraintDefinition);
+  public void testGetAttribute_nonexistent() throws SchematicException {
     Value v = new BooleanValue(boolType, true);
-    ept.setAttribute("v", v);
+    Constraint ept = new Constraint(defaultConstraintDefinition,
+        ImmutableMap.of("v", v));
+    ept.getAttribute("bogus");
   }
 
-  @Test
-  public void testSetAttribute_multiple_set() {
-    // setting an Argument twice should just work
-    Constraint ept = new Constraint(defaultConstraintDefinition);
+  @Test(expected = org.manifold.intermediate.UndeclaredAttributeException.class)
+  public void testMissingAttribute() throws SchematicException {
+    new Constraint(defaultConstraintDefinition, ImmutableMap.of());
+  }
+
+  @Test(expected = org.manifold.intermediate.InvalidAttributeException.class)
+  public void testExtraAttribute() throws Exception {
     Value v = new BooleanValue(boolType, true);
-    ept.setAttribute("v", v);
-    Value v2 = new BooleanValue(boolType, false);
-    ept.setAttribute("v", v2);
+    new Constraint(defaultConstraintDefinition,
+        ImmutableMap.of("v", v, "vBogus", v));
   }
-
 }

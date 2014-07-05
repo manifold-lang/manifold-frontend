@@ -1,5 +1,6 @@
 package org.manifold.intermediate;
 
+import java.util.Map;
 
 public class Constraint extends Value {
 
@@ -10,13 +11,9 @@ public class Constraint extends Value {
     return attributes.get(attrName);
   }
 
-  public void setAttribute(String attrName, Value attrValue) {
-    attributes.put(attrName, attrValue);
-  }
-
-  public Constraint(ConstraintType type){
+  public Constraint(ConstraintType type, Map<String, Value> attrs)
+      throws UndeclaredAttributeException, InvalidAttributeException {
     super(type);
-    this.attributes = new Attributes();
+    this.attributes = new Attributes(type.getAttributes(), attrs);
   }
-
 }

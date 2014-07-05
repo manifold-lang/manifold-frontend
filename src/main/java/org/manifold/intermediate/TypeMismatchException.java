@@ -1,6 +1,6 @@
 package org.manifold.intermediate;
 
-public class TypeMismatchException extends Exception {
+public class TypeMismatchException extends SchematicException {
   private static final long serialVersionUID = 7730618233489002412L;
   private final Type expected;
   private final Type actual;
