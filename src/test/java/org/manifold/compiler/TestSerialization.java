@@ -10,8 +10,8 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.HashMap;
-import org.manifold.compiler.back.Schematic;
-import org.manifold.compiler.back.SchematicException;
+import org.manifold.compiler.middle.Schematic;
+import org.manifold.compiler.middle.SchematicException;
 
 public class TestSerialization {
 
