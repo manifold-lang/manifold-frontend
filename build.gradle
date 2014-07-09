@@ -3,9 +3,11 @@ apply plugin: 'eclipse'
 apply plugin: 'jacoco'
 apply plugin: 'coveralls'
 apply plugin: 'checkstyle'
+apply plugin: 'antlr4'
 
 repositories {
   mavenCentral()
+  jcenter()
 }
 
 dependencies {
@@ -17,11 +19,17 @@ dependencies {
 buildscript {
   repositories {
     mavenCentral()
-  }
+    maven {
+        name 'JFrog OSS snapshot repo'
+        url  'https://oss.jfrog.org/oss-snapshot-local/'
+    }
+    jcenter()
+}
 
   dependencies {
     classpath 'org.ajoberstar:gradle-jacoco:0.2.0'
     classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:0.3.0'
+    classpath 'me.champeau.gradle:antlr4-gradle-plugin:0.1-SNAPSHOT'
   }
 }
 
@@ -53,4 +61,19 @@ checkstyle {
   ignoreFailures = false
   showViolations = true
   toolVersion = "5.7"
+}
+
+antlr4 {
+    extraArgs=["-package", "org.manifold.parser"]
+}
+
+// make the Java compile task depend on the antlr4 task
+compileJava.dependsOn antlr4
+
+// add the generated source files to the list of java sources
+sourceSets.main.java.srcDirs += antlr4.output
+
+// add antlr4 to classpath
+configurations {
+   compile.extendsFrom antlr4
 }
