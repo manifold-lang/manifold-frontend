@@ -1,5 +1,8 @@
 package org.manifold.compiler.front;
 
+import org.manifold.compiler.TypeValue;
+import org.manifold.compiler.Value;
+
 public abstract class Expression {
   public abstract TypeValue getType();
   public abstract Value evaluate();

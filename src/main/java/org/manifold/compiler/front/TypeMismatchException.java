@@ -1,5 +1,8 @@
 package org.manifold.compiler.front;
 
+import org.manifold.compiler.TypeValue;
+import org.manifold.compiler.Value;
+
 public class TypeMismatchException extends Exception {
   private static final long serialVersionUID = 1L;
 

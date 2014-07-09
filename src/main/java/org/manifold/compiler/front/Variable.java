@@ -1,5 +1,9 @@
 package org.manifold.compiler.front;
 
+import org.manifold.compiler.TypeValue;
+import org.manifold.compiler.Value;
+import org.manifold.compiler.TypeTypeValue;
+
 public class Variable {
   private final VariableIdentifier identifier;
   private final Expression typeExpression;

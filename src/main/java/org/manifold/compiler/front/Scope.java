@@ -1,5 +1,7 @@
 package org.manifold.compiler.front;
 
+import org.manifold.compiler.Value;
+import org.manifold.compiler.TypeValue;
 import java.util.HashMap;
 import java.util.Map;
 

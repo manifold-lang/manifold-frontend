@@ -1,20 +1,25 @@
 package org.manifold.compiler.front;
 
+import org.manifold.compiler.TypeValue;
+import org.manifold.compiler.Value;
 import java.util.Objects;
 
 public class EnumValue extends Value {
 
-  private final EnumTypeValue type;
   private final String identifier;
   private Value value;
 
   public EnumValue(EnumTypeValue type, String identifier)
       throws EnumIdentifierNotDefined {
-    this.type = type;
+    super(type);
+    assert type instanceof EnumTypeValue;
     this.identifier = identifier;
 
     if (!type.contains(identifier)) {
-      throw new EnumIdentifierNotDefined(this.type, this.identifier);
+      throw new EnumIdentifierNotDefined(
+          (EnumTypeValue) this.type,
+          this.identifier
+      );
     }
 
     value = type.get(identifier);
@@ -26,11 +31,6 @@ public class EnumValue extends Value {
 
   public Value getValue() {
     return value;
-  }
-
-  @Override
-  public TypeValue getType() {
-    return type;
   }
 
   @Override

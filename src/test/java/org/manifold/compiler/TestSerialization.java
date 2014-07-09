@@ -41,31 +41,43 @@ public class TestSerialization {
     testSchematic = new Schematic(TEST_SCHEMATIC_NAME);
 
     // port type
-    PortType din = new PortType(new HashMap<>());
-    PortType dout = new PortType(new HashMap<>());
+    PortTypeValue din = new PortTypeValue(new HashMap<>());
+    PortTypeValue dout = new PortTypeValue(new HashMap<>());
     testSchematic.addPortType(DIGITAL_IN, din);
     testSchematic.addPortType(DIGITAL_OUT, dout);
 
     // node type
-    HashMap<String, PortType> dinPortMap = new HashMap<>();
+    HashMap<String, PortTypeValue> dinPortMap = new HashMap<>();
     dinPortMap.put(IN_PORT_NAME, din);
 
-    HashMap<String, PortType> doutPortMap = new HashMap<>();
+    HashMap<String, PortTypeValue> doutPortMap = new HashMap<>();
     doutPortMap.put(OUT_PORT_NAME, dout);
 
-    NodeType dinNodeType = new NodeType(new HashMap<>(), dinPortMap);
-    NodeType doutNodeType = new NodeType(new HashMap<>(), doutPortMap);
+    NodeTypeValue dinNodeType = new NodeTypeValue(new HashMap<>(), dinPortMap);
+    NodeTypeValue doutNodeType = new NodeTypeValue(
+        new HashMap<>(),
+        doutPortMap
+    );
 
     testSchematic.addNodeType(IN_NODE_NAME, dinNodeType);
     testSchematic.addNodeType(OUT_NODE_NAME, doutNodeType);
 
     // node
-    Node inNode = new Node(dinNodeType, new HashMap<>(), new HashMap<>());
-    Node outNode = new Node(doutNodeType, new HashMap<>(), new HashMap<>());
+    NodeValue inNode = new NodeValue(
+        dinNodeType,
+        new HashMap<>(),
+        new HashMap<>()
+    );
+    
+    NodeValue outNode = new NodeValue(
+        doutNodeType,
+        new HashMap<>(),
+        new HashMap<>()
+    );
 
     // connection
     ConnectionType conType = new ConnectionType(new HashMap<>());
-    Connection con = new Connection(
+    ConnectionValue con = new ConnectionValue(
         conType,
         inNode.getPort(IN_PORT_NAME),
         outNode.getPort(OUT_PORT_NAME),

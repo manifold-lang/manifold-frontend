@@ -1,5 +1,6 @@
 package org.manifold.compiler.front;
 
+import org.manifold.compiler.BooleanTypeValue;
 import static org.junit.Assert.*;
 
 import org.junit.Test;
