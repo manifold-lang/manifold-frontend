@@ -5,6 +5,9 @@ apply plugin: 'coveralls'
 apply plugin: 'checkstyle'
 apply plugin: 'antlr4'
 
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
 repositories {
   mavenCentral()
   jcenter()
