@@ -17,7 +17,7 @@ public class EnumValue extends Value {
 
     if (!type.contains(identifier)) {
       throw new EnumIdentifierNotDefined(
-          (EnumTypeValue) this.type,
+          (EnumTypeValue) this.getType(),
           this.identifier
       );
     }
@@ -52,7 +52,7 @@ public class EnumValue extends Value {
   public boolean equals(Object obj) {
     if (obj instanceof EnumValue) {
       EnumValue otherEnum = (EnumValue) obj;
-      if (type.equals(otherEnum.type) &&
+      if (getType().equals(otherEnum.getType()) &&
           identifier.equals(otherEnum.identifier)) {
         return true;
       }
@@ -64,7 +64,7 @@ public class EnumValue extends Value {
   @Override
   public int hashCode() {
     int hash = 3;
-    hash = 73 * hash + Objects.hashCode(this.type);
+    hash = 73 * hash + Objects.hashCode(this.getType());
     hash = 73 * hash + Objects.hashCode(this.identifier);
     return hash;
   }
