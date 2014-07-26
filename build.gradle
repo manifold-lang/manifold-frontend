@@ -18,6 +18,7 @@ dependencies {
   compile 'com.google.guava:guava:17.0'
   testCompile 'junit:junit:4.11'
   compile 'log4j:log4j:1.2.16'
+  compile group: 'commons-cli', name: 'commons-cli', version: '1.2'
 /*
   compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '1.2'
   compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '1.2'
@@ -73,7 +74,7 @@ checkstyle {
 }
 
 antlr4 {
-    extraArgs=["-package", "org.manifold.parser"]
+    extraArgs=["-package", "org.manifold.parser", "-o", "build/generated-src/org/manifold/parser"]
 }
 
 // make the Java compile task depend on the antlr4 task
