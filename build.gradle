@@ -45,6 +45,10 @@ jacoco {
 }
 
 test {
+  copy {
+    from 'src/test/java/org/manifold/compiler/serialization/data'
+    into "$buildDir/classes/test/org/manifold/compiler/serialization/data"
+  }
   testLogging.showStandardStreams = true
   jacoco {
     append = false
