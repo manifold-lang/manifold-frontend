@@ -20,7 +20,7 @@ public class Variable {
     return identifier;
   }
 
-  public TypeValue getType() throws TypeMismatchException {
+  public TypeValue getType() {
     return (TypeValue) typeExpression.evaluate();
   }
 
@@ -28,11 +28,12 @@ public class Variable {
     return assigned;
   }
 
-  public Value getValue() throws VariableNotAssignedException {
+  public Value getValue() {
     if (!isAssigned()) {
-      throw new VariableNotAssignedException(this);
+      return null;
+    } else {
+      return valueExpression.evaluate();
     }
-    return valueExpression.evaluate();
   }
 
   public void setValue(Expression valExpr) throws MultipleAssignmentException {
