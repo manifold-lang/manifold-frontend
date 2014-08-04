@@ -38,11 +38,10 @@ public class TestVariable {
     assertEquals(getVariable().getType(), getTypeExpression().evaluate());
   }
 
-  @Test(expected = VariableNotAssignedException.class)
   public void testGetValueUnassigned() throws VariableNotAssignedException {
     Variable v = getVariable();
     assertFalse(v.isAssigned());
-    v.getValue();
+    assertNull(v.getValue());
   }
 
   @Test
@@ -50,15 +49,15 @@ public class TestVariable {
       MultipleAssignmentException,
       VariableNotAssignedException {
     Variable v = getVariable();
-    v.setValue(getValueExpression());
+    v.setValueExpression(getValueExpression());
     assertEquals(getValueExpression().evaluate(), v.getValue());
   }
 
   @Test(expected = MultipleAssignmentException.class)
   public void testSetValueMultiple() throws MultipleAssignmentException {
     Variable v = getVariable();
-    v.setValue(getValueExpression());
-    v.setValue(getValueExpression());
+    v.setValueExpression(getValueExpression());
+    v.setValueExpression(getValueExpression());
   }
 
   @Test(expected = TypeMismatchException.class)
@@ -82,7 +81,7 @@ public class TestVariable {
         getVariableIdentifier(),
         new LiteralExpression(BooleanTypeValue.getInstance())
     );
-    v.setValue(new LiteralExpression(BooleanTypeValue.getInstance()));
+    v.setValueExpression(new LiteralExpression(BooleanTypeValue.getInstance()));
     v.verify();
   }
 }
