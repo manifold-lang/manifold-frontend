@@ -4,7 +4,7 @@ import org.manifold.compiler.TypeValue;
 import org.manifold.compiler.Value;
 
 public class VariableReferenceExpression extends Expression {
-  final private Variable variable;
+  private final Variable variable;
 
   public VariableReferenceExpression(Variable variable) {
     this.variable = variable;

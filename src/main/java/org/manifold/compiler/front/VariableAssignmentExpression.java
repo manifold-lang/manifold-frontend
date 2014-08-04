@@ -7,7 +7,9 @@ public class VariableAssignmentExpression extends Expression {
   private Variable variable;
   private Expression valueExpression;
 
-  public VariableAssignmentExpression(Variable variable, Expression valueExpression) throws Exception {
+  public VariableAssignmentExpression(
+      Variable variable,
+      Expression valueExpression) throws Exception {
     this.variable = variable;
     this.valueExpression = valueExpression;
     this.variable.setValueExpression(valueExpression);

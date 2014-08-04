@@ -36,7 +36,8 @@ public class Variable {
     }
   }
 
-  public void setValueExpression(Expression valExpr) throws MultipleAssignmentException {
+  public void setValueExpression(Expression valExpr)
+      throws MultipleAssignmentException {
     if (isAssigned()) {
       throw new MultipleAssignmentException(this);
     }
