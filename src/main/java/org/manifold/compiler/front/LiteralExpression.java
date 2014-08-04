@@ -32,12 +32,12 @@ public class LiteralExpression extends Expression {
 
   @Override
   public boolean isCompiletimeEvaluable() {
-    return value.isCompiletimeEvaluable();
+    return value.isElaborationtimeKnowable();
   }
 
   @Override
   public boolean isSynthesizable() {
-    return value.isSynthesizable();
+    return value.isRuntimeKnowable();
   }
 
 }

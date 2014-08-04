@@ -35,12 +35,12 @@ public class VariableReferenceExpression extends Expression {
 
   @Override
   public boolean isCompiletimeEvaluable() {
-    return variable.getValue().isCompiletimeEvaluable();
+    return variable.getValue().isElaborationtimeKnowable();
   }
 
   @Override
   public boolean isSynthesizable() {
-    return variable.getValue().isSynthesizable();
+    return variable.getValue().isRuntimeKnowable();
   }
 
 }
