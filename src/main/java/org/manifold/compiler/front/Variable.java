@@ -36,10 +36,11 @@ public class Variable {
     }
   }
 
-  public void setValue(Expression valExpr) throws MultipleAssignmentException {
+  public void setValueExpression(Expression valExpr) throws MultipleAssignmentException {
     if (isAssigned()) {
       throw new MultipleAssignmentException(this);
     }
+    
     this.valueExpression = valExpr;
     this.assigned = true;
   }
