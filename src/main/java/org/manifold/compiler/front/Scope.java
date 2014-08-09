@@ -33,7 +33,7 @@ public class Scope {
     }
     // naturally, variable shadowing is allowed -- "closer" scopes hide
     // "further" ones
-    Variable v = new Variable(identifier, typeExpression);
+    Variable v = new Variable(this, identifier, typeExpression);
     symbolTable.put(identifier, v);
   }
 

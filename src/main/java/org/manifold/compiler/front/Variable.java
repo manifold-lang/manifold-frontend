@@ -7,11 +7,16 @@ import org.manifold.compiler.TypeTypeValue;
 public class Variable {
   private final VariableIdentifier identifier;
   private final Expression typeExpression;
+  private final Scope scope;
 
   private boolean assigned = false;
   private Expression valueExpression;
 
-  public Variable(VariableIdentifier identifier, Expression typeExpression) {
+  public Variable(
+      Scope scope,
+      VariableIdentifier identifier,
+      Expression typeExpression) {
+    this.scope = scope;
     this.identifier = identifier;
     this.typeExpression = typeExpression;
   }
@@ -21,7 +26,11 @@ public class Variable {
   }
 
   public TypeValue getType() {
-    return (TypeValue) typeExpression.evaluate();
+    return (TypeValue) typeExpression.evaluate(scope);
+  }
+  
+  public Scope getScope() {
+    return scope;
   }
 
   public boolean isAssigned() {
@@ -32,7 +41,7 @@ public class Variable {
     if (!isAssigned()) {
       return null;
     } else {
-      return valueExpression.evaluate();
+      return valueExpression.evaluate(scope);
     }
   }
 
@@ -48,21 +57,21 @@ public class Variable {
   
   public void verify() throws TypeMismatchException {
     // Ensure the Type is an actual type
-    if (typeExpression.getType() != TypeTypeValue.getInstance()) {
+    if (typeExpression.getType(scope) != TypeTypeValue.getInstance()) {
       // TODO(lucas) We should have a special exception for the case where
       // a nontype value is used as a type.
       throw new TypeMismatchException(
           TypeTypeValue.getInstance(),
-          typeExpression.getType()
+          typeExpression.getType(scope)
       );
     }
     
     // Ensure the value is of the correct type
     // TODO(lucas)
-    if (assigned && !(valueExpression.getType().isSubtypeOf(getType()))) {
+    if (assigned && !(valueExpression.getType(scope).isSubtypeOf(getType()))) {
       throw new TypeMismatchException(
           getType(),
-          valueExpression.getType()
+          valueExpression.getType(scope)
       );
     }
   }

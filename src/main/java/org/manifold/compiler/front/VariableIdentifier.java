@@ -1,10 +1,20 @@
 package org.manifold.compiler.front;
 
+import java.util.List;
+
 public class VariableIdentifier {
 
   private String name;
   private NamespaceIdentifier namespaceIdentifier;
 
+  public VariableIdentifier(List<String> identifiers) {
+    assert(identifiers.size() > 0);
+    this.name = identifiers.get(identifiers.size() - 1);
+    this.namespaceIdentifier = new NamespaceIdentifier(
+        identifiers.subList(0, identifiers.size() - 1)
+    );
+  }
+  
   public VariableIdentifier(NamespaceIdentifier namespaceIdentifier,
       String name) {
     this.name = name;

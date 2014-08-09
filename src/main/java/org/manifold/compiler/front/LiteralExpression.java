@@ -11,17 +11,17 @@ public class LiteralExpression extends Expression {
   }
 
   @Override
-  public TypeValue getType() {
+  public TypeValue getType(Scope scope) {
     return value.getType();
   }
 
   @Override
-  public Value evaluate() {
+  public Value evaluate(Scope scope) {
     return value;
   }
 
   @Override
-  public void verify() throws Exception{
+  public void verify(Scope scope) throws Exception{
     value.verify();
   }
 
@@ -31,12 +31,12 @@ public class LiteralExpression extends Expression {
   }
 
   @Override
-  public boolean isCompiletimeEvaluable() {
+  public boolean isCompiletimeEvaluable(Scope scope) {
     return value.isElaborationtimeKnowable();
   }
 
   @Override
-  public boolean isSynthesizable() {
+  public boolean isSynthesizable(Scope scope) {
     return value.isRuntimeKnowable();
   }
 

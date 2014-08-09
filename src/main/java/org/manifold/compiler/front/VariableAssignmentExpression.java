@@ -4,31 +4,39 @@ import org.manifold.compiler.TypeValue;
 import org.manifold.compiler.Value;
 
 public class VariableAssignmentExpression extends Expression {
-  private Variable variable;
+  private VariableIdentifier variable;
   private Expression valueExpression;
 
   public VariableAssignmentExpression(
-      Variable variable,
+      VariableIdentifier variable,
       Expression valueExpression) throws Exception {
     this.variable = variable;
     this.valueExpression = valueExpression;
-    this.variable.setValueExpression(valueExpression);
   }
 
   @Override
-  public TypeValue getType() {
-    return variable.getType();
+  public TypeValue getType(Scope scope) {
+    try {
+      return scope.getVariable(variable).getType();
+    } catch (VariableNotDefinedException ex) {
+      assert(false);
+      return null;
+    }
   }
 
   @Override
-  public Value evaluate() {
-    return variable.getValue();
+  public Value evaluate(Scope scope) {
+    try {
+      return scope.getVariable(variable).getValue();
+    } catch (VariableNotDefinedException ex) {
+      assert(false);
+      return null;
+    }
   }
 
   @Override
-  public void verify() throws Exception{
-    variable.verify();
-    valueExpression.verify();
+  public void verify(Scope scope) throws Exception{
+    valueExpression.verify(scope);
   }
 
   @Override
@@ -37,13 +45,13 @@ public class VariableAssignmentExpression extends Expression {
   }
 
   @Override
-  public boolean isCompiletimeEvaluable() {
-    return valueExpression.evaluate().isElaborationtimeKnowable();
+  public boolean isCompiletimeEvaluable(Scope scope) {
+    return valueExpression.evaluate(scope).isElaborationtimeKnowable();
   }
 
   @Override
-  public boolean isSynthesizable() {
-    return valueExpression.evaluate().isRuntimeKnowable();
+  public boolean isSynthesizable(Scope scope) {
+    return valueExpression.evaluate(scope).isRuntimeKnowable();
   }
 
 }
