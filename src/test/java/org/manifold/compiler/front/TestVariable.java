@@ -1,10 +1,12 @@
 package org.manifold.compiler.front;
 
-import org.manifold.compiler.BooleanValue;
-import org.manifold.compiler.BooleanTypeValue;
 import static org.junit.Assert.*;
 
 import org.junit.Test;
+import org.manifold.compiler.BooleanTypeValue;
+import org.manifold.compiler.BooleanValue;
+import org.manifold.compiler.TypeValue;
+import org.manifold.compiler.Value;
 
 public class TestVariable {
   private NamespaceIdentifier getNamespaceIdentifier() {
@@ -14,18 +16,34 @@ public class TestVariable {
   private VariableIdentifier getVariableIdentifier() {
     return new VariableIdentifier(getNamespaceIdentifier(), "foo");
   }
-
+  
+  private Scope getScope() {
+    return new Scope();
+  }
+  
   private Variable getVariable() {
     // declare "foo" as a variable that stores a Type
-    return new Variable(getVariableIdentifier(), getTypeExpression());
+    return new Variable(
+        getScope(),
+        getVariableIdentifier(),
+        getTypeExpression()
+    );
+  }
+  
+  private TypeValue getTypeValue() {
+    return BooleanTypeValue.getInstance();
+  }
+  
+  private Value getValue() {
+    return BooleanValue.getInstance(true);
   }
 
   private Expression getTypeExpression(){
-    return new LiteralExpression(BooleanTypeValue.getInstance());
+    return new LiteralExpression(getTypeValue());
   }
 
   private Expression getValueExpression(){
-    return new LiteralExpression(BooleanValue.getInstance(true));
+    return new LiteralExpression(getValue());
   }
 
   @Test
@@ -35,14 +53,16 @@ public class TestVariable {
 
   @Test
   public void testGetTypeValue() throws TypeMismatchException {
-    assertEquals(getVariable().getType(), getTypeExpression().evaluate());
+    assertEquals(
+        getVariable().getType(),
+        getTypeExpression().evaluate(getVariable().getScope())
+    );
   }
 
-  @Test(expected = VariableNotAssignedException.class)
   public void testGetValueUnassigned() throws VariableNotAssignedException {
     Variable v = getVariable();
     assertFalse(v.isAssigned());
-    v.getValue();
+    assertNull(v.getValue());
   }
 
   @Test
@@ -50,15 +70,15 @@ public class TestVariable {
       MultipleAssignmentException,
       VariableNotAssignedException {
     Variable v = getVariable();
-    v.setValue(getValueExpression());
-    assertEquals(getValueExpression().evaluate(), v.getValue());
+    v.setValueExpression(getValueExpression());
+    assertEquals(v.getValue(), getValue());
   }
 
   @Test(expected = MultipleAssignmentException.class)
   public void testSetValueMultiple() throws MultipleAssignmentException {
     Variable v = getVariable();
-    v.setValue(getValueExpression());
-    v.setValue(getValueExpression());
+    v.setValueExpression(getValueExpression());
+    v.setValueExpression(getValueExpression());
   }
 
   @Test(expected = TypeMismatchException.class)
@@ -67,6 +87,7 @@ public class TestVariable {
       MultipleAssignmentException {
 
     Variable v = new Variable(
+        getScope(),
         getVariableIdentifier(),
         new LiteralExpression(BooleanValue.getInstance(false))
     );
@@ -79,10 +100,11 @@ public class TestVariable {
       MultipleAssignmentException {
 
     Variable v = new Variable(
+        getScope(),
         getVariableIdentifier(),
         new LiteralExpression(BooleanTypeValue.getInstance())
     );
-    v.setValue(new LiteralExpression(BooleanTypeValue.getInstance()));
+    v.setValueExpression(new LiteralExpression(BooleanTypeValue.getInstance()));
     v.verify();
   }
 }
