@@ -27,7 +27,7 @@ tupleValue:
   '(' ')';
 
 functionTypeValue: tupleValue '->' expression;
-functionValue: functionTypeValue '{' expressions '}';
+functionValue: functionTypeValue '{' (expression EXPRESSION_TERMINATOR)* '}';
 
 ////////////////////////////////////////////////////////
 //                                                    //
@@ -46,12 +46,10 @@ expression:
 
 EXPRESSION_TERMINATOR: ';';
 
-expressions: (expression EXPRESSION_TERMINATOR)*;
-
 ////////////////////////////////////////////////////////
 //                                                    //
 //                      Schematic                     //
 //                                                    //
 ////////////////////////////////////////////////////////
 
-schematic: expressions;
+schematic: (expression EXPRESSION_TERMINATOR)*;
