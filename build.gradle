@@ -17,6 +17,7 @@ dependencies {
   compile 'com.google.code.gson:gson:2.2.4'
   compile 'com.google.guava:guava:17.0'
   testCompile 'junit:junit:4.11'
+  compile 'log4j:log4j:1.2.16'
 }
 
 buildscript {
@@ -44,6 +45,11 @@ jacoco {
 }
 
 test {
+  copy {
+    from 'src/test/java/org/manifold/compiler/serialization/data'
+    into "$buildDir/classes/test/org/manifold/compiler/serialization/data"
+  }
+  testLogging.showStandardStreams = true
   jacoco {
     append = false
     destinationFile = file("$buildDir/jacoco/jacocoTest.exec")

@@ -77,7 +77,7 @@ public class Scope {
       Expression valueExpression) throws VariableNotDefinedException,
       MultipleAssignmentException {
     Variable v = getVariable(identifier);
-    v.setValue(valueExpression);
+    v.setValueExpression(valueExpression);
   }
 
 }
