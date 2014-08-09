@@ -7,11 +7,16 @@ import org.manifold.compiler.TypeTypeValue;
 public class Variable {
   private final VariableIdentifier identifier;
   private final Expression typeExpression;
+  private final Scope scope;
 
   private boolean assigned = false;
   private Expression valueExpression;
 
-  public Variable(VariableIdentifier identifier, Expression typeExpression) {
+  public Variable(
+      Scope scope,
+      VariableIdentifier identifier,
+      Expression typeExpression) {
+    this.scope = scope;
     this.identifier = identifier;
     this.typeExpression = typeExpression;
   }
@@ -20,15 +25,19 @@ public class Variable {
     return identifier;
   }
 
-  public TypeValue getType(Scope scope) {
+  public TypeValue getType() {
     return (TypeValue) typeExpression.evaluate(scope);
+  }
+  
+  public Scope getScope() {
+    return scope;
   }
 
   public boolean isAssigned() {
     return assigned;
   }
 
-  public Value getValue(Scope scope) {
+  public Value getValue() {
     if (!isAssigned()) {
       return null;
     } else {
@@ -46,7 +55,7 @@ public class Variable {
     this.assigned = true;
   }
   
-  public void verify(Scope scope) throws TypeMismatchException {
+  public void verify() throws TypeMismatchException {
     // Ensure the Type is an actual type
     if (typeExpression.getType(scope) != TypeTypeValue.getInstance()) {
       // TODO(lucas) We should have a special exception for the case where
@@ -59,9 +68,9 @@ public class Variable {
     
     // Ensure the value is of the correct type
     // TODO(lucas)
-    if (assigned && !(valueExpression.getType(scope).isSubtypeOf(getType(scope)))) {
+    if (assigned && !(valueExpression.getType(scope).isSubtypeOf(getType()))) {
       throw new TypeMismatchException(
-          getType(scope),
+          getType(),
           valueExpression.getType(scope)
       );
     }

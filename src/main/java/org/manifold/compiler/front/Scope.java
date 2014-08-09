@@ -33,7 +33,7 @@ public class Scope {
     }
     // naturally, variable shadowing is allowed -- "closer" scopes hide
     // "further" ones
-    Variable v = new Variable(identifier, typeExpression);
+    Variable v = new Variable(this, identifier, typeExpression);
     symbolTable.put(identifier, v);
   }
 
@@ -49,7 +49,7 @@ public class Scope {
 
   public TypeValue getVariableType(VariableIdentifier identifier)
       throws TypeMismatchException, VariableNotDefinedException {
-    return getVariable(identifier).getType(this);
+    return getVariable(identifier).getType();
   }
 
   public Variable getVariable(VariableIdentifier identifier)
@@ -70,7 +70,7 @@ public class Scope {
 
   public Value getVariableValue(VariableIdentifier identifier)
       throws VariableNotAssignedException, VariableNotDefinedException {
-    return getVariable(identifier).getValue(this);
+    return getVariable(identifier).getValue();
   }
 
   public void assignVariable(VariableIdentifier identifier,

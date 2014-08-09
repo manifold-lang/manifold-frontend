@@ -40,7 +40,7 @@ public class VariableReferenceExpression extends Expression {
   @Override
   public boolean isCompiletimeEvaluable(Scope scope) {
     try {
-      return scope.getVariable(variable).getValue(scope).isElaborationtimeKnowable();
+      return scope.getVariable(variable).getValue().isElaborationtimeKnowable();
     } catch (VariableNotDefinedException ex) {
       assert(false);
       return false;
@@ -50,7 +50,7 @@ public class VariableReferenceExpression extends Expression {
   @Override
   public boolean isSynthesizable(Scope scope) {
     try {
-      return scope.getVariable(variable).getValue(scope).isRuntimeKnowable();
+      return scope.getVariable(variable).getValue().isRuntimeKnowable();
     } catch (VariableNotDefinedException ex) {
       assert(false);
       return false;

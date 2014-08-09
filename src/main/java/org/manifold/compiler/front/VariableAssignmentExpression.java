@@ -17,7 +17,7 @@ public class VariableAssignmentExpression extends Expression {
   @Override
   public TypeValue getType(Scope scope) {
     try {
-      return scope.getVariable(variable).getType(scope);
+      return scope.getVariable(variable).getType();
     } catch (VariableNotDefinedException ex) {
       assert(false);
       return null;
@@ -27,7 +27,7 @@ public class VariableAssignmentExpression extends Expression {
   @Override
   public Value evaluate(Scope scope) {
     try {
-      return scope.getVariable(variable).getValue(scope);
+      return scope.getVariable(variable).getValue();
     } catch (VariableNotDefinedException ex) {
       assert(false);
       return null;
