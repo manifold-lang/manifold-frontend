@@ -49,7 +49,7 @@ public class Scope {
 
   public TypeValue getVariableType(VariableIdentifier identifier)
       throws TypeMismatchException, VariableNotDefinedException {
-    return getVariable(identifier).getType();
+    return getVariable(identifier).getType(this);
   }
 
   public Variable getVariable(VariableIdentifier identifier)
@@ -70,7 +70,7 @@ public class Scope {
 
   public Value getVariableValue(VariableIdentifier identifier)
       throws VariableNotAssignedException, VariableNotDefinedException {
-    return getVariable(identifier).getValue();
+    return getVariable(identifier).getValue(this);
   }
 
   public void assignVariable(VariableIdentifier identifier,

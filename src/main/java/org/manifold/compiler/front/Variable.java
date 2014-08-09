@@ -20,19 +20,19 @@ public class Variable {
     return identifier;
   }
 
-  public TypeValue getType() {
-    return (TypeValue) typeExpression.evaluate();
+  public TypeValue getType(Scope scope) {
+    return (TypeValue) typeExpression.evaluate(scope);
   }
 
   public boolean isAssigned() {
     return assigned;
   }
 
-  public Value getValue() {
+  public Value getValue(Scope scope) {
     if (!isAssigned()) {
       return null;
     } else {
-      return valueExpression.evaluate();
+      return valueExpression.evaluate(scope);
     }
   }
 
@@ -46,23 +46,23 @@ public class Variable {
     this.assigned = true;
   }
   
-  public void verify() throws TypeMismatchException {
+  public void verify(Scope scope) throws TypeMismatchException {
     // Ensure the Type is an actual type
-    if (typeExpression.getType() != TypeTypeValue.getInstance()) {
+    if (typeExpression.getType(scope) != TypeTypeValue.getInstance()) {
       // TODO(lucas) We should have a special exception for the case where
       // a nontype value is used as a type.
       throw new TypeMismatchException(
           TypeTypeValue.getInstance(),
-          typeExpression.getType()
+          typeExpression.getType(scope)
       );
     }
     
     // Ensure the value is of the correct type
     // TODO(lucas)
-    if (assigned && !(valueExpression.getType().isSubtypeOf(getType()))) {
+    if (assigned && !(valueExpression.getType(scope).isSubtypeOf(getType(scope)))) {
       throw new TypeMismatchException(
-          getType(),
-          valueExpression.getType()
+          getType(scope),
+          valueExpression.getType(scope)
       );
     }
   }
