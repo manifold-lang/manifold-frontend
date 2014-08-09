@@ -14,7 +14,8 @@ public class FunctionValue extends Value {
   
   @Override
   public void verify() throws Exception {
-    // TODO introspect body to make sure it treats input and output values correctly?
+    // TODO introspect body to make sure it treats input and output values
+    // correctly?
   }
 
   public List<Expression> getBody() {
