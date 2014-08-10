@@ -1,12 +1,14 @@
 package org.manifold.compiler.front;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.manifold.compiler.TypeValue;
 import org.manifold.compiler.Value;
 
 public class VariableReferenceExpression extends Expression {
   private final VariableIdentifier variable;
+  
+  public VariableIdentifier getIdentifier() {
+    return variable;
+  }
 
   public VariableReferenceExpression(VariableIdentifier variable) {
     this.variable = variable;
