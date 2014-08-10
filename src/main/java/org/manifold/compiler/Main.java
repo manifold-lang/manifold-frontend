@@ -97,9 +97,51 @@ public class Main {
       throws MultipleDefinitionException, VariableNotDefinedException, 
       MultipleAssignmentException {
     // inputPin: unit -> Bool
+    FunctionTypeValue inputPinPrimitiveType = new FunctionTypeValue(
+        UnitTypeValue.getInstance(), BooleanTypeValue.getInstance());
+    PrimitiveFunctionValue inputPinPrimitive = new PrimitiveFunctionValue(
+        "inputPin", inputPinPrimitiveType);
+    VariableIdentifier inputPinIdentifier = new VariableIdentifier(
+        Arrays.asList(new String[]{"inputPin"}));
+    scope.defineVariable(inputPinIdentifier, 
+        new LiteralExpression(inputPinPrimitiveType));
+    scope.assignVariable(inputPinIdentifier, 
+        new LiteralExpression(inputPinPrimitive));
     // outputPin: Bool -> unit
+    FunctionTypeValue outputPinPrimitiveType = new FunctionTypeValue(
+        BooleanTypeValue.getInstance(), UnitTypeValue.getInstance());
+    PrimitiveFunctionValue outputPinPrimitive = new PrimitiveFunctionValue(
+        "outputPin", outputPinPrimitiveType);
+    VariableIdentifier outputPinIdentifier = new VariableIdentifier(
+        Arrays.asList(new String[]{"outputPin"}));
+    scope.defineVariable(outputPinIdentifier, 
+        new LiteralExpression(outputPinPrimitiveType));
+    scope.assignVariable(outputPinIdentifier, 
+        new LiteralExpression(outputPinPrimitive));
     // and: (Bool, Bool) -> Bool
+    FunctionTypeValue andPrimitiveType = new FunctionTypeValue(
+        new TupleTypeValue(Arrays.asList(new TypeValue[]{
+            BooleanTypeValue.getInstance(), BooleanTypeValue.getInstance()
+        })), BooleanTypeValue.getInstance());
+    PrimitiveFunctionValue andPrimitive = new PrimitiveFunctionValue(
+        "and", andPrimitiveType);
+    VariableIdentifier andIdentifier = new VariableIdentifier(
+        Arrays.asList(new String[]{"and"}));
+    scope.defineVariable(andIdentifier, 
+        new LiteralExpression(andPrimitiveType));
+    scope.assignVariable(andIdentifier, new LiteralExpression(andPrimitive));
     // or: (Bool, Bool) -> Bool
+    FunctionTypeValue orPrimitiveType = new FunctionTypeValue(
+        new TupleTypeValue(Arrays.asList(new TypeValue[]{
+            BooleanTypeValue.getInstance(), BooleanTypeValue.getInstance()
+        })), BooleanTypeValue.getInstance());
+    PrimitiveFunctionValue orPrimitive = new PrimitiveFunctionValue(
+        "or", orPrimitiveType);
+    VariableIdentifier orIdentifier = new VariableIdentifier(
+        Arrays.asList(new String[]{"or"}));
+    scope.defineVariable(orIdentifier, 
+        new LiteralExpression(orPrimitiveType));
+    scope.assignVariable(orIdentifier, new LiteralExpression(orPrimitive));
     // not: Bool -> Bool
     FunctionTypeValue notPrimitiveType = new FunctionTypeValue(
         BooleanTypeValue.getInstance(), BooleanTypeValue.getInstance());
