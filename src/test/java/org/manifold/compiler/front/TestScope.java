@@ -74,7 +74,7 @@ public class TestScope {
 
     Scope s = new Scope();
     s.defineVariable(getVariableIdentifier(), getTypeExpression());
-    assertEquals(getTypeExpression().evaluate(s),
+    assertEquals(getTypeExpression().getValue(s),
         s.getVariableType(getVariableIdentifier()));
   }
 
@@ -92,7 +92,7 @@ public class TestScope {
     Variable v = s.getVariable(getVariableIdentifier());
 
     assertEquals(v.getIdentifier(), getVariableIdentifier());
-    assertEquals(v.getType(), getTypeExpression().evaluate(s));
+    assertEquals(v.getType(), getTypeExpression().getValue(s));
   }
 
   @Test
@@ -116,7 +116,7 @@ public class TestScope {
     s.defineVariable(getVariableIdentifier(), getTypeExpression());
     s.assignVariable(getVariableIdentifier(), getValueExpression());
 
-    assertEquals(getValueExpression().evaluate(s),
+    assertEquals(getValueExpression().getValue(s),
         s.getVariableValue(getVariableIdentifier()));
   }
 
@@ -135,7 +135,7 @@ public class TestScope {
     s.defineVariable(getVariableIdentifier(), getTypeExpression());
     s.assignVariable(getVariableIdentifier(), getValueExpression());
     assertEquals(s.getVariableValue(getVariableIdentifier()),
-        getValueExpression().evaluate(s));
+        getValueExpression().getValue(s));
   }
 
   @Test(expected = MultipleAssignmentException.class)

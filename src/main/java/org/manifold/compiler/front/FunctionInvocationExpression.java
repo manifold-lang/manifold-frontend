@@ -28,7 +28,7 @@ public class FunctionInvocationExpression extends Expression {
   }
 
   @Override
-  public Value evaluate(Scope scope) {
+  public Value getValue(Scope scope) {
     assert(false);
     return null;
   }
@@ -50,12 +50,12 @@ public class FunctionInvocationExpression extends Expression {
   }
 
   @Override
-  public boolean isCompiletimeEvaluable(Scope scope) {
+  public boolean isElaborationtimeKnowable(Scope scope) {
     return false;
   }
 
   @Override
-  public boolean isSynthesizable(Scope scope) {
+  public boolean isRuntimeKnowable(Scope scope) {
     return true;
   }
 

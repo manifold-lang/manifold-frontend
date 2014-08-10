@@ -8,6 +8,7 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 import org.manifold.compiler.front.Expression;
 import org.manifold.compiler.front.FunctionInvocationExpression;
 import org.manifold.compiler.front.LiteralExpression;
+import org.manifold.compiler.front.VariableAssignmentExpression;
 import org.manifold.compiler.front.VariableIdentifier;
 import org.manifold.compiler.front.VariableReferenceExpression;
 import org.manifold.parser.ManifoldBaseVisitor;
@@ -49,7 +50,14 @@ class ExpressionVisitor extends ManifoldBaseVisitor<Expression> {
 
   @Override
   public Expression visitExpression(ManifoldParser.ExpressionContext context) {
-    if (context.expression().size() == 2) {
+    if (context.getChildCount() == 3 &&
+        context.getChild(1).getText().equals("=")) {
+      return new VariableAssignmentExpression(
+          visit(context.expression(0)),
+          visit(context.expression(1))
+      );
+      
+    } else if (context.expression().size() == 2) {
       return new FunctionInvocationExpression(
           visit(context.expression(0)),
           visit(context.expression(1))

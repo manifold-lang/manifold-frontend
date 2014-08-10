@@ -16,7 +16,7 @@ public class LiteralExpression extends Expression {
   }
 
   @Override
-  public Value evaluate(Scope scope) {
+  public Value getValue(Scope scope) {
     return value;
   }
 
@@ -31,12 +31,12 @@ public class LiteralExpression extends Expression {
   }
 
   @Override
-  public boolean isCompiletimeEvaluable(Scope scope) {
+  public boolean isElaborationtimeKnowable(Scope scope) {
     return value.isElaborationtimeKnowable();
   }
 
   @Override
-  public boolean isSynthesizable(Scope scope) {
+  public boolean isRuntimeKnowable(Scope scope) {
     return value.isRuntimeKnowable();
   }
 

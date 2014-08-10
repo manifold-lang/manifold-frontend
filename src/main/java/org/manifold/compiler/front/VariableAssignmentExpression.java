@@ -5,53 +5,51 @@ import org.manifold.compiler.Value;
 
 public class VariableAssignmentExpression extends Expression {
   private VariableIdentifier variable;
-  private Expression valueExpression;
+  private final Expression lvalueExpression;
+  private final Expression rvalueExpression;
 
   public VariableAssignmentExpression(
-      VariableIdentifier variable,
-      Expression valueExpression) throws Exception {
-    this.variable = variable;
-    this.valueExpression = valueExpression;
+      Expression lvalueExpression,
+      Expression rvalueExpression) {
+    this.lvalueExpression = lvalueExpression;
+    this.rvalueExpression = rvalueExpression;
   }
 
   @Override
   public TypeValue getType(Scope scope) {
-    try {
-      return scope.getVariable(variable).getType();
-    } catch (VariableNotDefinedException ex) {
-      assert(false);
-      return null;
-    }
+    return lvalueExpression.getType(scope);
   }
 
   @Override
-  public Value evaluate(Scope scope) {
-    try {
-      return scope.getVariable(variable).getValue();
-    } catch (VariableNotDefinedException ex) {
-      assert(false);
-      return null;
-    }
+  public Value getValue(Scope scope) {
+    return lvalueExpression.getValue(scope);
   }
 
   @Override
   public void verify(Scope scope) throws Exception{
-    valueExpression.verify(scope);
+    lvalueExpression.verify(scope);
+    rvalueExpression.verify(scope);
+    
+    TypeValue rvalueType = rvalueExpression.getType(scope);
+    TypeValue lvalueType = lvalueExpression.getType(scope);
+    
+    assert(lvalueType.isSubtypeOf(rvalueType));
+    assert(lvalueExpression.isAssignable());
   }
 
   @Override
   public boolean isAssignable() {
-    return valueExpression.isAssignable();
+    return rvalueExpression.isAssignable();
   }
 
   @Override
-  public boolean isCompiletimeEvaluable(Scope scope) {
-    return valueExpression.evaluate(scope).isElaborationtimeKnowable();
+  public boolean isElaborationtimeKnowable(Scope scope) {
+    return rvalueExpression.isElaborationtimeKnowable(scope);
   }
 
   @Override
-  public boolean isSynthesizable(Scope scope) {
-    return valueExpression.evaluate(scope).isRuntimeKnowable();
+  public boolean isRuntimeKnowable(Scope scope) {
+    return rvalueExpression.isRuntimeKnowable(scope);
   }
 
 }
