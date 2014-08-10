@@ -4,9 +4,10 @@ import java.util.List;
 
 import org.manifold.compiler.TypeValue;
 
+import com.google.common.collect.ImmutableList;
+
 public class TupleTypeValue extends TypeValue {
-  // TODO named fields
-  // TODO default values
+
   private final List<TypeValue> subtypes;
   
   public int getSize() {
@@ -18,7 +19,7 @@ public class TupleTypeValue extends TypeValue {
   }
   
   public TupleTypeValue(List<TypeValue> subtypes) {
-    this.subtypes = subtypes;
+    this.subtypes = ImmutableList.copyOf(subtypes);
   }
   
   @Override
@@ -37,7 +38,7 @@ public class TupleTypeValue extends TypeValue {
     for (int i = 0; i < getSize(); ++i) {
       TypeValue myType = entry(i).getType();
       TypeValue otherType = oTuple.entry(i).getType();
-      if (!(myType.isSubtypeOf(otherType) || otherType.isSubtypeOf(myType))) {
+      if (!myType.isSubtypeOf(otherType)) {
         return false;
       }
     }
