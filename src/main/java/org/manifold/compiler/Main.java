@@ -98,7 +98,7 @@ public class Main {
       MultipleAssignmentException {
     // inputPin: unit -> Bool
     FunctionTypeValue inputPinPrimitiveType = new FunctionTypeValue(
-        UnitTypeValue.getInstance(), BooleanTypeValue.getInstance());
+        NilTypeValue.getInstance(), BooleanTypeValue.getInstance());
     PrimitiveFunctionValue inputPinPrimitive = new PrimitiveFunctionValue(
         "inputPin", inputPinPrimitiveType);
     VariableIdentifier inputPinIdentifier = new VariableIdentifier(
@@ -109,7 +109,7 @@ public class Main {
         new LiteralExpression(inputPinPrimitive));
     // outputPin: Bool -> unit
     FunctionTypeValue outputPinPrimitiveType = new FunctionTypeValue(
-        BooleanTypeValue.getInstance(), UnitTypeValue.getInstance());
+        BooleanTypeValue.getInstance(), NilTypeValue.getInstance());
     PrimitiveFunctionValue outputPinPrimitive = new PrimitiveFunctionValue(
         "outputPin", outputPinPrimitiveType);
     VariableIdentifier outputPinIdentifier = new VariableIdentifier(
