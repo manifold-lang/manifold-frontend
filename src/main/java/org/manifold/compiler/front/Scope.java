@@ -1,14 +1,20 @@
 package org.manifold.compiler.front;
 
-import org.manifold.compiler.Value;
-import org.manifold.compiler.TypeValue;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
+
+import org.manifold.compiler.TypeValue;
+import org.manifold.compiler.Value;
 
 public class Scope {
   private final Scope parentScope;
   private final Map<VariableIdentifier, Variable> symbolTable;
 
+  public Set<VariableIdentifier> getSymbolIdentifiers() {
+    return symbolTable.keySet();
+  }
+  
   public Scope(Scope parentScope) {
     this.symbolTable = new HashMap<>();
     this.parentScope = parentScope;

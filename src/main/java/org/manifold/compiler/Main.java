@@ -48,7 +48,38 @@ public class Main {
       expressions.add(visitor.visit(expressionContext));
     }
     
+    // Build top-level scope
+    Scope toplevel = new Scope();
+    for (Expression expr : expressions) {
+      if (expr instanceof VariableAssignmentExpression) {
+        VariableAssignmentExpression assign = 
+            (VariableAssignmentExpression) expr;
+        Expression lvalue = assign.getLvalueExpression();
+        Expression rvalue = assign.getRvalueExpression();
+        
+        // we expect the lvalue to be a variable reference
+        if (lvalue instanceof VariableReferenceExpression) {
+          VariableReferenceExpression vRef = 
+              (VariableReferenceExpression) lvalue;
+          VariableIdentifier identifier = vRef.getIdentifier();
+          Expression idType = 
+              new LiteralExpression(rvalue.getType(null)); // I hope this works
+          toplevel.defineVariable(identifier, idType);
+          toplevel.assignVariable(identifier, rvalue);
+        } else {
+          assert(false);
+        }
+      }
+    }
+    
+    System.out.println("expressions:");
     System.out.print(expressions);
+    System.out.println();
+    System.out.println("top-level identifiers:");
+    for(VariableIdentifier id : toplevel.getSymbolIdentifiers()) {
+      System.out.println(id);
+    }
+    
   }
 
 }
