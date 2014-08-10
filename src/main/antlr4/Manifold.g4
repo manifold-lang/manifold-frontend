@@ -6,20 +6,12 @@ WHITESPACE: [ \t\r\n]+ -> skip;
 
 ////////////////////////////////////////////////////////
 //                                                    //
-//                     Identifiers                    //
-//                                                    //
-////////////////////////////////////////////////////////
-
-IDENTIFIER: [a-zA-Z] [0-9a-zA-Z_]*;
-namespacedIdentifier: (IDENTIFIER '::')* IDENTIFIER;
-
-////////////////////////////////////////////////////////
-//                                                    //
 //                        Values                      //
 //                                                    //
 ////////////////////////////////////////////////////////
 
 INTEGER_VALUE: [0-9]+;
+BOOLEAN_VALUE: 'false' | 'true';
 
 tupleValueEntry: (IDENTIFIER ':')? expression (':' expression)?;
 tupleValue:
@@ -31,11 +23,21 @@ functionValue: functionTypeValue '{' (expression EXPRESSION_TERMINATOR)* '}';
 
 ////////////////////////////////////////////////////////
 //                                                    //
+//                     Identifiers                    //
+//                                                    //
+////////////////////////////////////////////////////////
+
+IDENTIFIER: [a-zA-Z] [0-9a-zA-Z_]*;
+namespacedIdentifier: (IDENTIFIER '::')* IDENTIFIER;
+
+////////////////////////////////////////////////////////
+//                                                    //
 //                     Expressions                    //
 //                                                    //
 ////////////////////////////////////////////////////////
 
 expression:
+  BOOLEAN_VALUE |
   INTEGER_VALUE |
   tupleValue |
   functionValue |

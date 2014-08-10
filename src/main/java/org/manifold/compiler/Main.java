@@ -85,8 +85,15 @@ class ExpressionVisitor extends ManifoldBaseVisitor<Expression> {
   @Override
   public Expression visitTerminal(TerminalNode node) {
     if (node.getSymbol().getType() == ManifoldLexer.INTEGER_VALUE) {
-      Value value = new IntegerValue(Integer.valueOf(node.getText()));
-      return new LiteralExpression(value);
+      return new LiteralExpression(
+          new IntegerValue(Integer.valueOf(node.getText()))
+      );
+      
+    } else if (node.getSymbol().getType() == ManifoldLexer.BOOLEAN_VALUE) {
+      return new LiteralExpression(
+        BooleanValue.getInstance(Boolean.parseBoolean(node.getText()))
+      );
+        
     } else {
       assert(false);
       return null;
