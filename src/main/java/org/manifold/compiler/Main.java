@@ -1,13 +1,19 @@
 package org.manifold.compiler;
 
+import java.io.FileInputStream;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.manifold.compiler.front.Expression;
 import org.manifold.compiler.front.FunctionInvocationExpression;
 import org.manifold.compiler.front.LiteralExpression;
+import org.manifold.compiler.front.Scope;
+import org.manifold.compiler.front.TupleTypeValue;
+import org.manifold.compiler.front.TupleValue;
 import org.manifold.compiler.front.VariableAssignmentExpression;
 import org.manifold.compiler.front.VariableIdentifier;
 import org.manifold.compiler.front.VariableReferenceExpression;
@@ -21,7 +27,8 @@ public class Main {
 
   public static void main(String[] args) throws Exception {
 
-    ManifoldLexer lexer = new ManifoldLexer(new ANTLRInputStream(System.in));
+    ManifoldLexer lexer = new ManifoldLexer(new ANTLRInputStream(
+        new FileInputStream(args[0])));
 
      // Get a list of matched tokens
     CommonTokenStream tokens = new CommonTokenStream(lexer);
@@ -47,24 +54,42 @@ public class Main {
 }
 
 class ExpressionVisitor extends ManifoldBaseVisitor<Expression> {
-
+  
   @Override
-  public Expression visitExpression(ManifoldParser.ExpressionContext context) {
-    if (context.getChildCount() == 3 &&
-        context.getChild(1).getText().equals("=")) {
-      return new VariableAssignmentExpression(
-          visit(context.expression(0)),
-          visit(context.expression(1))
-      );
-      
-    } else if (context.expression().size() == 2) {
-      return new FunctionInvocationExpression(
-          visit(context.expression(0)),
-          visit(context.expression(1))
-      );
-    } else {
-      return visitChildren(context);
+  public Expression visitAssignmentExpression(
+      ManifoldParser.AssignmentExpressionContext context) {
+    return new VariableAssignmentExpression(
+        visit(context.expression(0)),
+        visit(context.expression(1))
+    );
+  }
+  
+  @Override
+  public Expression visitFunctionInvocationExpression(
+      ManifoldParser.FunctionInvocationExpressionContext context) {
+    return new FunctionInvocationExpression (
+        visit(context.expression(0)),
+        visit(context.expression(1))
+    );
+  }
+  
+  @Override
+  public Expression visitTupleValue(ManifoldParser.TupleValueContext context) {
+    // get the expressions resulting from visiting all value entries
+    List<Expression> values = new ArrayList<Expression>();
+    for (ManifoldParser.TupleValueEntryContext subctx 
+        : context.tupleValueEntry()) {
+      values.add(visit(subctx.expression()));
     }
+    // construct a type
+    Scope emptyScope = new Scope();
+    List<TypeValue> types = new ArrayList<TypeValue>();
+    for (Expression e : values) {
+      types.add(e.getType(emptyScope));
+    }
+    TupleTypeValue anonymousTupleType = new TupleTypeValue(types);
+    // now we build a TupleValue from these subexpressions
+    return new LiteralExpression(new TupleValue(anonymousTupleType, values));
   }
   
   @Override

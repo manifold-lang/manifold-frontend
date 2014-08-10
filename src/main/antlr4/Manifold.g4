@@ -13,12 +13,15 @@ WHITESPACE: [ \t\r\n]+ -> skip;
 INTEGER_VALUE: [0-9]+;
 BOOLEAN_VALUE: 'false' | 'true';
 
-tupleValueEntry: (IDENTIFIER ':')? expression (':' expression)?;
+tupleTypeValueEntry: (IDENTIFIER ':')? typevalue (':' expression)?;
+tupleTypeValue: '(' tupleTypeValueEntry (',' tupleTypeValueEntry)* ')';
+
+tupleValueEntry: (IDENTIFIER ':')? expression;
 tupleValue:
   '(' tupleValueEntry (',' tupleValueEntry)* ')' |
   '(' ')';
 
-functionTypeValue: tupleValue '->' expression;
+functionTypeValue: tupleTypeValue '->' expression;
 functionValue: functionTypeValue '{' (expression EXPRESSION_TERMINATOR)* '}';
 
 ////////////////////////////////////////////////////////
@@ -36,15 +39,22 @@ namespacedIdentifier: (IDENTIFIER '::')* IDENTIFIER;
 //                                                    //
 ////////////////////////////////////////////////////////
 
+typevalue:
+    namespacedIdentifier # Typename
+  | tupleTypeValue # TupleType
+  | functionTypeValue # FunctionType
+  ;
+
 expression:
-  BOOLEAN_VALUE |
-  INTEGER_VALUE |
-  tupleValue |
-  functionValue |
-  expression expression |                         // function invocation
-  expression '.' (IDENTIFIER | INTEGER_VALUE) |   // static attribute access
-  namespacedIdentifier |                          // variable reference
-  expression '=' expression;                      // assignment
+    BOOLEAN_VALUE # Boolean
+  | INTEGER_VALUE # Integer
+  | tupleValue # Tuple
+  | functionValue # Function
+  | expression expression # FunctionInvocationExpression
+  | expression '.' (IDENTIFIER | INTEGER_VALUE) # StaticAttributeAccessExpression
+  | namespacedIdentifier # VariableReferenceExpression
+  | expression '=' expression # AssignmentExpression
+  ;
 
 EXPRESSION_TERMINATOR: ';';
 
