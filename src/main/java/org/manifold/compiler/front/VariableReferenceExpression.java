@@ -1,6 +1,7 @@
 package org.manifold.compiler.front;
 
 import org.manifold.compiler.TypeValue;
+import org.manifold.compiler.UndefinedBehaviourError;
 import org.manifold.compiler.Value;
 
 public class VariableReferenceExpression extends Expression {
@@ -22,8 +23,16 @@ public class VariableReferenceExpression extends Expression {
 
   @Override
   public Value getValue(Scope scope) {
-    return null;
-    //return variable.getValue();
+    // TODO better error handling
+    try {
+      return scope.getVariableValue(variable);
+    } catch (VariableNotAssignedException e) {
+      throw new UndefinedBehaviourError(
+          "reference to unassigned variable '" + variable.toString() + "'");
+    } catch (VariableNotDefinedException e) {
+      throw new UndefinedBehaviourError(
+          "reference to undefined variable '" + variable.toString() + "'");
+    }
   }
 
   @Override

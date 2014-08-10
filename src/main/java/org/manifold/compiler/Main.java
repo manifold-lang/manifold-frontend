@@ -2,6 +2,7 @@ package org.manifold.compiler;
 
 import java.io.FileInputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -10,12 +11,17 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.manifold.compiler.front.Expression;
 import org.manifold.compiler.front.FunctionInvocationExpression;
+import org.manifold.compiler.front.FunctionTypeValue;
 import org.manifold.compiler.front.LiteralExpression;
+import org.manifold.compiler.front.MultipleAssignmentException;
+import org.manifold.compiler.front.MultipleDefinitionException;
+import org.manifold.compiler.front.PrimitiveFunctionValue;
 import org.manifold.compiler.front.Scope;
 import org.manifold.compiler.front.TupleTypeValue;
 import org.manifold.compiler.front.TupleValue;
 import org.manifold.compiler.front.VariableAssignmentExpression;
 import org.manifold.compiler.front.VariableIdentifier;
+import org.manifold.compiler.front.VariableNotDefinedException;
 import org.manifold.compiler.front.VariableReferenceExpression;
 import org.manifold.parser.ManifoldBaseVisitor;
 import org.manifold.parser.ManifoldLexer;
@@ -48,8 +54,17 @@ public class Main {
       expressions.add(visitor.visit(expressionContext));
     }
     
-    // Build top-level scope
+    System.out.println("expressions:");
+    System.out.print(expressions);
+    System.out.println();
+    
     Scope toplevel = new Scope();
+    
+    // mock-up: digital circuits primitives
+    // (to be removed when core library and namespaces are implemented)
+    createDigitalPrimitives(toplevel);
+    
+    // Build top-level scope
     for (Expression expr : expressions) {
       if (expr instanceof VariableAssignmentExpression) {
         VariableAssignmentExpression assign = 
@@ -62,8 +77,7 @@ public class Main {
           VariableReferenceExpression vRef = 
               (VariableReferenceExpression) lvalue;
           VariableIdentifier identifier = vRef.getIdentifier();
-          Expression idType = 
-              new LiteralExpression(rvalue.getType(null)); // I hope this works
+          Expression idType = new LiteralExpression(rvalue.getType(toplevel)); 
           toplevel.defineVariable(identifier, idType);
           toplevel.assignVariable(identifier, rvalue);
         } else {
@@ -72,16 +86,32 @@ public class Main {
       }
     }
     
-    System.out.println("expressions:");
-    System.out.print(expressions);
-    System.out.println();
     System.out.println("top-level identifiers:");
     for (VariableIdentifier id : toplevel.getSymbolIdentifiers()) {
       System.out.println(id);
     }
     
   }
-
+  
+  private static void createDigitalPrimitives(Scope scope) 
+      throws MultipleDefinitionException, VariableNotDefinedException, 
+      MultipleAssignmentException {
+    // inputPin: unit -> Bool
+    // outputPin: Bool -> unit
+    // and: (Bool, Bool) -> Bool
+    // or: (Bool, Bool) -> Bool
+    // not: Bool -> Bool
+    FunctionTypeValue notPrimitiveType = new FunctionTypeValue(
+        BooleanTypeValue.getInstance(), BooleanTypeValue.getInstance());
+    PrimitiveFunctionValue notPrimitive = new PrimitiveFunctionValue(
+        "not", notPrimitiveType);
+    VariableIdentifier notIdentifier = new VariableIdentifier(
+        Arrays.asList(new String[]{"not"}));
+    scope.defineVariable(notIdentifier, 
+        new LiteralExpression(notPrimitiveType));
+    scope.assignVariable(notIdentifier, new LiteralExpression(notPrimitive));
+  }
+  
 }
 
 class ExpressionVisitor extends ManifoldBaseVisitor<Expression> {

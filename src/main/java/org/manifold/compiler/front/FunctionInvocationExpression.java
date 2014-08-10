@@ -19,7 +19,8 @@ public class FunctionInvocationExpression extends Expression {
   }
   
   private FunctionTypeValue getFunctionTypeValue(Scope scope) {
-    return (FunctionTypeValue) getFunctionValue(scope).getType();
+    FunctionValue fVal = getFunctionValue(scope);
+    return (FunctionTypeValue) fVal.getType();
   }
   
   @Override
