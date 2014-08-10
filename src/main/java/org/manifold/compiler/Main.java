@@ -76,7 +76,7 @@ public class Main {
     System.out.print(expressions);
     System.out.println();
     System.out.println("top-level identifiers:");
-    for(VariableIdentifier id : toplevel.getSymbolIdentifiers()) {
+    for (VariableIdentifier id : toplevel.getSymbolIdentifiers()) {
       System.out.println(id);
     }
     
