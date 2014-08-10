@@ -56,7 +56,7 @@ public class Main {
 class ExpressionVisitor extends ManifoldBaseVisitor<Expression> {
   
   @Override
-  public Expression visitAssignment(ManifoldParser.AssignmentContext context) {
+  public Expression visitAssignmentExpression(ManifoldParser.AssignmentExpressionContext context) {
     return new VariableAssignmentExpression(
         visit(context.expression(0)),
         visit(context.expression(1))
@@ -64,8 +64,8 @@ class ExpressionVisitor extends ManifoldBaseVisitor<Expression> {
   }
   
   @Override
-  public Expression visitFunctionInvocation(
-      ManifoldParser.FunctionInvocationContext context) {
+  public Expression visitFunctionInvocationExpression(
+      ManifoldParser.FunctionInvocationExpressionContext context) {
     return new FunctionInvocationExpression (
         visit(context.expression(0)),
         visit(context.expression(1))
@@ -78,7 +78,6 @@ class ExpressionVisitor extends ManifoldBaseVisitor<Expression> {
     List<Expression> values = new ArrayList<Expression>();
     for (ManifoldParser.TupleValueEntryContext subctx 
         : context.tupleValueEntry()) {
-      // TODO named value entries
       values.add(visit(subctx.expression()));
     }
     // construct a type

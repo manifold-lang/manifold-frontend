@@ -13,11 +13,6 @@ WHITESPACE: [ \t\r\n]+ -> skip;
 INTEGER_VALUE: [0-9]+;
 BOOLEAN_VALUE: 'false' | 'true';
 
-UNIT_TYPEVALUE: 'Unit';
-INTEGER_TYPEVALUE: 'Int';
-BOOLEAN_TYPEVALUE: 'Bool';
-// STRING_TYPEVALUE: 'String';
-
 tupleTypeValueEntry: (IDENTIFIER ':')? typevalue (':' expression)?;
 tupleTypeValue: '(' tupleTypeValueEntry (',' tupleTypeValueEntry)* ')';
 
@@ -45,9 +40,7 @@ namespacedIdentifier: (IDENTIFIER '::')* IDENTIFIER;
 ////////////////////////////////////////////////////////
 
 typevalue:
-    UNIT_TYPEVALUE # UnitType
-  | BOOLEAN_TYPEVALUE # BooleanType
-  | INTEGER_TYPEVALUE # IntegerType
+    namespacedIdentifier # Typename
   | tupleTypeValue # TupleType
   | functionTypeValue # FunctionType
   ;
@@ -57,10 +50,10 @@ expression:
   | INTEGER_VALUE # Integer
   | tupleValue # Tuple
   | functionValue # Function
-  | expression expression # FunctionInvocation
-  | expression '.' (IDENTIFIER | INTEGER_VALUE) # StaticAttributeAccess
-  | namespacedIdentifier # VariableReference
-  | expression '=' expression # Assignment
+  | expression expression # FunctionInvocationExpression
+  | expression '.' (IDENTIFIER | INTEGER_VALUE) # StaticAttributeAccessExpression
+  | namespacedIdentifier # VariableReferenceExpression
+  | expression '=' expression # AssignmentExpression
   ;
 
 EXPRESSION_TERMINATOR: ';';
