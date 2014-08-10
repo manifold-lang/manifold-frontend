@@ -19,7 +19,7 @@ public class VariableReferenceExpression extends Expression {
   }
 
   @Override
-  public Value evaluate(Scope scope) {
+  public Value getValue(Scope scope) {
     return null;
     //return variable.getValue();
   }
@@ -38,7 +38,7 @@ public class VariableReferenceExpression extends Expression {
   }
 
   @Override
-  public boolean isCompiletimeEvaluable(Scope scope) {
+  public boolean isElaborationtimeKnowable(Scope scope) {
     try {
       return scope.getVariable(variable).getValue().isElaborationtimeKnowable();
     } catch (VariableNotDefinedException ex) {
@@ -48,7 +48,7 @@ public class VariableReferenceExpression extends Expression {
   }
 
   @Override
-  public boolean isSynthesizable(Scope scope) {
+  public boolean isRuntimeKnowable(Scope scope) {
     try {
       return scope.getVariable(variable).getValue().isRuntimeKnowable();
     } catch (VariableNotDefinedException ex) {

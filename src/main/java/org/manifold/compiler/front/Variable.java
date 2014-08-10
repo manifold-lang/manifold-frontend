@@ -26,7 +26,7 @@ public class Variable {
   }
 
   public TypeValue getType() {
-    return (TypeValue) typeExpression.evaluate(scope);
+    return (TypeValue) typeExpression.getValue(scope);
   }
   
   public Scope getScope() {
@@ -41,7 +41,7 @@ public class Variable {
     if (!isAssigned()) {
       return null;
     } else {
-      return valueExpression.evaluate(scope);
+      return valueExpression.getValue(scope);
     }
   }
 

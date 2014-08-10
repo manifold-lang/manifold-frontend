@@ -55,7 +55,7 @@ public class TestVariable {
   public void testGetTypeValue() throws TypeMismatchException {
     assertEquals(
         getVariable().getType(),
-        getTypeExpression().evaluate(getVariable().getScope())
+        getTypeExpression().getValue(getVariable().getScope())
     );
   }
 

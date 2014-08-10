@@ -4,13 +4,20 @@ apply plugin: 'jacoco'
 apply plugin: 'coveralls'
 apply plugin: 'checkstyle'
 apply plugin: 'antlr4'
+apply plugin:'application'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
+mainClassName = "org.manifold.compiler.Main"
+
 repositories {
   mavenCentral()
   jcenter()
+}
+
+run {
+  standardInput = System.in
 }
 
 dependencies {

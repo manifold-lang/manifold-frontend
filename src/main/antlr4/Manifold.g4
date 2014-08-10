@@ -6,6 +6,23 @@ WHITESPACE: [ \t\r\n]+ -> skip;
 
 ////////////////////////////////////////////////////////
 //                                                    //
+//                        Values                      //
+//                                                    //
+////////////////////////////////////////////////////////
+
+INTEGER_VALUE: [0-9]+;
+BOOLEAN_VALUE: 'false' | 'true';
+
+tupleValueEntry: (IDENTIFIER ':')? expression (':' expression)?;
+tupleValue:
+  '(' tupleValueEntry (',' tupleValueEntry)* ')' |
+  '(' ')';
+
+functionTypeValue: tupleValue '->' expression;
+functionValue: functionTypeValue '{' (expression EXPRESSION_TERMINATOR)* '}';
+
+////////////////////////////////////////////////////////
+//                                                    //
 //                     Identifiers                    //
 //                                                    //
 ////////////////////////////////////////////////////////
@@ -15,27 +32,12 @@ namespacedIdentifier: (IDENTIFIER '::')* IDENTIFIER;
 
 ////////////////////////////////////////////////////////
 //                                                    //
-//                        Values                      //
-//                                                    //
-////////////////////////////////////////////////////////
-
-INTEGER_VALUE: [0-9]+;
-
-tupleValueEntry: (IDENTIFIER ':')? expression (':' expression)?;
-tupleValue:
-  '(' tupleValueEntry (',' tupleValueEntry)* ')' |
-  '(' ')';
-
-functionTypeValue: tupleValue '->' expression;
-functionValue: functionTypeValue '{' expressions '}';
-
-////////////////////////////////////////////////////////
-//                                                    //
 //                     Expressions                    //
 //                                                    //
 ////////////////////////////////////////////////////////
 
 expression:
+  BOOLEAN_VALUE |
   INTEGER_VALUE |
   tupleValue |
   functionValue |
@@ -46,12 +48,10 @@ expression:
 
 EXPRESSION_TERMINATOR: ';';
 
-expressions: (expression EXPRESSION_TERMINATOR)*;
-
 ////////////////////////////////////////////////////////
 //                                                    //
 //                      Schematic                     //
 //                                                    //
 ////////////////////////////////////////////////////////
 
-schematic: expressions;
+schematic: (expression EXPRESSION_TERMINATOR)*;
