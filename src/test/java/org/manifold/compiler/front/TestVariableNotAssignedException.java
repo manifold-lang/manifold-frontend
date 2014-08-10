@@ -23,7 +23,11 @@ public class TestVariableNotAssignedException {
   }
   
   public Variable getVariableInstance(){
-    return new Variable(getVariableIdentifierInstance(), getTypeExpression());
+    return new Variable(
+        new Scope(),
+        getVariableIdentifierInstance(),
+        getTypeExpression()
+    );
   }
   
   public VariableNotAssignedException getInstance(){

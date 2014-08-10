@@ -39,13 +39,13 @@ public class EnumValue extends Value {
   }
 
   @Override
-  public boolean isCompiletimeEvaluable() {
-    return value.isCompiletimeEvaluable();
+  public boolean isElaborationtimeKnowable() {
+    return value.isElaborationtimeKnowable();
   }
 
   @Override
-  public boolean isSynthesizable() {
-    return value.isSynthesizable();
+  public boolean isRuntimeKnowable() {
+    return value.isRuntimeKnowable();
   }
 
   @Override

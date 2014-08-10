@@ -7,11 +7,16 @@ import org.manifold.compiler.TypeTypeValue;
 public class Variable {
   private final VariableIdentifier identifier;
   private final Expression typeExpression;
+  private final Scope scope;
 
   private boolean assigned = false;
   private Expression valueExpression;
 
-  public Variable(VariableIdentifier identifier, Expression typeExpression) {
+  public Variable(
+      Scope scope,
+      VariableIdentifier identifier,
+      Expression typeExpression) {
+    this.scope = scope;
     this.identifier = identifier;
     this.typeExpression = typeExpression;
   }
@@ -20,46 +25,53 @@ public class Variable {
     return identifier;
   }
 
-  public TypeValue getType() throws TypeMismatchException {
-    return (TypeValue) typeExpression.evaluate();
+  public TypeValue getType() {
+    return (TypeValue) typeExpression.getValue(scope);
+  }
+  
+  public Scope getScope() {
+    return scope;
   }
 
   public boolean isAssigned() {
     return assigned;
   }
 
-  public Value getValue() throws VariableNotAssignedException {
+  public Value getValue() {
     if (!isAssigned()) {
-      throw new VariableNotAssignedException(this);
+      return null;
+    } else {
+      return valueExpression.getValue(scope);
     }
-    return valueExpression.evaluate();
   }
 
-  public void setValue(Expression valExpr) throws MultipleAssignmentException {
+  public void setValueExpression(Expression valExpr)
+      throws MultipleAssignmentException {
     if (isAssigned()) {
       throw new MultipleAssignmentException(this);
     }
+    
     this.valueExpression = valExpr;
     this.assigned = true;
   }
   
   public void verify() throws TypeMismatchException {
     // Ensure the Type is an actual type
-    if (typeExpression.getType() != TypeTypeValue.getInstance()) {
+    if (typeExpression.getType(scope) != TypeTypeValue.getInstance()) {
       // TODO(lucas) We should have a special exception for the case where
       // a nontype value is used as a type.
       throw new TypeMismatchException(
           TypeTypeValue.getInstance(),
-          typeExpression.getType()
+          typeExpression.getType(scope)
       );
     }
     
     // Ensure the value is of the correct type
     // TODO(lucas)
-    if (assigned && !(valueExpression.getType().isSubtypeOf(getType()))) {
+    if (assigned && !(valueExpression.getType(scope).isSubtypeOf(getType()))) {
       throw new TypeMismatchException(
           getType(),
-          valueExpression.getType()
+          valueExpression.getType(scope)
       );
     }
   }
