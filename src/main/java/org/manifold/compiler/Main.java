@@ -1,17 +1,20 @@
 package org.manifold.compiler;
 
-import org.antlr.v4.runtime.ANTLRInputStream;
-import org.antlr.v4.runtime.CommonTokenStream;
 import java.util.LinkedList;
 import java.util.List;
+import org.antlr.v4.runtime.ANTLRInputStream;
+import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.manifold.compiler.front.Expression;
+import org.manifold.compiler.front.FunctionInvocationExpression;
 import org.manifold.compiler.front.LiteralExpression;
 import org.manifold.compiler.front.VariableIdentifier;
 import org.manifold.compiler.front.VariableReferenceExpression;
 import org.manifold.parser.ManifoldBaseVisitor;
 import org.manifold.parser.ManifoldLexer;
 import org.manifold.parser.ManifoldParser;
+import org.manifold.parser.ManifoldParser.ExpressionContext;
+import org.manifold.parser.ManifoldParser.NamespacedIdentifierContext;
 
 public class Main {
 
@@ -31,22 +34,38 @@ public class Main {
     ExpressionVisitor visitor = new ExpressionVisitor();
 
     List<Expression> expressions = new LinkedList<>();
-    List<ManifoldParser.ExpressionContext> expressionContexts = context.expression();
+    List<ExpressionContext> expressionContexts = context.expression();
     
-    for (ManifoldParser.ExpressionContext expressionContext: expressionContexts) {
+    for (ExpressionContext expressionContext : expressionContexts) {
       expressions.add(visitor.visit(expressionContext));
-    }    
+    }
+    
+    System.out.print(expressions);
   }
+
 }
 
 class ExpressionVisitor extends ManifoldBaseVisitor<Expression> {
 
   @Override
-  public Expression visitNamespacedIdentifier(ManifoldParser.NamespacedIdentifierContext context) {
+  public Expression visitExpression(ManifoldParser.ExpressionContext context) {
+    if (context.expression().size() == 2) {
+      return new FunctionInvocationExpression(
+          visit(context.expression(0)),
+          visit(context.expression(1))
+      );
+    } else {
+      return visitChildren(context);
+    }
+  }
+  
+  @Override
+  public Expression visitNamespacedIdentifier(
+      NamespacedIdentifierContext context) {
 
     List<TerminalNode> identifierNodes = context.IDENTIFIER();
     List<String> identifierStrings = new LinkedList<>();
-    for (TerminalNode node: identifierNodes) {
+    for (TerminalNode node : identifierNodes) {
       identifierStrings.add(node.getText());
     }
     

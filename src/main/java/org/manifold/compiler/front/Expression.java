@@ -10,4 +10,8 @@ public abstract class Expression {
   public abstract boolean isAssignable();
   public abstract boolean isCompiletimeEvaluable(Scope scope);
   public abstract boolean isSynthesizable(Scope scope);
+  
+  public <T extends Value> T evaluate(Scope scope, Class<T> type) {
+    return (T) evaluate(scope);
+  }
 }
