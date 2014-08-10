@@ -56,7 +56,8 @@ public class Main {
 class ExpressionVisitor extends ManifoldBaseVisitor<Expression> {
   
   @Override
-  public Expression visitAssignmentExpression(ManifoldParser.AssignmentExpressionContext context) {
+  public Expression visitAssignmentExpression(
+      ManifoldParser.AssignmentExpressionContext context) {
     return new VariableAssignmentExpression(
         visit(context.expression(0)),
         visit(context.expression(1))

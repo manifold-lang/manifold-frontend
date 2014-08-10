@@ -6,7 +6,6 @@ import org.manifold.compiler.Value;
 
 public class TupleValue extends Value {
 
-  // TODO named entries
   private final List<Expression> entries;
   
   public int getSize() {
