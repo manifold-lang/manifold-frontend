@@ -6,6 +6,8 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.google.common.annotations.VisibleForTesting;
+
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.TerminalNode;
@@ -93,7 +95,8 @@ public class Main {
     
   }
   
-  private static void createDigitalPrimitives(Scope scope) 
+  @VisibleForTesting
+  public static void createDigitalPrimitives(Scope scope)
       throws MultipleDefinitionException, VariableNotDefinedException, 
       MultipleAssignmentException {
     // inputPin: unit -> Bool

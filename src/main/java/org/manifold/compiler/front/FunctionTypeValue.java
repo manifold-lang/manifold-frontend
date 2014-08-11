@@ -20,4 +20,35 @@ public class FunctionTypeValue extends TypeValue {
     return outputType;
   }
 
+  @Override
+  public boolean equals(Object o) {
+    if (o == this) {
+      return true;
+    } else if (o == null || !(o instanceof FunctionTypeValue)) {
+      return false;
+    }
+    FunctionTypeValue other = (FunctionTypeValue) o;
+    return inputType.equals(other.inputType) &&
+        outputType.equals(other.outputType);
+  }
+
+  @Override
+  public boolean isSubtypeOf(TypeValue other) {
+    if (this == other) {
+      return true;
+    }
+    if (other == null) {
+      return false;
+    }
+    if (!(other instanceof FunctionTypeValue)) {
+      return getSupertype().isSubtypeOf(other);
+    }
+    FunctionTypeValue oFn = (FunctionTypeValue) other;
+    // One way: a function is a subtype of oFn if it can be used where oFn
+    // can be used.
+    // Must accept all inputs of oFn and outputs must be subtypes
+    // of outputs of oFn.
+    return oFn.getInputType().isSubtypeOf(getInputType()) &&
+        getOutputType().isSubtypeOf(oFn);
+  }
 }
