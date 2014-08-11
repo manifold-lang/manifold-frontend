@@ -4,15 +4,19 @@ import org.manifold.compiler.UndefinedBehaviourError;
 
 public class ExpressionEdge {
 
+  private String name = "";
+  public String getName() {
+    return name;
+  }
+  public void setName(String name) {
+    this.name = name;
+  }
+  
   private ExpressionVertex source;
   public ExpressionVertex getSource() {
     return source;
   }
   public void setSource(ExpressionVertex newSource) {
-    if (! (source == null)) {
-      throw new UndefinedBehaviourError(
-          "attempt to change source of attached ExpressionEdge");
-    }
     this.source = newSource;
   }
   
@@ -21,10 +25,6 @@ public class ExpressionEdge {
     return target;
   }
   public void setTarget(ExpressionVertex newTarget) {
-    if (! (target == null)) {
-      throw new UndefinedBehaviourError(
-          "attempt to change target of attached ExpressionEdge");
-    }
     this.target = newTarget;
   }
   
@@ -51,7 +51,7 @@ public class ExpressionEdge {
     } else {
       targetStr = target.toString();
     }
-    return sourceStr + " => " + targetStr;
+    return sourceStr + " ==" + getName() + "=> " + targetStr;
   }
   
 }

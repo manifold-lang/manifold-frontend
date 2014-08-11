@@ -2,6 +2,7 @@ package org.manifold.compiler.front;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -75,6 +76,54 @@ public class ExpressionGraph implements ExpressionVisitor, ValueVisitor {
     }
   }
 
+  // Remove every edge in the graph whose source or target is null.
+  public void removeUnconnectedEdges() {
+    Iterator<ExpressionEdge> edgeIt = edges.iterator();
+    while (edgeIt.hasNext()) {
+      ExpressionEdge edge = edgeIt.next();
+      if (edge.getSource() == null || edge.getTarget() == null) {
+        edgeIt.remove();
+      }
+    }
+  }
+  
+  // Optimize variables out of the design by finding each edge from a variable
+  // to a target and setting the source of that edge to 
+  // the source of the variable.
+  public void optimizeOutVariables() {
+    Iterator<Map.Entry<VariableIdentifier, VariableReferenceVertex>> varIt = 
+        variableVertices.entrySet().iterator();
+    while (varIt.hasNext()) {
+      Map.Entry<VariableIdentifier, VariableReferenceVertex> entry = 
+          varIt.next();
+      VariableIdentifier id = entry.getKey();
+      VariableReferenceVertex vertex = entry.getValue();
+      // find all edges for which this vertex is the source
+      List<ExpressionEdge> targetEdges = getEdgesFromSource(vertex);
+      // and find where the value of this variable comes from
+      List<ExpressionEdge> sourceEdges = getEdgesToTarget(vertex);
+      // there should only be one, ideally...
+      if (sourceEdges.size() == 0) {
+        throw new UndefinedBehaviourError(
+            "unassigned variable '" + id.toString() + "'");
+      } else if (sourceEdges.size() > 1) {
+        throw new UndefinedBehaviourError(
+            "multiply assigned variable '" + id.toString() + "'");
+      }
+      ExpressionEdge sourceEdge = sourceEdges.get(0);
+      ExpressionVertex source = sourceEdge.getSource();
+      // contract each target edge onto source and rename
+      for (ExpressionEdge targetEdge : targetEdges) {
+        targetEdge.setSource(source);
+        targetEdge.setName(id.getName() + targetEdge.getName());
+      }
+      // delete the source edge
+      edges.remove(sourceEdge);
+      // delete the variable
+      varIt.remove();
+    }
+  }
+  
   // edge leading from the last expression we visited
   private ExpressionEdge lastSourceEdge = null;
   

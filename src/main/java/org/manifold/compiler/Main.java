@@ -94,6 +94,8 @@ public class Main {
    
     ExpressionGraph exprGraph = new ExpressionGraph(toplevel);
     exprGraph.buildFrom(expressions);
+    exprGraph.removeUnconnectedEdges();
+    exprGraph.optimizeOutVariables();
     
     System.out.println("expression graph edges:");
     for (String s : exprGraph.getPrintableEdges()) {
