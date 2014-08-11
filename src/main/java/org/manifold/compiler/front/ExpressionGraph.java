@@ -91,6 +91,12 @@ public class ExpressionGraph implements ExpressionVisitor, ValueVisitor {
       ExpressionEdge edge = edgeIt.next();
       if (edge.getSource() == null || edge.getTarget() == null) {
         edgeIt.remove();
+      } else if (edge.getSource() instanceof TupleValueVertex) {
+        // all edges out of zero-length tuples are removed
+        TupleValueVertex tuple = (TupleValueVertex) edge.getSource();
+        if (tuple.getValue().getSize() == 0) {
+          edgeIt.remove();
+        }
       }
     }
   }
@@ -172,13 +178,18 @@ public class ExpressionGraph implements ExpressionVisitor, ValueVisitor {
             "cannot elaborate edge " + edge.toString() 
             + " because its type is null");
       }
+      ExpressionVertex vSource = edge.getSource();
+      ExpressionVertex vTarget = edge.getTarget();
+      // if the target is not a primitive function, skip
+      // (we'll do it in reverse)
+      if (!(vTarget instanceof PrimitiveFunctionVertex)) {
+        continue;
+      }PrimitiveFunctionVertex target = (PrimitiveFunctionVertex) vTarget;
       if (edgeType instanceof BooleanTypeValue) {
-        PrimitiveFunctionVertex source  
-          = (PrimitiveFunctionVertex) edge.getSource();
+        PrimitiveFunctionVertex source = (PrimitiveFunctionVertex) vSource;
         String sourcePortName = source.getNthPortOfType(outputType, 0);
         PortValue sourcePort = source.getNodeValue().getPort(sourcePortName);
-        PrimitiveFunctionVertex target
-          = (PrimitiveFunctionVertex) edge.getTarget();
+        
         String targetPortName = target.getNthPortOfType(inputType, 0);
         PortValue targetPort = target.getNodeValue().getPort(targetPortName);
         
@@ -191,8 +202,64 @@ public class ExpressionGraph implements ExpressionVisitor, ValueVisitor {
             + "_" + targetPortName;
         uuid += 1;
         connections.put(connID, conn);
-      } else if (edgeType instanceof TupleTypeValue) {
-        
+      } else if (edgeType instanceof TupleTypeValue 
+          && vSource instanceof PrimitiveFunctionVertex) {
+        PrimitiveFunctionVertex source = (PrimitiveFunctionVertex) vSource;
+        // check that #outputs = #inputs
+        int nOutputs = source.getNumberOfPortsOfType(outputType);
+        int nInputs = target.getNumberOfPortsOfType(inputType);
+        if (!(nInputs == nOutputs)) {
+          throw new UndefinedBehaviourError(
+              "connected source with " + nOutputs + " outputs"
+              + " to target with " + nInputs + " inputs");
+        }
+        // connect source 0 to target 0, etc.
+        for (int i = 0; i < nInputs; ++i) {
+          String sourcePortName = source.getNthPortOfType(outputType, i);
+          PortValue sourcePort = source.getNodeValue().getPort(sourcePortName);
+          String targetPortName = target.getNthPortOfType(inputType, i);
+          PortValue targetPort = target.getNodeValue().getPort(targetPortName);
+          ConnectionValue conn = new ConnectionValue(
+              connType, sourcePort, targetPort, noAttributes);
+          String connID = "n" + Integer.toString(uuid) 
+              + "_" + source.getInstanceName() 
+              + "_" + sourcePortName 
+              + "__" + target.getInstanceName()
+              + "_" + targetPortName;
+          uuid += 1;
+          connections.put(connID, conn);
+        }
+      } else if (edgeType instanceof TupleTypeValue
+          && vSource instanceof TupleValueVertex) {
+        TupleValueVertex tuple = (TupleValueVertex) vSource;
+        int nInputs = target.getNumberOfPortsOfType(inputType);
+        if (!(nInputs == tuple.getValue().getSize())) {
+          throw new UndefinedBehaviourError(
+              "connected source with " + tuple.getValue().getSize() + " outputs"
+              + " to target with " + nInputs + " inputs");
+        }
+        // in general this does not scale, but for 
+        // simple connections it is fine
+        for (int i = 0; i < nInputs; ++i) {
+          ExpressionEdge sourceEdge = tuple.getValueEdges().get(i);
+          // again, this does not scale, but it is simple enough to be clear
+          PrimitiveFunctionVertex source 
+            = (PrimitiveFunctionVertex) sourceEdge.getSource();  
+          
+          String sourcePortName = source.getNthPortOfType(outputType, 0);
+          PortValue sourcePort = source.getNodeValue().getPort(sourcePortName);
+          String targetPortName = target.getNthPortOfType(inputType, i);
+          PortValue targetPort = target.getNodeValue().getPort(targetPortName);
+          ConnectionValue conn = new ConnectionValue(
+              connType, sourcePort, targetPort, noAttributes);
+          String connID = "n" + Integer.toString(uuid) 
+              + "_" + source.getInstanceName() 
+              + "_" + sourcePortName 
+              + "__" + target.getInstanceName()
+              + "_" + targetPortName;
+          uuid += 1;
+          connections.put(connID, conn);
+        }
       } else {
         throw new UndefinedBehaviourError(
             "cannot elaborate edge " + edge.toString()
@@ -301,6 +368,9 @@ public class ExpressionGraph implements ExpressionVisitor, ValueVisitor {
       valueEdges.add(valueEdge);
     }
     TupleValueVertex tupleVertex = new TupleValueVertex(tuple, valueEdges);
+    for (ExpressionEdge edgeTupleIn : valueEdges) {
+      edgeTupleIn.setTarget(tupleVertex);
+    }
     ExpressionEdge edgeTupleOut = new ExpressionEdge(tupleVertex, null,
         tuple.getType());
     edges.add(edgeTupleOut);
