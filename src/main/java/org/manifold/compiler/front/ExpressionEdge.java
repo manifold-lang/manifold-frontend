@@ -1,5 +1,6 @@
 package org.manifold.compiler.front;
 
+import org.manifold.compiler.TypeValue;
 import org.manifold.compiler.UndefinedBehaviourError;
 
 public class ExpressionEdge {
@@ -28,13 +29,23 @@ public class ExpressionEdge {
     this.target = newTarget;
   }
   
-  public ExpressionEdge(ExpressionVertex from, ExpressionVertex to) {
+  private TypeValue type;
+  public TypeValue getType() {
+    return type;
+  }
+  public void setType(TypeValue t) {
+    this.type = t;
+  }
+  
+  public ExpressionEdge(ExpressionVertex from, ExpressionVertex to,
+      TypeValue type) {
     if (from == null && to == null) {
       throw new UndefinedBehaviourError(
           "attempt to create a totally disconnected ExpressionEdge");
     }
     source = from;
     target = to;
+    this.type = type;
   }
 
   @Override

@@ -17,6 +17,8 @@ import org.manifold.compiler.ConstraintType;
 import org.manifold.compiler.ConstraintValue;
 import org.manifold.compiler.IntegerTypeValue;
 import org.manifold.compiler.IntegerValue;
+import org.manifold.compiler.InvalidAttributeException;
+import org.manifold.compiler.MultipleAssignmentException;
 import org.manifold.compiler.NilTypeValue;
 import org.manifold.compiler.NodeTypeValue;
 import org.manifold.compiler.NodeValue;
@@ -24,10 +26,16 @@ import org.manifold.compiler.PortTypeValue;
 import org.manifold.compiler.PortValue;
 import org.manifold.compiler.StringTypeValue;
 import org.manifold.compiler.StringValue;
+import org.manifold.compiler.TypeMismatchException;
 import org.manifold.compiler.TypeTypeValue;
+import org.manifold.compiler.TypeValue;
+import org.manifold.compiler.UndeclaredAttributeException;
+import org.manifold.compiler.UndeclaredIdentifierException;
 import org.manifold.compiler.UndefinedBehaviourError;
 import org.manifold.compiler.Value;
 import org.manifold.compiler.ValueVisitor;
+import org.manifold.compiler.middle.Schematic;
+import org.manifold.compiler.middle.SchematicException;
 
 public class ExpressionGraph implements ExpressionVisitor, ValueVisitor {
   private List<PrimitiveFunctionVertex> primitiveFunctionVertices =
@@ -39,7 +47,7 @@ public class ExpressionGraph implements ExpressionVisitor, ValueVisitor {
   public List<ExpressionEdge> getEdgesFromSource(ExpressionVertex v) {
     List<ExpressionEdge> edgesFrom = new LinkedList<>();
     for (ExpressionEdge e : edges) {
-      if(v.equals(e.getSource())) {
+      if (v.equals(e.getSource())) {
         edgesFrom.add(e);
       }
     }
@@ -49,7 +57,7 @@ public class ExpressionGraph implements ExpressionVisitor, ValueVisitor {
   public List<ExpressionEdge> getEdgesToTarget(ExpressionVertex v) {
     List<ExpressionEdge> edgesTo = new LinkedList<>();
     for (ExpressionEdge e : edges) {
-      if(v.equals(e.getTarget())) {
+      if (v.equals(e.getTarget())) {
         edgesTo.add(e);
       }
     }
@@ -112,15 +120,96 @@ public class ExpressionGraph implements ExpressionVisitor, ValueVisitor {
       }
       ExpressionEdge sourceEdge = sourceEdges.get(0);
       ExpressionVertex source = sourceEdge.getSource();
-      // contract each target edge onto source and rename
+      // contract each target edge onto source and rename/retype
       for (ExpressionEdge targetEdge : targetEdges) {
         targetEdge.setSource(source);
+        targetEdge.setType(sourceEdge.getType());
         targetEdge.setName(id.getName() + targetEdge.getName());
       }
       // delete the source edge
       edges.remove(sourceEdge);
       // delete the variable
       varIt.remove();
+    }
+  }
+  
+  public void elaboratePrimitives() throws SchematicException {
+    Integer uuid = 0;
+    for (PrimitiveFunctionVertex pFunc : primitiveFunctionVertices) {
+      pFunc.elaborate();
+      pFunc.setUniqueSuffix(uuid);
+      uuid += 1;
+    }
+  }
+  
+  public List<String> getPrintableInstances() {
+    List<String> instanceNames = new LinkedList<String>();
+    for (PrimitiveFunctionVertex pFunc : primitiveFunctionVertices) {
+      instanceNames.add(pFunc.getInstanceName() + ": " 
+          + pFunc.getNodeValue().toString());
+    }
+    return instanceNames;
+  }
+  
+  private Map<String, ConnectionValue> connections = new HashMap<>();
+  
+  public void elaborateConnections(Schematic schematic) 
+      throws UndeclaredIdentifierException, UndeclaredAttributeException, 
+      InvalidAttributeException, TypeMismatchException {
+    // TODO generalize connection type
+    // TODO connection attributes
+    ConnectionType connType = schematic.getConnectionType("digitalWire");
+    PortTypeValue inputType = schematic.getPortType("digitalIn");
+    PortTypeValue outputType = schematic.getPortType("digitalOut");
+    Map<String, Value> noAttributes = new HashMap<>();
+    
+    Integer uuid = 0;
+    
+    for (ExpressionEdge edge : edges) {
+      TypeValue edgeType = edge.getType();
+      if (edgeType == null) {
+        throw new UndefinedBehaviourError(
+            "cannot elaborate edge " + edge.toString() 
+            + " because its type is null");
+      }
+      if (edgeType instanceof BooleanTypeValue) {
+        PrimitiveFunctionVertex source  
+          = (PrimitiveFunctionVertex) edge.getSource();
+        String sourcePortName = source.getNthPortOfType(outputType, 0);
+        PortValue sourcePort = source.getNodeValue().getPort(sourcePortName);
+        PrimitiveFunctionVertex target
+          = (PrimitiveFunctionVertex) edge.getTarget();
+        String targetPortName = target.getNthPortOfType(inputType, 0);
+        PortValue targetPort = target.getNodeValue().getPort(targetPortName);
+        
+        ConnectionValue conn = new ConnectionValue(
+            connType, sourcePort, targetPort, noAttributes);
+        String connID = "n" + Integer.toString(uuid) 
+            + "_" + source.getInstanceName() 
+            + "_" + sourcePortName 
+            + "__" + target.getInstanceName()
+            + "_" + targetPortName;
+        uuid += 1;
+        connections.put(connID, conn);
+      } else if (edgeType instanceof TupleTypeValue) {
+        
+      } else {
+        throw new UndefinedBehaviourError(
+            "cannot elaborate edge " + edge.toString()
+            + " due to unhandled type");
+      }
+    }
+  }
+  
+  public void writeSchematic(Schematic schematic) 
+      throws MultipleAssignmentException {
+    // write all nodes
+    for (PrimitiveFunctionVertex pFunc : primitiveFunctionVertices) {
+      schematic.addNode(pFunc.getInstanceName(), pFunc.getNodeValue());
+    }
+    // write all connections
+    for (Map.Entry<String, ConnectionValue> conn : connections.entrySet()) {
+      schematic.addConnection(conn.getKey(), conn.getValue());
     }
   }
   
@@ -150,15 +239,6 @@ public class ExpressionGraph implements ExpressionVisitor, ValueVisitor {
   public void visit(LiteralExpression literalExpression) {
     Value v = literalExpression.getValue(scope);
     v.accept(this);
-    // TODO perhaps use a ValueVisitor instead of this? for demo purposes only
-    if (v instanceof PrimitiveFunctionValue) {
-      
-    } else if (v instanceof TupleValue) {
-      
-    } else {
-      throw new UndefinedBehaviourError(
-          "unhandled LiteralExpression value " + v.getClass());
-    }
   }
 
   @Override
@@ -189,7 +269,8 @@ public class ExpressionGraph implements ExpressionVisitor, ValueVisitor {
     } else {
       source = variableVertices.get(id);
     }
-    ExpressionEdge edgeVariableOut = new ExpressionEdge(source, null);
+    ExpressionEdge edgeVariableOut = new ExpressionEdge(source, null,
+        variableReferenceExpression.getType(scope));
     edges.add(edgeVariableOut);
     lastSourceEdge = edgeVariableOut;
   }
@@ -203,7 +284,9 @@ public class ExpressionGraph implements ExpressionVisitor, ValueVisitor {
   public void visit(PrimitiveFunctionValue pFunc) {
     PrimitiveFunctionVertex pVertex = new PrimitiveFunctionVertex(pFunc);
     primitiveFunctionVertices.add(pVertex);
-    ExpressionEdge edgeFunctionOut = new ExpressionEdge(pVertex, null);
+    FunctionTypeValue fType = (FunctionTypeValue) pFunc.getType();
+    ExpressionEdge edgeFunctionOut = new ExpressionEdge(pVertex, null,
+        fType.getOutputType());
     edges.add(edgeFunctionOut);
     lastSourceEdge = edgeFunctionOut;
   }
@@ -218,7 +301,8 @@ public class ExpressionGraph implements ExpressionVisitor, ValueVisitor {
       valueEdges.add(valueEdge);
     }
     TupleValueVertex tupleVertex = new TupleValueVertex(tuple, valueEdges);
-    ExpressionEdge edgeTupleOut = new ExpressionEdge(tupleVertex, null);
+    ExpressionEdge edgeTupleOut = new ExpressionEdge(tupleVertex, null,
+        tuple.getType());
     edges.add(edgeTupleOut);
     lastSourceEdge = edgeTupleOut;
   }
