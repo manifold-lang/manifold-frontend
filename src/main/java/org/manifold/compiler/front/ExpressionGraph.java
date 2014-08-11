@@ -184,7 +184,8 @@ public class ExpressionGraph implements ExpressionVisitor, ValueVisitor {
       // (we'll do it in reverse)
       if (!(vTarget instanceof PrimitiveFunctionVertex)) {
         continue;
-      }PrimitiveFunctionVertex target = (PrimitiveFunctionVertex) vTarget;
+      }
+      PrimitiveFunctionVertex target = (PrimitiveFunctionVertex) vTarget;
       if (edgeType instanceof BooleanTypeValue) {
         PrimitiveFunctionVertex source = (PrimitiveFunctionVertex) vSource;
         String sourcePortName = source.getNthPortOfType(outputType, 0);

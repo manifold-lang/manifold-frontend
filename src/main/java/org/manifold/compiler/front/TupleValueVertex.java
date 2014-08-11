@@ -26,7 +26,7 @@ public class TupleValueVertex extends ExpressionVertex {
     for (int i = 0; i < tupleType.getSize(); ++i) {
       if (tupleType.entry(i) == null) {
         tupleString.append(" null");
-      } else{
+      } else {
         tupleString.append(" " + tupleType.entry(i).toString());
       }
     }
