@@ -1,7 +1,9 @@
 package org.manifold.compiler.front;
 
 import java.util.List;
+
 import org.manifold.compiler.Value;
+import org.manifold.compiler.ValueVisitor;
 
 public class FunctionValue extends Value {
   
@@ -30,6 +32,11 @@ public class FunctionValue extends Value {
   @Override
   public boolean isElaborationtimeKnowable() {
     return true;
+  }
+  
+  @Override
+  public void accept(ValueVisitor visitor) {
+    visitor.visit(this);
   }
   
 }

@@ -2,6 +2,8 @@ package org.manifold.compiler.front;
 
 import java.util.ArrayList;
 
+import org.manifold.compiler.ValueVisitor;
+
 
 public class PrimitiveFunctionValue extends FunctionValue {
 
@@ -24,6 +26,11 @@ public class PrimitiveFunctionValue extends FunctionValue {
   @Override
   public boolean isElaborationtimeKnowable() {
     return false;
+  }
+  
+  @Override
+  public void accept(ValueVisitor visitor) {
+    visitor.visit(this);
   }
   
 }

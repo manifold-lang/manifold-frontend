@@ -1,10 +1,12 @@
 package org.manifold.compiler.front;
 
-import org.manifold.compiler.Value;
-import org.manifold.compiler.TypeValue;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+
+import org.manifold.compiler.TypeValue;
+import org.manifold.compiler.Value;
+import org.manifold.compiler.ValueVisitor;
 
 public class EnumTypeValue extends TypeValue {
 
@@ -44,4 +46,9 @@ public class EnumTypeValue extends TypeValue {
     }
   }
 
+  @Override
+  public void accept(ValueVisitor visitor) {
+    visitor.visit(this);
+  }
+  
 }

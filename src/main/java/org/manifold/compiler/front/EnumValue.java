@@ -1,8 +1,9 @@
 package org.manifold.compiler.front;
 
-import org.manifold.compiler.TypeValue;
-import org.manifold.compiler.Value;
 import java.util.Objects;
+
+import org.manifold.compiler.Value;
+import org.manifold.compiler.ValueVisitor;
 
 public class EnumValue extends Value {
 
@@ -68,4 +69,10 @@ public class EnumValue extends Value {
     hash = 73 * hash + Objects.hashCode(this.identifier);
     return hash;
   }
+  
+  @Override
+  public void accept(ValueVisitor visitor) {
+    visitor.visit(this);
+  }
+  
 }

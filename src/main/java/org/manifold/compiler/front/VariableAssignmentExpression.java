@@ -60,4 +60,9 @@ public class VariableAssignmentExpression extends Expression {
     return rvalueExpression.isRuntimeKnowable(scope);
   }
 
+  @Override
+  public void accept(ExpressionVisitor visitor) {
+    visitor.visit(this);
+  }
+  
 }

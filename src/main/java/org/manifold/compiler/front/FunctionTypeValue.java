@@ -1,6 +1,7 @@
 package org.manifold.compiler.front;
 
 import org.manifold.compiler.TypeValue;
+import org.manifold.compiler.ValueVisitor;
 
 public class FunctionTypeValue extends TypeValue {
   
@@ -20,4 +21,9 @@ public class FunctionTypeValue extends TypeValue {
     return outputType;
   }
 
+  @Override
+  public void accept(ValueVisitor visitor) {
+    visitor.visit(this);
+  }
+  
 }

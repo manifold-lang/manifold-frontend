@@ -10,6 +10,7 @@ import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.manifold.compiler.front.Expression;
+import org.manifold.compiler.front.ExpressionGraph;
 import org.manifold.compiler.front.FunctionInvocationExpression;
 import org.manifold.compiler.front.FunctionTypeValue;
 import org.manifold.compiler.front.LiteralExpression;
@@ -89,6 +90,14 @@ public class Main {
     System.out.println("top-level identifiers:");
     for (VariableIdentifier id : toplevel.getSymbolIdentifiers()) {
       System.out.println(id);
+    }
+   
+    ExpressionGraph exprGraph = new ExpressionGraph(toplevel);
+    exprGraph.buildFrom(expressions);
+    
+    System.out.println("expression graph edges:");
+    for (String s : exprGraph.getPrintableEdges()) {
+      System.out.println(s);
     }
     
   }

@@ -3,6 +3,7 @@ package org.manifold.compiler.front;
 import java.util.List;
 
 import org.manifold.compiler.TypeValue;
+import org.manifold.compiler.ValueVisitor;
 
 import com.google.common.collect.ImmutableList;
 
@@ -43,5 +44,12 @@ public class TupleTypeValue extends TypeValue {
       }
     }
     return true;
+  
   }
+  
+  @Override
+  public void accept(ValueVisitor visitor) {
+    visitor.visit(this);
+  }
+  
 }
