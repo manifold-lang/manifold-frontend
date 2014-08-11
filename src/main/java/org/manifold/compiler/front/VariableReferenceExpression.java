@@ -68,4 +68,9 @@ public class VariableReferenceExpression extends Expression {
     }
   }
 
+  @Override
+  public void accept(ExpressionVisitor visitor) {
+    visitor.visit(this);
+  }
+  
 }

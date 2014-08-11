@@ -3,6 +3,7 @@ package org.manifold.compiler.front;
 import java.util.List;
 
 import org.manifold.compiler.Value;
+import org.manifold.compiler.ValueVisitor;
 
 public class TupleValue extends Value {
 
@@ -34,6 +35,11 @@ public class TupleValue extends Value {
   @Override
   public boolean isRuntimeKnowable() {
     return false;
+  }
+  
+  @Override
+  public void accept(ValueVisitor visitor) {
+    visitor.visit(this);
   }
   
 }

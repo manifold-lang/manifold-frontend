@@ -2,9 +2,8 @@ package org.manifold.compiler.front;
 
 import java.util.List;
 
-import com.google.common.collect.ImmutableList;
-
 import org.manifold.compiler.TypeValue;
+import org.manifold.compiler.ValueVisitor;
 
 public class TupleTypeValue extends TypeValue {
 
@@ -19,7 +18,8 @@ public class TupleTypeValue extends TypeValue {
   }
   
   public TupleTypeValue(List<TypeValue> subtypes) {
-    this.subtypes = ImmutableList.copyOf(subtypes);
+    //this.subtypes = ImmutableList.copyOf(subtypes);
+    this.subtypes = subtypes;
   }
   
   @Override
@@ -69,5 +69,12 @@ public class TupleTypeValue extends TypeValue {
       }
     }
     return true;
+  
   }
+  
+  @Override
+  public void accept(ValueVisitor visitor) {
+    visitor.visit(this);
+  }
+  
 }

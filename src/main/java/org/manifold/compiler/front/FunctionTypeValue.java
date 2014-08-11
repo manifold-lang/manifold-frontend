@@ -1,6 +1,7 @@
 package org.manifold.compiler.front;
 
 import org.manifold.compiler.TypeValue;
+import org.manifold.compiler.ValueVisitor;
 
 public class FunctionTypeValue extends TypeValue {
   
@@ -21,6 +22,10 @@ public class FunctionTypeValue extends TypeValue {
   }
 
   @Override
+  public void accept(ValueVisitor visitor) {
+    visitor.visit(this);
+  }
+  
   public boolean equals(Object o) {
     if (o == this) {
       return true;
@@ -51,4 +56,5 @@ public class FunctionTypeValue extends TypeValue {
     return oFn.getInputType().isSubtypeOf(getInputType()) &&
         getOutputType().isSubtypeOf(oFn);
   }
+
 }
