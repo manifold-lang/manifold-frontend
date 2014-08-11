@@ -37,6 +37,8 @@ import org.manifold.parser.ManifoldParser;
 import org.manifold.parser.ManifoldParser.ExpressionContext;
 import org.manifold.parser.ManifoldParser.NamespacedIdentifierContext;
 
+import com.google.common.annotations.VisibleForTesting;
+
 public class Main {
 
   public static void main(String[] args) throws Exception {
@@ -213,7 +215,8 @@ public class Main {
     
   }
   
-  private static void createDigitalPrimitives(Scope scope, Schematic schematic) 
+  @VisibleForTesting
+  public static void createDigitalPrimitives(Scope scope, Schematic schematic)
       throws MultipleDefinitionException, VariableNotDefinedException, 
       MultipleAssignmentException, UndeclaredIdentifierException,
       org.manifold.compiler.MultipleDefinitionException {

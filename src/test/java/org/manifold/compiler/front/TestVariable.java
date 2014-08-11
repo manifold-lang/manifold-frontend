@@ -1,6 +1,8 @@
 package org.manifold.compiler.front;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 
 import org.junit.Test;
 import org.manifold.compiler.BooleanTypeValue;
@@ -59,6 +61,7 @@ public class TestVariable {
     );
   }
 
+  @Test
   public void testGetValueUnassigned() throws VariableNotAssignedException {
     Variable v = getVariable();
     assertFalse(v.isAssigned());
@@ -68,10 +71,12 @@ public class TestVariable {
   @Test
   public void testSetValue() throws
       MultipleAssignmentException,
-      VariableNotAssignedException {
+      VariableNotAssignedException,
+      TypeMismatchException {
     Variable v = getVariable();
     v.setValueExpression(getValueExpression());
     assertEquals(v.getValue(), getValue());
+    v.verify(); // Variable should verify successfully after being set.
   }
 
   @Test(expected = MultipleAssignmentException.class)

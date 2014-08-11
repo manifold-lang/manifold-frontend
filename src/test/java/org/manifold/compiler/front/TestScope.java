@@ -1,10 +1,16 @@
 package org.manifold.compiler.front;
 
-import org.manifold.compiler.BooleanValue;
-import org.manifold.compiler.BooleanTypeValue;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
+import com.google.common.collect.ImmutableSet;
 
 import org.junit.Test;
+import org.manifold.compiler.BooleanTypeValue;
+import org.manifold.compiler.BooleanValue;
 
 public class TestScope {
 
@@ -102,6 +108,7 @@ public class TestScope {
     s1.defineVariable(getVariableIdentifier(), getTypeExpression());
     try {
       Variable v = s2.getVariable(getVariableIdentifier());
+      assertTrue(s2.isVariableDefined(getVariableIdentifier()));
     } catch (VariableNotDefinedException vnde) {
       fail("could not get a variable defined in a parent scope");
     }
@@ -118,6 +125,14 @@ public class TestScope {
 
     assertEquals(getValueExpression().getValue(s),
         s.getVariableValue(getVariableIdentifier()));
+  }
+
+  @Test
+  public void testGetSymbolIdentifiers() throws MultipleDefinitionException {
+    Scope s = new Scope();
+    s.defineVariable(getVariableIdentifier(), getTypeExpression());
+    assertEquals(ImmutableSet.of(getVariableIdentifier()),
+        s.getSymbolIdentifiers());
   }
 
   @Test(expected = VariableNotDefinedException.class)
