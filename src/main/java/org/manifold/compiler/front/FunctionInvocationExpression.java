@@ -5,7 +5,14 @@ import org.manifold.compiler.Value;
 
 public class FunctionInvocationExpression extends Expression {
   private Expression functionExpression;
+  public Expression getFunctionExpression() {
+    return functionExpression;
+  }
+  
   private Expression inputExpression;
+  public Expression getInputExpression() {
+    return inputExpression;
+  }
 
   public FunctionInvocationExpression(
       Expression functionExpression,
@@ -19,7 +26,8 @@ public class FunctionInvocationExpression extends Expression {
   }
   
   private FunctionTypeValue getFunctionTypeValue(Scope scope) {
-    return (FunctionTypeValue) getFunctionValue(scope).getType();
+    FunctionValue fVal = getFunctionValue(scope);
+    return (FunctionTypeValue) fVal.getType();
   }
   
   @Override
@@ -57,6 +65,11 @@ public class FunctionInvocationExpression extends Expression {
   @Override
   public boolean isRuntimeKnowable(Scope scope) {
     return true;
+  }
+  
+  @Override
+  public void accept(ExpressionVisitor visitor) {
+    visitor.visit(this);
   }
 
 }

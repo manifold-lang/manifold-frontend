@@ -40,4 +40,9 @@ public class LiteralExpression extends Expression {
     return value.isRuntimeKnowable();
   }
 
+  @Override
+  public void accept(ExpressionVisitor visitor) {
+    visitor.visit(this);
+  }
+  
 }

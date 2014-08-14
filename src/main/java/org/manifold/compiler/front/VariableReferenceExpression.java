@@ -1,12 +1,15 @@
 package org.manifold.compiler.front;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.manifold.compiler.TypeValue;
+import org.manifold.compiler.UndefinedBehaviourError;
 import org.manifold.compiler.Value;
 
 public class VariableReferenceExpression extends Expression {
   private final VariableIdentifier variable;
+  
+  public VariableIdentifier getIdentifier() {
+    return variable;
+  }
 
   public VariableReferenceExpression(VariableIdentifier variable) {
     this.variable = variable;
@@ -20,8 +23,16 @@ public class VariableReferenceExpression extends Expression {
 
   @Override
   public Value getValue(Scope scope) {
-    return null;
-    //return variable.getValue();
+    // TODO better error handling
+    try {
+      return scope.getVariableValue(variable);
+    } catch (VariableNotAssignedException e) {
+      throw new UndefinedBehaviourError(
+          "reference to unassigned variable '" + variable.toString() + "'");
+    } catch (VariableNotDefinedException e) {
+      throw new UndefinedBehaviourError(
+          "reference to undefined variable '" + variable.toString() + "'");
+    }
   }
 
   @Override
@@ -57,4 +68,9 @@ public class VariableReferenceExpression extends Expression {
     }
   }
 
+  @Override
+  public void accept(ExpressionVisitor visitor) {
+    visitor.visit(this);
+  }
+  
 }

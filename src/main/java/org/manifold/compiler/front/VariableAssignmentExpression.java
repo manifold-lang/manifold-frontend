@@ -7,6 +7,14 @@ public class VariableAssignmentExpression extends Expression {
   private VariableIdentifier variable;
   private final Expression lvalueExpression;
   private final Expression rvalueExpression;
+  
+  public Expression getLvalueExpression() {
+    return lvalueExpression;
+  }
+  
+  public Expression getRvalueExpression() {
+    return rvalueExpression;
+  }
 
   public VariableAssignmentExpression(
       Expression lvalueExpression,
@@ -52,4 +60,9 @@ public class VariableAssignmentExpression extends Expression {
     return rvalueExpression.isRuntimeKnowable(scope);
   }
 
+  @Override
+  public void accept(ExpressionVisitor visitor) {
+    visitor.visit(this);
+  }
+  
 }
