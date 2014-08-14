@@ -1,8 +1,6 @@
 package org.manifold.compiler;
 
-import java.io.BufferedWriter;
 import java.io.FileInputStream;
-import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -38,6 +36,7 @@ import org.manifold.parser.ManifoldParser.ExpressionContext;
 import org.manifold.parser.ManifoldParser.NamespacedIdentifierContext;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.gson.JsonObject;
 
 public class Main {
 
@@ -125,10 +124,8 @@ public class Main {
     exprGraph.writeSchematic(schematic);
     
     SchematicSerializer ser = new SchematicSerializer();
-    BufferedWriter consoleWriter = new BufferedWriter(
-        new OutputStreamWriter(System.out));
-    ser.serialize(schematic, consoleWriter);
-    consoleWriter.flush();
+    JsonObject serializationResult = ser.serialize(schematic);
+    System.out.println(serializationResult);
     
     VHDLCodeGenerator codegen = new VHDLCodeGenerator(schematic);
     codegen.generateOutputProducts();
