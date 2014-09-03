@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 import org.manifold.compiler.BooleanTypeValue;
-import org.manifold.compiler.Main;
 import org.manifold.compiler.NilTypeValue;
 import org.manifold.compiler.TypeValue;
 import org.manifold.compiler.UndeclaredIdentifierException;
