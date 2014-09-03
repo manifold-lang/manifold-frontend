@@ -11,7 +11,6 @@ import java.util.Map;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.TerminalNode;
-import org.manifold.compiler.back.digital.VHDLCodeGenerator;
 import org.manifold.compiler.front.Expression;
 import org.manifold.compiler.front.ExpressionGraph;
 import org.manifold.compiler.front.FunctionInvocationExpression;
@@ -126,9 +125,6 @@ public class Main {
     SchematicSerializer ser = new SchematicSerializer();
     JsonObject serializationResult = ser.serialize(schematic);
     System.out.println(serializationResult);
-    
-    VHDLCodeGenerator codegen = new VHDLCodeGenerator(schematic);
-    codegen.generateOutputProducts();
   }
   
   private static void setupDigitalTypes(Schematic s) 
