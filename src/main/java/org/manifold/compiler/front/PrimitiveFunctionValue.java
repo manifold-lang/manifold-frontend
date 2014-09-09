@@ -6,8 +6,9 @@ import java.util.Map;
 
 import org.manifold.compiler.NodeTypeValue;
 import org.manifold.compiler.NodeValue;
+import org.manifold.compiler.SchematicValueVisitor;
+import org.manifold.compiler.UndefinedBehaviourError;
 import org.manifold.compiler.Value;
-import org.manifold.compiler.ValueVisitor;
 import org.manifold.compiler.middle.SchematicException;
 
 
@@ -38,8 +39,14 @@ public class PrimitiveFunctionValue extends FunctionValue {
   }
   
   @Override
-  public void accept(ValueVisitor visitor) {
-    visitor.visit(this);
+  public void accept(SchematicValueVisitor v) {
+    if (v instanceof FrontendValueVisitor) {
+      FrontendValueVisitor visitor = (FrontendValueVisitor) v;
+      visitor.visit(this);
+    } else {
+      throw new UndefinedBehaviourError(
+          "cannot accept non-frontend ValueVisitor into a frontend Value");
+    }
   }
   
   public NodeValue elaborate() throws SchematicException {

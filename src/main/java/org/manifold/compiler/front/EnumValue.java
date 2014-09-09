@@ -2,8 +2,9 @@ package org.manifold.compiler.front;
 
 import java.util.Objects;
 
+import org.manifold.compiler.SchematicValueVisitor;
+import org.manifold.compiler.UndefinedBehaviourError;
 import org.manifold.compiler.Value;
-import org.manifold.compiler.ValueVisitor;
 
 public class EnumValue extends Value {
 
@@ -71,8 +72,14 @@ public class EnumValue extends Value {
   }
   
   @Override
-  public void accept(ValueVisitor visitor) {
-    visitor.visit(this);
+  public void accept(SchematicValueVisitor v) {
+    if (v instanceof FrontendValueVisitor) {
+      FrontendValueVisitor visitor = (FrontendValueVisitor) v;
+      visitor.visit(this);
+    } else {
+      throw new UndefinedBehaviourError(
+          "cannot accept non-frontend ValueVisitor into a frontend Value");
+    }
   }
   
 }

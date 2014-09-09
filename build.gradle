@@ -4,7 +4,8 @@ apply plugin: 'jacoco'
 apply plugin: 'com.github.kt3k.coveralls'
 apply plugin: 'checkstyle'
 apply plugin: 'antlr4'
-apply plugin:'application'
+apply plugin: 'application'
+apply plugin: 'maven'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -17,7 +18,7 @@ mainClassName = "org.manifold.compiler.Main"
 
 jar {
   manifest {
-    attributes 'Implementation-Title': 'Manifold Frontend', 'Implementation-Version': version
+    attributes 'Implementation-Title': 'Manifold Frontend', 'Implementation-Version': version, 'Main-Class': 'org.manifold.compiler.front.Main'
   }
 }
 
@@ -104,4 +105,22 @@ sourceSets.main.java.srcDirs += antlr4.output
 // add antlr4 to classpath
 configurations {
    compile.extendsFrom antlr4
+}
+
+task jenkinsTest {
+  inputs.files test.outputs.files
+  doLast {
+    def timestamp = System.currentTimeMillis()
+    testResultsDir.eachFile { it.lastModified = timestamp }
+  }
+}
+
+build.dependsOn(jenkinsTest)
+
+uploadArchives {
+  repositories {
+    mavenDeployer {
+      repository(url: "file://localhost/var/www/releases")
+    }
+  }
 }
