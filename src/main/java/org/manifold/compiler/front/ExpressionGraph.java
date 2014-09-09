@@ -24,6 +24,7 @@ import org.manifold.compiler.NodeTypeValue;
 import org.manifold.compiler.NodeValue;
 import org.manifold.compiler.PortTypeValue;
 import org.manifold.compiler.PortValue;
+import org.manifold.compiler.SchematicValueVisitor;
 import org.manifold.compiler.StringTypeValue;
 import org.manifold.compiler.StringValue;
 import org.manifold.compiler.TypeMismatchException;
@@ -33,11 +34,11 @@ import org.manifold.compiler.UndeclaredAttributeException;
 import org.manifold.compiler.UndeclaredIdentifierException;
 import org.manifold.compiler.UndefinedBehaviourError;
 import org.manifold.compiler.Value;
-import org.manifold.compiler.ValueVisitor;
 import org.manifold.compiler.middle.Schematic;
 import org.manifold.compiler.middle.SchematicException;
 
-public class ExpressionGraph implements ExpressionVisitor, ValueVisitor {
+public class ExpressionGraph 
+  implements ExpressionVisitor, FrontendValueVisitor {
   private List<PrimitiveFunctionVertex> primitiveFunctionVertices =
       new ArrayList<>();
   private Map<VariableIdentifier, VariableReferenceVertex> variableVertices = 

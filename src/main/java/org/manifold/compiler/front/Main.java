@@ -49,7 +49,7 @@ public class Main {
     // Specify our entry point
     ManifoldParser.SchematicContext context = parser.schematic();
     
-    ExpressionVisitor visitor = new ExpressionVisitor();
+    ExpressionContextVisitor visitor = new ExpressionContextVisitor();
 
     List<Expression> expressions = new LinkedList<>();
     List<ExpressionContext> expressionContexts = context.expression();
@@ -118,8 +118,7 @@ public class Main {
     
     exprGraph.writeSchematic(schematic);
     
-    SchematicSerializer ser = new SchematicSerializer();
-    JsonObject serializationResult = ser.serialize(schematic);
+    JsonObject serializationResult = SchematicSerializer.serialize(schematic);
     System.out.println(serializationResult);
   }
   
@@ -271,7 +270,7 @@ public class Main {
   
 }
 
-class ExpressionVisitor extends ManifoldBaseVisitor<Expression> {
+class ExpressionContextVisitor extends ManifoldBaseVisitor<Expression> {
   
   @Override
   public Expression visitAssignmentExpression(

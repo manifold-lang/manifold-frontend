@@ -2,8 +2,9 @@ package org.manifold.compiler.front;
 
 import java.util.List;
 
+import org.manifold.compiler.SchematicValueVisitor;
+import org.manifold.compiler.UndefinedBehaviourError;
 import org.manifold.compiler.Value;
-import org.manifold.compiler.ValueVisitor;
 
 public class TupleValue extends Value {
 
@@ -38,8 +39,14 @@ public class TupleValue extends Value {
   }
   
   @Override
-  public void accept(ValueVisitor visitor) {
-    visitor.visit(this);
+  public void accept(SchematicValueVisitor v) {
+    if (v instanceof FrontendValueVisitor) {
+      FrontendValueVisitor visitor = (FrontendValueVisitor) v;
+      visitor.visit(this);
+    } else {
+      throw new UndefinedBehaviourError(
+          "cannot accept non-frontend ValueVisitor into a frontend Value");
+    }
   }
   
 }

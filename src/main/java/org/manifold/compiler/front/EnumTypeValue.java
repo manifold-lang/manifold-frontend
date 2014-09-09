@@ -4,9 +4,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import org.manifold.compiler.SchematicValueVisitor;
 import org.manifold.compiler.TypeValue;
+import org.manifold.compiler.UndefinedBehaviourError;
 import org.manifold.compiler.Value;
-import org.manifold.compiler.ValueVisitor;
 
 public class EnumTypeValue extends TypeValue {
 
@@ -47,8 +48,14 @@ public class EnumTypeValue extends TypeValue {
   }
 
   @Override
-  public void accept(ValueVisitor visitor) {
-    visitor.visit(this);
+  public void accept(SchematicValueVisitor v) {
+    if (v instanceof FrontendValueVisitor) {
+      FrontendValueVisitor visitor = (FrontendValueVisitor) v;
+      visitor.visit(this);
+    } else {
+      throw new UndefinedBehaviourError(
+          "cannot accept non-frontend ValueVisitor into a frontend Value");
+    }
   }
   
 }
