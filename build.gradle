@@ -14,7 +14,7 @@ group = "org.manifold"
 // name = "manifold-frontend"
 version = '0.1.0-SNAPSHOT'
 
-mainClassName = "org.manifold.compiler.Main"
+mainClassName = "org.manifold.compiler.front.Main"
 
 jar {
   manifest {
@@ -84,6 +84,8 @@ jacocoTestReport {
     html.destination = "${buildDir}/reports/jacoco"
   }
 }
+
+check.dependsOn(jacocoTestReport)
 
 checkstyle {
   configFile = new File(rootDir, "checkstyle.xml")
