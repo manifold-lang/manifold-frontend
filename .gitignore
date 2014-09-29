@@ -13,6 +13,11 @@
 nbproject/private/
 .nb-gradle
 
+# Eclipse project files
+.classpath
+.project
+.settings
+
 ## generic files
 *~
 *.lock
