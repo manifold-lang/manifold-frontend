@@ -224,8 +224,12 @@ public class ExpressionGraph
         int nInputs = target.getNumberOfPortsOfType(inputType);
         if (!(nInputs == nOutputs)) {
           throw new UndefinedBehaviourError(
-              "connected source with " + nOutputs + " outputs"
-              + " to target with " + nInputs + " inputs");
+              "connected source "
+              + source.getInstanceName() 
+              + " with " + nOutputs + " outputs"
+              + " to target "
+              + target.getInstanceName()
+              + " with " + nInputs + " inputs");
         }
         // connect source 0 to target 0, etc.
         for (int i = 0; i < nInputs; ++i) {
@@ -249,8 +253,12 @@ public class ExpressionGraph
         int nInputs = target.getNumberOfPortsOfType(inputType);
         if (!(nInputs == tuple.getValue().getSize())) {
           throw new UndefinedBehaviourError(
-              "connected source with " + tuple.getValue().getSize() + " outputs"
-              + " to target with " + nInputs + " inputs");
+              "connected source "
+              + tuple.toString()
+              + " with " + tuple.getValue().getSize() + " outputs"
+              + " to target "
+              + target.getInstanceName()
+              + " with " + nInputs + " inputs");
         }
         // in general this does not scale, but for 
         // simple connections it is fine
