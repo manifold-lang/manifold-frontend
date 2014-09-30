@@ -10,6 +10,9 @@ import org.manifold.compiler.middle.SchematicException;
 public class PrimitiveFunctionVertex extends ExpressionVertex {
 
   private PrimitiveFunctionValue function;
+  public PrimitiveFunctionValue getFunction() {
+    return this.function;
+  }
   
   public PrimitiveFunctionVertex(PrimitiveFunctionValue function) {
     this.function = function;
