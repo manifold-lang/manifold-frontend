@@ -250,7 +250,7 @@ public class Main {
             BooleanTypeValue.getInstance(), BooleanTypeValue.getInstance()
         })), BooleanTypeValue.getInstance());
     PrimitiveFunctionValue orPrimitive = new PrimitiveFunctionValue(
-        "or", orPrimitiveType, schematic.getNodeType("inputPin"));
+        "or", orPrimitiveType, schematic.getNodeType("or"));
     VariableIdentifier orIdentifier = new VariableIdentifier(
         Arrays.asList(new String[]{"or"}));
     scope.defineVariable(orIdentifier, 
@@ -260,7 +260,7 @@ public class Main {
     FunctionTypeValue notPrimitiveType = new FunctionTypeValue(
         BooleanTypeValue.getInstance(), BooleanTypeValue.getInstance());
     PrimitiveFunctionValue notPrimitive = new PrimitiveFunctionValue(
-        "not", notPrimitiveType, schematic.getNodeType("inputPin"));
+        "not", notPrimitiveType, schematic.getNodeType("not"));
     VariableIdentifier notIdentifier = new VariableIdentifier(
         Arrays.asList(new String[]{"not"}));
     scope.defineVariable(notIdentifier, 
