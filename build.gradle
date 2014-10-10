@@ -29,9 +29,6 @@ repositories {
     name 'Manifold release repository'
     url 'http://manifold-lang.org/releases'
   }
-  flatDir {
-    dirs '/home/mtrberzi/manifold/core/build/libs' // NOCOMMIT
-  }
 }
 
 run {
