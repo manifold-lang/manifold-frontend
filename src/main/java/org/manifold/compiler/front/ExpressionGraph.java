@@ -24,6 +24,8 @@ import org.manifold.compiler.NodeTypeValue;
 import org.manifold.compiler.NodeValue;
 import org.manifold.compiler.PortTypeValue;
 import org.manifold.compiler.PortValue;
+import org.manifold.compiler.RealTypeValue;
+import org.manifold.compiler.RealValue;
 import org.manifold.compiler.StringTypeValue;
 import org.manifold.compiler.StringValue;
 import org.manifold.compiler.TypeMismatchException;
@@ -39,24 +41,24 @@ import org.manifold.compiler.middle.SchematicException;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
-public class ExpressionGraph 
+public class ExpressionGraph
   implements ExpressionVisitor, FrontendValueVisitor {
-  
+
   private List<PrimitiveFunctionVertex> primitiveFunctionVertices =
       new ArrayList<>();
   public List<PrimitiveFunctionVertex> getPrimitiveFunctionVertices() {
     return ImmutableList.copyOf(primitiveFunctionVertices);
   }
-  
-  private Map<VariableIdentifier, VariableReferenceVertex> variableVertices = 
+
+  private Map<VariableIdentifier, VariableReferenceVertex> variableVertices =
       new HashMap<>();
-  public Map<VariableIdentifier, VariableReferenceVertex> getVariableVertices() 
+  public Map<VariableIdentifier, VariableReferenceVertex> getVariableVertices()
   {
     return ImmutableMap.copyOf(variableVertices);
   }
-  
+
   private List<ExpressionEdge> edges = new ArrayList<>();
-  
+
   public List<ExpressionEdge> getEdgesFromSource(ExpressionVertex v) {
     List<ExpressionEdge> edgesFrom = new LinkedList<>();
     for (ExpressionEdge e : edges) {
@@ -66,7 +68,7 @@ public class ExpressionGraph
     }
     return edgesFrom;
   }
-  
+
   public List<ExpressionEdge> getEdgesToTarget(ExpressionVertex v) {
     List<ExpressionEdge> edgesTo = new LinkedList<>();
     for (ExpressionEdge e : edges) {
@@ -76,7 +78,7 @@ public class ExpressionGraph
     }
     return edgesTo;
   }
-  
+
   public List<String> getPrintableEdges() {
     List<String> edgeList = new LinkedList<>();
     for (ExpressionEdge e : edges) {
@@ -84,13 +86,13 @@ public class ExpressionGraph
     }
     return edgeList;
   }
-  
+
   private Scope scope;
-  
+
   public ExpressionGraph(Scope scope) {
     this.scope = scope;
   }
-  
+
   public void buildFrom(List<Expression> expressions) {
     for (Expression e : expressions) {
       e.accept(this);
@@ -113,15 +115,15 @@ public class ExpressionGraph
       }
     }
   }
-  
+
   // Optimize variables out of the design by finding each edge from a variable
-  // to a target and setting the source of that edge to 
+  // to a target and setting the source of that edge to
   // the source of the variable.
   public void optimizeOutVariables() {
-    Iterator<Map.Entry<VariableIdentifier, VariableReferenceVertex>> varIt = 
+    Iterator<Map.Entry<VariableIdentifier, VariableReferenceVertex>> varIt =
         variableVertices.entrySet().iterator();
     while (varIt.hasNext()) {
-      Map.Entry<VariableIdentifier, VariableReferenceVertex> entry = 
+      Map.Entry<VariableIdentifier, VariableReferenceVertex> entry =
           varIt.next();
       VariableIdentifier id = entry.getKey();
       VariableReferenceVertex vertex = entry.getValue();
@@ -151,7 +153,7 @@ public class ExpressionGraph
       varIt.remove();
     }
   }
-  
+
   public void elaboratePrimitives() throws SchematicException {
     Integer uuid = 0;
     for (PrimitiveFunctionVertex pFunc : primitiveFunctionVertices) {
@@ -160,20 +162,20 @@ public class ExpressionGraph
       uuid += 1;
     }
   }
-  
+
   public List<String> getPrintableInstances() {
     List<String> instanceNames = new LinkedList<String>();
     for (PrimitiveFunctionVertex pFunc : primitiveFunctionVertices) {
-      instanceNames.add(pFunc.getInstanceName() + ": " 
+      instanceNames.add(pFunc.getInstanceName() + ": "
           + pFunc.getNodeValue().toString());
     }
     return instanceNames;
   }
-  
+
   private Map<String, ConnectionValue> connections = new HashMap<>();
-  
-  public void elaborateConnections(Schematic schematic) 
-      throws UndeclaredIdentifierException, UndeclaredAttributeException, 
+
+  public void elaborateConnections(Schematic schematic)
+      throws UndeclaredIdentifierException, UndeclaredAttributeException,
       InvalidAttributeException, TypeMismatchException {
     // TODO generalize connection type
     // TODO connection attributes
@@ -181,14 +183,14 @@ public class ExpressionGraph
     PortTypeValue inputType = schematic.getPortType("digitalIn");
     PortTypeValue outputType = schematic.getPortType("digitalOut");
     Map<String, Value> noAttributes = new HashMap<>();
-    
+
     Integer uuid = 0;
-    
+
     for (ExpressionEdge edge : edges) {
       TypeValue edgeType = edge.getType();
       if (edgeType == null) {
         throw new UndefinedBehaviourError(
-            "cannot elaborate edge " + edge.toString() 
+            "cannot elaborate edge " + edge.toString()
             + " because its type is null");
       }
       ExpressionVertex vSource = edge.getSource();
@@ -203,20 +205,20 @@ public class ExpressionGraph
         PrimitiveFunctionVertex source = (PrimitiveFunctionVertex) vSource;
         String sourcePortName = source.getNthPortOfType(outputType, 0);
         PortValue sourcePort = source.getNodeValue().getPort(sourcePortName);
-        
+
         String targetPortName = target.getNthPortOfType(inputType, 0);
         PortValue targetPort = target.getNodeValue().getPort(targetPortName);
-        
+
         ConnectionValue conn = new ConnectionValue(
             connType, sourcePort, targetPort, noAttributes);
-        String connID = "n" + Integer.toString(uuid) 
-            + "_" + source.getInstanceName() 
-            + "_" + sourcePortName 
+        String connID = "n" + Integer.toString(uuid)
+            + "_" + source.getInstanceName()
+            + "_" + sourcePortName
             + "__" + target.getInstanceName()
             + "_" + targetPortName;
         uuid += 1;
         connections.put(connID, conn);
-      } else if (edgeType instanceof TupleTypeValue 
+      } else if (edgeType instanceof TupleTypeValue
           && vSource instanceof PrimitiveFunctionVertex) {
         PrimitiveFunctionVertex source = (PrimitiveFunctionVertex) vSource;
         // check that #outputs = #inputs
@@ -225,7 +227,7 @@ public class ExpressionGraph
         if (!(nInputs == nOutputs)) {
           throw new UndefinedBehaviourError(
               "connected source "
-              + source.getInstanceName() 
+              + source.getInstanceName()
               + " with " + nOutputs + " outputs"
               + " to target "
               + target.getInstanceName()
@@ -239,9 +241,9 @@ public class ExpressionGraph
           PortValue targetPort = target.getNodeValue().getPort(targetPortName);
           ConnectionValue conn = new ConnectionValue(
               connType, sourcePort, targetPort, noAttributes);
-          String connID = "n" + Integer.toString(uuid) 
-              + "_" + source.getInstanceName() 
-              + "_" + sourcePortName 
+          String connID = "n" + Integer.toString(uuid)
+              + "_" + source.getInstanceName()
+              + "_" + sourcePortName
               + "__" + target.getInstanceName()
               + "_" + targetPortName;
           uuid += 1;
@@ -260,23 +262,23 @@ public class ExpressionGraph
               + target.getInstanceName()
               + " with " + nInputs + " inputs");
         }
-        // in general this does not scale, but for 
+        // in general this does not scale, but for
         // simple connections it is fine
         for (int i = 0; i < nInputs; ++i) {
           ExpressionEdge sourceEdge = tuple.getValueEdges().get(i);
           // again, this does not scale, but it is simple enough to be clear
-          PrimitiveFunctionVertex source 
-            = (PrimitiveFunctionVertex) sourceEdge.getSource();  
-          
+          PrimitiveFunctionVertex source
+            = (PrimitiveFunctionVertex) sourceEdge.getSource();
+
           String sourcePortName = source.getNthPortOfType(outputType, 0);
           PortValue sourcePort = source.getNodeValue().getPort(sourcePortName);
           String targetPortName = target.getNthPortOfType(inputType, i);
           PortValue targetPort = target.getNodeValue().getPort(targetPortName);
           ConnectionValue conn = new ConnectionValue(
               connType, sourcePort, targetPort, noAttributes);
-          String connID = "n" + Integer.toString(uuid) 
-              + "_" + source.getInstanceName() 
-              + "_" + sourcePortName 
+          String connID = "n" + Integer.toString(uuid)
+              + "_" + source.getInstanceName()
+              + "_" + sourcePortName
               + "__" + target.getInstanceName()
               + "_" + targetPortName;
           uuid += 1;
@@ -289,8 +291,8 @@ public class ExpressionGraph
       }
     }
   }
-  
-  public void writeSchematic(Schematic schematic) 
+
+  public void writeSchematic(Schematic schematic)
       throws MultipleAssignmentException {
     // write all nodes
     for (PrimitiveFunctionVertex pFunc : primitiveFunctionVertices) {
@@ -301,10 +303,10 @@ public class ExpressionGraph
       schematic.addConnection(conn.getKey(), conn.getValue());
     }
   }
-  
+
   // edge leading from the last expression we visited
   private ExpressionEdge lastSourceEdge = null;
-  
+
   @Override
   public void visit(FunctionInvocationExpression functionInvocationExpression) {
     Expression funcExpr = functionInvocationExpression.getFunctionExpression();
@@ -421,7 +423,7 @@ public class ExpressionGraph
 
   @Override
   public void visit(EnumTypeValue enumTypeValue) {
-    throw new UnsupportedOperationException("illegal value"); 
+    throw new UnsupportedOperationException("illegal value");
   }
 
   @Override
@@ -508,5 +510,15 @@ public class ExpressionGraph
   public void visit(ArrayValue arrayValue) {
     throw new UnsupportedOperationException("illegal value");
   }
-  
+
+  @Override
+  public void visit(RealTypeValue arg0) {
+    throw new UnsupportedOperationException("illegal value");
+  }
+
+  @Override
+  public void visit(RealValue arg0) {
+    throw new UnsupportedOperationException("illegal value");
+  }
+
 }

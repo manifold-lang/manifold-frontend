@@ -11,9 +11,14 @@ import java.util.Map;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.TerminalNode;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.Options;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.manifold.compiler.BooleanTypeValue;
 import org.manifold.compiler.BooleanValue;
 import org.manifold.compiler.ConnectionType;
+import org.manifold.compiler.Frontend;
 import org.manifold.compiler.IntegerValue;
 import org.manifold.compiler.NilTypeValue;
 import org.manifold.compiler.NodeTypeValue;
@@ -23,7 +28,6 @@ import org.manifold.compiler.UndeclaredIdentifierException;
 import org.manifold.compiler.UndefinedBehaviourError;
 import org.manifold.compiler.Value;
 import org.manifold.compiler.middle.Schematic;
-import org.manifold.compiler.middle.serialization.SchematicSerializer;
 import org.manifold.parser.ManifoldBaseVisitor;
 import org.manifold.parser.ManifoldLexer;
 import org.manifold.parser.ManifoldParser;
@@ -31,14 +35,29 @@ import org.manifold.parser.ManifoldParser.ExpressionContext;
 import org.manifold.parser.ManifoldParser.NamespacedIdentifierContext;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.gson.JsonObject;
 
-public class Main {
+public class Main implements Frontend {
 
-  public static void main(String[] args) throws Exception {
+  private static Logger log = LogManager.getLogger("DefaultFrontend");
+
+  public Main() {}
+
+  @Override
+  public String getFrontendName() {
+    return "default";
+  }
+
+  @Override
+  public void registerArguments(Options options) {
+    // TODO Auto-generated method stub
+
+  }
+
+  @Override
+  public Schematic invokeFrontend(CommandLine cmd) throws Exception {
 
     ManifoldLexer lexer = new ManifoldLexer(new ANTLRInputStream(
-        new FileInputStream(args[0])));
+        new FileInputStream(cmd.getArgs()[0])));
 
      // Get a list of matched tokens
     CommonTokenStream tokens = new CommonTokenStream(lexer);
@@ -48,41 +67,41 @@ public class Main {
 
     // Specify our entry point
     ManifoldParser.SchematicContext context = parser.schematic();
-    
+
     ExpressionContextVisitor visitor = new ExpressionContextVisitor();
 
     List<Expression> expressions = new LinkedList<>();
     List<ExpressionContext> expressionContexts = context.expression();
-    
+
     for (ExpressionContext expressionContext : expressionContexts) {
       expressions.add(visitor.visit(expressionContext));
     }
-    
+
     System.out.println("expressions:");
     System.out.print(expressions);
     System.out.println();
-    
+
     Scope toplevel = new Scope();
-    Schematic schematic = new Schematic(args[0]);
-    
+    Schematic schematic = new Schematic(cmd.getArgs()[0]);
+
     // mock-up: digital circuits primitives
     // (to be removed when core library and namespaces are implemented)
     createDigitalPrimitives(toplevel, schematic);
-    
+
     // Build top-level scope
     for (Expression expr : expressions) {
       if (expr instanceof VariableAssignmentExpression) {
-        VariableAssignmentExpression assign = 
+        VariableAssignmentExpression assign =
             (VariableAssignmentExpression) expr;
         Expression lvalue = assign.getLvalueExpression();
         Expression rvalue = assign.getRvalueExpression();
-        
+
         // we expect the lvalue to be a variable reference
         if (lvalue instanceof VariableReferenceExpression) {
-          VariableReferenceExpression vRef = 
+          VariableReferenceExpression vRef =
               (VariableReferenceExpression) lvalue;
           VariableIdentifier identifier = vRef.getIdentifier();
-          Expression idType = new LiteralExpression(rvalue.getType(toplevel)); 
+          Expression idType = new LiteralExpression(rvalue.getType(toplevel));
           toplevel.defineVariable(identifier, idType);
           toplevel.assignVariable(identifier, rvalue);
         } else {
@@ -91,38 +110,37 @@ public class Main {
         }
       }
     }
-    
+
     System.out.println("top-level identifiers:");
     for (VariableIdentifier id : toplevel.getSymbolIdentifiers()) {
       System.out.println(id);
     }
-   
+
     ExpressionGraph exprGraph = new ExpressionGraph(toplevel);
     exprGraph.buildFrom(expressions);
     exprGraph.removeUnconnectedEdges();
     exprGraph.optimizeOutVariables();
-    
+
     System.out.println("expression graph edges:");
     for (String s : exprGraph.getPrintableEdges()) {
       System.out.println(s);
     }
-    
+
     exprGraph.elaboratePrimitives();
-    
+
     System.out.println("instantiated primitives:");
     for (String s : exprGraph.getPrintableInstances()) {
       System.out.println(s);
     }
-    
+
     exprGraph.elaborateConnections(schematic);
-    
+
     exprGraph.writeSchematic(schematic);
-    
-    JsonObject serializationResult = SchematicSerializer.serialize(schematic);
-    System.out.println(serializationResult);
+
+    return schematic;
   }
-  
-  private static void setupDigitalTypes(Schematic s) 
+
+  private static void setupDigitalTypes(Schematic s)
       throws org.manifold.compiler.MultipleDefinitionException {
     PortTypeValue digitalInPortType;
     PortTypeValue digitalOutPortType;
@@ -142,7 +160,7 @@ public class Main {
 
     Map<String, PortTypeValue> notTypePorts = new HashMap<>();
     NodeTypeValue notType;
-    
+
     Map<String, PortTypeValue> inputPinTypePorts = new HashMap<>();
     NodeTypeValue inputPinType;
 
@@ -150,7 +168,7 @@ public class Main {
     NodeTypeValue outputPinType;
 
     ConnectionType digitalWireType;
-    
+
     digitalInPortType = new PortTypeValue(noTypeAttributes);
     digitalOutPortType = new PortTypeValue(noTypeAttributes);
 
@@ -171,16 +189,16 @@ public class Main {
     andTypePorts.put("in1", digitalInPortType);
     andTypePorts.put("out", digitalOutPortType);
     andType = new NodeTypeValue(noTypeAttributes, andTypePorts);
-    
+
     orTypePorts.put("in0", digitalInPortType);
     orTypePorts.put("in1", digitalInPortType);
     orTypePorts.put("out", digitalOutPortType);
     orType = new NodeTypeValue(noTypeAttributes, orTypePorts);
-    
+
     notTypePorts.put("in", digitalInPortType);
     notTypePorts.put("out", digitalOutPortType);
     notType = new NodeTypeValue(noTypeAttributes, notTypePorts);
-    
+
     inputPinTypePorts.put("out", digitalOutPortType);
     inputPinType = new NodeTypeValue(noTypeAttributes, inputPinTypePorts);
 
@@ -188,7 +206,7 @@ public class Main {
     outputPinType = new NodeTypeValue(noTypeAttributes, outputPinTypePorts);
 
     digitalWireType = new ConnectionType(noTypeAttributes);
-    
+
     s.addPortType("digitalIn", digitalInPortType);
     s.addPortType("digitalOut", digitalOutPortType);
 
@@ -200,12 +218,12 @@ public class Main {
     s.addNodeType("outputPin", outputPinType);
 
     s.addConnectionType("digitalWire", digitalWireType);
-    
+
   }
-  
+
   @VisibleForTesting
   public static void createDigitalPrimitives(Scope scope, Schematic schematic)
-      throws MultipleDefinitionException, VariableNotDefinedException, 
+      throws MultipleDefinitionException, VariableNotDefinedException,
       MultipleAssignmentException, UndeclaredIdentifierException,
       org.manifold.compiler.MultipleDefinitionException {
     setupDigitalTypes(schematic);
@@ -216,21 +234,21 @@ public class Main {
         "inputPin", inputPinPrimitiveType, schematic.getNodeType("inputPin"));
     VariableIdentifier inputPinIdentifier = new VariableIdentifier(
         Arrays.asList(new String[]{"inputPin"}));
-    scope.defineVariable(inputPinIdentifier, 
+    scope.defineVariable(inputPinIdentifier,
         new LiteralExpression(inputPinPrimitiveType));
-    scope.assignVariable(inputPinIdentifier, 
+    scope.assignVariable(inputPinIdentifier,
         new LiteralExpression(inputPinPrimitive));
     // outputPin: Bool -> unit
     FunctionTypeValue outputPinPrimitiveType = new FunctionTypeValue(
         BooleanTypeValue.getInstance(), NilTypeValue.getInstance());
     PrimitiveFunctionValue outputPinPrimitive = new PrimitiveFunctionValue(
-        "outputPin", outputPinPrimitiveType, 
+        "outputPin", outputPinPrimitiveType,
         schematic.getNodeType("outputPin"));
     VariableIdentifier outputPinIdentifier = new VariableIdentifier(
         Arrays.asList(new String[]{"outputPin"}));
-    scope.defineVariable(outputPinIdentifier, 
+    scope.defineVariable(outputPinIdentifier,
         new LiteralExpression(outputPinPrimitiveType));
-    scope.assignVariable(outputPinIdentifier, 
+    scope.assignVariable(outputPinIdentifier,
         new LiteralExpression(outputPinPrimitive));
     // and: (Bool, Bool) -> Bool
     FunctionTypeValue andPrimitiveType = new FunctionTypeValue(
@@ -241,7 +259,7 @@ public class Main {
         "and", andPrimitiveType, schematic.getNodeType("and"));
     VariableIdentifier andIdentifier = new VariableIdentifier(
         Arrays.asList(new String[]{"and"}));
-    scope.defineVariable(andIdentifier, 
+    scope.defineVariable(andIdentifier,
         new LiteralExpression(andPrimitiveType));
     scope.assignVariable(andIdentifier, new LiteralExpression(andPrimitive));
     // or: (Bool, Bool) -> Bool
@@ -253,7 +271,7 @@ public class Main {
         "or", orPrimitiveType, schematic.getNodeType("or"));
     VariableIdentifier orIdentifier = new VariableIdentifier(
         Arrays.asList(new String[]{"or"}));
-    scope.defineVariable(orIdentifier, 
+    scope.defineVariable(orIdentifier,
         new LiteralExpression(orPrimitiveType));
     scope.assignVariable(orIdentifier, new LiteralExpression(orPrimitive));
     // not: Bool -> Bool
@@ -263,15 +281,15 @@ public class Main {
         "not", notPrimitiveType, schematic.getNodeType("not"));
     VariableIdentifier notIdentifier = new VariableIdentifier(
         Arrays.asList(new String[]{"not"}));
-    scope.defineVariable(notIdentifier, 
+    scope.defineVariable(notIdentifier,
         new LiteralExpression(notPrimitiveType));
     scope.assignVariable(notIdentifier, new LiteralExpression(notPrimitive));
   }
-  
+
 }
 
 class ExpressionContextVisitor extends ManifoldBaseVisitor<Expression> {
-  
+
   @Override
   public Expression visitAssignmentExpression(
       ManifoldParser.AssignmentExpressionContext context) {
@@ -280,7 +298,7 @@ class ExpressionContextVisitor extends ManifoldBaseVisitor<Expression> {
         visit(context.expression(1))
     );
   }
-  
+
   @Override
   public Expression visitFunctionInvocationExpression(
       ManifoldParser.FunctionInvocationExpressionContext context) {
@@ -289,12 +307,12 @@ class ExpressionContextVisitor extends ManifoldBaseVisitor<Expression> {
         visit(context.expression(1))
     );
   }
-  
+
   @Override
   public Expression visitTupleValue(ManifoldParser.TupleValueContext context) {
     // get the expressions resulting from visiting all value entries
     List<Expression> values = new ArrayList<Expression>();
-    for (ManifoldParser.TupleValueEntryContext subctx 
+    for (ManifoldParser.TupleValueEntryContext subctx
         : context.tupleValueEntry()) {
       values.add(visit(subctx.expression()));
     }
@@ -308,7 +326,7 @@ class ExpressionContextVisitor extends ManifoldBaseVisitor<Expression> {
     // now we build a TupleValue from these subexpressions
     return new LiteralExpression(new TupleValue(anonymousTupleType, values));
   }
-  
+
   @Override
   public Expression visitNamespacedIdentifier(
       NamespacedIdentifierContext context) {
@@ -318,7 +336,7 @@ class ExpressionContextVisitor extends ManifoldBaseVisitor<Expression> {
     for (TerminalNode node : identifierNodes) {
       identifierStrings.add(node.getText());
     }
-    
+
     VariableIdentifier variable = new VariableIdentifier(identifierStrings);
 
     return new VariableReferenceExpression(variable);
@@ -330,12 +348,12 @@ class ExpressionContextVisitor extends ManifoldBaseVisitor<Expression> {
       return new LiteralExpression(
           new IntegerValue(Integer.valueOf(node.getText()))
       );
-      
+
     } else if (node.getSymbol().getType() == ManifoldLexer.BOOLEAN_VALUE) {
       return new LiteralExpression(
         BooleanValue.getInstance(Boolean.parseBoolean(node.getText()))
       );
-        
+
     } else {
       throw new UndefinedBehaviourError(
           "unknown terminal node type " + node.getSymbol().getType());
