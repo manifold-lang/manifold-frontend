@@ -1,20 +1,21 @@
 package org.manifold.compiler.front;
 
-import org.manifold.compiler.BooleanTypeValue;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
 
 import org.junit.Test;
+import org.manifold.compiler.BooleanTypeValue;
 
 public class TestNamespace {
 
   private NamespaceIdentifier getNamespaceIdentifier() {
-    return new NamespaceIdentifier("whdl:is:cool");
+    return new NamespaceIdentifier("manifold:is:cool");
   }
 
   private VariableIdentifier getVariableIdentifier() {
     VariableIdentifier id = new VariableIdentifier(
-      getNamespaceIdentifier(),
-      "foo"
+        getNamespaceIdentifier(),
+        "foo"
     );
 
     return id;

@@ -20,11 +20,11 @@ public class TestExpressionGraph {
   public void testBuild_Simple() throws Exception {
     /*
      * Create expressions for this code:
-     *  
-     *   a = inputPin() 
+     *
+     *   a = inputPin()
      *   outputPin(a)
-     *    
-     * After building the expression graph we should see 
+     *
+     * After building the expression graph we should see
      * inputPin ---> a ---> outputPin
      */
     VariableIdentifier idInputPin = new VariableIdentifier(
@@ -46,7 +46,7 @@ public class TestExpressionGraph {
                 .getInstance())),
                 ImmutableList.of(new VariableReferenceExpression(idA)))));
     List<Expression> exprs = Arrays.asList(new Expression[] {
-      assignInputPinToA, aToOutputPin });
+        assignInputPinToA, aToOutputPin });
 
     Scope toplevel = new Scope();
     Schematic schematic = new Schematic("test");
@@ -55,10 +55,10 @@ public class TestExpressionGraph {
     ExpressionGraph graph = new ExpressionGraph(toplevel);
     graph.buildFrom(exprs);
     graph.removeUnconnectedEdges();
-    
-    List<PrimitiveFunctionVertex> primitives = 
+
+    List<PrimitiveFunctionVertex> primitives =
         graph.getPrimitiveFunctionVertices();
-    Map<VariableIdentifier, VariableReferenceVertex> variables = 
+    Map<VariableIdentifier, VariableReferenceVertex> variables =
         graph.getVariableVertices();
 
     // look for primitives
@@ -78,40 +78,40 @@ public class TestExpressionGraph {
     if (vOutputPin == null) {
       fail("output pin primitive not found in generated expression graph");
     }
-    
+
     // look for variables
     if (!variables.containsKey(idA)) {
-      fail("variable reference vertex for 'a' not found" 
+      fail("variable reference vertex for 'a' not found"
           + " in generated expression graph");
     }
     VariableReferenceVertex vA = variables.get(idA);
-    
+
     // look for an edge (vInputPin) ---> (vA)
     for (ExpressionEdge e : graph.getEdgesFromSource(vInputPin)) {
       assertEquals("unexpected edge from " + vInputPin.toString(),
           vA, e.getTarget());
     }
-    
+
     // look for an edge (vA) --(tuple)-> (vOutputPin)
     for (ExpressionEdge e : graph.getEdgesFromSource(vA)) {
       // assume the target of this edge is the tuple...
       for (ExpressionEdge eTuple : graph.getEdgesFromSource(e.getTarget())) {
-        assertEquals("unexpected edge from " + vA.toString() + " through " 
+        assertEquals("unexpected edge from " + vA.toString() + " through "
             + eTuple.getSource().toString(),
             vOutputPin, eTuple.getTarget());
       }
     }
   }
-  
+
   @Test
   public void testElaborate_Simple() throws Exception {
     /*
      * Create expressions for this code:
-     *  
-     *   a = inputPin() 
+     *
+     *   a = inputPin()
      *   outputPin(a)
-     *    
-     * After elaboration we should see this schematic: 
+     *
+     * After elaboration we should see this schematic:
      * inputPin ===> outputPin
      */
     VariableIdentifier idInputPin = new VariableIdentifier(
@@ -133,7 +133,7 @@ public class TestExpressionGraph {
                 .getInstance())),
                 ImmutableList.of(new VariableReferenceExpression(idA)))));
     List<Expression> exprs = Arrays.asList(new Expression[] {
-      assignInputPinToA, aToOutputPin });
+        assignInputPinToA, aToOutputPin });
 
     Scope toplevel = new Scope();
     Schematic schematic = new Schematic("test");
@@ -144,9 +144,9 @@ public class TestExpressionGraph {
     graph.removeUnconnectedEdges();
     graph.optimizeOutVariables();
     graph.elaboratePrimitives();
-    
+
     // look for primitives
-    List<PrimitiveFunctionVertex> primitives = 
+    List<PrimitiveFunctionVertex> primitives =
         graph.getPrimitiveFunctionVertices();
     PrimitiveFunctionVertex vInputPin = null;
     PrimitiveFunctionVertex vOutputPin = null;
@@ -164,7 +164,7 @@ public class TestExpressionGraph {
     if (vOutputPin == null) {
       fail("output pin primitive not found in generated expression graph");
     }
-    
+
     // retrieve associated nodes
     if (vInputPin.getNodeValue() == null) {
       fail("failed to generate node for input pin primitive");
@@ -172,10 +172,10 @@ public class TestExpressionGraph {
     if (vOutputPin.getNodeValue() == null) {
       fail("failed to generate node for output pin primitive");
     }
-    
+
     graph.elaborateConnections(schematic);
     graph.writeSchematic(schematic);
-    
+
     assertEquals("too many connections or no connections generated",
         1, schematic.getConnections().size());
     // check the schematic; look for the connection between these two
