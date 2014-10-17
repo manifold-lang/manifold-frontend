@@ -42,7 +42,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
 public class ExpressionGraph
-  implements ExpressionVisitor, FrontendValueVisitor {
+    implements ExpressionVisitor, FrontendValueVisitor {
 
   private List<PrimitiveFunctionVertex> primitiveFunctionVertices =
       new ArrayList<>();
@@ -268,7 +268,7 @@ public class ExpressionGraph
           ExpressionEdge sourceEdge = tuple.getValueEdges().get(i);
           // again, this does not scale, but it is simple enough to be clear
           PrimitiveFunctionVertex source
-            = (PrimitiveFunctionVertex) sourceEdge.getSource();
+              = (PrimitiveFunctionVertex) sourceEdge.getSource();
 
           String sourcePortName = source.getNthPortOfType(outputType, 0);
           PortValue sourcePort = source.getNodeValue().getPort(sourcePortName);
