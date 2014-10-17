@@ -1,11 +1,11 @@
 package org.manifold.compiler.front;
 
-import org.manifold.compiler.BooleanTypeValue;
-import static org.junit.Assert.*;
-
-import org.junit.Test;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
+
+import org.junit.Test;
+import org.manifold.compiler.BooleanTypeValue;
 
 public class TestMultipleAssignmentException {
 
@@ -22,7 +22,7 @@ public class TestMultipleAssignmentException {
   private Expression getTypeExpression() {
     return new LiteralExpression(BooleanTypeValue.getInstance());
   }
-  
+
   public Variable getVariableInstance() {
     return new Variable(
         new Scope(),
@@ -30,18 +30,18 @@ public class TestMultipleAssignmentException {
         getTypeExpression()
     );
   }
-  
+
   public MultipleAssignmentException getInstance() {
     return new MultipleAssignmentException(getVariableInstance());
   }
-  
+
   @Test
   public void testGetMessage_containsVariableIdentifier() {
     MultipleAssignmentException instance = getInstance();
-    
+
     String message = instance.getMessage();
     assertTrue(message.contains(
-      getVariableInstance().getIdentifier().toString()
+        getVariableInstance().getIdentifier().toString()
     ));
   }
 

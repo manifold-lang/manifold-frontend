@@ -6,11 +6,11 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import com.google.common.collect.ImmutableSet;
-
 import org.junit.Test;
 import org.manifold.compiler.BooleanTypeValue;
 import org.manifold.compiler.BooleanValue;
+
+import com.google.common.collect.ImmutableSet;
 
 public class TestScope {
 
@@ -27,13 +27,13 @@ public class TestScope {
   }
 
   private NamespaceIdentifier getNamespaceIdentifier() {
-    return new NamespaceIdentifier("whdl:is:cool");
+    return new NamespaceIdentifier("manifold:is:cool");
   }
 
   private VariableIdentifier getVariableIdentifier() {
     VariableIdentifier id = new VariableIdentifier(
-      getNamespaceIdentifier(),
-      "foo"
+        getNamespaceIdentifier(),
+        "foo"
     );
 
     return id;

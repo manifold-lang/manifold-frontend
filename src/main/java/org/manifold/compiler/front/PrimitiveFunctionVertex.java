@@ -13,35 +13,35 @@ public class PrimitiveFunctionVertex extends ExpressionVertex {
   public PrimitiveFunctionValue getFunction() {
     return this.function;
   }
-  
+
   public PrimitiveFunctionVertex(PrimitiveFunctionValue function) {
     this.function = function;
   }
-  
+
   @Override
   public String toString() {
     return "primitive function " + function.getPrimitiveName();
   }
 
   private NodeValue elaboratedNode = null;
-  
+
   public void elaborate() throws SchematicException {
     elaboratedNode = function.elaborate();
   }
-  
+
   public NodeValue getNodeValue() {
     return elaboratedNode;
   }
-  
+
   private int uniqueSuffix = 0;
   public void setUniqueSuffix(int uuid) {
     uniqueSuffix = uuid;
   }
-  
+
   public String getInstanceName() {
     return function.getPrimitiveName() + Integer.toString(uniqueSuffix);
   }
-  
+
   public int getNumberOfPortsOfType(PortTypeValue portType) {
     int i = 0;
     for (PortValue port : elaboratedNode.getPorts().values()) {
@@ -51,14 +51,14 @@ public class PrimitiveFunctionVertex extends ExpressionVertex {
     }
     return i;
   }
-  
+
   public String getNthPortOfType(PortTypeValue portType, int n) {
     int i = 0;
-    for (Entry<String, PortValue> entry : 
-      elaboratedNode.getPorts().entrySet()) {
+    for (Entry<String, PortValue> entry :
+        elaboratedNode.getPorts().entrySet()) {
       if (entry.getValue().getType().isSubtypeOf(portType)) {
         if (i == n){
-          return entry.getKey(); 
+          return entry.getKey();
         } else {
           ++i;
         }
@@ -66,5 +66,5 @@ public class PrimitiveFunctionVertex extends ExpressionVertex {
     }
     throw new ArrayIndexOutOfBoundsException(n);
   }
-  
+
 }
