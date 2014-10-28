@@ -1,6 +1,8 @@
 package org.manifold.compiler.front;
 
+import java.io.File;
 import java.io.FileInputStream;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -56,8 +58,10 @@ public class Main implements Frontend {
   @Override
   public Schematic invokeFrontend(CommandLine cmd) throws Exception {
 
+    File inputFile = Paths.get(cmd.getArgs()[0]).toFile();
+
     ManifoldLexer lexer = new ManifoldLexer(new ANTLRInputStream(
-        new FileInputStream(cmd.getArgs()[0])));
+        new FileInputStream(inputFile)));
 
      // Get a list of matched tokens
     CommonTokenStream tokens = new CommonTokenStream(lexer);
@@ -82,7 +86,7 @@ public class Main implements Frontend {
     System.out.println();
 
     Scope toplevel = new Scope();
-    Schematic schematic = new Schematic(cmd.getArgs()[0]);
+    Schematic schematic = new Schematic(inputFile.getName());
 
     // mock-up: digital circuits primitives
     // (to be removed when core library and namespaces are implemented)
