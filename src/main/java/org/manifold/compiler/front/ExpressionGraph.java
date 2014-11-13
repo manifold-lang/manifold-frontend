@@ -6,10 +6,12 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.manifold.compiler.ArrayTypeValue;
 import org.manifold.compiler.ArrayValue;
@@ -119,6 +121,36 @@ public class ExpressionGraph
     writer.newLine();
   }
 
+  private void writeVariableVertex(
+      BufferedWriter writer, VariableReferenceVertex v) throws IOException {
+    String objectID = Integer.toString(System.identityHashCode(v));
+    String label = v.toString();
+    writer.write(objectID);
+    writer.write(" [");
+    writer.write("label=\"");
+    writer.write(objectID);
+    writer.write("\n");
+    writer.write(label);
+    writer.write("\"");
+    writer.write("];");
+    writer.newLine();
+  }
+
+  private void writeTupleValueVertex(
+      BufferedWriter writer, TupleValueVertex v) throws IOException {
+    String objectID = Integer.toString(System.identityHashCode(v));
+    String label = v.toString();
+    writer.write(objectID);
+    writer.write(" [");
+    writer.write("label=\"");
+    writer.write(objectID);
+    writer.write("\n");
+    writer.write(label);
+    writer.write("\"");
+    writer.write("];");
+    writer.newLine();
+  }
+
   public void writeDOTFile(File file) throws IOException {
     FileWriter fw = new FileWriter(file);
     try (BufferedWriter writer = new BufferedWriter(fw)) {
@@ -126,10 +158,39 @@ public class ExpressionGraph
       writer.write("digraph G {");
       writer.newLine();
       // write all vertices
-      for (PrimitiveFunctionVertex v : getPrimitiveFunctionVertices()) {
-        writePrimitiveFunctionVertex(writer, v);
+      Set<ExpressionVertex> visited = new HashSet<ExpressionVertex>();
+      for (ExpressionEdge e : edges) {
+        ExpressionVertex endpoints[] = {e.getSource(), e.getTarget()};
+        for (ExpressionVertex v : endpoints) {
+          // do not write any vertex more than once
+          if (visited.contains(v)) {
+            continue;
+          }
+          visited.add(v);
+          // TODO(murphy) refactor to an abstract method on ExpressionVertex
+          if (v instanceof PrimitiveFunctionVertex) {
+            writePrimitiveFunctionVertex(writer, (PrimitiveFunctionVertex) v);
+          } else if (v instanceof VariableReferenceVertex) {
+            writeVariableVertex(writer, (VariableReferenceVertex) v);
+          } else if (v instanceof TupleValueVertex) {
+            writeTupleValueVertex(writer, (TupleValueVertex) v);
+          } else {
+            throw new UnsupportedOperationException(
+                "unhandled expression vertex type '" + v.toString() + "'");
+          }
+        }
       }
+
       // write all edges
+      for (ExpressionEdge e : edges) {
+        String source = Integer.toString(System.identityHashCode(
+            e.getSource()));
+        String target = Integer.toString(System.identityHashCode(
+            e.getTarget()));
+        // for now
+        writer.write(source + " -> " + target + ";");
+        writer.newLine();
+      }
       // write graph footer
       writer.write("}");
       writer.newLine();

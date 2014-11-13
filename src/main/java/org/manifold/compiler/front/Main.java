@@ -123,17 +123,15 @@ public class Main implements Frontend {
     ExpressionGraph exprGraph = new ExpressionGraph(toplevel);
     exprGraph.buildFrom(expressions);
     exprGraph.removeUnconnectedEdges();
-
-    // the first place we can write a decent expression graph
-    File exprGraphDot = new File(inputFile.getName() + ".exprs.dot");
-    exprGraph.writeDOTFile(exprGraphDot);
-
     exprGraph.optimizeOutVariables();
 
     System.out.println("expression graph edges:");
     for (String s : exprGraph.getPrintableEdges()) {
       System.out.println(s);
     }
+
+    File exprGraphDot = new File(inputFile.getName() + ".exprs.dot");
+    exprGraph.writeDOTFile(exprGraphDot);
 
     exprGraph.elaboratePrimitives();
 
@@ -143,7 +141,6 @@ public class Main implements Frontend {
     }
 
     exprGraph.elaborateConnections(schematic);
-
     exprGraph.writeSchematic(schematic);
 
     return schematic;
