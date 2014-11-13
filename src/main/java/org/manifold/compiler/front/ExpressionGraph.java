@@ -1,5 +1,9 @@
 package org.manifold.compiler.front;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -96,6 +100,39 @@ public class ExpressionGraph
   public void buildFrom(List<Expression> expressions) {
     for (Expression e : expressions) {
       e.accept(this);
+    }
+  }
+
+  private void writePrimitiveFunctionVertex(
+      BufferedWriter writer, PrimitiveFunctionVertex v)
+      throws IOException {
+    String objectID = Integer.toString(System.identityHashCode(v));
+    String label = v.toString();
+    writer.write(objectID);
+    writer.write(" [");
+    writer.write("label=\"");
+    writer.write(objectID);
+    writer.write("\n");
+    writer.write(label);
+    writer.write("\"");
+    writer.write("];");
+    writer.newLine();
+  }
+
+  public void writeDOTFile(File file) throws IOException {
+    FileWriter fw = new FileWriter(file);
+    try (BufferedWriter writer = new BufferedWriter(fw)) {
+      // write graph header and attributes
+      writer.write("digraph G {");
+      writer.newLine();
+      // write all vertices
+      for (PrimitiveFunctionVertex v : getPrimitiveFunctionVertices()) {
+        writePrimitiveFunctionVertex(writer, v);
+      }
+      // write all edges
+      // write graph footer
+      writer.write("}");
+      writer.newLine();
     }
   }
 
