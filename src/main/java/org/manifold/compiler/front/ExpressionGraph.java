@@ -188,7 +188,12 @@ public class ExpressionGraph
         String target = Integer.toString(System.identityHashCode(
             e.getTarget()));
         // for now
-        writer.write(source + " -> " + target + ";");
+        writer.write(source + " -> " + target);
+        if (!e.getName().equals("")) {
+          // label it
+          writer.write("[label=\"" + e.getName() + "\"]");
+        }
+        writer.write(";");
         writer.newLine();
       }
       // write graph footer
