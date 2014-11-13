@@ -132,6 +132,9 @@ public class Main implements Frontend {
       System.out.println(s);
     }
 
+    File exprGraphDot = new File(inputFile.getName() + ".exprs.dot");
+    exprGraph.writeDOTFile(exprGraphDot);
+
     exprGraph.elaboratePrimitives();
 
     System.out.println("instantiated primitives:");
@@ -140,7 +143,6 @@ public class Main implements Frontend {
     }
 
     exprGraph.elaborateConnections(schematic);
-
     exprGraph.writeSchematic(schematic);
 
     return schematic;
