@@ -35,6 +35,8 @@ import org.manifold.parser.ManifoldLexer;
 import org.manifold.parser.ManifoldParser;
 import org.manifold.parser.ManifoldParser.ExpressionContext;
 import org.manifold.parser.ManifoldParser.NamespacedIdentifierContext;
+import org.manifold.parser.ManifoldParser.TupleTypeValueContext;
+import org.manifold.parser.ManifoldParser.TypevalueContext;
 
 import com.google.common.annotations.VisibleForTesting;
 
@@ -329,6 +331,31 @@ class ExpressionContextVisitor extends ManifoldBaseVisitor<Expression> {
     TupleTypeValue anonymousTupleType = new TupleTypeValue(types);
     // now we build a TupleValue from these subexpressions
     return new LiteralExpression(new TupleValue(anonymousTupleType, values));
+  }
+
+  // TODO(murphy)
+  /*
+  @Override
+  public Expression visitPrimitiveNodeTypeValue(
+      ManifoldParser.PrimitiveNodeTypeValueContext context) {
+
+  }
+  */
+
+  @Override
+  public Expression visitPrimitivePortTypeValue(
+      ManifoldParser.PrimitivePortTypeValueContext context) {
+    // extract signal type
+    TypevalueContext typeCtx = context.typevalue();
+    Expression typevalue = typeCtx.accept(this);
+    // are there any attributes?
+    if (context.tupleTypeValue() != null) {
+      TupleTypeValueContext attributeTypesContext = context.tupleTypeValue();
+      Expression attributes = attributeTypesContext.accept(this);
+      return new LiteralExpression(new PrimitivePortTypeValue(typevalue, attributes));
+    } else {
+      return new LiteralExpression(new PrimitivePortTypeValue(typevalue));
+    }
   }
 
   @Override

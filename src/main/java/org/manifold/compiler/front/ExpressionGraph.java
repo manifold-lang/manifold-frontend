@@ -402,6 +402,12 @@ public class ExpressionGraph
   }
 
   @Override
+  public void visit(PrimitivePortTypeValue primitivePortTypeValue) {
+    // TODO(murphy)
+    throw new UnsupportedOperationException("not yet supported");
+  }
+
+  @Override
   public void visit(TupleTypeValue tupleTypeValue) {
     throw new UnsupportedOperationException("illegal value");
   }
