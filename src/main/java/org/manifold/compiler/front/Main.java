@@ -112,7 +112,10 @@ public class Main implements Frontend {
                 (VariableReferenceExpression) lvalue;
             VariableIdentifier identifier = vRef.getIdentifier();
             // Do not assign a type yet.
-            defaultNamespace.getPrivateScope().defineVariable(identifier);
+            defaultNamespace.getPrivateScope().defineVariable(
+                identifier);
+            defaultNamespace.getPrivateScope().assignVariable(
+                identifier, rvalue);
           } else {
             throw new UndefinedBehaviourError(
                 "unhandled lvalue type" + lvalue.getClass());
@@ -120,28 +123,6 @@ public class Main implements Frontend {
         } else {
           throw new IllegalAssignmentException(lvalue);
         }
-
-        /*
-        // we expect the lvalue to be a variable reference
-        if (lvalue instanceof VariableReferenceExpression) {
-          VariableReferenceExpression vRef =
-              (VariableReferenceExpression) lvalue;
-          VariableIdentifier identifier = vRef.getIdentifier();
-
-          // TODO(murphy) we are assigning a type too soon.
-          // we need to make a typeless binding first (since we may not be
-          // able to determine the type of the rvalue),
-          // then do type-checking in order to make a type assignment
-
-          Expression idType = new LiteralExpression(
-              rvalue.getType(defaultNamespace.getPrivateScope()));
-          defaultNamespace.getPrivateScope().defineVariable(identifier, idType);
-          defaultNamespace.getPrivateScope().assignVariable(identifier, rvalue);
-        } else {
-          throw new UndefinedBehaviourError(
-              "unhandled lvalue type" + lvalue.getClass());
-        }
-        */
       }
     }
 
