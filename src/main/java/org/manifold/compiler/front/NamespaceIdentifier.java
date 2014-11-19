@@ -1,5 +1,6 @@
 package org.manifold.compiler.front;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -13,12 +14,28 @@ public class NamespaceIdentifier {
 
   private final List<String> name;
 
+  /**
+   * Clean up a name by performing the following operations:
+   *  - Remove whitespace from each element
+   *  - Suppress elements that are equal to the empty string
+   */
+  private List<String> sanitizeName(List<String> n) {
+    List<String> retval = new ArrayList<String>(n.size());
+    for (String s : n) {
+      s = s.trim();
+      if (!(s.isEmpty())) {
+        retval.add(s);
+      }
+    }
+    return java.util.Collections.unmodifiableList(retval);
+  }
+
   public NamespaceIdentifier(String name) {
-    this.name = Arrays.asList(name.split(getSeparator()));
+    this.name = sanitizeName(Arrays.asList(name.split(getSeparator())));
   }
 
   public NamespaceIdentifier(List<String> name) {
-    this.name = java.util.Collections.unmodifiableList(name);
+    this.name = sanitizeName(name);
   }
 
   public List<String> getName() {

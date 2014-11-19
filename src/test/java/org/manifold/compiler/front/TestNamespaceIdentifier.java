@@ -1,10 +1,13 @@
 package org.manifold.compiler.front;
 
-import static org.junit.Assert.*;
-
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import org.junit.Test;
 
 public class TestNamespaceIdentifier {
 
@@ -75,4 +78,13 @@ public class TestNamespaceIdentifier {
   public void equals_type_false() {
     assertFalse(getInstance().equals("foo"));
   }
+
+  @Test
+  public void anonymous_namespace_equals_itself() {
+    NamespaceIdentifier id = new NamespaceIdentifier("");
+    List<String> empty = new ArrayList<String>();
+    NamespaceIdentifier id2 = new NamespaceIdentifier(empty);
+    assertTrue(id.equals(id2));
+  }
+
 }
