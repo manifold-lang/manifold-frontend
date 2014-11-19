@@ -85,8 +85,11 @@ public class Main implements Frontend {
     System.out.print(expressions);
     System.out.println();
 
+    Map<NamespaceIdentifier, Namespace> namespaces = new HashMap<>();
+
     NamespaceIdentifier defaultNamespaceID = new NamespaceIdentifier("");
     Namespace defaultNamespace = new Namespace(defaultNamespaceID);
+    namespaces.put(defaultNamespaceID, defaultNamespace);
     // "top-level" bindings go into the private scope of the default namespace
 
     Schematic schematic = new Schematic(inputFile.getName());
@@ -130,6 +133,16 @@ public class Main implements Frontend {
     for (VariableIdentifier id :
         defaultNamespace.getPrivateScope().getSymbolIdentifiers()) {
       System.out.println(id);
+    }
+
+    TypeChecker.typecheck(namespaces, defaultNamespace);
+    System.out.println("assigned the following types:");
+    for (VariableIdentifier id :
+        defaultNamespace.getPrivateScope().getSymbolIdentifiers()) {
+      NamespaceIdentifier name = id.getNamespaceIdentifier();
+      Namespace ns = namespaces.get(name);
+      Variable v = ns.getPrivateScope().getVariable(id);
+      System.out.println(v.getIdentifier() + " ::= " + v.getType());
     }
 
     // TODO this should take a namespace map instead

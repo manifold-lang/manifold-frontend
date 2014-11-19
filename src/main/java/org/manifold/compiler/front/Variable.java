@@ -66,6 +66,14 @@ public class Variable {
     this.assigned = true;
   }
 
+  public Expression getValueExpression() throws VariableNotAssignedException {
+    if (isAssigned()) {
+      return this.valueExpression;
+    } else {
+      throw new VariableNotAssignedException(this);
+    }
+  }
+
   public void verify() {
     // TODO(murphy)
     /*
