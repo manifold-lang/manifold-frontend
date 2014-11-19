@@ -149,7 +149,8 @@ public class Main implements Frontend {
   }
 
   private static void setupDigitalTypes(Schematic s)
-      throws org.manifold.compiler.MultipleDefinitionException {
+      throws org.manifold.compiler.MultipleDefinitionException,
+      UndeclaredIdentifierException {
     PortTypeValue digitalInPortType;
     PortTypeValue digitalOutPortType;
 
@@ -177,8 +178,10 @@ public class Main implements Frontend {
 
     ConnectionType digitalWireType;
 
-    digitalInPortType = new PortTypeValue(noTypeAttributes);
-    digitalOutPortType = new PortTypeValue(noTypeAttributes);
+    digitalInPortType = new PortTypeValue(s.getUserDefinedType("Bool"),
+        noTypeAttributes);
+    digitalOutPortType = new PortTypeValue(s.getUserDefinedType("Bool"),
+        noTypeAttributes);
 
     registerTypeAttributes.put("initialValue", BooleanTypeValue.getInstance());
     registerTypeAttributes.put("resetActiveHigh",
@@ -353,10 +356,14 @@ class ExpressionContextVisitor extends ManifoldBaseVisitor<Expression> {
     // are there any attributes?
     if (context.tupleTypeValue() != null) {
       TupleTypeValueContext attributeTypesContext = context.tupleTypeValue();
+      // TODO(murphy) the default expression visitor does not work here;
+      // we need a visitTupleType() or visitTupleTypeValue()
       Expression attributes = attributeTypesContext.accept(this);
-      return new LiteralExpression(new PrimitivePortTypeValue(typevalue, attributes));
+      return new LiteralExpression(
+          new PrimitivePortTypeValue(typevalue, attributes));
     } else {
-      return new LiteralExpression(new PrimitivePortTypeValue(typevalue));
+      return new LiteralExpression(
+          new PrimitivePortTypeValue(typevalue));
     }
   }
 
@@ -389,7 +396,7 @@ class ExpressionContextVisitor extends ManifoldBaseVisitor<Expression> {
 
     } else {
       throw new UndefinedBehaviourError(
-          "unknown terminal node type " + node.getSymbol().getType());
+          "unknown terminal node '" + node.getSymbol().getText() + "'");
     }
   }
 

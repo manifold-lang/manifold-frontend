@@ -40,6 +40,7 @@ import org.manifold.compiler.TypeValue;
 import org.manifold.compiler.UndeclaredAttributeException;
 import org.manifold.compiler.UndeclaredIdentifierException;
 import org.manifold.compiler.UndefinedBehaviourError;
+import org.manifold.compiler.UserDefinedTypeValue;
 import org.manifold.compiler.Value;
 import org.manifold.compiler.middle.Schematic;
 import org.manifold.compiler.middle.SchematicException;
@@ -62,6 +63,9 @@ public class ExpressionGraph
   {
     return ImmutableMap.copyOf(variableVertices);
   }
+
+  private List<PrimitivePortVertex> primitivePortVertices =
+      new ArrayList<>();
 
   private List<ExpressionEdge> edges = new ArrayList<>();
 
@@ -506,8 +510,19 @@ public class ExpressionGraph
 
   @Override
   public void visit(PrimitivePortTypeValue primitivePortTypeValue) {
-    // TODO(murphy)
-    throw new UnsupportedOperationException("not yet supported");
+    PrimitivePortVertex pVertex = new PrimitivePortVertex(
+        primitivePortTypeValue);
+    primitivePortVertices.add(pVertex);
+    primitivePortTypeValue.getTypeValueExpression().accept(this);
+    ExpressionEdge signalTypeEdge = lastSourceEdge;
+    signalTypeEdge.setTarget(pVertex);
+    primitivePortTypeValue.getAttributesExpression().accept(this);
+    ExpressionEdge attributesEdge = lastSourceEdge;
+    attributesEdge.setTarget(pVertex);
+    ExpressionEdge edgePortOut = new ExpressionEdge(pVertex, null,
+        primitivePortTypeValue);
+    edges.add(edgePortOut);
+    lastSourceEdge = edgePortOut;
   }
 
   @Override
@@ -627,6 +642,11 @@ public class ExpressionGraph
 
   @Override
   public void visit(RealValue arg0) {
+    throw new UnsupportedOperationException("illegal value");
+  }
+
+  @Override
+  public void visit(UserDefinedTypeValue arg0) {
     throw new UnsupportedOperationException("illegal value");
   }
 
