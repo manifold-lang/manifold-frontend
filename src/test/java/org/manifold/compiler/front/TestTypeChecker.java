@@ -34,6 +34,12 @@ public class TestTypeChecker {
     defaultNamespace.getPrivateScope().assignVariable(id, value);
   }
 
+  // helper function to quickly reference a variable in the default namespace
+  private Expression var(String name) {
+    VariableIdentifier id = new VariableIdentifier(defaultNamespaceID, name);
+    return new VariableReferenceExpression(id);
+  }
+
   // helper function to quickly get the type of a variable in the default n.s.
   private TypeValue getType(String name)
       throws TypeMismatchException, VariableNotDefinedException {
@@ -51,6 +57,20 @@ public class TestTypeChecker {
     bind("a", new LiteralExpression(BooleanValue.getInstance(false)));
     TypeChecker.typecheck(namespaces, defaultNamespace);
     assertEquals(BooleanTypeValue.getInstance(), getType("a"));
+  }
+
+  @Test
+  public void testTypeAssignment_InferredLiteral()
+      throws MultipleDefinitionException, VariableNotDefinedException,
+      MultipleAssignmentException, VariableNotAssignedException,
+      TypeMismatchException {
+    // "a = false;"
+    // "b = a;"
+    // expect b ::= Bool
+    bind("a", new LiteralExpression(BooleanValue.getInstance(false)));
+    bind("b", var("a"));
+    TypeChecker.typecheck(namespaces, defaultNamespace);
+    assertEquals(BooleanTypeValue.getInstance(), getType("b"));
   }
 
 }
