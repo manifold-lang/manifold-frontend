@@ -85,12 +85,15 @@ public class Main implements Frontend {
     System.out.print(expressions);
     System.out.println();
 
-    Scope toplevel = new Scope();
+    NamespaceIdentifier defaultNamespaceID = new NamespaceIdentifier("");
+    Namespace defaultNamespace = new Namespace(defaultNamespaceID);
+    // "top-level" bindings go into the private scope of the default namespace
+
     Schematic schematic = new Schematic(inputFile.getName());
 
     // mock-up: digital circuits primitives
     // (to be removed when core library and namespaces are implemented)
-    createDigitalPrimitives(toplevel, schematic);
+    createDigitalPrimitives(defaultNamespace.getPrivateScope(), schematic);
 
     // Build top-level scope
     for (Expression expr : expressions) {
@@ -100,27 +103,57 @@ public class Main implements Frontend {
         Expression lvalue = assign.getLvalueExpression();
         Expression rvalue = assign.getRvalueExpression();
 
+        // the lvalue must be an expression we can assign to
+        if (lvalue.isAssignable()) {
+          // for now we are only handling the simplest case of
+          // the lvalue being a single variable reference
+          if (lvalue instanceof VariableReferenceExpression) {
+            VariableReferenceExpression vRef =
+                (VariableReferenceExpression) lvalue;
+            VariableIdentifier identifier = vRef.getIdentifier();
+            // Do not assign a type yet.
+            defaultNamespace.getPrivateScope().defineVariable(identifier);
+          } else {
+            throw new UndefinedBehaviourError(
+                "unhandled lvalue type" + lvalue.getClass());
+          }
+        } else {
+          throw new IllegalAssignmentException(lvalue);
+        }
+
+        /*
         // we expect the lvalue to be a variable reference
         if (lvalue instanceof VariableReferenceExpression) {
           VariableReferenceExpression vRef =
               (VariableReferenceExpression) lvalue;
           VariableIdentifier identifier = vRef.getIdentifier();
-          Expression idType = new LiteralExpression(rvalue.getType(toplevel));
-          toplevel.defineVariable(identifier, idType);
-          toplevel.assignVariable(identifier, rvalue);
+
+          // TODO(murphy) we are assigning a type too soon.
+          // we need to make a typeless binding first (since we may not be
+          // able to determine the type of the rvalue),
+          // then do type-checking in order to make a type assignment
+
+          Expression idType = new LiteralExpression(
+              rvalue.getType(defaultNamespace.getPrivateScope()));
+          defaultNamespace.getPrivateScope().defineVariable(identifier, idType);
+          defaultNamespace.getPrivateScope().assignVariable(identifier, rvalue);
         } else {
           throw new UndefinedBehaviourError(
               "unhandled lvalue type" + lvalue.getClass());
         }
+        */
       }
     }
 
     System.out.println("top-level identifiers:");
-    for (VariableIdentifier id : toplevel.getSymbolIdentifiers()) {
+    for (VariableIdentifier id :
+        defaultNamespace.getPrivateScope().getSymbolIdentifiers()) {
       System.out.println(id);
     }
 
-    ExpressionGraph exprGraph = new ExpressionGraph(toplevel);
+    // TODO this should take a namespace map instead
+    ExpressionGraph exprGraph = new ExpressionGraph(
+        defaultNamespace.getPrivateScope());
     exprGraph.buildFrom(expressions);
     exprGraph.removeUnconnectedEdges();
     exprGraph.optimizeOutVariables();
@@ -241,8 +274,7 @@ public class Main implements Frontend {
         "inputPin", inputPinPrimitiveType, schematic.getNodeType("inputPin"));
     VariableIdentifier inputPinIdentifier = new VariableIdentifier(
         Arrays.asList(new String[]{"inputPin"}));
-    scope.defineVariable(inputPinIdentifier,
-        new LiteralExpression(inputPinPrimitiveType));
+    scope.defineVariable(inputPinIdentifier);
     scope.assignVariable(inputPinIdentifier,
         new LiteralExpression(inputPinPrimitive));
     // outputPin: Bool -> unit
@@ -253,8 +285,7 @@ public class Main implements Frontend {
         schematic.getNodeType("outputPin"));
     VariableIdentifier outputPinIdentifier = new VariableIdentifier(
         Arrays.asList(new String[]{"outputPin"}));
-    scope.defineVariable(outputPinIdentifier,
-        new LiteralExpression(outputPinPrimitiveType));
+    scope.defineVariable(outputPinIdentifier);
     scope.assignVariable(outputPinIdentifier,
         new LiteralExpression(outputPinPrimitive));
     // and: (Bool, Bool) -> Bool
@@ -266,8 +297,7 @@ public class Main implements Frontend {
         "and", andPrimitiveType, schematic.getNodeType("and"));
     VariableIdentifier andIdentifier = new VariableIdentifier(
         Arrays.asList(new String[]{"and"}));
-    scope.defineVariable(andIdentifier,
-        new LiteralExpression(andPrimitiveType));
+    scope.defineVariable(andIdentifier);
     scope.assignVariable(andIdentifier, new LiteralExpression(andPrimitive));
     // or: (Bool, Bool) -> Bool
     FunctionTypeValue orPrimitiveType = new FunctionTypeValue(
@@ -278,8 +308,7 @@ public class Main implements Frontend {
         "or", orPrimitiveType, schematic.getNodeType("or"));
     VariableIdentifier orIdentifier = new VariableIdentifier(
         Arrays.asList(new String[]{"or"}));
-    scope.defineVariable(orIdentifier,
-        new LiteralExpression(orPrimitiveType));
+    scope.defineVariable(orIdentifier);
     scope.assignVariable(orIdentifier, new LiteralExpression(orPrimitive));
     // not: Bool -> Bool
     FunctionTypeValue notPrimitiveType = new FunctionTypeValue(
@@ -288,8 +317,7 @@ public class Main implements Frontend {
         "not", notPrimitiveType, schematic.getNodeType("not"));
     VariableIdentifier notIdentifier = new VariableIdentifier(
         Arrays.asList(new String[]{"not"}));
-    scope.defineVariable(notIdentifier,
-        new LiteralExpression(notPrimitiveType));
+    scope.defineVariable(notIdentifier);
     scope.assignVariable(notIdentifier, new LiteralExpression(notPrimitive));
   }
 
