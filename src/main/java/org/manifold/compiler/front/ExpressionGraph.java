@@ -34,6 +34,7 @@ import org.manifold.compiler.TypeValue;
 import org.manifold.compiler.UndeclaredAttributeException;
 import org.manifold.compiler.UndeclaredIdentifierException;
 import org.manifold.compiler.UndefinedBehaviourError;
+import org.manifold.compiler.UserDefinedTypeValue;
 import org.manifold.compiler.Value;
 import org.manifold.compiler.middle.Schematic;
 import org.manifold.compiler.middle.SchematicException;
@@ -518,6 +519,11 @@ public class ExpressionGraph
 
   @Override
   public void visit(RealValue arg0) {
+    throw new UnsupportedOperationException("illegal value");
+  }
+
+  @Override
+  public void visit(UserDefinedTypeValue arg0) {
     throw new UnsupportedOperationException("illegal value");
   }
 
