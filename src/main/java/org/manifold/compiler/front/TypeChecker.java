@@ -68,8 +68,15 @@ public class TypeChecker implements ExpressionVisitor {
 
   @Override
   public void visit(FunctionInvocationExpression functionInvocationExpression) {
-    // TODO Auto-generated method stub
+   functionInvocationExpression.getFunctionExpression().accept(this);
+   TypeValue functionType = this.type;
 
+   functionInvocationExpression.getInputExpression().accept(this);
+   TypeValue argumentType = this.type;
+
+   // resultType = TypeVariable()
+   // this.type = unify( FunctionTypeValue(argumentType, resultType),
+   //   functionType)
   }
 
   @Override
