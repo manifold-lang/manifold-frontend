@@ -68,15 +68,21 @@ public class TypeChecker implements ExpressionVisitor {
 
   @Override
   public void visit(FunctionInvocationExpression functionInvocationExpression) {
-   functionInvocationExpression.getFunctionExpression().accept(this);
-   TypeValue functionType = this.type;
+    log.debug("analyzing type of function invocation expression '"
+        + functionInvocationExpression.toString() + "'");
 
-   functionInvocationExpression.getInputExpression().accept(this);
-   TypeValue argumentType = this.type;
+    functionInvocationExpression.getFunctionExpression().accept(this);
+    TypeValue functionType = this.type;
+    log.debug("function has type " + functionType.toString());
 
-   // resultType = TypeVariable()
-   // this.type = unify( FunctionTypeValue(argumentType, resultType),
-   //   functionType)
+    functionInvocationExpression.getInputExpression().accept(this);
+    TypeValue argumentType = this.type;
+    log.debug("argument has type " + argumentType.toString());
+
+    TypeValue resultType = new TypeVariable();
+    unify(new FunctionTypeValue(argumentType, resultType), functionType);
+    this.type = prune(resultType);
+    log.debug("result has type " + this.type.toString());
   }
 
   @Override
@@ -123,6 +129,79 @@ public class TypeChecker implements ExpressionVisitor {
     @Override
     public String getMessage() {
       return cause.getMessage();
+    }
+  }
+
+  public void unify(TypeValue t1, TypeValue t2) {
+    TypeValue a = prune(t1);
+    TypeValue b = prune(t2);
+    log.debug("unifying types " + a.toString() + " and " + b.toString());
+    if (a instanceof TypeVariable) {
+      if (!a.equals(b)) {
+        if (occursInType((TypeVariable) a, b)) {
+          throw new UndefinedBehaviourError("recursive unification of types "
+              + "'" + a.toString() + "' and '" + b.toString() + "'");
+        } else {
+          ((TypeVariable) a).setInstance(b);
+        }
+      }
+      // TODO do we need a special "type operator" object?
+    } else if (a instanceof FunctionTypeValue) {
+      if (b instanceof TypeVariable) {
+        unify(b, a);
+      } else if (b instanceof FunctionTypeValue) {
+        // TODO if we use type operators instead, compare their kinds and the
+        // number of arguments
+        // TODO this only works for function type values;
+        // it needs to be reworked if we use type operators
+        FunctionTypeValue fa = (FunctionTypeValue) a;
+        FunctionTypeValue fb = (FunctionTypeValue) b;
+        unify(fa.getInputType(), fb.getInputType());
+        unify(fa.getOutputType(), fb.getOutputType());
+      } else {
+        throw new UndefinedBehaviourError("cannot unify types "
+            + "'" + a.toString() + "' and '" + b.toString() + "'");
+      }
+    } else {
+      // a is neither a type variable nor a type operator;
+      // therefore a is a concrete type
+      if (b instanceof TypeVariable) {
+        unify(b, a);
+      } else if (b instanceof FunctionTypeValue) {
+        // TODO
+        throw new UnsupportedOperationException("not implemented");
+      } else {
+        // now b is also a concrete type
+        // just check that these two types are equivalent
+        if (!(a.equals(b))) {
+          throw new UndefinedBehaviourError("cannot unify types "
+              + "'" + a.toString() + "' and '" + b.toString() + "'");
+        }
+      }
+    }
+  }
+
+  public TypeValue prune(TypeValue t) {
+    if (t instanceof TypeVariable) {
+      TypeVariable tv = (TypeVariable) t;
+      if (tv.getInstance() != null) {
+        tv.setInstance(prune(tv.getInstance()));
+        return tv.getInstance();
+      }
+    }
+    return t;
+  }
+
+  public boolean occursInType(TypeVariable v, TypeValue type2) {
+    TypeValue pruned2 = prune(type2);
+    if (v.equals(type2)) {
+      return true;
+    } else if (pruned2 instanceof FunctionTypeValue) {
+      FunctionTypeValue f = (FunctionTypeValue) pruned2;
+      return occursInType(v, f.getInputType())
+          || occursInType(v, f.getOutputType());
+    } else {
+      return false;
     }
   }
 

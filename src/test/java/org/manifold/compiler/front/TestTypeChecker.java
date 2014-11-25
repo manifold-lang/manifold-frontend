@@ -53,6 +53,12 @@ public class TestTypeChecker {
     return new VariableReferenceExpression(id);
   }
 
+  // helper function to quickly generate a function call expression
+  private Expression apply(String function, Expression input) {
+    Expression f = var(function);
+    return new FunctionInvocationExpression(f, input);
+  }
+
   // helper function to quickly get the type of a variable in the default n.s.
   private TypeValue getType(String name)
       throws TypeMismatchException, VariableNotDefinedException {
@@ -103,6 +109,26 @@ public class TestTypeChecker {
 
     TypeChecker.typecheck(namespaces, defaultNamespace);
     assertEquals(expectedType, getType("not"));
+  }
+
+  @Test
+  public void testTypeInference_FunctionInvocation()
+      throws MultipleDefinitionException, VariableNotDefinedException,
+      MultipleAssignmentException, VariableNotAssignedException,
+      TypeMismatchException {
+    // not ::= Bool -> Bool
+    FunctionTypeValue notPrimitiveType = new FunctionTypeValue(
+        BooleanTypeValue.getInstance(), BooleanTypeValue.getInstance());
+    PrimitiveFunctionValue notPrimitive = new PrimitiveFunctionValue(
+        "not", notPrimitiveType, null);
+    bind("not", new LiteralExpression(notPrimitive));
+    // a ::= Bool
+    bind("a", new LiteralExpression(BooleanValue.getInstance(false)));
+    // expect b ::= Bool
+    bind("b", apply("not", var("a")));
+
+    TypeChecker.typecheck(namespaces, defaultNamespace);
+    assertEquals(BooleanTypeValue.getInstance(), getType("b"));
   }
 
 }

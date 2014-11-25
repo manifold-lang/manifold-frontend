@@ -5,7 +5,7 @@ import org.manifold.compiler.TypeValue;
 import org.manifold.compiler.UndefinedBehaviourError;
 
 public class FunctionTypeValue extends TypeValue {
-  
+
   private final TypeValue inputType;
   private final TypeValue outputType;
 
@@ -23,6 +23,11 @@ public class FunctionTypeValue extends TypeValue {
   }
 
   @Override
+  public String toString() {
+    return inputType.toString() + " -> " + outputType.toString();
+  }
+
+  @Override
   public void accept(SchematicValueVisitor v) {
     if (v instanceof FrontendValueVisitor) {
       FrontendValueVisitor visitor = (FrontendValueVisitor) v;
@@ -32,7 +37,8 @@ public class FunctionTypeValue extends TypeValue {
           "cannot accept non-frontend ValueVisitor into a frontend Value");
     }
   }
-  
+
+  @Override
   public boolean equals(Object o) {
     if (o == this) {
       return true;
