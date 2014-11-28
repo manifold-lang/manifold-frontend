@@ -1,16 +1,16 @@
 package org.manifold.compiler.front;
 
-import org.manifold.compiler.BooleanTypeValue;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
+
+import java.util.ArrayList;
 
 import org.junit.Test;
-import java.util.ArrayList;
 
 public class TestVariableNotAssignedException {
 
   private NamespaceIdentifier getNamespaceIdentifierInstance() {
     ArrayList<String> name = new ArrayList<>(1);
-    name.add("whdl");
+    name.add("manifold");
     return new NamespaceIdentifier(name);
   }
 
@@ -18,22 +18,17 @@ public class TestVariableNotAssignedException {
     return new VariableIdentifier(getNamespaceIdentifierInstance(), "foo");
   }
 
-  private Expression getTypeExpression(){
-    return new LiteralExpression(BooleanTypeValue.getInstance());
-  }
-  
   public Variable getVariableInstance(){
     return new Variable(
         new Scope(),
-        getVariableIdentifierInstance(),
-        getTypeExpression()
+        getVariableIdentifierInstance()
     );
   }
-  
+
   public VariableNotAssignedException getInstance(){
     return new VariableNotAssignedException(getVariableInstance());
   }
-  
+
   @Test
   public void testGetMessage_containsVariableIdentifier() {
     VariableNotAssignedException instance = getInstance();

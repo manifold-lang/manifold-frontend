@@ -14,7 +14,7 @@ public class TestVariableIdentifier {
 
   private NamespaceIdentifier getNamespaceIdentifierInstance() {
     if (namespaceIdentifierInstance == null) {
-      namespaceIdentifierInstance = new NamespaceIdentifier("whdl");
+      namespaceIdentifierInstance = new NamespaceIdentifier("manifold");
     }
 
     return namespaceIdentifierInstance;
@@ -80,7 +80,7 @@ public class TestVariableIdentifier {
 
   @Test
   public void toString_namespaced() {
-    assertEquals(getInstance().toString(), "whdl:foo");
+    assertEquals(getInstance().toString(), "manifold::foo");
   }
 
   @Test
