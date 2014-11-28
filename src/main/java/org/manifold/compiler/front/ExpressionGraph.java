@@ -509,7 +509,10 @@ public class ExpressionGraph
   }
 
   @Override
-  public void visit(PrimitivePortTypeValue primitivePortTypeValue) {
+  public void visit(PrimitivePortDefinitionExpression primitivePortTypeValue) {
+    // TODO
+    throw new UnsupportedOperationException("not implemented");
+    /*
     PrimitivePortVertex pVertex = new PrimitivePortVertex(
         primitivePortTypeValue);
     primitivePortVertices.add(pVertex);
@@ -523,6 +526,7 @@ public class ExpressionGraph
         primitivePortTypeValue);
     edges.add(edgePortOut);
     lastSourceEdge = edgePortOut;
+    */
   }
 
   @Override

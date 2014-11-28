@@ -116,6 +116,13 @@ public class TypeChecker implements ExpressionVisitor {
     }
   }
 
+  @Override
+  public void visit(
+      PrimitivePortDefinitionExpression primitivePortDefinitionExpression) {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("not implemented");
+  }
+
   class TypeError extends Error {
     private static final long serialVersionUID = -6551145239250515985L;
     private final Throwable cause;

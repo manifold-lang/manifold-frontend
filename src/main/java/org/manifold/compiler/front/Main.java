@@ -370,8 +370,8 @@ class ExpressionContextVisitor extends ManifoldBaseVisitor<Expression> {
   */
 
   @Override
-  public Expression visitPrimitivePortTypeValue(
-      ManifoldParser.PrimitivePortTypeValueContext context) {
+  public Expression visitPrimitivePortDefinitionExpression(
+      ManifoldParser.PrimitivePortDefinitionExpressionContext context) {
     // extract signal type
     TypevalueContext typeCtx = context.typevalue();
     Expression typevalue = typeCtx.accept(this);
@@ -381,11 +381,9 @@ class ExpressionContextVisitor extends ManifoldBaseVisitor<Expression> {
       // TODO(murphy) the default expression visitor does not work here;
       // we need a visitTupleType() or visitTupleTypeValue()
       Expression attributes = attributeTypesContext.accept(this);
-      return new LiteralExpression(
-          new PrimitivePortTypeValue(typevalue, attributes));
+      return new PrimitivePortDefinitionExpression(typevalue, attributes);
     } else {
-      return new LiteralExpression(
-          new PrimitivePortTypeValue(typevalue));
+      return new PrimitivePortDefinitionExpression(typevalue);
     }
   }
 

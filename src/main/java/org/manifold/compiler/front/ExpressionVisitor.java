@@ -6,5 +6,7 @@ public interface ExpressionVisitor {
   void visit(LiteralExpression literalExpression);
   void visit(VariableAssignmentExpression variableAssignmentExpression);
   void visit(VariableReferenceExpression variableReferenceExpression);
+  void visit(PrimitivePortDefinitionExpression
+      primitivePortDefinitionExpression);
 
 }

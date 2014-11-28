@@ -8,14 +8,14 @@ import org.manifold.compiler.TypeValue;
 
 public class PrimitivePortVertex extends ExpressionVertex {
 
-  private final PrimitivePortTypeValue primitivePort;
+  private final PrimitivePortDefinitionExpression primitivePort;
 
   private PortTypeValue port = null;
   public PortTypeValue getElaboratedPort() {
     return port;
   }
 
-  public PrimitivePortVertex(PrimitivePortTypeValue primitivePort) {
+  public PrimitivePortVertex(PrimitivePortDefinitionExpression primitivePort) {
     this.primitivePort = primitivePort;
   }
 

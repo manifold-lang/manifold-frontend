@@ -17,7 +17,7 @@ public interface FrontendValueVisitor extends SchematicValueVisitor {
 
   public void visit(EnumTypeValue enumTypeValue);
 
-  public void visit(PrimitivePortTypeValue primitivePortTypeValue);
+  public void visit(PrimitivePortDefinitionExpression primitivePortTypeValue);
 
   public void visit(UnknownTypeValue unknownTypeValue);
 }

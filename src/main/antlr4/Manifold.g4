@@ -54,7 +54,7 @@ expression:
   | expression '.' (IDENTIFIER | INTEGER_VALUE) # StaticAttributeAccessExpression
   | namespacedIdentifier # VariableReferenceExpression
   | expression '=' expression # AssignmentExpression
-  | 'primitive' 'port' typevalue (':' tupleTypeValue)? # PrimitivePortTypeValue
+  | 'primitive' 'port' typevalue (':' tupleTypeValue)? # PrimitivePortDefinitionExpression
   | 'primitive' 'node' functionTypeValue (':' tupleTypeValue)? # PrimitiveNodeTypeValue
   ;
 
