@@ -1,11 +1,17 @@
 package org.manifold.compiler.front;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.manifold.compiler.ArrayTypeValue;
 import org.manifold.compiler.ArrayValue;
@@ -97,6 +103,47 @@ public class ExpressionGraph
   public void buildFrom(List<Expression> expressions) {
     for (Expression e : expressions) {
       e.accept(this);
+    }
+  }
+
+  public void writeDOTFile(File file) throws IOException {
+    FileWriter fw = new FileWriter(file);
+    try (BufferedWriter writer = new BufferedWriter(fw)) {
+      // write graph header and attributes
+      writer.write("digraph G {");
+      writer.newLine();
+      // write all vertices
+      Set<ExpressionVertex> visited = new HashSet<ExpressionVertex>();
+      for (ExpressionEdge e : edges) {
+        ExpressionVertex endpoints[] = {e.getSource(), e.getTarget()};
+        for (ExpressionVertex v : endpoints) {
+          // do not write any vertex more than once
+          if (visited.contains(v)) {
+            continue;
+          }
+          visited.add(v);
+          v.writeToDOTFile(writer);
+        }
+      }
+
+      // write all edges
+      for (ExpressionEdge e : edges) {
+        String source = Integer.toString(System.identityHashCode(
+            e.getSource()));
+        String target = Integer.toString(System.identityHashCode(
+            e.getTarget()));
+        // for now
+        writer.write(source + " -> " + target);
+        if (!e.getName().equals("")) {
+          // label it
+          writer.write("[label=\"" + e.getName() + "\"]");
+        }
+        writer.write(";");
+        writer.newLine();
+      }
+      // write graph footer
+      writer.write("}");
+      writer.newLine();
     }
   }
 
