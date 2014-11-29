@@ -105,52 +105,6 @@ public class ExpressionGraph
     }
   }
 
-  private void writePrimitiveFunctionVertex(
-      BufferedWriter writer, PrimitiveFunctionVertex v)
-      throws IOException {
-    String objectID = Integer.toString(System.identityHashCode(v));
-    String label = v.toString();
-    writer.write(objectID);
-    writer.write(" [");
-    writer.write("label=\"");
-    writer.write(objectID);
-    writer.write("\n");
-    writer.write(label);
-    writer.write("\"");
-    writer.write("];");
-    writer.newLine();
-  }
-
-  private void writeVariableVertex(
-      BufferedWriter writer, VariableReferenceVertex v) throws IOException {
-    String objectID = Integer.toString(System.identityHashCode(v));
-    String label = v.toString();
-    writer.write(objectID);
-    writer.write(" [");
-    writer.write("label=\"");
-    writer.write(objectID);
-    writer.write("\n");
-    writer.write(label);
-    writer.write("\"");
-    writer.write("];");
-    writer.newLine();
-  }
-
-  private void writeTupleValueVertex(
-      BufferedWriter writer, TupleValueVertex v) throws IOException {
-    String objectID = Integer.toString(System.identityHashCode(v));
-    String label = v.toString();
-    writer.write(objectID);
-    writer.write(" [");
-    writer.write("label=\"");
-    writer.write(objectID);
-    writer.write("\n");
-    writer.write(label);
-    writer.write("\"");
-    writer.write("];");
-    writer.newLine();
-  }
-
   public void writeDOTFile(File file) throws IOException {
     FileWriter fw = new FileWriter(file);
     try (BufferedWriter writer = new BufferedWriter(fw)) {
@@ -167,17 +121,7 @@ public class ExpressionGraph
             continue;
           }
           visited.add(v);
-          // TODO(murphy) refactor to an abstract method on ExpressionVertex
-          if (v instanceof PrimitiveFunctionVertex) {
-            writePrimitiveFunctionVertex(writer, (PrimitiveFunctionVertex) v);
-          } else if (v instanceof VariableReferenceVertex) {
-            writeVariableVertex(writer, (VariableReferenceVertex) v);
-          } else if (v instanceof TupleValueVertex) {
-            writeTupleValueVertex(writer, (TupleValueVertex) v);
-          } else {
-            throw new UnsupportedOperationException(
-                "unhandled expression vertex type '" + v.toString() + "'");
-          }
+          v.writeToDOTFile(writer);
         }
       }
 
