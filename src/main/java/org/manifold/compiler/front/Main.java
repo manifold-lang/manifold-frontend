@@ -147,7 +147,8 @@ public class Main implements Frontend {
   }
 
   private static void setupDigitalTypes(Schematic s)
-      throws org.manifold.compiler.MultipleDefinitionException {
+      throws org.manifold.compiler.MultipleDefinitionException,
+      UndeclaredIdentifierException {
     PortTypeValue digitalInPortType;
     PortTypeValue digitalOutPortType;
 
@@ -175,8 +176,10 @@ public class Main implements Frontend {
 
     ConnectionType digitalWireType;
 
-    digitalInPortType = new PortTypeValue(noTypeAttributes);
-    digitalOutPortType = new PortTypeValue(noTypeAttributes);
+    digitalInPortType = new PortTypeValue(s.getUserDefinedType("Bool"),
+        noTypeAttributes);
+    digitalOutPortType = new PortTypeValue(s.getUserDefinedType("Bool"),
+        noTypeAttributes);
 
     registerTypeAttributes.put("initialValue", BooleanTypeValue.getInstance());
     registerTypeAttributes.put("resetActiveHigh",
