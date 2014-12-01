@@ -14,11 +14,10 @@ public class NamespaceIdentifier {
 
   private final List<String> name;
 
-  /**
-   * Clean up a name by performing the following operations:
-   *  - Remove whitespace from each element
-   *  - Suppress elements that are equal to the empty string
-   */
+   // Clean up a name by performing the following operations:
+   //  - Remove whitespace from each element
+   //  - Suppress elements that are equal to the empty string
+
   private List<String> sanitizeName(List<String> n) {
     List<String> retval = new ArrayList<String>(n.size());
     for (String s : n) {
