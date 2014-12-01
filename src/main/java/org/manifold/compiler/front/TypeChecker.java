@@ -80,7 +80,8 @@ public class TypeChecker implements ExpressionVisitor {
     log.debug("argument has type " + argumentType.toString());
 
     TypeValue resultType = new TypeVariable();
-    makeTypesEqual(new FunctionTypeValue(argumentType, resultType), functionType);
+    makeTypesEqual(new FunctionTypeValue(argumentType, resultType),
+        functionType);
     this.type = prune(resultType);
     log.debug("result has type " + this.type.toString());
   }
