@@ -129,21 +129,7 @@ public class Main implements Frontend {
       }
     }
 
-    System.out.println("top-level identifiers:");
-    for (VariableIdentifier id :
-        defaultNamespace.getPrivateScope().getSymbolIdentifiers()) {
-      System.out.println(id);
-    }
-
     TypeChecker.typecheck(namespaces, defaultNamespace);
-    System.out.println("assigned the following types:");
-    for (VariableIdentifier id :
-        defaultNamespace.getPrivateScope().getSymbolIdentifiers()) {
-      NamespaceIdentifier name = id.getNamespaceIdentifier();
-      Namespace ns = namespaces.get(name);
-      Variable v = ns.getPrivateScope().getVariable(id);
-      System.out.println(v.getIdentifier() + " ::= " + v.getType());
-    }
 
     // TODO this should take a namespace map instead
     ExpressionGraph exprGraph = new ExpressionGraph(
@@ -152,21 +138,10 @@ public class Main implements Frontend {
     exprGraph.removeUnconnectedEdges();
     exprGraph.optimizeOutVariables();
 
-    System.out.println("expression graph edges:");
-    for (String s : exprGraph.getPrintableEdges()) {
-      System.out.println(s);
-    }
-
     File exprGraphDot = new File(inputFile.getName() + ".exprs.dot");
     exprGraph.writeDOTFile(exprGraphDot);
 
     exprGraph.elaboratePrimitives();
-
-    System.out.println("instantiated primitives:");
-    for (String s : exprGraph.getPrintableInstances()) {
-      System.out.println(s);
-    }
-
     exprGraph.elaborateConnections(schematic);
     exprGraph.writeSchematic(schematic);
 
