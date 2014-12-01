@@ -17,17 +17,6 @@ public class Variable {
     this.type = UnknownTypeValue.getInstance();
   }
 
-  /*
-  public Variable(
-      Scope scope,
-      VariableIdentifier identifier,
-      Expression typeExpression) {
-    this.scope = scope;
-    this.identifier = identifier;
-    this.typeExpression = typeExpression;
-  }
-  */
-
   public VariableIdentifier getIdentifier() {
     return identifier;
   }
