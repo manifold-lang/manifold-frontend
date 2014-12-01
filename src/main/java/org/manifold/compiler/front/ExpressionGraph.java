@@ -575,11 +575,6 @@ public class ExpressionGraph
   }
 
   @Override
-  public void visit(UserDefinedTypeValue arg0) {
-    throw new UnsupportedOperationException("illegal value");
-  }
-
-  @Override
   public void visit(UnknownTypeValue unknownTypeValue) {
     throw new UndefinedBehaviourError("attempted to visit unknown type value");
   }
