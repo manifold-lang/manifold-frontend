@@ -96,8 +96,8 @@ public class TypeChecker implements ExpressionVisitor {
 
   @Override
   public void visit(VariableAssignmentExpression variableAssignmentExpression) {
-    // TODO Auto-generated method stub
-
+    throw new UnsupportedOperationException("type-checking variable assignment"
+        + " is currently unimplemented");
   }
 
   @Override
