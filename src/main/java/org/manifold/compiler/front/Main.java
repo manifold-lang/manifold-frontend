@@ -131,7 +131,6 @@ public class Main implements Frontend {
 
     TypeChecker.typecheck(namespaces, defaultNamespace);
 
-    // TODO this should take a namespace map instead
     ExpressionGraph exprGraph = new ExpressionGraph(
         defaultNamespace.getPrivateScope());
     exprGraph.buildFrom(expressions);
