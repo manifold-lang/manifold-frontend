@@ -80,7 +80,7 @@ public class TypeChecker implements ExpressionVisitor {
     log.debug("argument has type " + argumentType.toString());
 
     TypeValue resultType = new TypeVariable();
-    unify(new FunctionTypeValue(argumentType, resultType), functionType);
+    makeTypesEqual(new FunctionTypeValue(argumentType, resultType), functionType);
     this.type = prune(resultType);
     log.debug("result has type " + this.type.toString());
   }
@@ -103,7 +103,6 @@ public class TypeChecker implements ExpressionVisitor {
   @Override
   public void visit(VariableReferenceExpression variableReferenceExpression) {
     VariableIdentifier vid = variableReferenceExpression.getIdentifier();
-    // TODO check for private vs. public reference
     NamespaceIdentifier id = vid.getNamespaceIdentifier();
     Namespace ns = checkNotNull(namespaces.get(id));
     try {
@@ -132,7 +131,11 @@ public class TypeChecker implements ExpressionVisitor {
     }
   }
 
-  public void unify(TypeValue t1, TypeValue t2) {
+  // Create assignments between corresponding type variables and concrete types
+  // in order to make the two given type values equal
+  // (if this is possible).
+  // Most implementations of the Hindley-Milner type system call this "unify()".
+  public void makeTypesEqual(TypeValue t1, TypeValue t2) {
     TypeValue a = prune(t1);
     TypeValue b = prune(t2);
     log.debug("unifying types " + a.toString() + " and " + b.toString());
@@ -145,19 +148,14 @@ public class TypeChecker implements ExpressionVisitor {
           ((TypeVariable) a).setInstance(b);
         }
       }
-      // TODO do we need a special "type operator" object?
     } else if (a instanceof FunctionTypeValue) {
       if (b instanceof TypeVariable) {
-        unify(b, a);
+        makeTypesEqual(b, a);
       } else if (b instanceof FunctionTypeValue) {
-        // TODO if we use type operators instead, compare their kinds and the
-        // number of arguments
-        // TODO this only works for function type values;
-        // it needs to be reworked if we use type operators
         FunctionTypeValue fa = (FunctionTypeValue) a;
         FunctionTypeValue fb = (FunctionTypeValue) b;
-        unify(fa.getInputType(), fb.getInputType());
-        unify(fa.getOutputType(), fb.getOutputType());
+        makeTypesEqual(fa.getInputType(), fb.getInputType());
+        makeTypesEqual(fa.getOutputType(), fb.getOutputType());
       } else {
         throw new UndefinedBehaviourError("cannot unify types "
             + "'" + a.toString() + "' and '" + b.toString() + "'");
@@ -166,9 +164,8 @@ public class TypeChecker implements ExpressionVisitor {
       // a is neither a type variable nor a type operator;
       // therefore a is a concrete type
       if (b instanceof TypeVariable) {
-        unify(b, a);
+        makeTypesEqual(b, a);
       } else if (b instanceof FunctionTypeValue) {
-        // TODO
         throw new UnsupportedOperationException("not implemented");
       } else {
         // now b is also a concrete type
