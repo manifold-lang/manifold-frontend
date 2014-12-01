@@ -7,8 +7,7 @@ import java.util.List;
 public class NamespaceIdentifier {
 
   public static String getSeparator(){
-    // TODO this is syntax-dependent, but at least it abstracts out the
-    // dependency
+    // this is syntax-dependent, but at least it abstracts out the dependency
     return "::";
   }
 
