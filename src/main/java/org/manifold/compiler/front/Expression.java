@@ -11,7 +11,7 @@ public abstract class Expression {
   public abstract boolean isElaborationtimeKnowable(Scope scope);
   public abstract boolean isRuntimeKnowable(Scope scope);
   public abstract void accept(ExpressionVisitor visitor);
-  
+
   public <T extends Value> T evaluate(Scope scope, Class<T> type) {
     return (T) getValue(scope);
   }

@@ -2,23 +2,19 @@ package org.manifold.compiler.front;
 
 import org.manifold.compiler.TypeValue;
 import org.manifold.compiler.Value;
-import org.manifold.compiler.TypeTypeValue;
 
 public class Variable {
   private final VariableIdentifier identifier;
-  private final Expression typeExpression;
+  private TypeValue type;
   private final Scope scope;
 
   private boolean assigned = false;
   private Expression valueExpression;
 
-  public Variable(
-      Scope scope,
-      VariableIdentifier identifier,
-      Expression typeExpression) {
+  public Variable(Scope scope, VariableIdentifier identifier) {
     this.scope = scope;
     this.identifier = identifier;
-    this.typeExpression = typeExpression;
+    this.type = UnknownTypeValue.getInstance();
   }
 
   public VariableIdentifier getIdentifier() {
@@ -26,9 +22,13 @@ public class Variable {
   }
 
   public TypeValue getType() {
-    return (TypeValue) typeExpression.getValue(scope);
+    return this.type;
   }
-  
+
+  public void setType(TypeValue type) {
+    this.type = type;
+  }
+
   public Scope getScope() {
     return scope;
   }
@@ -50,12 +50,22 @@ public class Variable {
     if (isAssigned()) {
       throw new MultipleAssignmentException(this);
     }
-    
+
     this.valueExpression = valExpr;
     this.assigned = true;
   }
-  
-  public void verify() throws TypeMismatchException {
+
+  public Expression getValueExpression() throws VariableNotAssignedException {
+    if (isAssigned()) {
+      return this.valueExpression;
+    } else {
+      throw new VariableNotAssignedException(this);
+    }
+  }
+
+  public void verify() {
+    // TODO(murphy)
+    /*
     // Ensure the Type is an actual type
     if (typeExpression.getType(scope) != TypeTypeValue.getInstance()) {
       // TODO(lucas) We should have a special exception for the case where
@@ -65,7 +75,7 @@ public class Variable {
           typeExpression.getType(scope)
       );
     }
-    
+
     // Ensure the value is of the correct type
     // TODO(lucas)
     if (assigned && !(valueExpression.getType(scope).isSubtypeOf(getType()))) {
@@ -74,6 +84,7 @@ public class Variable {
           valueExpression.getType(scope)
       );
     }
+    */
   }
 
 }

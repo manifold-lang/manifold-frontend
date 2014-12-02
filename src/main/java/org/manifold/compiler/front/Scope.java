@@ -14,7 +14,7 @@ public class Scope {
   public Set<VariableIdentifier> getSymbolIdentifiers() {
     return symbolTable.keySet();
   }
-  
+
   public Scope(Scope parentScope) {
     this.symbolTable = new HashMap<>();
     this.parentScope = parentScope;
@@ -29,17 +29,14 @@ public class Scope {
     return parentScope;
   }
 
-  public void defineVariable(VariableIdentifier identifier,
-      Expression typeExpression) throws MultipleDefinitionException {
-    // TODO this does not handle namespaces correctly
+  // at the time a variable is defined, all we may know about it
+  // is that a binding for that name "will exist"
+  public void defineVariable(VariableIdentifier identifier)
+      throws MultipleDefinitionException {
     if (symbolTable.containsKey(identifier)) {
-      // TODO this does not handle functions with different type
-      // signatures correctly
       throw new MultipleDefinitionException(identifier);
     }
-    // naturally, variable shadowing is allowed -- "closer" scopes hide
-    // "further" ones
-    Variable v = new Variable(this, identifier, typeExpression);
+    Variable v = new Variable(this, identifier);
     symbolTable.put(identifier, v);
   }
 

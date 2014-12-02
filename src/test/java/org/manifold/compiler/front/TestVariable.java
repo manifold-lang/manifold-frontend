@@ -12,30 +12,29 @@ import org.manifold.compiler.Value;
 
 public class TestVariable {
   private NamespaceIdentifier getNamespaceIdentifier() {
-    return new NamespaceIdentifier("whdl:is:cool");
+    return new NamespaceIdentifier("manifold::is::cool");
   }
 
   private VariableIdentifier getVariableIdentifier() {
     return new VariableIdentifier(getNamespaceIdentifier(), "foo");
   }
-  
+
   private Scope getScope() {
     return new Scope();
   }
-  
+
   private Variable getVariable() {
     // declare "foo" as a variable that stores a Type
     return new Variable(
         getScope(),
-        getVariableIdentifier(),
-        getTypeExpression()
+        getVariableIdentifier()
     );
   }
-  
+
   private TypeValue getTypeValue() {
     return BooleanTypeValue.getInstance();
   }
-  
+
   private Value getValue() {
     return BooleanValue.getInstance(true);
   }
@@ -53,6 +52,7 @@ public class TestVariable {
     assertEquals(getVariable().getIdentifier(), getVariableIdentifier());
   }
 
+  /*
   @Test
   public void testGetTypeValue() throws TypeMismatchException {
     assertEquals(
@@ -60,6 +60,7 @@ public class TestVariable {
         getTypeExpression().getValue(getVariable().getScope())
     );
   }
+  */
 
   @Test
   public void testGetValueUnassigned() throws VariableNotAssignedException {
@@ -86,6 +87,7 @@ public class TestVariable {
     v.setValueExpression(getValueExpression());
   }
 
+  /*
   @Test(expected = TypeMismatchException.class)
   public void verify_nontypeThrow() throws
       TypeMismatchException,
@@ -93,8 +95,7 @@ public class TestVariable {
 
     Variable v = new Variable(
         getScope(),
-        getVariableIdentifier(),
-        new LiteralExpression(BooleanValue.getInstance(false))
+        getVariableIdentifier()
     );
     v.verify();
   }
@@ -106,10 +107,10 @@ public class TestVariable {
 
     Variable v = new Variable(
         getScope(),
-        getVariableIdentifier(),
-        new LiteralExpression(BooleanTypeValue.getInstance())
+        getVariableIdentifier()
     );
     v.setValueExpression(new LiteralExpression(BooleanTypeValue.getInstance()));
     v.verify();
   }
+  */
 }

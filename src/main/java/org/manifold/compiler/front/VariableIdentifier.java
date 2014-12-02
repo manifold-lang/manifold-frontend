@@ -1,5 +1,7 @@
 package org.manifold.compiler.front;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.util.List;
 
 public class VariableIdentifier {
@@ -14,11 +16,11 @@ public class VariableIdentifier {
         identifiers.subList(0, identifiers.size() - 1)
     );
   }
-  
+
   public VariableIdentifier(NamespaceIdentifier namespaceIdentifier,
       String name) {
     this.name = name;
-    this.namespaceIdentifier = namespaceIdentifier;
+    this.namespaceIdentifier = checkNotNull(namespaceIdentifier);
   }
 
   public String getName() {

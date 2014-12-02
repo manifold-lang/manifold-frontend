@@ -5,13 +5,12 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 
 import org.junit.Test;
-import org.manifold.compiler.BooleanTypeValue;
 
 public class TestMultipleAssignmentException {
 
   private NamespaceIdentifier getNamespaceIdentifierInstance() {
     ArrayList<String> name = new ArrayList<>(1);
-    name.add("whdl");
+    name.add("manifold");
     return new NamespaceIdentifier(name);
   }
 
@@ -19,15 +18,10 @@ public class TestMultipleAssignmentException {
     return new VariableIdentifier(getNamespaceIdentifierInstance(), "foo");
   }
 
-  private Expression getTypeExpression() {
-    return new LiteralExpression(BooleanTypeValue.getInstance());
-  }
-
   public Variable getVariableInstance() {
     return new Variable(
         new Scope(),
-        getVariableIdentifierInstance(),
-        getTypeExpression()
+        getVariableIdentifierInstance()
     );
   }
 

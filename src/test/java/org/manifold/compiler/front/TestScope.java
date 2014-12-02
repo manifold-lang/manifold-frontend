@@ -51,20 +51,20 @@ public class TestScope {
   @Test
   public void testDefineVariable() throws MultipleDefinitionException {
     Scope s = new Scope();
-    s.defineVariable(getVariableIdentifier(), getTypeExpression());
+    s.defineVariable(getVariableIdentifier());
   }
 
   @Test(expected = MultipleDefinitionException.class)
   public void testDefineVariableMultiple() throws MultipleDefinitionException {
     Scope s = new Scope();
-    s.defineVariable(getVariableIdentifier(), getTypeExpression());
-    s.defineVariable(getVariableIdentifier(), getTypeExpression());
+    s.defineVariable(getVariableIdentifier());
+    s.defineVariable(getVariableIdentifier());
   }
 
   @Test
   public void testIsVariableDefined_true() throws MultipleDefinitionException {
     Scope s = new Scope();
-    s.defineVariable(getVariableIdentifier(), getTypeExpression());
+    s.defineVariable(getVariableIdentifier());
     assertTrue(s.isVariableDefined(getVariableIdentifier()));
   }
 
@@ -74,15 +74,17 @@ public class TestScope {
     assertFalse(s.isVariableDefined(getVariableIdentifier()));
   }
 
+  /*
   @Test
   public void testGetVariableType() throws MultipleDefinitionException,
       TypeMismatchException, VariableNotDefinedException {
 
     Scope s = new Scope();
-    s.defineVariable(getVariableIdentifier(), getTypeExpression());
+    s.defineVariable(getVariableIdentifier());
     assertEquals(getTypeExpression().getValue(s),
         s.getVariableType(getVariableIdentifier()));
   }
+  */
 
   @Test(expected = VariableNotDefinedException.class)
   public void testGetVariableNotDefined() throws VariableNotDefinedException {
@@ -94,18 +96,18 @@ public class TestScope {
   public void testGetVariable() throws MultipleDefinitionException,
       VariableNotDefinedException, TypeMismatchException {
     Scope s = new Scope();
-    s.defineVariable(getVariableIdentifier(), getTypeExpression());
+    s.defineVariable(getVariableIdentifier());
     Variable v = s.getVariable(getVariableIdentifier());
 
     assertEquals(v.getIdentifier(), getVariableIdentifier());
-    assertEquals(v.getType(), getTypeExpression().getValue(s));
+    //assertEquals(v.getType(), getTypeExpression().getValue(s));
   }
 
   @Test
   public void testGetVariable_ParentScope() throws MultipleDefinitionException {
     Scope s1 = new Scope();
     Scope s2 = new Scope(s1);
-    s1.defineVariable(getVariableIdentifier(), getTypeExpression());
+    s1.defineVariable(getVariableIdentifier());
     try {
       Variable v = s2.getVariable(getVariableIdentifier());
       assertTrue(s2.isVariableDefined(getVariableIdentifier()));
@@ -120,7 +122,7 @@ public class TestScope {
       VariableNotAssignedException {
 
     Scope s = new Scope();
-    s.defineVariable(getVariableIdentifier(), getTypeExpression());
+    s.defineVariable(getVariableIdentifier());
     s.assignVariable(getVariableIdentifier(), getValueExpression());
 
     assertEquals(getValueExpression().getValue(s),
@@ -130,7 +132,7 @@ public class TestScope {
   @Test
   public void testGetSymbolIdentifiers() throws MultipleDefinitionException {
     Scope s = new Scope();
-    s.defineVariable(getVariableIdentifier(), getTypeExpression());
+    s.defineVariable(getVariableIdentifier());
     assertEquals(ImmutableSet.of(getVariableIdentifier()),
         s.getSymbolIdentifiers());
   }
@@ -147,7 +149,7 @@ public class TestScope {
       VariableNotDefinedException, MultipleAssignmentException,
       VariableNotAssignedException {
     Scope s = new Scope();
-    s.defineVariable(getVariableIdentifier(), getTypeExpression());
+    s.defineVariable(getVariableIdentifier());
     s.assignVariable(getVariableIdentifier(), getValueExpression());
     assertEquals(s.getVariableValue(getVariableIdentifier()),
         getValueExpression().getValue(s));
@@ -157,7 +159,7 @@ public class TestScope {
   public void testAssignVariableMultiple() throws MultipleDefinitionException,
       VariableNotDefinedException, MultipleAssignmentException {
     Scope s = new Scope();
-    s.defineVariable(getVariableIdentifier(), getTypeExpression());
+    s.defineVariable(getVariableIdentifier());
     s.assignVariable(getVariableIdentifier(), getValueExpression());
     s.assignVariable(getVariableIdentifier(), getValueExpression());
   }

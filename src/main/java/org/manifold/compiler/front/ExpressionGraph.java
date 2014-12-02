@@ -574,4 +574,9 @@ public class ExpressionGraph
     throw new UnsupportedOperationException("cannot visit unimplemented value");
   }
 
+  @Override
+  public void visit(UnknownTypeValue unknownTypeValue) {
+    throw new UndefinedBehaviourError("attempted to visit unknown type value");
+  }
+
 }
