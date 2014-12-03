@@ -109,52 +109,6 @@ public class ExpressionGraph
     }
   }
 
-  private void writePrimitiveFunctionVertex(
-      BufferedWriter writer, PrimitiveFunctionVertex v)
-      throws IOException {
-    String objectID = Integer.toString(System.identityHashCode(v));
-    String label = v.toString();
-    writer.write(objectID);
-    writer.write(" [");
-    writer.write("label=\"");
-    writer.write(objectID);
-    writer.write("\n");
-    writer.write(label);
-    writer.write("\"");
-    writer.write("];");
-    writer.newLine();
-  }
-
-  private void writeVariableVertex(
-      BufferedWriter writer, VariableReferenceVertex v) throws IOException {
-    String objectID = Integer.toString(System.identityHashCode(v));
-    String label = v.toString();
-    writer.write(objectID);
-    writer.write(" [");
-    writer.write("label=\"");
-    writer.write(objectID);
-    writer.write("\n");
-    writer.write(label);
-    writer.write("\"");
-    writer.write("];");
-    writer.newLine();
-  }
-
-  private void writeTupleValueVertex(
-      BufferedWriter writer, TupleValueVertex v) throws IOException {
-    String objectID = Integer.toString(System.identityHashCode(v));
-    String label = v.toString();
-    writer.write(objectID);
-    writer.write(" [");
-    writer.write("label=\"");
-    writer.write(objectID);
-    writer.write("\n");
-    writer.write(label);
-    writer.write("\"");
-    writer.write("];");
-    writer.newLine();
-  }
-
   public void writeDOTFile(File file) throws IOException {
     FileWriter fw = new FileWriter(file);
     try (BufferedWriter writer = new BufferedWriter(fw)) {
@@ -171,17 +125,7 @@ public class ExpressionGraph
             continue;
           }
           visited.add(v);
-          // TODO(murphy) refactor to an abstract method on ExpressionVertex
-          if (v instanceof PrimitiveFunctionVertex) {
-            writePrimitiveFunctionVertex(writer, (PrimitiveFunctionVertex) v);
-          } else if (v instanceof VariableReferenceVertex) {
-            writeVariableVertex(writer, (VariableReferenceVertex) v);
-          } else if (v instanceof TupleValueVertex) {
-            writeTupleValueVertex(writer, (TupleValueVertex) v);
-          } else {
-            throw new UnsupportedOperationException(
-                "unhandled expression vertex type '" + v.toString() + "'");
-          }
+          v.writeToDOTFile(writer);
         }
       }
 
@@ -531,127 +475,127 @@ public class ExpressionGraph
 
   @Override
   public void visit(TupleTypeValue tupleTypeValue) {
-    throw new UnsupportedOperationException("illegal value");
+    throw new UnsupportedOperationException("cannot visit unimplemented value");
   }
 
   @Override
   public void visit(FunctionValue functionValue) {
-    throw new UnsupportedOperationException("illegal value");
+    throw new UnsupportedOperationException("cannot visit unimplemented value");
   }
 
   @Override
   public void visit(FunctionTypeValue functionTypeValue) {
-    throw new UnsupportedOperationException("illegal value");
+    throw new UnsupportedOperationException("cannot visit unimplemented value");
   }
 
   @Override
   public void visit(EnumValue enumValue) {
-    throw new UnsupportedOperationException("illegal value");
+    throw new UnsupportedOperationException("cannot visit unimplemented value");
   }
 
   @Override
   public void visit(EnumTypeValue enumTypeValue) {
-    throw new UnsupportedOperationException("illegal value");
+    throw new UnsupportedOperationException("cannot visit unimplemented value");
   }
 
   @Override
   public void visit(TypeTypeValue typeTypeValue) {
-    throw new UnsupportedOperationException("illegal value");
+    throw new UnsupportedOperationException("cannot visit unimplemented value");
   }
 
   @Override
   public void visit(StringValue stringValue) {
-    throw new UnsupportedOperationException("illegal value");
+    throw new UnsupportedOperationException("cannot visit unimplemented value");
   }
 
   @Override
   public void visit(StringTypeValue stringTypeValue) {
-    throw new UnsupportedOperationException("illegal value");
+    throw new UnsupportedOperationException("cannot visit unimplemented value");
   }
 
   @Override
   public void visit(PortValue portValue) {
-    throw new UnsupportedOperationException("illegal value");
+    throw new UnsupportedOperationException("cannot visit unimplemented value");
   }
 
   @Override
   public void visit(PortTypeValue portTypeValue) {
-    throw new UnsupportedOperationException("illegal value");
+    throw new UnsupportedOperationException("cannot visit unimplemented value");
   }
 
   @Override
   public void visit(NodeValue nodeValue) {
-    throw new UnsupportedOperationException("illegal value");
+    throw new UnsupportedOperationException("cannot visit unimplemented value");
   }
 
   @Override
   public void visit(NodeTypeValue nodeTypeValue) {
-    throw new UnsupportedOperationException("illegal value");
+    throw new UnsupportedOperationException("cannot visit unimplemented value");
   }
 
   @Override
   public void visit(NilTypeValue nilTypeValue) {
-    throw new UnsupportedOperationException("illegal value");
+    throw new UnsupportedOperationException("cannot visit unimplemented value");
   }
 
   @Override
   public void visit(IntegerValue integerValue) {
-    throw new UnsupportedOperationException("illegal value");
+    throw new UnsupportedOperationException("cannot visit unimplemented value");
   }
 
   @Override
   public void visit(ConstraintValue constraintValue) {
-    throw new UnsupportedOperationException("illegal value");
+    throw new UnsupportedOperationException("cannot visit unimplemented value");
   }
 
   @Override
   public void visit(IntegerTypeValue integerTypeValue) {
-    throw new UnsupportedOperationException("illegal value");
+    throw new UnsupportedOperationException("cannot visit unimplemented value");
   }
 
   @Override
   public void visit(ConstraintType constraintType) {
-    throw new UnsupportedOperationException("illegal value");
+    throw new UnsupportedOperationException("cannot visit unimplemented value");
   }
 
   @Override
   public void visit(ConnectionValue connectionValue) {
-    throw new UnsupportedOperationException("illegal value");
+    throw new UnsupportedOperationException("cannot visit unimplemented value");
   }
 
   @Override
   public void visit(ConnectionType connectionType) {
-    throw new UnsupportedOperationException("illegal value");
+    throw new UnsupportedOperationException("cannot visit unimplemented value");
   }
 
   @Override
   public void visit(BooleanValue booleanValue) {
-    throw new UnsupportedOperationException("illegal value");
+    throw new UnsupportedOperationException("cannot visit unimplemented value");
   }
 
   @Override
   public void visit(BooleanTypeValue booleanTypeValue) {
-    throw new UnsupportedOperationException("illegal value");
+    throw new UnsupportedOperationException("cannot visit unimplemented value");
   }
 
   @Override
   public void visit(ArrayValue arrayValue) {
-    throw new UnsupportedOperationException("illegal value");
+    throw new UnsupportedOperationException("cannot visit unimplemented value");
   }
 
   @Override
   public void visit(RealTypeValue arg0) {
-    throw new UnsupportedOperationException("illegal value");
+    throw new UnsupportedOperationException("cannot visit unimplemented value");
   }
 
   @Override
   public void visit(RealValue arg0) {
-    throw new UnsupportedOperationException("illegal value");
+    throw new UnsupportedOperationException("cannot visit unimplemented value");
   }
 
   @Override
   public void visit(UserDefinedTypeValue arg0) {
-    throw new UnsupportedOperationException("illegal value");
+    throw new UnsupportedOperationException("cannot visit unimplemented value");
   }
 
   @Override

@@ -7,18 +7,16 @@ import java.util.List;
 public class NamespaceIdentifier {
 
   public static String getSeparator(){
-    // TODO this is syntax-dependent, but at least it abstracts out the
-    // dependency
+    // this is syntax-dependent, but at least it abstracts out the dependency
     return "::";
   }
 
   private final List<String> name;
 
-  /**
-   * Clean up a name by performing the following operations:
-   *  - Remove whitespace from each element
-   *  - Suppress elements that are equal to the empty string
-   */
+   // Clean up a name by performing the following operations:
+   //  - Remove whitespace from each element
+   //  - Suppress elements that are equal to the empty string
+
   private List<String> sanitizeName(List<String> n) {
     List<String> retval = new ArrayList<String>(n.size());
     for (String s : n) {

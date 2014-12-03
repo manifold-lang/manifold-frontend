@@ -34,29 +34,11 @@ public class Scope {
   public void defineVariable(VariableIdentifier identifier)
       throws MultipleDefinitionException {
     if (symbolTable.containsKey(identifier)) {
-      // TODO this does not handle functions with different type
-      // signatures correctly
       throw new MultipleDefinitionException(identifier);
     }
     Variable v = new Variable(this, identifier);
     symbolTable.put(identifier, v);
   }
-
-  /*
-  public void defineVariable(VariableIdentifier identifier,
-      Expression typeExpression) throws MultipleDefinitionException {
-    // TODO this does not handle namespaces correctly
-    if (symbolTable.containsKey(identifier)) {
-      // TODO this does not handle functions with different type
-      // signatures correctly
-      throw new MultipleDefinitionException(identifier);
-    }
-    // naturally, variable shadowing is allowed -- "closer" scopes hide
-    // "further" ones
-    Variable v = new Variable(this, identifier, typeExpression);
-    symbolTable.put(identifier, v);
-  }
-  */
 
   public boolean isVariableDefined(VariableIdentifier identifier) {
     if (symbolTable.containsKey(identifier)) {
