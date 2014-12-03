@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+import org.manifold.compiler.TypeTypeValue;
 import org.manifold.compiler.TypeValue;
 import org.manifold.compiler.UndefinedBehaviourError;
 import org.manifold.compiler.Value;
@@ -92,7 +93,7 @@ public class TypeChecker implements ExpressionVisitor {
     Value v = literalExpression.getValue(currentScope);
     this.type = v.getType();
     log.debug("type of literal expression '" + v.toString()
-        + "' is " + this.type);
+        + "' is " + this.type.toString());
   }
 
   @Override
@@ -118,9 +119,16 @@ public class TypeChecker implements ExpressionVisitor {
 
   @Override
   public void visit(
-      PrimitivePortDefinitionExpression primitivePortDefinitionExpression) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("not implemented");
+      PrimitivePortDefinitionExpression portDefExpr) {
+    log.debug("analyzing type of primitive port definition expression '"
+        + portDefExpr.toString() + "'");
+    // two things to check:
+    // 1. the port signal expression "names a type", i.e. it is a TypeTypeValue
+    // TODO
+    // 2. every attribute "names a type"
+    // TODO
+
+    this.type = TypeTypeValue.getInstance();
   }
 
   class TypeError extends Error {
