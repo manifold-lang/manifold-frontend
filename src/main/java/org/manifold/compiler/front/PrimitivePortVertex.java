@@ -1,5 +1,7 @@
 package org.manifold.compiler.front;
 
+import java.io.BufferedWriter;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,6 +36,21 @@ public class PrimitivePortVertex extends ExpressionVertex {
     // TODO(murphy) attributes
     Map<String, TypeValue> attributes = new HashMap<>();
     port = new PortTypeValue(signalType, attributes);
+  }
+
+  @Override
+  public void writeToDOTFile(BufferedWriter writer) throws IOException {
+    String objectID = Integer.toString(System.identityHashCode(this));
+    String label = this.toString();
+    writer.write(objectID);
+    writer.write(" [");
+    writer.write("label=\"");
+    writer.write(objectID);
+    writer.write("\n");
+    writer.write(label);
+    writer.write("\"");
+    writer.write("];");
+    writer.newLine();
   }
 
 }
