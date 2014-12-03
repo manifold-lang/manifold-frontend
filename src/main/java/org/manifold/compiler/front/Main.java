@@ -16,6 +16,7 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Options;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+import org.manifold.compiler.BooleanTypeValue;
 import org.manifold.compiler.BooleanValue;
 import org.manifold.compiler.Frontend;
 import org.manifold.compiler.IntegerValue;
@@ -118,12 +119,29 @@ public class Main implements Frontend {
       }
     }
 
+    // cheating with BOTH hands.
+    defaultNamespace.getPrivateScope().defineVariable(
+        new VariableIdentifier(defaultNamespaceID, "Bool"));
+    defaultNamespace.getPrivateScope().assignVariable(
+        new VariableIdentifier(defaultNamespaceID, "Bool"),
+        new LiteralExpression(BooleanTypeValue.getInstance()));
+
     log.debug("top-level identifiers:");
     for (VariableIdentifier id :
         defaultNamespace.getPrivateScope().getSymbolIdentifiers()) {
       log.debug(id);
     }
 
+    // let's see if we can do this before static type-checking
+    ExpressionGraphBuilder exprGraphBuilder = new ExpressionGraphBuilder(
+        expressions, namespaces);
+    ExpressionGraph exprGraph = exprGraphBuilder.build();
+
+    log.debug("writing out expression graph");
+    File exprGraphDot = new File(inputFile.getName() + ".exprs.dot");
+    exprGraph.writeDOTFile(exprGraphDot);
+
+    /*
     TypeChecker.typecheck(namespaces, defaultNamespace);
     log.debug("assigned the following types:");
     for (VariableIdentifier id :
@@ -140,9 +158,6 @@ public class Main implements Frontend {
     exprGraph.removeUnconnectedEdges();
     exprGraph.optimizeOutVariables();
 
-    File exprGraphDot = new File(inputFile.getName() + ".exprs.dot");
-    exprGraph.writeDOTFile(exprGraphDot);
-
     exprGraph.elaboratePrimitives();
     log.debug("instantiated primitives:");
     for (String s : exprGraph.getPrintableInstances()) {
@@ -150,8 +165,10 @@ public class Main implements Frontend {
     }
     exprGraph.elaborateConnections(schematic);
     exprGraph.writeSchematic(schematic);
+    */
 
     return schematic;
+
   }
 }
 

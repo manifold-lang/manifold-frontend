@@ -17,8 +17,23 @@ public class PrimitivePortVertex extends ExpressionVertex {
     return port;
   }
 
-  public PrimitivePortVertex(PrimitivePortDefinitionExpression primitivePort) {
+  private ExpressionEdge signalTypeEdge;
+  public ExpressionEdge getSignalTypeEdge() {
+    return signalTypeEdge;
+  }
+
+  private ExpressionEdge attributesEdge;
+  public ExpressionEdge getAttributesEdge() {
+    return attributesEdge;
+  }
+
+  public PrimitivePortVertex(PrimitivePortDefinitionExpression primitivePort,
+      ExpressionEdge signalTypeEdge, ExpressionEdge attributesEdge) {
     this.primitivePort = primitivePort;
+    this.signalTypeEdge = signalTypeEdge;
+    this.signalTypeEdge.setTarget(this);
+    this.attributesEdge = attributesEdge;
+    this.attributesEdge.setTarget(this);
   }
 
   @Override
@@ -31,6 +46,7 @@ public class PrimitivePortVertex extends ExpressionVertex {
   }
 
   public void elaborate(Scope scope) {
+    // TODO look through the edge(s) instead
     TypeValue signalType =
         primitivePort.getTypeValueExpression().evaluate(scope, TypeValue.class);
     // TODO(murphy) attributes
