@@ -83,9 +83,8 @@ public class Main implements Frontend {
       expressions.add(visitor.visit(expressionContext));
     }
 
-    System.out.println("expressions:");
-    System.out.print(expressions);
-    System.out.println();
+    log.debug("expressions:");
+    log.debug(expressions);
 
     Map<NamespaceIdentifier, Namespace> namespaces = new HashMap<>();
 
@@ -131,7 +130,21 @@ public class Main implements Frontend {
       }
     }
 
+    log.debug("top-level identifiers:");
+    for (VariableIdentifier id :
+        defaultNamespace.getPrivateScope().getSymbolIdentifiers()) {
+      log.debug(id);
+    }
+
     TypeChecker.typecheck(namespaces, defaultNamespace);
+    log.debug("assigned the following types:");
+    for (VariableIdentifier id :
+        defaultNamespace.getPrivateScope().getSymbolIdentifiers()) {
+      NamespaceIdentifier name = id.getNamespaceIdentifier();
+      Namespace ns = namespaces.get(name);
+      Variable v = ns.getPrivateScope().getVariable(id);
+      log.debug(v.getIdentifier() + " ::= " + v.getType());
+    }
 
     ExpressionGraph exprGraph = new ExpressionGraph(
         defaultNamespace.getPrivateScope());
@@ -143,6 +156,10 @@ public class Main implements Frontend {
     exprGraph.writeDOTFile(exprGraphDot);
 
     exprGraph.elaboratePrimitives();
+    log.debug("instantiated primitives:");
+    for (String s : exprGraph.getPrintableInstances()) {
+      log.debug(s);
+    }
     exprGraph.elaborateConnections(schematic);
     exprGraph.writeSchematic(schematic);
 
