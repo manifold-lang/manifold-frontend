@@ -24,12 +24,6 @@ public class ExpressionGraph {
 
   private static Logger log = LogManager.getLogger("ExpressionGraph");
 
-  private List<PrimitiveFunctionVertex> primitiveFunctionVertices =
-      new ArrayList<>();
-  public List<PrimitiveFunctionVertex> getPrimitiveFunctionVertices() {
-    return ImmutableList.copyOf(primitiveFunctionVertices);
-  }
-
   private Map<VariableIdentifier, VariableReferenceVertex> variableVertices =
       new HashMap<>();
   public Map<VariableIdentifier, VariableReferenceVertex> getVariableVertices()
@@ -54,45 +48,24 @@ public class ExpressionGraph {
     }
   }
 
-  private List<PrimitivePortVertex> primitivePortVertices =
-      new ArrayList<>();
-  public List<PrimitivePortVertex> getPrimitivePortVertices() {
-    return ImmutableList.copyOf(primitivePortVertices);
+  private List<ExpressionVertex> nonVariableVertices = new LinkedList<>();
+  public List<ExpressionVertex> getNonVariableVertices() {
+    return ImmutableList.copyOf(nonVariableVertices);
   }
-  public void addPrimitivePortVertex(PrimitivePortVertex v) {
-    primitivePortVertices.add(v);
-  }
-
-  private List<PrimitiveNodeVertex> primitiveNodeVertices =
-      new ArrayList<>();
-  public List<PrimitiveNodeVertex> getPrimitiveNodeVertices() {
-    return ImmutableList.copyOf(primitiveNodeVertices);
-  }
-  public void addPrimitiveNodeVertex(PrimitiveNodeVertex v) {
-    primitiveNodeVertices.add(v);
-  }
-
-  private List<ConstantValueVertex> constantValueVertices =
-      new ArrayList<>();
-  public List<ConstantValueVertex> getConstantValueVertices() {
-    return ImmutableList.copyOf(constantValueVertices);
-  }
-  public void addConstantValueVertex(ConstantValueVertex v) {
-    constantValueVertices.add(v);
+  public void addNonVariableVertex(ExpressionVertex v) {
+    nonVariableVertices.add(v);
   }
 
   public List<ExpressionVertex> getVertices() {
     List<ExpressionVertex> vertices = new LinkedList<>();
-    vertices.addAll(getPrimitiveFunctionVertices());
     vertices.addAll(getVariableVertices().values());
-    vertices.addAll(getPrimitivePortVertices());
-    vertices.addAll(getPrimitiveNodeVertices());
-    vertices.addAll(getConstantValueVertices());
+    vertices.addAll(getNonVariableVertices());
     return ImmutableList.copyOf(vertices);
   }
 
   private List<ExpressionEdge> edges = new ArrayList<>();
   public void addEdge(ExpressionEdge e) {
+    // TODO assert that both endpoints are in the graph
     edges.add(e);
   }
 

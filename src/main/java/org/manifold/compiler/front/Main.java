@@ -174,7 +174,9 @@ public class Main implements Frontend {
 }
 
 class ExpressionContextVisitor extends ManifoldBaseVisitor<Expression> {
-
+  
+  // TODO can we see if expression graph building is possible from here?
+  
   @Override
   public Expression visitAssignmentExpression(
       ManifoldParser.AssignmentExpressionContext context) {

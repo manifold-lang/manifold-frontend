@@ -1,36 +1,15 @@
 package org.manifold.compiler.front;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
-import org.manifold.compiler.ArrayTypeValue;
-import org.manifold.compiler.ArrayValue;
-import org.manifold.compiler.BooleanTypeValue;
-import org.manifold.compiler.BooleanValue;
-import org.manifold.compiler.ConnectionType;
-import org.manifold.compiler.ConnectionValue;
-import org.manifold.compiler.ConstraintType;
-import org.manifold.compiler.ConstraintValue;
-import org.manifold.compiler.IntegerTypeValue;
-import org.manifold.compiler.IntegerValue;
-import org.manifold.compiler.NilTypeValue;
-import org.manifold.compiler.NodeTypeValue;
-import org.manifold.compiler.NodeValue;
-import org.manifold.compiler.PortTypeValue;
-import org.manifold.compiler.PortValue;
-import org.manifold.compiler.RealTypeValue;
-import org.manifold.compiler.RealValue;
-import org.manifold.compiler.StringTypeValue;
-import org.manifold.compiler.StringValue;
-import org.manifold.compiler.TypeTypeValue;
 import org.manifold.compiler.UndefinedBehaviourError;
-import org.manifold.compiler.UserDefinedTypeValue;
 
 
-public class ExpressionGraphBuilder
-    implements ExpressionVisitor, FrontendValueVisitor {
+public class ExpressionGraphBuilder implements ExpressionVisitor {
 
   private static Logger log = LogManager.getLogger("ExpressionGraph");
 
@@ -115,22 +94,51 @@ public class ExpressionGraphBuilder
   @Override
   public void visit(LiteralExpression lExpr) {
     ConstantValueVertex v = new ConstantValueVertex(lExpr.getValue());
-    exprGraph.addConstantValueVertex(v);
+    exprGraph.addNonVariableVertex(v);
     this.lastVertex = v;
   }
 
   @Override
-  public void visit(TupleTypeValueExpression tupleTypeValueExpression) {
-    // TODO(murphy)
-    throw new UndefinedBehaviourError("don't know how to visit "
-        + "tuple type value expression");
+  public void visit(TupleTypeValueExpression tExpr) {
+    Map<String, ExpressionEdge> typeValueEdges = new HashMap<>();
+    for (Map.Entry<String, Expression> e 
+        : tExpr.getTypeValueExpressions().entrySet()) {
+      String identifier = e.getKey();
+      e.getValue().accept(this);
+      ExpressionEdge eTypeValue = new ExpressionEdge(lastVertex, null);
+      typeValueEdges.put(identifier, eTypeValue);
+      exprGraph.addEdge(eTypeValue);
+    }
+    Map<String, ExpressionEdge> defaultValueEdges = new HashMap<>();
+    for (Map.Entry<String, Expression> e 
+        : tExpr.getDefaultValueExpressions().entrySet()) {
+      String identifier = e.getKey();
+      e.getValue().accept(this);
+      ExpressionEdge eDefaultValue = new ExpressionEdge(lastVertex, null);
+      defaultValueEdges.put(identifier, eDefaultValue);
+      exprGraph.addEdge(eDefaultValue);
+    }
+    this.lastVertex = new TupleTypeValueVertex(
+        typeValueEdges, defaultValueEdges);
   }
   
   @Override
-  public void visit(FunctionTypeValueExpression functionTypeValueExpression) {
- // TODO(murphy)
-    throw new UndefinedBehaviourError("don't know how to visit "
-        + "function type value expression");
+  public void visit(FunctionTypeValueExpression fExpr) {
+    // get the vertex corresponding to the input type
+    fExpr.getInputTypeExpression().accept(this);
+    ExpressionVertex vIn = lastVertex;
+    ExpressionEdge eIn = new ExpressionEdge(vIn, null);
+    // then get the output type vertex
+    fExpr.getOutputTypeExpression().accept(this);
+    ExpressionVertex vOut = lastVertex;
+    ExpressionEdge eOut = new ExpressionEdge(vOut, null);
+    
+    FunctionTypeValueVertex vFunctionType = new FunctionTypeValueVertex(
+        fExpr, eIn, eOut);
+    exprGraph.addNonVariableVertex(vFunctionType);
+    exprGraph.addEdge(eIn);
+    exprGraph.addEdge(eOut);
+    
   }
   
   @Override
@@ -171,7 +179,7 @@ public class ExpressionGraphBuilder
     exprGraph.addEdge(eAttributes);
     PrimitivePortVertex vPort = new PrimitivePortVertex(
         pExpr, eSignalType, eAttributes);
-    exprGraph.addPrimitivePortVertex(vPort);
+    exprGraph.addNonVariableVertex(vPort);
     this.lastVertex = vPort;
   }
 
@@ -189,182 +197,8 @@ public class ExpressionGraphBuilder
     exprGraph.addEdge(eAttributes);
     PrimitiveNodeVertex vNode = new PrimitiveNodeVertex(
         nExpr, ePortType, eAttributes);
-    exprGraph.addPrimitiveNodeVertex(vNode);
+    exprGraph.addNonVariableVertex(vNode);
     this.lastVertex = vNode;
-  }
-
-  @Override
-  public void visit(ArrayTypeValue arg0) {
-    // TODO Auto-generated method stub
-
-  }
-
-  @Override
-  public void visit(TypeTypeValue arg0) {
-    // TODO Auto-generated method stub
-
-  }
-
-  @Override
-  public void visit(StringValue arg0) {
-    // TODO Auto-generated method stub
-
-  }
-
-  @Override
-  public void visit(StringTypeValue arg0) {
-    // TODO Auto-generated method stub
-
-  }
-
-  @Override
-  public void visit(PortValue arg0) {
-    // TODO Auto-generated method stub
-
-  }
-
-  @Override
-  public void visit(PortTypeValue arg0) {
-    // TODO Auto-generated method stub
-
-  }
-
-  @Override
-  public void visit(NodeValue arg0) {
-    // TODO Auto-generated method stub
-
-  }
-
-  @Override
-  public void visit(NodeTypeValue arg0) {
-    // TODO Auto-generated method stub
-
-  }
-
-  @Override
-  public void visit(NilTypeValue arg0) {
-    // TODO Auto-generated method stub
-
-  }
-
-  @Override
-  public void visit(IntegerValue arg0) {
-    // TODO Auto-generated method stub
-
-  }
-
-  @Override
-  public void visit(ConstraintValue arg0) {
-    // TODO Auto-generated method stub
-
-  }
-
-  @Override
-  public void visit(IntegerTypeValue arg0) {
-    // TODO Auto-generated method stub
-
-  }
-
-  @Override
-  public void visit(ConstraintType arg0) {
-    // TODO Auto-generated method stub
-
-  }
-
-  @Override
-  public void visit(ConnectionValue arg0) {
-    // TODO Auto-generated method stub
-
-  }
-
-  @Override
-  public void visit(ConnectionType arg0) {
-    // TODO Auto-generated method stub
-
-  }
-
-  @Override
-  public void visit(BooleanValue arg0) {
-    // TODO Auto-generated method stub
-
-  }
-
-  @Override
-  public void visit(BooleanTypeValue arg0) {
-    // TODO Auto-generated method stub
-
-  }
-
-  @Override
-  public void visit(ArrayValue arg0) {
-    // TODO Auto-generated method stub
-
-  }
-
-  @Override
-  public void visit(RealTypeValue arg0) {
-    // TODO Auto-generated method stub
-
-  }
-
-  @Override
-  public void visit(RealValue arg0) {
-    // TODO Auto-generated method stub
-
-  }
-
-  @Override
-  public void visit(UserDefinedTypeValue arg0) {
-    // TODO Auto-generated method stub
-
-  }
-
-  @Override
-  public void visit(PrimitiveFunctionValue pFunc) {
-    // TODO Auto-generated method stub
-
-  }
-
-  @Override
-  public void visit(TupleValue tuple) {
-    // TODO Auto-generated method stub
-
-  }
-
-  @Override
-  public void visit(TupleTypeValue tupleTypeValue) {
-    // TODO Auto-generated method stub
-
-  }
-
-  @Override
-  public void visit(FunctionValue functionValue) {
-    // TODO Auto-generated method stub
-
-  }
-
-  @Override
-  public void visit(FunctionTypeValue functionTypeValue) {
-    // TODO Auto-generated method stub
-
-  }
-
-  @Override
-  public void visit(EnumValue enumValue) {
-    // TODO Auto-generated method stub
-
-  }
-
-  @Override
-  public void visit(EnumTypeValue enumTypeValue) {
-    // TODO Auto-generated method stub
-
-  }
-
-  @Override
-  public void visit(UnknownTypeValue unknownTypeValue) {
-    // TODO Auto-generated method stub
-
   }
 
 }

@@ -4,6 +4,8 @@ import org.manifold.compiler.TypeValue;
 import org.manifold.compiler.Value;
 
 public abstract class Expression {
+  // TODO put these in ExpressionVertex
+  
   public abstract TypeValue getType(Scope scope);
   public abstract Value getValue(Scope scope);
   public abstract void verify(Scope scope) throws Exception;
