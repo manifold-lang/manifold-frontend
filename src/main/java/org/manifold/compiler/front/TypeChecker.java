@@ -218,4 +218,11 @@ public class TypeChecker implements ExpressionVisitor {
     }
   }
 
+  @Override
+  public void visit(
+      PrimitiveNodeDefinitionExpression primitiveNodeDefinitionExpression) {
+    // TODO(murphy)
+    this.type = TypeTypeValue.getInstance();
+  }
+
 }

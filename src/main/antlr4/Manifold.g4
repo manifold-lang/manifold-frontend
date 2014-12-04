@@ -55,7 +55,7 @@ expression:
   | namespacedIdentifier # VariableReferenceExpression
   | expression '=' expression # AssignmentExpression
   | 'primitive' 'port' typevalue (':' tupleTypeValue)? # PrimitivePortDefinitionExpression
-  | 'primitive' 'node' functionTypeValue (':' tupleTypeValue)? # PrimitiveNodeTypeValue
+  | 'primitive' 'node' functionTypeValue (':' tupleTypeValue)? # PrimitiveNodeDefinitionExpression
   ;
 
 EXPRESSION_TERMINATOR: ';';

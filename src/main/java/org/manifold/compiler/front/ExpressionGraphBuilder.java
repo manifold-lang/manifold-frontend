@@ -151,15 +151,32 @@ public class ExpressionGraphBuilder
     ExpressionEdge eSignalType = new ExpressionEdge(vSignalType, null);
     exprGraph.addEdge(eSignalType);
 
-    ExpressionEdge eAttributes = null;
     pExpr.getAttributesExpression().accept(this);
     ExpressionVertex vAttributes = lastVertex;
-    eAttributes = new ExpressionEdge(vAttributes, null);
+    ExpressionEdge eAttributes = new ExpressionEdge(vAttributes, null);
     exprGraph.addEdge(eAttributes);
     PrimitivePortVertex vPort = new PrimitivePortVertex(
         pExpr, eSignalType, eAttributes);
     exprGraph.addPrimitivePortVertex(vPort);
     this.lastVertex = vPort;
+  }
+
+  @Override
+  public void visit(
+      PrimitiveNodeDefinitionExpression nExpr) {
+    nExpr.getTypeValueExpression().accept(this);
+    ExpressionVertex vPortType = lastVertex;
+    ExpressionEdge ePortType = new ExpressionEdge(vPortType, null);
+    exprGraph.addEdge(ePortType);
+
+    nExpr.getAttributesExpression().accept(this);
+    ExpressionVertex vAttributes = lastVertex;
+    ExpressionEdge eAttributes = new ExpressionEdge(vAttributes, null);
+    exprGraph.addEdge(eAttributes);
+    PrimitiveNodeVertex vNode = new PrimitiveNodeVertex(
+        nExpr, ePortType, eAttributes);
+    exprGraph.addPrimitiveNodeVertex(vNode);
+    this.lastVertex = vNode;
   }
 
   @Override

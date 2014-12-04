@@ -27,6 +27,7 @@ import org.manifold.parser.ManifoldBaseVisitor;
 import org.manifold.parser.ManifoldLexer;
 import org.manifold.parser.ManifoldParser;
 import org.manifold.parser.ManifoldParser.ExpressionContext;
+import org.manifold.parser.ManifoldParser.FunctionTypeValueContext;
 import org.manifold.parser.ManifoldParser.NamespacedIdentifierContext;
 import org.manifold.parser.ManifoldParser.TupleTypeValueContext;
 import org.manifold.parser.ManifoldParser.TypevalueContext;
@@ -120,6 +121,7 @@ public class Main implements Frontend {
     }
 
     // cheating with BOTH hands.
+    // TODO ...something about this
     defaultNamespace.getPrivateScope().defineVariable(
         new VariableIdentifier(defaultNamespaceID, "Bool"));
     defaultNamespace.getPrivateScope().assignVariable(
@@ -211,14 +213,23 @@ class ExpressionContextVisitor extends ManifoldBaseVisitor<Expression> {
     return new LiteralExpression(new TupleValue(anonymousTupleType, values));
   }
 
-  // TODO(murphy)
-  /*
   @Override
-  public Expression visitPrimitiveNodeTypeValue(
-      ManifoldParser.PrimitiveNodeTypeValueContext context) {
-
+  public Expression visitPrimitiveNodeDefinitionExpression(
+      ManifoldParser.PrimitiveNodeDefinitionExpressionContext context) {
+    // extract port-mapping type
+    FunctionTypeValueContext typeCtx = context.functionTypeValue();
+    Expression typevalue = typeCtx.accept(this);
+    // are there any attributes?
+    if (context.tupleTypeValue() != null) {
+      TupleTypeValueContext attributeTypesContext = context.tupleTypeValue();
+      // TODO(murphy) the default expression visitor does not work here;
+      // we need a visitTupleType() or visitTupleTypeValue()
+      Expression attributes = attributeTypesContext.accept(this);
+      return new PrimitiveNodeDefinitionExpression(typevalue, attributes);
+    } else {
+      return new PrimitiveNodeDefinitionExpression(typevalue);
+    }
   }
-  */
 
   @Override
   public Expression visitPrimitivePortDefinitionExpression(

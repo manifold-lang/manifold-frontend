@@ -2,11 +2,8 @@ package org.manifold.compiler.front;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.manifold.compiler.PortTypeValue;
-import org.manifold.compiler.TypeValue;
 
 public class PrimitivePortVertex extends ExpressionVertex {
 
@@ -46,12 +43,8 @@ public class PrimitivePortVertex extends ExpressionVertex {
   }
 
   public void elaborate(Scope scope) {
-    // TODO look through the edge(s) instead
-    TypeValue signalType =
-        primitivePort.getTypeValueExpression().evaluate(scope, TypeValue.class);
-    // TODO(murphy) attributes
-    Map<String, TypeValue> attributes = new HashMap<>();
-    port = new PortTypeValue(signalType, attributes);
+ // TODO(murphy)
+    throw new UnsupportedOperationException("cannot elaborate primitive port");
   }
 
   @Override

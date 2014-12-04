@@ -8,5 +8,7 @@ public interface ExpressionVisitor {
   void visit(VariableReferenceExpression variableReferenceExpression);
   void visit(PrimitivePortDefinitionExpression
       primitivePortDefinitionExpression);
+  void visit(PrimitiveNodeDefinitionExpression
+      primitiveNodeDefinitionExpression);
 
 }

@@ -63,6 +63,15 @@ public class ExpressionGraph {
     primitivePortVertices.add(v);
   }
 
+  private List<PrimitiveNodeVertex> primitiveNodeVertices =
+      new ArrayList<>();
+  public List<PrimitiveNodeVertex> getPrimitiveNodeVertices() {
+    return ImmutableList.copyOf(primitiveNodeVertices);
+  }
+  public void addPrimitiveNodeVertex(PrimitiveNodeVertex v) {
+    primitiveNodeVertices.add(v);
+  }
+
   private List<ConstantValueVertex> constantValueVertices =
       new ArrayList<>();
   public List<ConstantValueVertex> getConstantValueVertices() {
@@ -77,6 +86,7 @@ public class ExpressionGraph {
     vertices.addAll(getPrimitiveFunctionVertices());
     vertices.addAll(getVariableVertices().values());
     vertices.addAll(getPrimitivePortVertices());
+    vertices.addAll(getPrimitiveNodeVertices());
     vertices.addAll(getConstantValueVertices());
     return ImmutableList.copyOf(vertices);
   }
