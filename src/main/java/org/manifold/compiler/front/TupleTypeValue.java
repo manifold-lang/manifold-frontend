@@ -1,6 +1,6 @@
 package org.manifold.compiler.front;
 
-import java.util.List;
+import java.util.Map;
 
 import org.manifold.compiler.SchematicValueVisitor;
 import org.manifold.compiler.TypeValue;
@@ -8,7 +8,7 @@ import org.manifold.compiler.UndefinedBehaviourError;
 
 public class TupleTypeValue extends TypeValue {
 
-  private final List<TypeValue> subtypes;
+  private final Map<String, TypeValue> subtypes;
   
   public int getSize() {
     return subtypes.size();
@@ -18,8 +18,7 @@ public class TupleTypeValue extends TypeValue {
     return subtypes.get(i);
   }
   
-  public TupleTypeValue(List<TypeValue> subtypes) {
-    //this.subtypes = ImmutableList.copyOf(subtypes);
+  public TupleTypeValue(Map<String, TypeValue> subtypes) {
     this.subtypes = subtypes;
   }
   

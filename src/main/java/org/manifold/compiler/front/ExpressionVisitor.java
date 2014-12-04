@@ -10,5 +10,7 @@ public interface ExpressionVisitor {
       primitivePortDefinitionExpression);
   void visit(PrimitiveNodeDefinitionExpression
       primitiveNodeDefinitionExpression);
+  void visit(TupleTypeValueExpression tupleTypeValueExpression);
+  void visit(FunctionTypeValueExpression functionTypeValueExpression);
 
 }

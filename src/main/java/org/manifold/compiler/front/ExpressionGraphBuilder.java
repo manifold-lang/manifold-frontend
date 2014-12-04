@@ -120,6 +120,20 @@ public class ExpressionGraphBuilder
   }
 
   @Override
+  public void visit(TupleTypeValueExpression tupleTypeValueExpression) {
+    // TODO(murphy)
+    throw new UndefinedBehaviourError("don't know how to visit "
+        + "tuple type value expression");
+  }
+  
+  @Override
+  public void visit(FunctionTypeValueExpression functionTypeValueExpression) {
+ // TODO(murphy)
+    throw new UndefinedBehaviourError("don't know how to visit "
+        + "function type value expression");
+  }
+  
+  @Override
   public void visit(VariableAssignmentExpression vExpr) {
     // get the vertex corresponding to the lvalue
     vExpr.getLvalueExpression().accept(this);

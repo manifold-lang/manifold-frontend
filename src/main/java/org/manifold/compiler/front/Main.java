@@ -3,7 +3,6 @@ package org.manifold.compiler.front;
 import java.io.File;
 import java.io.FileInputStream;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -20,7 +19,6 @@ import org.manifold.compiler.BooleanTypeValue;
 import org.manifold.compiler.BooleanValue;
 import org.manifold.compiler.Frontend;
 import org.manifold.compiler.IntegerValue;
-import org.manifold.compiler.TypeValue;
 import org.manifold.compiler.UndefinedBehaviourError;
 import org.manifold.compiler.middle.Schematic;
 import org.manifold.parser.ManifoldBaseVisitor;
@@ -30,6 +28,7 @@ import org.manifold.parser.ManifoldParser.ExpressionContext;
 import org.manifold.parser.ManifoldParser.FunctionTypeValueContext;
 import org.manifold.parser.ManifoldParser.NamespacedIdentifierContext;
 import org.manifold.parser.ManifoldParser.TupleTypeValueContext;
+import org.manifold.parser.ManifoldParser.TupleTypeValueEntryContext;
 import org.manifold.parser.ManifoldParser.TypevalueContext;
 
 public class Main implements Frontend {
@@ -195,25 +194,6 @@ class ExpressionContextVisitor extends ManifoldBaseVisitor<Expression> {
   }
 
   @Override
-  public Expression visitTupleValue(ManifoldParser.TupleValueContext context) {
-    // get the expressions resulting from visiting all value entries
-    List<Expression> values = new ArrayList<Expression>();
-    for (ManifoldParser.TupleValueEntryContext subctx
-        : context.tupleValueEntry()) {
-      values.add(visit(subctx.expression()));
-    }
-    // construct a type
-    Scope emptyScope = new Scope();
-    List<TypeValue> types = new ArrayList<TypeValue>();
-    for (Expression e : values) {
-      types.add(e.getType(emptyScope));
-    }
-    TupleTypeValue anonymousTupleType = new TupleTypeValue(types);
-    // now we build a TupleValue from these subexpressions
-    return new LiteralExpression(new TupleValue(anonymousTupleType, values));
-  }
-
-  @Override
   public Expression visitPrimitiveNodeDefinitionExpression(
       ManifoldParser.PrimitiveNodeDefinitionExpressionContext context) {
     // extract port-mapping type
@@ -249,6 +229,42 @@ class ExpressionContextVisitor extends ManifoldBaseVisitor<Expression> {
     }
   }
 
+  @Override
+  public Expression visitTupleTypeValue(TupleTypeValueContext context) {
+    // visit all children
+    List<TupleTypeValueEntryContext> entries = context.tupleTypeValueEntry();
+    Map<String, Expression> typeExprs = new HashMap<>();
+    Map<String, Expression> defaultValues = new HashMap<>();
+    for (TupleTypeValueEntryContext entryCtx : entries) {
+      // each child has a typevalue, and may have 
+      // an identifier (named field)
+      // and an expression (default value)
+      Expression typevalue = entryCtx.typevalue().accept(this);
+      String identifier;
+      Integer nextAnonymousID = 0;
+      if (entryCtx.IDENTIFIER() != null) {
+        identifier = entryCtx.IDENTIFIER().getText();
+      } else {
+        // TODO verify this against the specification
+        identifier = nextAnonymousID.toString();
+        nextAnonymousID += 1;
+      }
+      typeExprs.put(identifier, typevalue);
+      if (entryCtx.expression() != null) {
+        Expression defaultValue = entryCtx.expression().accept(this);
+        defaultValues.put(identifier, defaultValue);
+      }
+    }
+    return new TupleTypeValueExpression(typeExprs, defaultValues);
+  }
+  
+  @Override
+  public Expression visitFunctionTypeValue(FunctionTypeValueContext context) {
+    Expression inputExpr = context.tupleTypeValue(0).accept(this);
+    Expression outputExpr = context.tupleTypeValue(1).accept(this);
+    return new FunctionTypeValueExpression(inputExpr, outputExpr);
+  }
+  
   @Override
   public Expression visitNamespacedIdentifier(
       NamespacedIdentifierContext context) {

@@ -225,4 +225,16 @@ public class TypeChecker implements ExpressionVisitor {
     this.type = TypeTypeValue.getInstance();
   }
 
+  @Override
+  public void visit(TupleTypeValueExpression tupleTypeValueExpression) {
+    // TODO(murphy)
+    this.type = TypeTypeValue.getInstance();
+  }
+
+  @Override
+  public void visit(FunctionTypeValueExpression functionTypeValueExpression) {
+    // TODO(murphy)
+    this.type = TypeTypeValue.getInstance();
+  }
+
 }

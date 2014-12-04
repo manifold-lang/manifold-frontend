@@ -21,7 +21,7 @@ tupleValue:
   '(' tupleValueEntry (',' tupleValueEntry)* ')' |
   '(' ')';
 
-functionTypeValue: tupleTypeValue '->' expression;
+functionTypeValue: tupleTypeValue '->' tupleTypeValue;
 functionValue: functionTypeValue '{' (expression EXPRESSION_TERMINATOR)* '}';
 
 ////////////////////////////////////////////////////////
