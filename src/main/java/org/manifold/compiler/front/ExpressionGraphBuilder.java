@@ -118,8 +118,10 @@ public class ExpressionGraphBuilder implements ExpressionVisitor {
       defaultValueEdges.put(identifier, eDefaultValue);
       exprGraph.addEdge(eDefaultValue);
     }
-    this.lastVertex = new TupleTypeValueVertex(
+    TupleTypeValueVertex vTuple = new TupleTypeValueVertex(
         typeValueEdges, defaultValueEdges);
+    exprGraph.addNonVariableVertex(vTuple);
+    this.lastVertex = vTuple;
   }
   
   @Override
