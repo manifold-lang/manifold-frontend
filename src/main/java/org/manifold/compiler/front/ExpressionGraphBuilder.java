@@ -138,7 +138,7 @@ public class ExpressionGraphBuilder implements ExpressionVisitor {
     exprGraph.addNonVariableVertex(vFunctionType);
     exprGraph.addEdge(eIn);
     exprGraph.addEdge(eOut);
-    
+    this.lastVertex =  vFunctionType;
   }
   
   @Override
