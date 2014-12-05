@@ -14,6 +14,8 @@ import org.manifold.compiler.middle.SchematicException;
 
 public class PrimitiveFunctionValue extends FunctionValue {
 
+  // TODO this class should probably be removed, it has been superseded
+  
   private final String primitiveName;
   public String getPrimitiveName() {
     return primitiveName;

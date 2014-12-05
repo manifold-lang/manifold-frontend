@@ -3,6 +3,10 @@ package org.manifold.compiler.front;
 import java.io.BufferedWriter;
 import java.io.IOException;
 
+import org.manifold.compiler.TypeTypeValue;
+import org.manifold.compiler.TypeValue;
+import org.manifold.compiler.Value;
+
 public class FunctionTypeValueVertex extends ExpressionVertex {
 
   private final FunctionTypeValueExpression typeExpr;
@@ -11,7 +15,8 @@ public class FunctionTypeValueVertex extends ExpressionVertex {
   }
   
   private FunctionTypeValue type = null;
-  public FunctionTypeValue getFunctionTypeValue() {
+  @Override
+  public Value getValue() {
     return this.type;
   }
   
@@ -58,6 +63,27 @@ public class FunctionTypeValueVertex extends ExpressionVertex {
     writer.write("\"");
     writer.write("];");
     writer.newLine();
+  }
+
+  @Override
+  public TypeValue getType() {
+    return TypeTypeValue.getInstance();
+  }
+
+  @Override
+  public void verify() throws Exception {
+    // TODO Auto-generated method stub
+    
+  }
+
+  @Override
+  public boolean isElaborationtimeKnowable() {
+    return true;
+  }
+
+  @Override
+  public boolean isRuntimeKnowable() {
+    return false;
   }
   
 }

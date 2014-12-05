@@ -138,23 +138,6 @@ public class ExpressionGraph {
     }
   }
 
-  // Remove every edge in the graph whose source or target is null.
-  public void removeUnconnectedEdges() {
-    Iterator<ExpressionEdge> edgeIt = edges.iterator();
-    while (edgeIt.hasNext()) {
-      ExpressionEdge edge = edgeIt.next();
-      if (edge.getSource() == null || edge.getTarget() == null) {
-        edgeIt.remove();
-      } else if (edge.getSource() instanceof TupleValueVertex) {
-        // all edges out of zero-length tuples are removed
-        TupleValueVertex tuple = (TupleValueVertex) edge.getSource();
-        if (tuple.getValue().getSize() == 0) {
-          edgeIt.remove();
-        }
-      }
-    }
-  }
-
   // Optimize variables out of the design by finding each edge from a variable
   // to a target and setting the source of that edge to
   // the source of the variable.

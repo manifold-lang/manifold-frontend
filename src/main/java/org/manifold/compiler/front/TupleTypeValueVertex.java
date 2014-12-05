@@ -5,12 +5,17 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.manifold.compiler.TypeTypeValue;
+import org.manifold.compiler.TypeValue;
+import org.manifold.compiler.Value;
+
 import com.google.common.collect.ImmutableMap;
 
 public class TupleTypeValueVertex extends ExpressionVertex {
 
   private TupleTypeValue type = null;
-  public TupleTypeValue getType() {
+  @Override
+  public Value getValue() {
     return type;
   }
   
@@ -63,6 +68,29 @@ public class TupleTypeValueVertex extends ExpressionVertex {
     writer.write("\"");
     writer.write("];");
     writer.newLine();
+  }
+
+  @Override
+  public TypeValue getType() {
+    return TypeTypeValue.getInstance();
+  }
+
+  @Override
+  public void verify() throws Exception {
+    // TODO Auto-generated method stub
+    
+  }
+
+  @Override
+  public boolean isElaborationtimeKnowable() {
+    // TODO Auto-generated method stub
+    return false;
+  }
+
+  @Override
+  public boolean isRuntimeKnowable() {
+    // TODO Auto-generated method stub
+    return false;
   }
   
 }

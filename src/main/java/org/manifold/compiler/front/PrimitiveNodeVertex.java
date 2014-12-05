@@ -4,13 +4,17 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 
 import org.manifold.compiler.NodeTypeValue;
+import org.manifold.compiler.TypeTypeValue;
+import org.manifold.compiler.TypeValue;
+import org.manifold.compiler.Value;
 
 public class PrimitiveNodeVertex extends ExpressionVertex {
 
   private final PrimitiveNodeDefinitionExpression primitiveNode;
 
   private NodeTypeValue node = null;
-  public NodeTypeValue getElaboratedNode() {
+  @Override
+  public Value getValue() {
     return node;
   }
 
@@ -63,6 +67,33 @@ public class PrimitiveNodeVertex extends ExpressionVertex {
     writer.write("\"");
     writer.write("];");
     writer.newLine();
+  }
+
+
+  @Override
+  public TypeValue getType() {
+    return TypeTypeValue.getInstance();
+  }
+
+
+  @Override
+  public void verify() throws Exception {
+    // TODO Auto-generated method stub
+    
+  }
+
+
+  @Override
+  public boolean isElaborationtimeKnowable() {
+    // TODO Auto-generated method stub
+    return false;
+  }
+
+
+  @Override
+  public boolean isRuntimeKnowable() {
+    // TODO Auto-generated method stub
+    return false;
   }
 
 }

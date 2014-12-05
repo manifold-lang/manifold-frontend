@@ -3,6 +3,9 @@ package org.manifold.compiler.front;
 import java.io.BufferedWriter;
 import java.io.IOException;
 
+import org.manifold.compiler.TypeValue;
+import org.manifold.compiler.Value;
+
 public class VariableReferenceVertex extends ExpressionVertex {
   private VariableIdentifier id;
   public VariableIdentifier getIdentifier() {
@@ -31,5 +34,35 @@ public class VariableReferenceVertex extends ExpressionVertex {
     writer.write("\"");
     writer.write("];");
     writer.newLine();
+  }
+
+  @Override
+  public TypeValue getType() {
+    // TODO
+    throw new UnsupportedOperationException("not implemented");
+  }
+
+  @Override
+  public Value getValue() {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("not implemented");
+  }
+
+  @Override
+  public void verify() throws Exception {
+    // TODO Auto-generated method stub
+    
+  }
+
+  @Override
+  public boolean isElaborationtimeKnowable() {
+    // TODO Auto-generated method stub
+    return false;
+  }
+
+  @Override
+  public boolean isRuntimeKnowable() {
+    // TODO Auto-generated method stub
+    return false;
   }
 }
