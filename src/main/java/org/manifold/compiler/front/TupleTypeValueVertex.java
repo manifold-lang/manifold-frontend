@@ -28,12 +28,16 @@ public class TupleTypeValueVertex extends ExpressionVertex {
       Map<String, ExpressionEdge> typeValueEdges,
       Map<String, ExpressionEdge> defaultValueEdges) {
     this.typeValueEdges = new HashMap<>(typeValueEdges);
-    for (ExpressionEdge e : this.typeValueEdges.values()) {
-      e.setTarget(this);
+    for (Map.Entry<String, ExpressionEdge> e 
+        : this.typeValueEdges.entrySet()) {
+      e.getValue().setTarget(this);
+      e.getValue().setName(e.getKey());
     }
     this.defaultValueEdges = new HashMap<>(defaultValueEdges);
-    for (ExpressionEdge e : this.defaultValueEdges.values()) {
-      e.setTarget(this);
+    for (Map.Entry<String, ExpressionEdge> e 
+        : this.defaultValueEdges.entrySet()) {
+      e.getValue().setTarget(this);
+      e.getValue().setName(e.getKey());
     }
   }
 

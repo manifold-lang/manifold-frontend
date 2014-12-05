@@ -30,8 +30,10 @@ public class FunctionTypeValueVertex extends ExpressionVertex {
     this.typeExpr = typeExpr;
     this.inputTypeEdge = inputTypeEdge;
     this.inputTypeEdge.setTarget(this);
+    this.inputTypeEdge.setName("input type");
     this.outputTypeEdge = outputTypeEdge;
     this.outputTypeEdge.setTarget(this);
+    this.outputTypeEdge.setName("output type");
   }
   
   @Override

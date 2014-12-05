@@ -30,8 +30,10 @@ public class PrimitiveNodeVertex extends ExpressionVertex {
     this.primitiveNode = primitiveNode;
     this.portTypeEdge = portTypeEdge;
     this.portTypeEdge.setTarget(this);
+    this.portTypeEdge.setName("port type");
     this.attributesEdge = attributesEdge;
     this.attributesEdge.setTarget(this);
+    this.attributesEdge.setName("attributes");
   }
 
   @Override
