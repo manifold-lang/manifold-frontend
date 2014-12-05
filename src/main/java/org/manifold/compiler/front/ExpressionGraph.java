@@ -137,7 +137,7 @@ public class ExpressionGraph {
       writer.newLine();
     }
   }
-
+  
   // Optimize variables out of the design by finding each edge from a variable
   // to a target and setting the source of that edge to
   // the source of the variable.

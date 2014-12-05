@@ -2,7 +2,10 @@ package org.manifold.compiler.front;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
+import org.manifold.compiler.NilTypeValue;
 import org.manifold.compiler.PortTypeValue;
 import org.manifold.compiler.TypeTypeValue;
 import org.manifold.compiler.TypeValue;
@@ -48,9 +51,37 @@ public class PrimitivePortVertex extends ExpressionVertex {
     }
   }
 
-  public void elaborate(Scope scope) {
- // TODO(murphy)
-    throw new UnsupportedOperationException("cannot elaborate primitive port");
+  public void elaborate() throws TypeMismatchException {
+    if (port != null) {
+      return;
+    }
+    // check that the signal type is really a type
+    ExpressionVertex signalTypeVertex = signalTypeEdge.getSource();
+    if (!(signalTypeVertex.getType()
+        .isSubtypeOf(TypeTypeValue.getInstance()))) {
+      throw new TypeMismatchException(
+          TypeTypeValue.getInstance(),
+          signalTypeVertex.getType());
+    }
+    TypeValue signalType = (TypeValue) signalTypeVertex.getValue();
+    
+    Map<String, TypeValue> attributesMap = new HashMap<>();
+    ExpressionVertex attributesVertex = attributesEdge.getSource();
+    // first check for NIL to see whether there are any attributes
+    if (!(attributesVertex.getType()
+        .isSubtypeOf(NilTypeValue.getInstance()))) {
+      // attributes are present, so check for the correct type
+      if (!(attributesVertex.getType()
+          .isSubtypeOf(TypeTypeValue.getInstance()))) {
+        throw new TypeMismatchException(
+            TypeTypeValue.getInstance(),
+            attributesVertex.getType());
+      }
+      // TODO: evaluate the expression and get the attributes
+      throw new UnsupportedOperationException(
+          "port with attributes not supported");
+    }
+    port = new PortTypeValue(signalType, attributesMap);
   }
 
   @Override

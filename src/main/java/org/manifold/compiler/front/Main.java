@@ -138,10 +138,10 @@ public class Main implements Frontend {
         expressions, namespaces);
     ExpressionGraph exprGraph = exprGraphBuilder.build();
 
-    log.debug("writing out expression graph");
+    log.debug("writing out initial expression graph");
     File exprGraphDot = new File(inputFile.getName() + ".exprs.dot");
     exprGraph.writeDOTFile(exprGraphDot);
-
+    
     /*
     TypeChecker.typecheck(namespaces, defaultNamespace);
     log.debug("assigned the following types:");
