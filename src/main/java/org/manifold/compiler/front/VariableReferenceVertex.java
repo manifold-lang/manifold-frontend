@@ -12,7 +12,8 @@ public class VariableReferenceVertex extends ExpressionVertex {
     return id;
   }
   
-  public VariableReferenceVertex(VariableIdentifier id) {
+  public VariableReferenceVertex(ExpressionGraph g, VariableIdentifier id) {
+    super(g);
     this.id = id;
   }
   

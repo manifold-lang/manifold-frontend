@@ -8,6 +8,14 @@ import org.manifold.compiler.Value;
 
 public abstract class ExpressionVertex {
 
+  private final ExpressionGraph exprGraph;
+  protected ExpressionGraph getExpressionGraph() {
+    return this.exprGraph;
+  }
+  public ExpressionVertex (ExpressionGraph exprGraph) {
+    this.exprGraph = exprGraph;
+  }
+  
   public abstract TypeValue getType();
   public abstract Value getValue();
   public abstract void verify() throws Exception;

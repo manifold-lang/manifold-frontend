@@ -13,7 +13,8 @@ public class ConstantValueVertex extends ExpressionVertex {
   public Value getValue() {
     return this.value;
   }
-  public ConstantValueVertex (Value value) {
+  public ConstantValueVertex (ExpressionGraph g, Value value) {
+    super(g);
     this.value = value;
   }
 

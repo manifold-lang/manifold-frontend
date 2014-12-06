@@ -29,9 +29,10 @@ public class TupleTypeValueVertex extends ExpressionVertex {
     return ImmutableMap.copyOf(defaultValueEdges);
   }
   
-  public TupleTypeValueVertex(
+  public TupleTypeValueVertex(ExpressionGraph g,
       Map<String, ExpressionEdge> typeValueEdges,
       Map<String, ExpressionEdge> defaultValueEdges) {
+    super(g);
     this.typeValueEdges = new HashMap<>(typeValueEdges);
     for (Map.Entry<String, ExpressionEdge> e 
         : this.typeValueEdges.entrySet()) {

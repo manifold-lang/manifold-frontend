@@ -126,6 +126,8 @@ public class Main implements Frontend {
     defaultNamespace.getPrivateScope().assignVariable(
         new VariableIdentifier(defaultNamespaceID, "Bool"),
         new LiteralExpression(BooleanTypeValue.getInstance()));
+    // TODO this currently doesn't work, since the variable reference
+    // that we get in the expression graph isn't targetted by anything!
 
     log.debug("top-level identifiers:");
     for (VariableIdentifier id :

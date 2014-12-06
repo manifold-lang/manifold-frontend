@@ -18,6 +18,7 @@ public class PrimitivePortVertex extends ExpressionVertex {
   private PortTypeValue port = null;
   @Override
   public Value getValue() {
+    // TODO make sure that elaborate() gets called first
     return port;
   }
 
@@ -31,8 +32,10 @@ public class PrimitivePortVertex extends ExpressionVertex {
     return attributesEdge;
   }
 
-  public PrimitivePortVertex(PrimitivePortDefinitionExpression primitivePort,
+  public PrimitivePortVertex(ExpressionGraph g,
+      PrimitivePortDefinitionExpression primitivePort,
       ExpressionEdge signalTypeEdge, ExpressionEdge attributesEdge) {
+    super(g);
     this.primitivePort = primitivePort;
     this.signalTypeEdge = signalTypeEdge;
     this.signalTypeEdge.setTarget(this);

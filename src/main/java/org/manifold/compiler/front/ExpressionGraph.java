@@ -44,7 +44,7 @@ public class ExpressionGraph {
     if (variableVertices.containsKey(vID)) {
       throw new MultipleDefinitionException(vID);
     } else {
-      variableVertices.put(vID, new VariableReferenceVertex(vID));
+      variableVertices.put(vID, new VariableReferenceVertex(this, vID));
     }
   }
 

@@ -29,8 +29,10 @@ public class PrimitiveNodeVertex extends ExpressionVertex {
   }
 
 
-  public PrimitiveNodeVertex(PrimitiveNodeDefinitionExpression primitiveNode,
+  public PrimitiveNodeVertex(ExpressionGraph g,
+      PrimitiveNodeDefinitionExpression primitiveNode,
       ExpressionEdge portTypeEdge, ExpressionEdge attributesEdge) {
+    super(g);
     this.primitiveNode = primitiveNode;
     this.portTypeEdge = portTypeEdge;
     this.portTypeEdge.setTarget(this);
@@ -49,9 +51,20 @@ public class PrimitiveNodeVertex extends ExpressionVertex {
     }
   }
 
-  public void elaborate(Scope scope) {
-    // TODO(murphy)
-    throw new UnsupportedOperationException("cannot elaborate primitive node");
+  public void elaborate() throws TypeMismatchException {
+    if (node != null) {
+      return;
+    }
+    ExpressionVertex portTypeVertex = portTypeEdge.getSource();
+    // must be (Type -> Type)
+    TypeValue typeConstructor = new FunctionTypeValue(
+        TypeTypeValue.getInstance(), TypeTypeValue.getInstance());
+    if (!(portTypeVertex.getType().equals(typeConstructor))) {
+      throw new TypeMismatchException(
+          typeConstructor, portTypeVertex.getType());
+    }
+    FunctionTypeValue portType = (FunctionTypeValue) portTypeVertex.getType();
+    // TODO finish up here
   }
 
   @Override

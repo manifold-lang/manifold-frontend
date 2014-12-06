@@ -93,7 +93,8 @@ public class ExpressionGraphBuilder implements ExpressionVisitor {
 
   @Override
   public void visit(LiteralExpression lExpr) {
-    ConstantValueVertex v = new ConstantValueVertex(lExpr.getValue());
+    ConstantValueVertex v = new ConstantValueVertex(exprGraph,
+        lExpr.getValue());
     exprGraph.addNonVariableVertex(v);
     this.lastVertex = v;
   }
@@ -118,7 +119,7 @@ public class ExpressionGraphBuilder implements ExpressionVisitor {
       defaultValueEdges.put(identifier, eDefaultValue);
       exprGraph.addEdge(eDefaultValue);
     }
-    TupleTypeValueVertex vTuple = new TupleTypeValueVertex(
+    TupleTypeValueVertex vTuple = new TupleTypeValueVertex(exprGraph,
         typeValueEdges, defaultValueEdges);
     exprGraph.addNonVariableVertex(vTuple);
     this.lastVertex = vTuple;
@@ -136,7 +137,7 @@ public class ExpressionGraphBuilder implements ExpressionVisitor {
     ExpressionEdge eOut = new ExpressionEdge(vOut, null);
     
     FunctionTypeValueVertex vFunctionType = new FunctionTypeValueVertex(
-        fExpr, eIn, eOut);
+        exprGraph, fExpr, eIn, eOut);
     exprGraph.addNonVariableVertex(vFunctionType);
     exprGraph.addEdge(eIn);
     exprGraph.addEdge(eOut);
@@ -179,7 +180,7 @@ public class ExpressionGraphBuilder implements ExpressionVisitor {
     ExpressionVertex vAttributes = lastVertex;
     ExpressionEdge eAttributes = new ExpressionEdge(vAttributes, null);
     exprGraph.addEdge(eAttributes);
-    PrimitivePortVertex vPort = new PrimitivePortVertex(
+    PrimitivePortVertex vPort = new PrimitivePortVertex(exprGraph,
         pExpr, eSignalType, eAttributes);
     exprGraph.addNonVariableVertex(vPort);
     this.lastVertex = vPort;
@@ -197,7 +198,7 @@ public class ExpressionGraphBuilder implements ExpressionVisitor {
     ExpressionVertex vAttributes = lastVertex;
     ExpressionEdge eAttributes = new ExpressionEdge(vAttributes, null);
     exprGraph.addEdge(eAttributes);
-    PrimitiveNodeVertex vNode = new PrimitiveNodeVertex(
+    PrimitiveNodeVertex vNode = new PrimitiveNodeVertex(exprGraph,
         nExpr, ePortType, eAttributes);
     exprGraph.addNonVariableVertex(vNode);
     this.lastVertex = vNode;
