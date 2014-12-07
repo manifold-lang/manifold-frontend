@@ -191,7 +191,7 @@ public class ExpressionGraphBuilder implements ExpressionVisitor {
     ExpressionEdge eAttributes = new ExpressionEdge(vAttributes, null);
     exprGraph.addEdge(eAttributes);
     PrimitivePortVertex vPort = new PrimitivePortVertex(exprGraph,
-        pExpr, eSignalType, eAttributes);
+        eSignalType, eAttributes);
     exprGraph.addNonVariableVertex(vPort);
     this.lastVertex = vPort;
   }
@@ -209,7 +209,7 @@ public class ExpressionGraphBuilder implements ExpressionVisitor {
     ExpressionEdge eAttributes = new ExpressionEdge(vAttributes, null);
     exprGraph.addEdge(eAttributes);
     PrimitiveNodeVertex vNode = new PrimitiveNodeVertex(exprGraph,
-        nExpr, ePortType, eAttributes);
+        ePortType, eAttributes);
     exprGraph.addNonVariableVertex(vNode);
     this.lastVertex = vNode;
   }

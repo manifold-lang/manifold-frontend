@@ -13,8 +13,6 @@ import org.manifold.compiler.Value;
 
 public class PrimitivePortVertex extends ExpressionVertex {
 
-  private final PrimitivePortDefinitionExpression primitivePort;
-
   private PortTypeValue port = null;
   @Override
   public Value getValue() {
@@ -33,10 +31,8 @@ public class PrimitivePortVertex extends ExpressionVertex {
   }
 
   public PrimitivePortVertex(ExpressionGraph g,
-      PrimitivePortDefinitionExpression primitivePort,
       ExpressionEdge signalTypeEdge, ExpressionEdge attributesEdge) {
     super(g);
-    this.primitivePort = primitivePort;
     this.signalTypeEdge = signalTypeEdge;
     this.signalTypeEdge.setTarget(this);
     this.signalTypeEdge.setName("signal type");
@@ -50,7 +46,7 @@ public class PrimitivePortVertex extends ExpressionVertex {
     if (port == null) {
       return "primitive port (not elaborated)";
     } else {
-      return "primitive port (" + primitivePort.toString() + ")";
+      return "primitive port (" + port.toString() + ")";
     }
   }
 
