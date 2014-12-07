@@ -2,10 +2,15 @@ package org.manifold.compiler.front;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
+import org.manifold.compiler.NilTypeValue;
 import org.manifold.compiler.NodeTypeValue;
+import org.manifold.compiler.PortTypeValue;
 import org.manifold.compiler.TypeTypeValue;
 import org.manifold.compiler.TypeValue;
+import org.manifold.compiler.UndefinedBehaviourError;
 import org.manifold.compiler.Value;
 
 public class PrimitiveNodeVertex extends ExpressionVertex {
@@ -47,10 +52,37 @@ public class PrimitiveNodeVertex extends ExpressionVertex {
     }
   }
 
+  private void extractPortTypes(TypeValue type, 
+      Map<String, PortTypeValue> portMap) throws TypeMismatchException {
+    if (!(type instanceof TupleTypeValue)) {
+      Map<String, TypeValue> x = new HashMap<>();
+      x.put("x", TypeTypeValue.getInstance());
+      throw new TypeMismatchException(
+          new TupleTypeValue(x),
+          type);
+    }
+    TupleTypeValue tupleType = (TupleTypeValue) type;
+    for (Map.Entry<String, TypeValue> e : tupleType.getSubtypes().entrySet()) {
+      if (!(e.getValue() instanceof PortTypeValue)) {
+        // we would like to throw a TypeMismatchException
+        throw new UndefinedBehaviourError(
+            "attempt to construct port with non-port type value");
+      }
+      PortTypeValue portType = (PortTypeValue) e.getValue();
+      if (portMap.containsKey(e.getKey())) {
+        throw new UndefinedBehaviourError(
+            "duplicate port '" + e.getKey() + "' on node");
+      } else {
+        portMap.put(e.getKey(), portType);
+      }
+    }
+  }
+  
   public void elaborate() throws Exception {
     if (node != null) {
       return;
     }
+    Map<String, PortTypeValue> portTypeMap = new HashMap<>();
     ExpressionVertex portTypeVertex = portTypeEdge.getSource();
     portTypeVertex.elaborate();
     // must be (Type) -> (Type)
@@ -70,7 +102,31 @@ public class PrimitiveNodeVertex extends ExpressionVertex {
           typeConstructor, portType);
     }
     
-    throw new UnsupportedOperationException("not finished implementing");
+    // check that both the input type and output type are tuple typevalues
+    // whose entries are PortTypeValue, then extract the identifier-typevalue
+    // pairs and add them to the port type map
+    extractPortTypes(portType.getInputType(), portTypeMap);
+    extractPortTypes(portType.getOutputType(), portTypeMap);
+    
+    Map<String, TypeValue> attributesMap = new HashMap<>();
+    ExpressionVertex attributesVertex = attributesEdge.getSource();
+    attributesVertex.elaborate();
+    if (!(attributesVertex.getType()
+        .isSubtypeOf(TypeTypeValue.getInstance()))) {
+      throw new TypeMismatchException(
+          TypeTypeValue.getInstance(),
+          attributesVertex.getType());
+    }
+    
+    // check for NIL
+    if (!(attributesVertex.getValue()
+        .equals(NilTypeValue.getInstance()))) {
+      // TODO: evaluate the expression and get the attributes
+      throw new UnsupportedOperationException(
+          "node with attributes not supported");
+    }
+    
+    this.node = new NodeTypeValue(attributesMap, portTypeMap);
   }
 
   @Override

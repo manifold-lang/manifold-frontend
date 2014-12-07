@@ -6,10 +6,16 @@ import org.manifold.compiler.SchematicValueVisitor;
 import org.manifold.compiler.TypeValue;
 import org.manifold.compiler.UndefinedBehaviourError;
 
+import com.google.common.collect.ImmutableMap;
+
 public class TupleTypeValue extends TypeValue {
 
   private final Map<String, TypeValue> subtypes;
   // TODO default values
+  
+  public Map<String, TypeValue> getSubtypes() {
+    return ImmutableMap.copyOf(subtypes);
+  }
   
   public int getSize() {
     return subtypes.size();

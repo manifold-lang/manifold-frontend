@@ -180,17 +180,23 @@ public class TestPrimitiveNodeVertex {
     assertTrue(v instanceof NodeTypeValue);
     NodeTypeValue node = (NodeTypeValue) v;
     // node has two ports
-    assertTrue(node.getPorts().size() == 2);
+    assertTrue("node does not have two ports",
+        node.getPorts().size() == 2);
     // node has a port called 'x'
-    assertTrue(node.getPorts().containsKey("x"));
+    assertTrue("node does not have 'x' port",
+        node.getPorts().containsKey("x"));
     // port 'x' on the node is an xIn
-    assertEquals(xIn.getValue(), node.getPorts().get("x"));
+    assertEquals("'x' port is not of type xIn",
+        xIn.getValue(), node.getPorts().get("x"));
     // node has a port called 'xbar'
-    assertTrue(node.getPorts().containsKey("xbar"));
+    assertTrue("node does not have 'xbar' port",
+        node.getPorts().containsKey("xbar"));
     // port 'xbar' on the node is an xOut
-    assertEquals(xOut.getValue(), node.getPorts().get("xbar"));
+    assertEquals("'xbar' port is not of type xOut",
+        xOut.getValue(), node.getPorts().get("xbar"));
     // node has no attributes
-    assertTrue(node.getAttributes().isEmpty());
+    assertTrue("node should not have any attributes",
+        node.getAttributes().isEmpty());
   }
   
 }
