@@ -9,6 +9,7 @@ import org.manifold.compiler.UndefinedBehaviourError;
 public class TupleTypeValue extends TypeValue {
 
   private final Map<String, TypeValue> subtypes;
+  // TODO default values
   
   public int getSize() {
     return subtypes.size();
@@ -20,6 +21,17 @@ public class TupleTypeValue extends TypeValue {
   
   public TupleTypeValue(Map<String, TypeValue> subtypes) {
     this.subtypes = subtypes;
+  }
+  
+  @Override
+  public String toString() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("( ");
+    for (TypeValue type : subtypes.values()) {
+      sb.append(type.toString()).append(" ");
+    }
+    sb.append(")");
+    return sb.toString();
   }
   
   @Override

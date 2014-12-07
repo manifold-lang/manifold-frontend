@@ -47,20 +47,30 @@ public class PrimitiveNodeVertex extends ExpressionVertex {
     }
   }
 
-  public void elaborate() throws TypeMismatchException {
+  public void elaborate() throws Exception {
     if (node != null) {
       return;
     }
     ExpressionVertex portTypeVertex = portTypeEdge.getSource();
-    // must be (Type -> Type)
+    portTypeVertex.elaborate();
+    // must be (Type) -> (Type)
     TypeValue typeConstructor = new FunctionTypeValue(
         TypeTypeValue.getInstance(), TypeTypeValue.getInstance());
-    if (!(portTypeVertex.getType().equals(typeConstructor))) {
+    if (!(portTypeVertex.getValue() instanceof FunctionTypeValue)) {
       throw new TypeMismatchException(
-          typeConstructor, portTypeVertex.getType());
+          typeConstructor, portTypeVertex.getValue());
     }
-    FunctionTypeValue portType = (FunctionTypeValue) portTypeVertex.getType();
-    // TODO finish up here
+    FunctionTypeValue portType = (FunctionTypeValue) portTypeVertex.getValue(); 
+    if (!(portType.getInputType().isSubtypeOf(TypeTypeValue.getInstance()))) {
+      throw new TypeMismatchException(
+          typeConstructor, portType);
+    }
+    if (!(portType.getOutputType().isSubtypeOf(TypeTypeValue.getInstance()))) {
+      throw new TypeMismatchException(
+          typeConstructor, portType);
+    }
+    
+    throw new UnsupportedOperationException("not finished implementing");
   }
 
   @Override

@@ -63,19 +63,11 @@ public class VariableReferenceVertex extends ExpressionVertex {
   
   @Override
   public TypeValue getType() {
-    if (type == null) {
-      ExpressionEdge e = findAssigningEdge();
-      type = e.getSource().getType();
-    }
     return type;
   }
 
   @Override
   public Value getValue() {
-    if (value == null) {
-      ExpressionEdge e = findAssigningEdge();
-      value = e.getSource().getValue();
-    }
     return value;
   }
 
@@ -95,5 +87,13 @@ public class VariableReferenceVertex extends ExpressionVertex {
   public boolean isRuntimeKnowable() {
     // TODO Auto-generated method stub
     return false;
+  }
+
+  @Override
+  public void elaborate() throws Exception {
+    ExpressionEdge e = findAssigningEdge();
+    e.getSource().elaborate();
+    type = e.getSource().getType();
+    value = e.getSource().getValue();
   }
 }

@@ -48,5 +48,9 @@ public class ConstantValueVertex extends ExpressionVertex {
   public boolean isRuntimeKnowable() {
     return true;
   }
+  @Override
+  public void elaborate() throws Exception {
+    // no-op
+  }
 
 }

@@ -18,6 +18,7 @@ public abstract class ExpressionVertex {
   
   public abstract TypeValue getType();
   public abstract Value getValue();
+  public abstract void elaborate() throws Exception;
   public abstract void verify() throws Exception;
   public abstract boolean isElaborationtimeKnowable();
   public abstract boolean isRuntimeKnowable();

@@ -72,6 +72,17 @@ public class FunctionTypeValueVertex extends ExpressionVertex {
   }
 
   @Override
+  public void elaborate() throws Exception {
+    ExpressionVertex inputVertex = inputTypeEdge.getSource();
+    inputVertex.elaborate();
+    TypeValue inputType = TypeAssertions.assertIsType(inputVertex.getValue());
+    ExpressionVertex outputVertex = outputTypeEdge.getSource();
+    outputVertex.elaborate();
+    TypeValue outputType = TypeAssertions.assertIsType(outputVertex.getValue());
+    this.type = new FunctionTypeValue(inputType, outputType);
+  }
+  
+  @Override
   public boolean isElaborationtimeKnowable() {
     return true;
   }

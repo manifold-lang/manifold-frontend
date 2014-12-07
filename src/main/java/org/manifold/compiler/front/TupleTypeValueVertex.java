@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.manifold.compiler.TypeTypeValue;
 import org.manifold.compiler.TypeValue;
 import org.manifold.compiler.Value;
@@ -13,6 +15,8 @@ import com.google.common.collect.ImmutableMap;
 
 public class TupleTypeValueVertex extends ExpressionVertex {
 
+  private static Logger log = LogManager.getLogger("TupleTypeValueVertex");
+  
   private TupleTypeValue type = null;
   @Override
   public Value getValue() {
@@ -92,6 +96,19 @@ public class TupleTypeValueVertex extends ExpressionVertex {
   public boolean isRuntimeKnowable() {
     // TODO Auto-generated method stub
     return false;
+  }
+
+  @Override
+  public void elaborate() throws Exception {
+    Map<String, TypeValue> subtypes = new HashMap<>();
+    for (Map.Entry<String, ExpressionEdge> entry : typeValueEdges.entrySet()) {
+      ExpressionVertex vSource = entry.getValue().getSource();
+      vSource.elaborate();
+      TypeValue t = TypeAssertions.assertIsType(vSource.getValue());
+      subtypes.put(entry.getKey(), t);
+    }
+    // TODO default values
+    this.type = new TupleTypeValue(subtypes);
   }
   
 }
