@@ -15,7 +15,6 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Options;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
-import org.manifold.compiler.BooleanTypeValue;
 import org.manifold.compiler.BooleanValue;
 import org.manifold.compiler.Frontend;
 import org.manifold.compiler.IntegerValue;
@@ -47,10 +46,10 @@ public class Main implements Frontend {
     // TODO Auto-generated method stub
 
   }
-
+  
   @Override
   public Schematic invokeFrontend(CommandLine cmd) throws Exception {
-
+    
     File inputFile = Paths.get(cmd.getArgs()[0]).toFile();
 
     ManifoldLexer lexer = new ManifoldLexer(new ANTLRInputStream(
@@ -119,16 +118,6 @@ public class Main implements Frontend {
       }
     }
 
-    // cheating with BOTH hands.
-    // TODO ...something about this
-    defaultNamespace.getPrivateScope().defineVariable(
-        new VariableIdentifier(defaultNamespaceID, "Bool"));
-    defaultNamespace.getPrivateScope().assignVariable(
-        new VariableIdentifier(defaultNamespaceID, "Bool"),
-        new LiteralExpression(BooleanTypeValue.getInstance()));
-    // TODO this currently doesn't work, since the variable reference
-    // that we get in the expression graph isn't targetted by anything!
-
     log.debug("top-level identifiers:");
     for (VariableIdentifier id :
         defaultNamespace.getPrivateScope().getSymbolIdentifiers()) {
@@ -139,6 +128,9 @@ public class Main implements Frontend {
     ExpressionGraphBuilder exprGraphBuilder = new ExpressionGraphBuilder(
         expressions, namespaces);
     ExpressionGraph exprGraph = exprGraphBuilder.build();
+    
+    // TODO expression graph correctness checks:
+    // * all variables are assigned exactly once
 
     log.debug("writing out initial expression graph");
     File exprGraphDot = new File(inputFile.getName() + ".exprs.dot");

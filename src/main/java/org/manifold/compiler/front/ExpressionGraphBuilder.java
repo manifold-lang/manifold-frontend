@@ -159,12 +159,22 @@ public class ExpressionGraphBuilder implements ExpressionVisitor {
 
   @Override
   public void visit(VariableReferenceExpression vExpr) {
-    // since we have already constructed all variable reference vertices,
-    // this always exists (assuming vExpr's identifier is fully qualified)
-    try {
-      lastVertex = exprGraph.getVariableVertex(vExpr.getIdentifier());
-    } catch (VariableNotDefinedException e) {
-      throw new GraphConstructionError(e);
+    // first check if this is a reference to a reserved identifier
+    if (ReservedIdentifiers.getInstance()
+        .isReservedIdentifier(vExpr.getIdentifier())) {
+      // construct a constant value vertex with the identifier's value
+      ConstantValueVertex vReserved = new ConstantValueVertex(exprGraph,
+          ReservedIdentifiers.getInstance().getValue(vExpr.getIdentifier()));
+      exprGraph.addNonVariableVertex(vReserved);
+      lastVertex = vReserved;
+    } else {
+      // since we have already constructed all variable reference vertices,
+      // this vertex exists (assuming vExpr's identifier is fully qualified)
+      try {
+        lastVertex = exprGraph.getVariableVertex(vExpr.getIdentifier());
+      } catch (VariableNotDefinedException e) {
+        throw new GraphConstructionError(e);
+      }
     }
   }
 

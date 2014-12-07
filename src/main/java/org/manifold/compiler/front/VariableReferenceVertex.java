@@ -2,8 +2,10 @@ package org.manifold.compiler.front;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.util.List;
 
 import org.manifold.compiler.TypeValue;
+import org.manifold.compiler.UndefinedBehaviourError;
 import org.manifold.compiler.Value;
 
 public class VariableReferenceVertex extends ExpressionVertex {
@@ -37,16 +39,44 @@ public class VariableReferenceVertex extends ExpressionVertex {
     writer.newLine();
   }
 
+  private TypeValue type = null;
+  private Value value = null;
+  
+  private ExpressionEdge findAssigningEdge() {
+    ExpressionGraph g = getExpressionGraph();
+    List<ExpressionEdge> incoming = g.getEdgesToTarget(this);
+    if (incoming.size() == 1) {
+      return incoming.get(0);
+    } else if (incoming.size() == 0) {
+      // not assigned
+      // TODO we would like to throw this exception but we need a Variable
+      //throw new VariableNotAssignedException(id);
+      throw new UndefinedBehaviourError("variable '" + id + "' not assigned");
+    } else { 
+      // multiply assigned
+   // TODO we would like to throw this exception but we need a Variable
+      //throw new MultipleAssignmentException(id);
+      throw new UndefinedBehaviourError("variable '" + id + 
+          "' multiply assigned");
+    }
+  }
+  
   @Override
   public TypeValue getType() {
-    // TODO
-    throw new UnsupportedOperationException("not implemented");
+    if (type == null) {
+      ExpressionEdge e = findAssigningEdge();
+      type = e.getSource().getType();
+    }
+    return type;
   }
 
   @Override
   public Value getValue() {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("not implemented");
+    if (value == null) {
+      ExpressionEdge e = findAssigningEdge();
+      value = e.getSource().getValue();
+    }
+    return value;
   }
 
   @Override
