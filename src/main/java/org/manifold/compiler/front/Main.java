@@ -136,31 +136,7 @@ public class Main implements Frontend {
     File exprGraphDot = new File(inputFile.getName() + ".exprs.dot");
     exprGraph.writeDOTFile(exprGraphDot);
     
-    /*
-    TypeChecker.typecheck(namespaces, defaultNamespace);
-    log.debug("assigned the following types:");
-    for (VariableIdentifier id :
-        defaultNamespace.getPrivateScope().getSymbolIdentifiers()) {
-      NamespaceIdentifier name = id.getNamespaceIdentifier();
-      Namespace ns = namespaces.get(name);
-      Variable v = ns.getPrivateScope().getVariable(id);
-      log.debug(v.getIdentifier() + " ::= " + v.getType().toString());
-    }
-
-    ExpressionGraph exprGraph = new ExpressionGraph(
-        defaultNamespace.getPrivateScope());
-    exprGraph.buildFrom(expressions);
-    exprGraph.removeUnconnectedEdges();
-    exprGraph.optimizeOutVariables();
-
-    exprGraph.elaboratePrimitives();
-    log.debug("instantiated primitives:");
-    for (String s : exprGraph.getPrintableInstances()) {
-      log.debug(s);
-    }
-    exprGraph.elaborateConnections(schematic);
-    exprGraph.writeSchematic(schematic);
-    */
+    // TODO write out the schematic
 
     return schematic;
 
@@ -168,8 +144,6 @@ public class Main implements Frontend {
 }
 
 class ExpressionContextVisitor extends ManifoldBaseVisitor<Expression> {
-  
-  // TODO can we see if expression graph building is possible from here?
   
   @Override
   public Expression visitAssignmentExpression(
