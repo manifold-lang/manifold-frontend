@@ -66,16 +66,15 @@ public class PrimitivePortVertex extends ExpressionVertex {
     
     Map<String, TypeValue> attributesMap = new HashMap<>();
     ExpressionVertex attributesVertex = attributesEdge.getSource();
-    // first check for NIL to see whether there are any attributes
     if (!(attributesVertex.getType()
-        .isSubtypeOf(NilTypeValue.getInstance()))) {
-      // attributes are present, so check for the correct type
-      if (!(attributesVertex.getType()
-          .isSubtypeOf(TypeTypeValue.getInstance()))) {
-        throw new TypeMismatchException(
-            TypeTypeValue.getInstance(),
-            attributesVertex.getType());
-      }
+        .isSubtypeOf(TypeTypeValue.getInstance()))) {
+      throw new TypeMismatchException(
+          TypeTypeValue.getInstance(),
+          attributesVertex.getType());
+    }
+    // check for NIL
+    if (!(attributesVertex.getValue()
+        .equals(NilTypeValue.getInstance()))) {
       // TODO: evaluate the expression and get the attributes
       throw new UnsupportedOperationException(
           "port with attributes not supported");
