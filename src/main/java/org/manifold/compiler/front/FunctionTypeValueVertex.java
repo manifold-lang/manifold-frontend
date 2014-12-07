@@ -8,11 +8,6 @@ import org.manifold.compiler.TypeValue;
 import org.manifold.compiler.Value;
 
 public class FunctionTypeValueVertex extends ExpressionVertex {
-
-  private final FunctionTypeValueExpression typeExpr;
-  public FunctionTypeValueExpression getTypeExpression() {
-    return typeExpr;
-  }
   
   private FunctionTypeValue type = null;
   @Override
@@ -31,10 +26,8 @@ public class FunctionTypeValueVertex extends ExpressionVertex {
   }
   
   public FunctionTypeValueVertex(ExpressionGraph g,
-      FunctionTypeValueExpression typeExpr,
       ExpressionEdge inputTypeEdge, ExpressionEdge outputTypeEdge) {
     super(g);
-    this.typeExpr = typeExpr;
     this.inputTypeEdge = inputTypeEdge;
     this.inputTypeEdge.setTarget(this);
     this.inputTypeEdge.setName("input type");

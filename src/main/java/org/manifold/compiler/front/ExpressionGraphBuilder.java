@@ -137,7 +137,7 @@ public class ExpressionGraphBuilder implements ExpressionVisitor {
     ExpressionEdge eOut = new ExpressionEdge(vOut, null);
     
     FunctionTypeValueVertex vFunctionType = new FunctionTypeValueVertex(
-        exprGraph, fExpr, eIn, eOut);
+        exprGraph, eIn, eOut);
     exprGraph.addNonVariableVertex(vFunctionType);
     exprGraph.addEdge(eIn);
     exprGraph.addEdge(eOut);
