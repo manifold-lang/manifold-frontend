@@ -47,8 +47,6 @@ public class ExpressionGraphBuilder implements ExpressionVisitor {
   // in the default namespace, along with any variables in other namespaces
   // that were referenced from the default one.
   public ExpressionGraph build() throws MultipleDefinitionException {
-    NamespaceIdentifier defaultNamespaceID = new NamespaceIdentifier("");
-    Namespace defaultNamespace = namespaces.get(defaultNamespaceID);
     // TODO there needs to be a step before this one that resolves
     // all variable references to fully-qualified namespace identifiers
     // (namespace + identifier). for now it is simpler

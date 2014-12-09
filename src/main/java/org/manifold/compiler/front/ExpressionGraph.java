@@ -20,7 +20,7 @@ import com.google.common.collect.ImmutableMap;
 
 public class ExpressionGraph {
 
-  private static Logger log = LogManager.getLogger("ExpressionGraph");
+  private static Logger log = LogManager.getLogger(ExpressionGraph.class);
 
   private Map<VariableIdentifier, VariableReferenceVertex> variableVertices =
       new HashMap<>();
@@ -58,7 +58,7 @@ public class ExpressionGraph {
     List<ExpressionVertex> vertices = new LinkedList<>();
     vertices.addAll(getVariableVertices().values());
     vertices.addAll(getNonVariableVertices());
-    return ImmutableList.copyOf(vertices);
+    return vertices;
   }
 
   private List<ExpressionEdge> edges = new ArrayList<>();
