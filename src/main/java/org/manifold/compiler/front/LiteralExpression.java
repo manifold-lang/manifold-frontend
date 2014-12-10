@@ -45,7 +45,7 @@ public class LiteralExpression extends Expression {
   }
 
   @Override
-  public void accept(ExpressionVisitor visitor) {
+  public void accept(ExpressionVisitor visitor) throws Exception {
     visitor.visit(this);
   }
 

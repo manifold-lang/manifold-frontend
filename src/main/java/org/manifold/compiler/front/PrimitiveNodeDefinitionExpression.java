@@ -60,7 +60,7 @@ public class PrimitiveNodeDefinitionExpression extends Expression {
   }
 
   @Override
-  public void accept(ExpressionVisitor visitor) {
+  public void accept(ExpressionVisitor visitor) throws Exception {
     visitor.visit(this);
   }
 }

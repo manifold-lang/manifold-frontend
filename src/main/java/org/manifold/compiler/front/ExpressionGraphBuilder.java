@@ -27,26 +27,10 @@ public class ExpressionGraphBuilder implements ExpressionVisitor {
   // visitor state
   private ExpressionVertex lastVertex;
 
-  class GraphConstructionError extends Error {
-    private static final long serialVersionUID = -4064007628180935285L;
-    private final Throwable cause;
-    @Override
-    public Throwable getCause() {
-      return cause;
-    }
-    public GraphConstructionError(Throwable cause) {
-      this.cause = cause;
-    }
-    @Override
-    public String getMessage() {
-      return cause.getMessage();
-    }
-  }
-
   // Builds and returns an expression graph for every expression
   // in the default namespace, along with any variables in other namespaces
   // that were referenced from the default one.
-  public ExpressionGraph build() throws MultipleDefinitionException {
+  public ExpressionGraph build() throws Exception {
     // TODO there needs to be a step before this one that resolves
     // all variable references to fully-qualified namespace identifiers
     // (namespace + identifier). for now it is simpler
@@ -98,7 +82,7 @@ public class ExpressionGraphBuilder implements ExpressionVisitor {
   }
 
   @Override
-  public void visit(TupleTypeValueExpression tExpr) {
+  public void visit(TupleTypeValueExpression tExpr) throws Exception {
     Map<String, ExpressionEdge> typeValueEdges = new HashMap<>();
     for (Map.Entry<String, Expression> e 
         : tExpr.getTypeValueExpressions().entrySet()) {
@@ -124,7 +108,7 @@ public class ExpressionGraphBuilder implements ExpressionVisitor {
   }
   
   @Override
-  public void visit(FunctionTypeValueExpression fExpr) {
+  public void visit(FunctionTypeValueExpression fExpr) throws Exception {
     // get the vertex corresponding to the input type
     fExpr.getInputTypeExpression().accept(this);
     ExpressionVertex vIn = lastVertex;
@@ -143,7 +127,7 @@ public class ExpressionGraphBuilder implements ExpressionVisitor {
   }
   
   @Override
-  public void visit(VariableAssignmentExpression vExpr) {
+  public void visit(VariableAssignmentExpression vExpr) throws Exception {
     // get the vertex corresponding to the lvalue
     vExpr.getLvalueExpression().accept(this);
     ExpressionVertex vLeft = lastVertex;
@@ -156,7 +140,8 @@ public class ExpressionGraphBuilder implements ExpressionVisitor {
   }
 
   @Override
-  public void visit(VariableReferenceExpression vExpr) {
+  public void visit(VariableReferenceExpression vExpr) 
+      throws GraphConstructionException {
     // first check if this is a reference to a reserved identifier
     if (ReservedIdentifiers.getInstance()
         .isReservedIdentifier(vExpr.getIdentifier())) {
@@ -171,14 +156,15 @@ public class ExpressionGraphBuilder implements ExpressionVisitor {
       try {
         lastVertex = exprGraph.getVariableVertex(vExpr.getIdentifier());
       } catch (VariableNotDefinedException e) {
-        throw new GraphConstructionError(e);
+        throw new GraphConstructionException(
+            "variable '" + vExpr.getIdentifier() + "' not defined");
       }
     }
   }
 
   @Override
   public void visit(
-      PrimitivePortDefinitionExpression pExpr) {
+      PrimitivePortDefinitionExpression pExpr) throws Exception {
     pExpr.getTypeValueExpression().accept(this);
     ExpressionVertex vSignalType = lastVertex;
     ExpressionEdge eSignalType = new ExpressionEdge(vSignalType, null);
@@ -196,7 +182,7 @@ public class ExpressionGraphBuilder implements ExpressionVisitor {
 
   @Override
   public void visit(
-      PrimitiveNodeDefinitionExpression nExpr) {
+      PrimitiveNodeDefinitionExpression nExpr) throws Exception {
     nExpr.getTypeValueExpression().accept(this);
     ExpressionVertex vPortType = lastVertex;
     ExpressionEdge ePortType = new ExpressionEdge(vPortType, null);
