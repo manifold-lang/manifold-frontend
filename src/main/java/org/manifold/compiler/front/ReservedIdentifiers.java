@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.manifold.compiler.BooleanTypeValue;
 import org.manifold.compiler.IntegerTypeValue;
+import org.manifold.compiler.NilTypeValue;
 import org.manifold.compiler.Value;
 
 public class ReservedIdentifiers {
@@ -19,6 +20,8 @@ public class ReservedIdentifiers {
   
   private ReservedIdentifiers() {
     NamespaceIdentifier defaultNamespace = new NamespaceIdentifier("");
+    addIdentifier(new VariableIdentifier(defaultNamespace,
+        "Nil"), NilTypeValue.getInstance());
     addIdentifier(new VariableIdentifier(defaultNamespace, 
         "Bool"), BooleanTypeValue.getInstance());
     addIdentifier(new VariableIdentifier(defaultNamespace, 
