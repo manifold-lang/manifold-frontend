@@ -5,8 +5,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
 import org.manifold.compiler.TypeTypeValue;
 import org.manifold.compiler.TypeValue;
 import org.manifold.compiler.Value;
@@ -14,8 +12,6 @@ import org.manifold.compiler.Value;
 import com.google.common.collect.ImmutableMap;
 
 public class TupleTypeValueVertex extends ExpressionVertex {
-
-  private static Logger log = LogManager.getLogger("TupleTypeValueVertex");
   
   private TupleTypeValue type = null;
   @Override
