@@ -68,9 +68,22 @@ public class ExpressionGraphBuilder implements ExpressionVisitor {
   }
 
   @Override
-  public void visit(FunctionInvocationExpression fExpr) {
-    throw new UndefinedBehaviourError("don't know how to visit "
-        + "function invocation expression");
+  public void visit(FunctionInvocationExpression fExpr) throws Exception {
+    // get the vertex corresponding to the function being called
+    fExpr.getFunctionExpression().accept(this);
+    ExpressionVertex vFunction = lastVertex;
+    ExpressionEdge eFunction = new ExpressionEdge(vFunction, null);
+    // then get the input vertex
+    fExpr.getInputExpression().accept(this);
+    ExpressionVertex vInput = lastVertex;
+    ExpressionEdge eInput = new ExpressionEdge(vInput, null);
+    
+    FunctionInvocationVertex vInvocation = new FunctionInvocationVertex(
+        exprGraph, eFunction, eInput);
+    exprGraph.addNonVariableVertex(vInvocation);
+    exprGraph.addEdge(eFunction);
+    exprGraph.addEdge(eInput);
+    this.lastVertex = vInvocation;
   }
 
   @Override
