@@ -199,4 +199,174 @@ public class TestPrimitiveNodeVertex {
         node.getAttributes().isEmpty());
   }
   
+  @Test
+  public void testElaborate_inputNil() 
+      throws Exception {
+    ExpressionGraph g = new ExpressionGraph();
+    NamespaceIdentifier defaultNamespace = new NamespaceIdentifier("");
+    
+    ConstantValueVertex nil = new ConstantValueVertex(g,
+        NilTypeValue.getInstance());
+    g.addNonVariableVertex(nil);
+    
+    PrimitivePortVertex vInPort = generatePort(g, 
+        BooleanTypeValue.getInstance());
+    VariableIdentifier idXIn = new VariableIdentifier(
+        defaultNamespace, "xIn");
+    g.createVariableVertex(idXIn);
+    VariableReferenceVertex xIn = g.getVariableVertex(idXIn);
+    // xIn = vInPort
+    ExpressionEdge eIn = new ExpressionEdge(vInPort, xIn);
+    g.addEdge(eIn);
+
+    PrimitivePortVertex vOutPort = generatePort(g, 
+        BooleanTypeValue.getInstance());
+    VariableIdentifier idXOut = new VariableIdentifier(
+        defaultNamespace, "xOut");
+    g.createVariableVertex(idXOut);
+    VariableReferenceVertex xOut = g.getVariableVertex(idXOut);
+    // xOut = vOutPort
+    ExpressionEdge eOut = new ExpressionEdge(vOutPort, xOut);
+    g.addEdge(eOut);
+    
+    Map<String, ExpressionEdge> inputMap = new HashMap<>();
+    ExpressionEdge eInputType = new ExpressionEdge(nil, null);
+    g.addEdge(eInputType);
+    inputMap.put("0", eInputType);
+    TupleTypeValueVertex vInputType = new TupleTypeValueVertex(g,
+        inputMap, new HashMap<>());
+    g.addNonVariableVertex(vInputType);
+    
+    Map<String, ExpressionEdge> outputMap = new HashMap<>();
+    ExpressionEdge eOutputType = new ExpressionEdge(xOut, null);
+    g.addEdge(eOutputType);
+    outputMap.put("x", eOutputType);
+    TupleTypeValueVertex vOutputType = new TupleTypeValueVertex(g,
+        outputMap, new HashMap<>());
+    g.addNonVariableVertex(vOutputType);
+    
+    ExpressionEdge eInputTuple = new ExpressionEdge(vInputType, null);
+    g.addEdge(eInputTuple);
+    ExpressionEdge eOutputTuple = new ExpressionEdge(vOutputType, null);
+    g.addEdge(eOutputTuple);
+    
+    FunctionTypeValueVertex vNodePorts = new FunctionTypeValueVertex(g, 
+        eInputTuple, eOutputTuple);
+    g.addNonVariableVertex(vNodePorts);
+    ExpressionEdge eNodePorts = new ExpressionEdge(vNodePorts, null);
+    g.addEdge(eNodePorts);
+    
+    ConstantValueVertex vAttributes = new ConstantValueVertex(g,
+        NilTypeValue.getInstance());
+    ExpressionEdge eAttributes = new ExpressionEdge(vAttributes, null);
+    g.addNonVariableVertex(vAttributes);
+    g.addEdge(eAttributes);
+    
+    PrimitiveNodeVertex vNode = new PrimitiveNodeVertex(g,
+        eNodePorts, eAttributes);
+    g.addNonVariableVertex(vNode);
+    
+    vNode.elaborate();
+    Value v = vNode.getValue();
+    assertTrue(v instanceof NodeTypeValue);
+    NodeTypeValue node = (NodeTypeValue) v;
+    // node has one ports
+    assertTrue("node does not have one port",
+        node.getPorts().size() == 1);
+    // node has a port called 'x'
+    assertTrue("node does not have 'x' port",
+        node.getPorts().containsKey("x"));
+    // port 'x' on the node is an xOut
+    assertEquals("'x' port is not of type xOut",
+        xOut.getValue(), node.getPorts().get("x"));
+    // node has no attributes
+    assertTrue("node should not have any attributes",
+        node.getAttributes().isEmpty());
+  }
+  
+  @Test
+  public void testElaborate_outputNil() 
+      throws Exception {
+    ExpressionGraph g = new ExpressionGraph();
+    NamespaceIdentifier defaultNamespace = new NamespaceIdentifier("");
+    
+    ConstantValueVertex nil = new ConstantValueVertex(g,
+        NilTypeValue.getInstance());
+    g.addNonVariableVertex(nil);
+    
+    PrimitivePortVertex vInPort = generatePort(g, 
+        BooleanTypeValue.getInstance());
+    VariableIdentifier idXIn = new VariableIdentifier(
+        defaultNamespace, "xIn");
+    g.createVariableVertex(idXIn);
+    VariableReferenceVertex xIn = g.getVariableVertex(idXIn);
+    // xIn = vInPort
+    ExpressionEdge eIn = new ExpressionEdge(vInPort, xIn);
+    g.addEdge(eIn);
+
+    PrimitivePortVertex vOutPort = generatePort(g, 
+        BooleanTypeValue.getInstance());
+    VariableIdentifier idXOut = new VariableIdentifier(
+        defaultNamespace, "xOut");
+    g.createVariableVertex(idXOut);
+    VariableReferenceVertex xOut = g.getVariableVertex(idXOut);
+    // xOut = vOutPort
+    ExpressionEdge eOut = new ExpressionEdge(vOutPort, xOut);
+    g.addEdge(eOut);
+    
+    Map<String, ExpressionEdge> inputMap = new HashMap<>();
+    ExpressionEdge eInputType = new ExpressionEdge(xIn, null);
+    g.addEdge(eInputType);
+    inputMap.put("x", eInputType);
+    TupleTypeValueVertex vInputType = new TupleTypeValueVertex(g,
+        inputMap, new HashMap<>());
+    g.addNonVariableVertex(vInputType);
+    
+    Map<String, ExpressionEdge> outputMap = new HashMap<>();
+    ExpressionEdge eOutputType = new ExpressionEdge(nil, null);
+    g.addEdge(eOutputType);
+    outputMap.put("0", eOutputType);
+    TupleTypeValueVertex vOutputType = new TupleTypeValueVertex(g,
+        outputMap, new HashMap<>());
+    g.addNonVariableVertex(vOutputType);
+    
+    ExpressionEdge eInputTuple = new ExpressionEdge(vInputType, null);
+    g.addEdge(eInputTuple);
+    ExpressionEdge eOutputTuple = new ExpressionEdge(vOutputType, null);
+    g.addEdge(eOutputTuple);
+    
+    FunctionTypeValueVertex vNodePorts = new FunctionTypeValueVertex(g, 
+        eInputTuple, eOutputTuple);
+    g.addNonVariableVertex(vNodePorts);
+    ExpressionEdge eNodePorts = new ExpressionEdge(vNodePorts, null);
+    g.addEdge(eNodePorts);
+    
+    ConstantValueVertex vAttributes = new ConstantValueVertex(g,
+        NilTypeValue.getInstance());
+    ExpressionEdge eAttributes = new ExpressionEdge(vAttributes, null);
+    g.addNonVariableVertex(vAttributes);
+    g.addEdge(eAttributes);
+    
+    PrimitiveNodeVertex vNode = new PrimitiveNodeVertex(g,
+        eNodePorts, eAttributes);
+    g.addNonVariableVertex(vNode);
+    
+    vNode.elaborate();
+    Value v = vNode.getValue();
+    assertTrue(v instanceof NodeTypeValue);
+    NodeTypeValue node = (NodeTypeValue) v;
+    // node has one ports
+    assertTrue("node does not have one port",
+        node.getPorts().size() == 1);
+    // node has a port called 'x'
+    assertTrue("node does not have 'x' port",
+        node.getPorts().containsKey("x"));
+    // port 'x' on the node is an xIn
+    assertEquals("'x' port is not of type xIn",
+        xIn.getValue(), node.getPorts().get("x"));
+    // node has no attributes
+    assertTrue("node should not have any attributes",
+        node.getAttributes().isEmpty());
+  }
+  
 }

@@ -63,6 +63,10 @@ public class PrimitiveNodeVertex extends ExpressionVertex {
     }
     TupleTypeValue tupleType = (TupleTypeValue) type;
     for (Map.Entry<String, TypeValue> e : tupleType.getSubtypes().entrySet()) {
+      // if any type value is NIL, don't construct a port
+      if (e.getValue().equals(NilTypeValue.getInstance())) {
+        continue;
+      }
       if (!(e.getValue() instanceof PortTypeValue)) {
         // we would like to throw a TypeMismatchException
         throw new UndefinedBehaviourError(
