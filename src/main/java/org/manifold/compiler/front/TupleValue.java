@@ -1,6 +1,6 @@
 package org.manifold.compiler.front;
 
-import java.util.List;
+import java.util.Map;
 
 import org.manifold.compiler.SchematicValueVisitor;
 import org.manifold.compiler.UndefinedBehaviourError;
@@ -8,7 +8,7 @@ import org.manifold.compiler.Value;
 
 public class TupleValue extends Value {
 
-  private final List<Expression> entries;
+  private final Map<String, Expression> entries;
   
   public int getSize() {
     return entries.size();
@@ -22,7 +22,7 @@ public class TupleValue extends Value {
     return entry(i).getValue(scope);
   }
   
-  public TupleValue(TupleTypeValue type, List<Expression> values) {
+  public TupleValue(TupleTypeValue type, Map<String, Expression> values) {
     super(type);
     // TODO check values against expected types
     this.entries = values;

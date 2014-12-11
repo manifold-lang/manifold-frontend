@@ -108,6 +108,13 @@ public class ExpressionGraphBuilder implements ExpressionVisitor {
   }
   
   @Override
+  public void visit(TupleValueExpression tExpr) throws Exception {
+    // TODO Auto-generated method stub
+    throw new UndefinedBehaviourError("don't know how to visit "
+        + "tuple value expression");
+  }
+  
+  @Override
   public void visit(FunctionTypeValueExpression fExpr) throws Exception {
     // get the vertex corresponding to the input type
     fExpr.getInputTypeExpression().accept(this);

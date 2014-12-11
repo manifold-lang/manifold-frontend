@@ -28,6 +28,8 @@ import org.manifold.parser.ManifoldParser.FunctionTypeValueContext;
 import org.manifold.parser.ManifoldParser.NamespacedIdentifierContext;
 import org.manifold.parser.ManifoldParser.TupleTypeValueContext;
 import org.manifold.parser.ManifoldParser.TupleTypeValueEntryContext;
+import org.manifold.parser.ManifoldParser.TupleValueContext;
+import org.manifold.parser.ManifoldParser.TupleValueEntryContext;
 import org.manifold.parser.ManifoldParser.TypevalueContext;
 
 public class Main implements Frontend {
@@ -226,6 +228,28 @@ class ExpressionContextVisitor extends ManifoldBaseVisitor<Expression> {
       }
     }
     return new TupleTypeValueExpression(typeExprs, defaultValues);
+  }
+  
+  @Override
+  public Expression visitTupleValue(TupleValueContext context) {
+    // visit all children
+    List<TupleValueEntryContext> entries = context.tupleValueEntry();
+    Map<String, Expression> valueExprs = new HashMap<>();
+    for (TupleValueEntryContext entryCtx : entries) {
+      // each child has a value, and may have an identifier (named field)
+      Expression value = entryCtx.expression().accept(this);
+      String identifier;
+      Integer nextAnonymousID = 0;
+      if (entryCtx.IDENTIFIER() != null) {
+        identifier = entryCtx.IDENTIFIER().getText();
+      } else {
+        // TODO verify this against the specification
+        identifier = nextAnonymousID.toString();
+        nextAnonymousID += 1;
+      }
+      valueExprs.put(identifier, value);
+    }
+    return new TupleValueExpression(valueExprs);
   }
   
   @Override

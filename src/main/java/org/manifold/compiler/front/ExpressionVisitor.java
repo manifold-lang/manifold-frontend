@@ -17,5 +17,6 @@ public interface ExpressionVisitor {
       throws Exception;
   void visit(FunctionTypeValueExpression functionTypeValueExpression) 
       throws Exception;
+  void visit(TupleValueExpression tupleValueExpression) throws Exception;
 
 }
