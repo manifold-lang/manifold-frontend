@@ -8,21 +8,17 @@ import org.manifold.compiler.Value;
 
 public class TupleValue extends Value {
 
-  private final Map<String, Expression> entries;
+  private final Map<String, Value> entries;
   
   public int getSize() {
     return entries.size();
   }
   
-  public Expression entry(int i) {
-    return entries.get(i);
+  public Value entry(String key) {
+    return entries.get(key);
   }
   
-  public Value getValue(int i, Scope scope) {
-    return entry(i).getValue(scope);
-  }
-  
-  public TupleValue(TupleTypeValue type, Map<String, Expression> values) {
+  public TupleValue(TupleTypeValue type, Map<String, Value> values) {
     super(type);
     // TODO check values against expected types
     this.entries = values;

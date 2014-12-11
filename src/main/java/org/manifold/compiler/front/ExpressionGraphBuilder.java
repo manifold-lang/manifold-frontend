@@ -6,7 +6,6 @@ import java.util.Map;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
-import org.manifold.compiler.UndefinedBehaviourError;
 
 
 public class ExpressionGraphBuilder implements ExpressionVisitor {
@@ -122,9 +121,18 @@ public class ExpressionGraphBuilder implements ExpressionVisitor {
   
   @Override
   public void visit(TupleValueExpression tExpr) throws Exception {
-    // TODO Auto-generated method stub
-    throw new UndefinedBehaviourError("don't know how to visit "
-        + "tuple value expression");
+    Map<String, ExpressionEdge> valueEdges = new HashMap<>();
+    for (Map.Entry<String, Expression> e 
+        : tExpr.getValueExpressions().entrySet()) {
+      String identifier = e.getKey();
+      e.getValue().accept(this);
+      ExpressionEdge eValue = new ExpressionEdge(lastVertex, null);
+      valueEdges.put(identifier, eValue);
+      exprGraph.addEdge(eValue);
+    }
+    TupleValueVertex vTuple = new TupleValueVertex(exprGraph, valueEdges);
+    exprGraph.addNonVariableVertex(vTuple);
+    this.lastVertex = vTuple;
   }
   
   @Override
