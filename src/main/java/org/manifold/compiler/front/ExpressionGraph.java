@@ -102,7 +102,7 @@ public class ExpressionGraph {
     FileWriter fw = new FileWriter(file);
     try (BufferedWriter writer = new BufferedWriter(fw)) {
       // write graph header and attributes
-      writer.write("digraph G {");
+      writer.write("digraph \"" + file.getName() + "\" {");
       writer.newLine();
       // write all vertices
       Set<ExpressionVertex> visited = new HashSet<ExpressionVertex>();
