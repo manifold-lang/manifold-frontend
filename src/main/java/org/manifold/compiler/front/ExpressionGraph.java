@@ -61,10 +61,20 @@ public class ExpressionGraph {
     return vertices;
   }
 
+  public void removeVertex(ExpressionVertex v) {
+    // remove all occurrences from map variableVertices
+    while (variableVertices.values().remove(v)) { }
+    // simple removal from nonVariableVertices
+    nonVariableVertices.remove(v);
+  }
+  
   private List<ExpressionEdge> edges = new ArrayList<>();
   public void addEdge(ExpressionEdge e) {
     // TODO assert that both endpoints are in the graph
     edges.add(e);
+  }
+  public void removeEdge(ExpressionEdge e) {
+    edges.remove(e);
   }
 
   public List<ExpressionEdge> getEdgesFromSource(ExpressionVertex v) {

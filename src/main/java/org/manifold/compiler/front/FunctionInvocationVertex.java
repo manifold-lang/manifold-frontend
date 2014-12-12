@@ -3,7 +3,9 @@ package org.manifold.compiler.front;
 import java.io.BufferedWriter;
 import java.io.IOException;
 
+import org.manifold.compiler.NodeTypeValue;
 import org.manifold.compiler.TypeValue;
+import org.manifold.compiler.UndefinedBehaviourError;
 import org.manifold.compiler.Value;
 
 public class FunctionInvocationVertex extends ExpressionVertex {
@@ -42,12 +44,6 @@ public class FunctionInvocationVertex extends ExpressionVertex {
   }
 
   @Override
-  public void elaborate() throws Exception {
-    // TODO Auto-generated method stub
-    
-  }
-
-  @Override
   public void verify() throws Exception {
     // TODO Auto-generated method stub
     
@@ -80,4 +76,36 @@ public class FunctionInvocationVertex extends ExpressionVertex {
     writer.newLine();
   }
 
+  @Override
+  public void elaborate() throws Exception {
+    // Elaborate argument
+    ExpressionVertex vInput = inputEdge.getSource();
+    vInput.elaborate();
+    // Elaborate function
+    ExpressionVertex vFunction = functionEdge.getSource();
+    vFunction.elaborate();
+    // now find out what kind of function we are about to invoke
+    Value function = vFunction.getValue();
+    if (function instanceof NodeTypeValue) {
+      // we're not calling a function; we're instantiating a node!
+      NodeTypeValue nodeType = (NodeTypeValue) function;
+      NodeValueVertex vNode = new NodeValueVertex(getExpressionGraph(),
+          nodeType, inputEdge);
+      // now inputEdge.target is vNode
+      getExpressionGraph().addNonVariableVertex(vNode);
+      // change source of all edges out from this vertex
+      // to have vNode as their source
+      for (ExpressionEdge e : getExpressionGraph().getEdgesFromSource(this)) {
+        e.setSource(vNode);
+      }
+      // destroy the function edge
+      getExpressionGraph().removeEdge(functionEdge);
+      // now remove this vertex from the graph
+      getExpressionGraph().removeVertex(this);
+    } else {
+      throw new UndefinedBehaviourError("don't know how to invoke '"
+          + function.toString() + "'");
+    }
+  }
+  
 }

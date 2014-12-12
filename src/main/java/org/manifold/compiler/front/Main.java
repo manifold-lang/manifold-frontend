@@ -4,9 +4,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.nio.file.Paths;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -47,6 +50,35 @@ public class Main implements Frontend {
   public void registerArguments(Options options) {
     // TODO Auto-generated method stub
 
+  }
+  
+  public static void elaborateFunctions(ExpressionGraph g) throws Exception {
+    // Maintain a set of unelaborated function invocations and
+    // iterate until this set is empty.
+    
+    Set<FunctionInvocationVertex> funcalls = new LinkedHashSet<>();
+    // Add all function invocations initially present in the graph
+    for (ExpressionVertex v : g.getNonVariableVertices()) {
+      if (v instanceof FunctionInvocationVertex) {
+        funcalls.add((FunctionInvocationVertex) v);
+      }
+    }
+    
+    // now proceed
+    while (!(funcalls.isEmpty())) {
+      // get next vertex
+      Iterator<FunctionInvocationVertex> iterator = funcalls.iterator();
+      FunctionInvocationVertex v = iterator.next();
+      funcalls.remove(v);
+      v.elaborate();
+      // TODO it would be more efficient for the vertex to tell us whether
+      // any new function invocations were created during elaboration
+      for (ExpressionVertex vNew : g.getNonVariableVertices()) {
+        if (vNew instanceof FunctionInvocationVertex) {
+          funcalls.add((FunctionInvocationVertex) vNew);
+        }
+      }
+    }
   }
   
   @Override
@@ -137,6 +169,12 @@ public class Main implements Frontend {
     log.debug("writing out initial expression graph");
     File exprGraphDot = new File(inputFile.getName() + ".exprs.dot");
     exprGraph.writeDOTFile(exprGraphDot);
+    
+    elaborateFunctions(exprGraph);
+    
+    log.debug("writing out expression graph after function elaboration");
+    File elaboratedDot = new File(inputFile.getName() + ".elaborated.dot");
+    exprGraph.writeDOTFile(elaboratedDot);
     
     // TODO write out the schematic
 
