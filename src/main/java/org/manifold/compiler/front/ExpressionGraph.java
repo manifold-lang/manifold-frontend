@@ -144,6 +144,7 @@ public class ExpressionGraph {
       writer.write("}");
       writer.newLine();
     }
+    fw.close();
   }
 
 }

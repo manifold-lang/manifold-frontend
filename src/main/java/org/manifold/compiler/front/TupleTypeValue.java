@@ -12,6 +12,7 @@ public class TupleTypeValue extends TypeValue {
 
   private final Map<String, TypeValue> subtypes;
   // TODO default values
+  // TODO the order of labels is important
   
   public Map<String, TypeValue> getSubtypes() {
     return ImmutableMap.copyOf(subtypes);
