@@ -16,7 +16,6 @@ import org.manifold.compiler.Value;
 public class PrimitiveNodeVertex extends ExpressionVertex {
 
   private NodeTypeValue node = null;
-  // TODO getValue() should return a tuple of "port bindings" instead
   @Override
   public Value getValue() {
     return node;
