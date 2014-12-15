@@ -13,12 +13,12 @@ import com.google.common.collect.ImmutableMap;
 public class TupleValueVertex extends ExpressionVertex {
 
   private TupleValue value = null;
-  
+
   @Override
   public Value getValue() {
     return this.value;
   }
-  
+
   @Override
   public TypeValue getType() {
     if (value == null) {
@@ -27,17 +27,17 @@ public class TupleValueVertex extends ExpressionVertex {
       return value.getType();
     }
   }
-  
+
   private Map<String, ExpressionEdge> valueEdges;
   public Map<String, ExpressionEdge> getValueEdges() {
     return ImmutableMap.copyOf(valueEdges);
   }
-  
+
   public TupleValueVertex(ExpressionGraph g,
       Map<String, ExpressionEdge> valueEdges) {
     super(g);
     this.valueEdges = new HashMap<>(valueEdges);
-    for (Map.Entry<String, ExpressionEdge> e 
+    for (Map.Entry<String, ExpressionEdge> e
         : this.valueEdges.entrySet()) {
       e.getValue().setTarget(this);
       e.getValue().setName(e.getKey());
@@ -49,7 +49,7 @@ public class TupleValueVertex extends ExpressionVertex {
     if (value == null) {
       return "tuple value (not elaborated)";
     } else {
-      return "tuple value (" + value.toString() + ")";
+      return "tuple value " + value.toString();
     }
   }
 
@@ -71,7 +71,7 @@ public class TupleValueVertex extends ExpressionVertex {
   @Override
   public void verify() throws Exception {
     // TODO Auto-generated method stub
-    
+
   }
 
   @Override
@@ -100,5 +100,5 @@ public class TupleValueVertex extends ExpressionVertex {
     writer.write("];");
     writer.newLine();
   }
-  
+
 }

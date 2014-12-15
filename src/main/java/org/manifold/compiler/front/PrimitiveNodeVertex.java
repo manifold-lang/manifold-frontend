@@ -16,6 +16,7 @@ import org.manifold.compiler.Value;
 public class PrimitiveNodeVertex extends ExpressionVertex {
 
   private NodeTypeValue node = null;
+  // TODO getValue() should return a tuple of "port bindings" instead
   @Override
   public Value getValue() {
     return node;
@@ -48,11 +49,11 @@ public class PrimitiveNodeVertex extends ExpressionVertex {
     if (node == null) {
       return "primitive node (not elaborated)";
     } else {
-      return "primitive port (" + node.toString() + ")";
+      return "primitive node (" + node.toString() + ")";
     }
   }
 
-  private void extractPortTypes(TypeValue type, 
+  private void extractPortTypes(TypeValue type,
       Map<String, PortTypeValue> portMap) throws TypeMismatchException {
     if (!(type instanceof TupleTypeValue)) {
       Map<String, TypeValue> x = new HashMap<>();
@@ -81,7 +82,8 @@ public class PrimitiveNodeVertex extends ExpressionVertex {
       }
     }
   }
-  
+
+  @Override
   public void elaborate() throws Exception {
     if (node != null) {
       return;
@@ -96,7 +98,7 @@ public class PrimitiveNodeVertex extends ExpressionVertex {
       throw new TypeMismatchException(
           typeConstructor, portTypeVertex.getValue());
     }
-    FunctionTypeValue portType = (FunctionTypeValue) portTypeVertex.getValue(); 
+    FunctionTypeValue portType = (FunctionTypeValue) portTypeVertex.getValue();
     if (!(portType.getInputType().isSubtypeOf(TypeTypeValue.getInstance()))) {
       throw new TypeMismatchException(
           typeConstructor, portType);
@@ -105,13 +107,13 @@ public class PrimitiveNodeVertex extends ExpressionVertex {
       throw new TypeMismatchException(
           typeConstructor, portType);
     }
-    
+
     // check that both the input type and output type are tuple typevalues
     // whose entries are PortTypeValue, then extract the identifier-typevalue
     // pairs and add them to the port type map
     extractPortTypes(portType.getInputType(), portTypeMap);
     extractPortTypes(portType.getOutputType(), portTypeMap);
-    
+
     Map<String, TypeValue> attributesMap = new HashMap<>();
     ExpressionVertex attributesVertex = attributesEdge.getSource();
     attributesVertex.elaborate();
@@ -121,7 +123,7 @@ public class PrimitiveNodeVertex extends ExpressionVertex {
           TypeTypeValue.getInstance(),
           attributesVertex.getType());
     }
-    
+
     // check for NIL
     if (!(attributesVertex.getValue()
         .equals(NilTypeValue.getInstance()))) {
@@ -129,7 +131,7 @@ public class PrimitiveNodeVertex extends ExpressionVertex {
       throw new UnsupportedOperationException(
           "node with attributes not supported");
     }
-    
+
     this.node = new NodeTypeValue(attributesMap, portTypeMap);
   }
 
@@ -158,7 +160,7 @@ public class PrimitiveNodeVertex extends ExpressionVertex {
   @Override
   public void verify() throws Exception {
     // TODO Auto-generated method stub
-    
+
   }
 
 
