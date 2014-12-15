@@ -51,11 +51,11 @@ public class Main implements Frontend {
     // TODO Auto-generated method stub
 
   }
-  
+
   public static void elaborateFunctions(ExpressionGraph g) throws Exception {
     // Maintain a set of unelaborated function invocations and
     // iterate until this set is empty.
-    
+
     Set<FunctionInvocationVertex> funcalls = new LinkedHashSet<>();
     // Add all function invocations initially present in the graph
     for (ExpressionVertex v : g.getNonVariableVertices()) {
@@ -63,7 +63,7 @@ public class Main implements Frontend {
         funcalls.add((FunctionInvocationVertex) v);
       }
     }
-    
+
     // now proceed
     while (!(funcalls.isEmpty())) {
       // get next vertex
@@ -80,10 +80,10 @@ public class Main implements Frontend {
       }
     }
   }
-  
+
   @Override
   public Schematic invokeFrontend(CommandLine cmd) throws Exception {
-    
+
     File inputFile = Paths.get(cmd.getArgs()[0]).toFile();
 
     ManifoldLexer lexer = new ManifoldLexer(new ANTLRInputStream(
@@ -162,20 +162,20 @@ public class Main implements Frontend {
     ExpressionGraphBuilder exprGraphBuilder = new ExpressionGraphBuilder(
         expressions, namespaces);
     ExpressionGraph exprGraph = exprGraphBuilder.build();
-    
+
     // TODO expression graph correctness checks:
     // * all variables are assigned exactly once
 
     log.debug("writing out initial expression graph");
     File exprGraphDot = new File(inputFile.getName() + ".exprs.dot");
     exprGraph.writeDOTFile(exprGraphDot);
-    
+
     elaborateFunctions(exprGraph);
-    
+
     log.debug("writing out expression graph after function elaboration");
     File elaboratedDot = new File(inputFile.getName() + ".elaborated.dot");
     exprGraph.writeDOTFile(elaboratedDot);
-    
+
     // TODO write out the schematic
 
     return schematic;
@@ -184,7 +184,7 @@ public class Main implements Frontend {
 }
 
 class ExpressionContextVisitor extends ManifoldBaseVisitor<Expression> {
-  
+
   @Override
   public Expression visitAssignmentExpression(
       ManifoldParser.AssignmentExpressionContext context) {
@@ -203,6 +203,18 @@ class ExpressionContextVisitor extends ManifoldBaseVisitor<Expression> {
     );
   }
 
+  // TODO KEY INSIGHT: combine the port type/port attributes and
+  // node attributes in a single FunctionTypeValue signature.
+  // As an example, if we have port types xIn(a: Int) and xOut(b: Int)
+  // and want a node type xDev whose attributes are p,q: Bool,
+  // input port u: xIn, output port v: xOut, we can declare it like
+  //
+  // xDev = primitive node (u: xIn, p: Bool, q: Bool) -> (v: xOut);
+  //
+  // and instantiate it like
+  //
+  // vResult = xDev(u: (0: uVal, 1: (a: 3)), p: True, q: False, v: (b: 4))
+  //
   @Override
   public Expression visitPrimitiveNodeDefinitionExpression(
       ManifoldParser.PrimitiveNodeDefinitionExpressionContext context) {
@@ -246,7 +258,7 @@ class ExpressionContextVisitor extends ManifoldBaseVisitor<Expression> {
     Map<String, Expression> typeExprs = new HashMap<>();
     Map<String, Expression> defaultValues = new HashMap<>();
     for (TupleTypeValueEntryContext entryCtx : entries) {
-      // each child has a typevalue, and may have 
+      // each child has a typevalue, and may have
       // an identifier (named field)
       // and an expression (default value)
       Expression typevalue = entryCtx.typevalue().accept(this);
@@ -267,7 +279,7 @@ class ExpressionContextVisitor extends ManifoldBaseVisitor<Expression> {
     }
     return new TupleTypeValueExpression(typeExprs, defaultValues);
   }
-  
+
   @Override
   public Expression visitTupleValue(TupleValueContext context) {
     // visit all children
@@ -289,14 +301,14 @@ class ExpressionContextVisitor extends ManifoldBaseVisitor<Expression> {
     }
     return new TupleValueExpression(valueExprs);
   }
-  
+
   @Override
   public Expression visitFunctionTypeValue(FunctionTypeValueContext context) {
     Expression inputExpr = context.tupleTypeValue(0).accept(this);
     Expression outputExpr = context.tupleTypeValue(1).accept(this);
     return new FunctionTypeValueExpression(inputExpr, outputExpr);
   }
-  
+
   @Override
   public Expression visitNamespacedIdentifier(
       NamespacedIdentifierContext context) {

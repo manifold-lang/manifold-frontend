@@ -152,7 +152,9 @@ public class PrimitiveNodeVertex extends ExpressionVertex {
 
   @Override
   public TypeValue getType() {
-    return TypeTypeValue.getInstance();
+    // because this is a function, return a function type
+    // TODO type-check this as elaborate() does
+    return (TypeValue) portTypeEdge.getSource().getValue();
   }
 
 

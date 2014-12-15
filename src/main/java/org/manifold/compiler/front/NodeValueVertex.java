@@ -15,19 +15,23 @@ public class NodeValueVertex extends ExpressionVertex {
   public TypeValue getType() {
     return nodeType;
   }
-  
+
+  // TODO return a tuple of "port bindings" instead
   private NodeValue node;
   @Override
   public Value getValue() {
     return node;
   }
-  
+
+  private final FunctionTypeValue signature;
+
   private ExpressionEdge inputEdge;
-  
-  public NodeValueVertex(ExpressionGraph exprGraph,
-      NodeTypeValue nodeType, ExpressionEdge inputEdge) {
+
+  public NodeValueVertex(ExpressionGraph exprGraph, NodeTypeValue nodeType,
+      FunctionTypeValue signature, ExpressionEdge inputEdge) {
     super(exprGraph);
     this.nodeType = nodeType;
+    this.signature = signature;
     this.inputEdge = inputEdge;
     this.inputEdge.setTarget(this);
     this.inputEdge.setName("input");
@@ -36,13 +40,13 @@ public class NodeValueVertex extends ExpressionVertex {
   @Override
   public void elaborate() throws Exception {
     // TODO Auto-generated method stub
-    
+
   }
 
   @Override
   public void verify() throws Exception {
     // TODO Auto-generated method stub
-    
+
   }
 
   @Override
@@ -65,7 +69,7 @@ public class NodeValueVertex extends ExpressionVertex {
       return "node (" + node.toString() + ")";
     }
   }
-  
+
   @Override
   public void writeToDOTFile(BufferedWriter writer) throws IOException {
     String objectID = Integer.toString(System.identityHashCode(this));

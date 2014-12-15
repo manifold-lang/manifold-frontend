@@ -14,12 +14,12 @@ public class FunctionInvocationVertex extends ExpressionVertex {
   public ExpressionEdge getFunctionEdge() {
     return functionEdge;
   }
-  
+
   private ExpressionEdge inputEdge;
   public ExpressionEdge getInputEdge() {
     return inputEdge;
   }
-  
+
   public FunctionInvocationVertex(ExpressionGraph exprGraph,
       ExpressionEdge functionEdge, ExpressionEdge inputEdge) {
     super(exprGraph);
@@ -46,7 +46,7 @@ public class FunctionInvocationVertex extends ExpressionVertex {
   @Override
   public void verify() throws Exception {
     // TODO Auto-generated method stub
-    
+
   }
 
   @Override
@@ -89,8 +89,9 @@ public class FunctionInvocationVertex extends ExpressionVertex {
     if (function instanceof NodeTypeValue) {
       // we're not calling a function; we're instantiating a node!
       NodeTypeValue nodeType = (NodeTypeValue) function;
+      FunctionTypeValue signature = (FunctionTypeValue) vFunction.getType();
       NodeValueVertex vNode = new NodeValueVertex(getExpressionGraph(),
-          nodeType, inputEdge);
+          nodeType, signature, inputEdge);
       // now inputEdge.target is vNode
       getExpressionGraph().addNonVariableVertex(vNode);
       // change source of all edges out from this vertex
@@ -107,5 +108,5 @@ public class FunctionInvocationVertex extends ExpressionVertex {
           + function.toString() + "'");
     }
   }
-  
+
 }
