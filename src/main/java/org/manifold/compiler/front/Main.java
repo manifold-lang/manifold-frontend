@@ -224,8 +224,6 @@ class ExpressionContextVisitor extends ManifoldBaseVisitor<Expression> {
     // are there any attributes?
     if (context.tupleTypeValue() != null) {
       TupleTypeValueContext attributeTypesContext = context.tupleTypeValue();
-      // TODO(murphy) the default expression visitor does not work here;
-      // we need a visitTupleType() or visitTupleTypeValue()
       Expression attributes = attributeTypesContext.accept(this);
       return new PrimitiveNodeDefinitionExpression(typevalue, attributes);
     } else {
@@ -242,8 +240,6 @@ class ExpressionContextVisitor extends ManifoldBaseVisitor<Expression> {
     // are there any attributes?
     if (context.tupleTypeValue() != null) {
       TupleTypeValueContext attributeTypesContext = context.tupleTypeValue();
-      // TODO(murphy) the default expression visitor does not work here;
-      // we need a visitTupleType() or visitTupleTypeValue()
       Expression attributes = attributeTypesContext.accept(this);
       return new PrimitivePortDefinitionExpression(typevalue, attributes);
     } else {
