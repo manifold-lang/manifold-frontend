@@ -98,18 +98,10 @@ public class TestPrimitiveNodeVertex {
     ExpressionEdge eNodePorts = new ExpressionEdge(vNodePorts, null);
     g.addEdge(eNodePorts);
     
-    ConstantValueVertex vAttributes = new ConstantValueVertex(g,
-        NilTypeValue.getInstance());
-    ExpressionEdge eAttributes = new ExpressionEdge(vAttributes, null);
-    g.addNonVariableVertex(vAttributes);
-    g.addEdge(eAttributes);
-    
-    PrimitiveNodeVertex vNode = new PrimitiveNodeVertex(g,
-        eNodePorts, eAttributes);
+    PrimitiveNodeVertex vNode = new PrimitiveNodeVertex(g, eNodePorts);
     g.addNonVariableVertex(vNode);
     
     assertEquals(vNode, eNodePorts.getTarget());
-    assertEquals(vNode, eAttributes.getTarget());
   }
   
   @Test
@@ -165,14 +157,7 @@ public class TestPrimitiveNodeVertex {
     ExpressionEdge eNodePorts = new ExpressionEdge(vNodePorts, null);
     g.addEdge(eNodePorts);
     
-    ConstantValueVertex vAttributes = new ConstantValueVertex(g,
-        NilTypeValue.getInstance());
-    ExpressionEdge eAttributes = new ExpressionEdge(vAttributes, null);
-    g.addNonVariableVertex(vAttributes);
-    g.addEdge(eAttributes);
-    
-    PrimitiveNodeVertex vNode = new PrimitiveNodeVertex(g,
-        eNodePorts, eAttributes);
+    PrimitiveNodeVertex vNode = new PrimitiveNodeVertex(g, eNodePorts);
     g.addNonVariableVertex(vNode);
     
     vNode.elaborate();
@@ -256,14 +241,7 @@ public class TestPrimitiveNodeVertex {
     ExpressionEdge eNodePorts = new ExpressionEdge(vNodePorts, null);
     g.addEdge(eNodePorts);
     
-    ConstantValueVertex vAttributes = new ConstantValueVertex(g,
-        NilTypeValue.getInstance());
-    ExpressionEdge eAttributes = new ExpressionEdge(vAttributes, null);
-    g.addNonVariableVertex(vAttributes);
-    g.addEdge(eAttributes);
-    
-    PrimitiveNodeVertex vNode = new PrimitiveNodeVertex(g,
-        eNodePorts, eAttributes);
+    PrimitiveNodeVertex vNode = new PrimitiveNodeVertex(g, eNodePorts);
     g.addNonVariableVertex(vNode);
     
     vNode.elaborate();
@@ -341,14 +319,7 @@ public class TestPrimitiveNodeVertex {
     ExpressionEdge eNodePorts = new ExpressionEdge(vNodePorts, null);
     g.addEdge(eNodePorts);
     
-    ConstantValueVertex vAttributes = new ConstantValueVertex(g,
-        NilTypeValue.getInstance());
-    ExpressionEdge eAttributes = new ExpressionEdge(vAttributes, null);
-    g.addNonVariableVertex(vAttributes);
-    g.addEdge(eAttributes);
-    
-    PrimitiveNodeVertex vNode = new PrimitiveNodeVertex(g,
-        eNodePorts, eAttributes);
+    PrimitiveNodeVertex vNode = new PrimitiveNodeVertex(g, eNodePorts);
     g.addNonVariableVertex(vNode);
     
     vNode.elaborate();

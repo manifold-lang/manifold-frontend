@@ -21,26 +21,24 @@ public class PrimitiveNodeVertex extends ExpressionVertex {
     return node;
   }
 
-  private ExpressionEdge portTypeEdge;
-  public ExpressionEdge getPortTypeEdge() {
-    return portTypeEdge;
+  private FunctionTypeValue instantiationSignature = null;
+  @Override
+  public TypeValue getType() {
+    // because this is a function, return a function type
+    return instantiationSignature;
+  }
+  
+  private ExpressionEdge signatureEdge;
+  public ExpressionEdge getSignatureEdge() {
+    return signatureEdge;
   }
 
-  private ExpressionEdge attributesEdge;
-  public ExpressionEdge getAttributesEdge() {
-    return attributesEdge;
-  }
 
-
-  public PrimitiveNodeVertex(ExpressionGraph g,
-      ExpressionEdge portTypeEdge, ExpressionEdge attributesEdge) {
+  public PrimitiveNodeVertex(ExpressionGraph g, ExpressionEdge portTypeEdge) {
     super(g);
-    this.portTypeEdge = portTypeEdge;
-    this.portTypeEdge.setTarget(this);
-    this.portTypeEdge.setName("port type");
-    this.attributesEdge = attributesEdge;
-    this.attributesEdge.setTarget(this);
-    this.attributesEdge.setName("attributes");
+    this.signatureEdge = portTypeEdge;
+    this.signatureEdge.setTarget(this);
+    this.signatureEdge.setName("port type");
   }
 
   @Override
@@ -68,9 +66,8 @@ public class PrimitiveNodeVertex extends ExpressionVertex {
         continue;
       }
       if (!(e.getValue() instanceof PortTypeValue)) {
-        // we would like to throw a TypeMismatchException
-        throw new UndefinedBehaviourError(
-            "attempt to construct port with non-port type value");
+        // this is an attribute, not a port
+        continue;
       }
       PortTypeValue portType = (PortTypeValue) e.getValue();
       if (portMap.containsKey(e.getKey())) {
@@ -82,13 +79,105 @@ public class PrimitiveNodeVertex extends ExpressionVertex {
     }
   }
 
+  private void extractAttributes(TypeValue type,
+      Map<String, TypeValue> attrMap) throws TypeMismatchException {
+    if (!(type instanceof TupleTypeValue)) {
+      Map<String, TypeValue> x = new HashMap<>();
+      x.put("x", TypeTypeValue.getInstance());
+      throw new TypeMismatchException(
+          new TupleTypeValue(x),
+          type);
+    }
+    TupleTypeValue tupleType = (TupleTypeValue) type;
+    for (Map.Entry<String, TypeValue> e : tupleType.getSubtypes().entrySet()) {
+      // if any type value is NIL, don't set an attribute
+      if (e.getValue().equals(NilTypeValue.getInstance())) {
+        continue;
+      }
+      if (e.getValue() instanceof PortTypeValue) {
+        // this is a port, not an attribute
+        continue;
+      }
+      if (attrMap.containsKey(e.getKey())) {
+        throw new UndefinedBehaviourError(
+            "duplicate attribute '" + e.getKey() + "' on node");
+      } else {
+        attrMap.put(e.getKey(), e.getValue());
+      }
+    }
+  }
+  
+  private FunctionTypeValue constructInstantiationSignature(
+      FunctionTypeValue oldSig) {
+    Map<String, TypeValue> inputTypes = new HashMap<>();
+    Map<String, TypeValue> outputTypes = new HashMap<>();
+    
+    TupleTypeValue oldInputs = (TupleTypeValue) oldSig.getInputType();
+    TupleTypeValue oldOutputs = (TupleTypeValue) oldSig.getOutputType();
+    
+    // iterate over the old input types to build part of the new input type.
+    // when a non-Port type is encountered, this is an attribute;
+    // add it to the input types as-is.
+    // when a Port type is encountered, first check if it has any attributes.
+    // if it does, construct a tuple type value of the form
+    // (0: signal type, 1: (attributes)) and add it to the input types.
+    // otherwise, only add the signal type to the input types.
+    for (Map.Entry<String, TypeValue> e : oldInputs.getSubtypes().entrySet()) {
+      if (e.getValue().equals(NilTypeValue.getInstance())) {
+        continue;
+      }
+      String key = e.getKey();
+      if (e.getValue() instanceof PortTypeValue) {
+        PortTypeValue port = (PortTypeValue) e.getValue();
+        // are there any attributes?
+        if (port.getAttributes().isEmpty()) {
+          // just add the signal type
+          inputTypes.put(key, port.getSignalType());
+        } else {
+          // construct (signal type, attributes)
+          TupleTypeValue attrsType = new TupleTypeValue(port.getAttributes());
+          Map<String, TypeValue> sigType = new HashMap<>();
+          sigType.put("0", port.getSignalType());
+          sigType.put("1", attrsType);
+          inputTypes.put(key, new TupleTypeValue(sigType));
+        }
+      } else {
+        TypeValue attr = e.getValue();
+        inputTypes.put(key, attr);
+      }
+    }
+    
+    // iterate over the old output types to build the new output type and the
+    // remainder of the new input type.
+    // all types encountered here should be Port types;
+    // for each one, add the signal type to the output types,
+    // and add the attributes, if any exist, as a tuple to the input types.
+    for (Map.Entry<String, TypeValue> e : oldOutputs.getSubtypes().entrySet()) {
+      if (e.getValue().equals(NilTypeValue.getInstance())) {
+        continue;
+      }
+      String key = e.getKey();
+      PortTypeValue port = (PortTypeValue) e.getValue();
+      outputTypes.put(key, port.getSignalType());
+      if (!(port.getAttributes().isEmpty())) {
+        inputTypes.put(key, new TupleTypeValue(port.getAttributes()));
+      }
+    }
+    
+    return new FunctionTypeValue(
+        new TupleTypeValue(inputTypes), new TupleTypeValue(outputTypes));
+  }
+
   @Override
   public void elaborate() throws Exception {
     if (node != null) {
       return;
     }
+    
     Map<String, PortTypeValue> portTypeMap = new HashMap<>();
-    ExpressionVertex portTypeVertex = portTypeEdge.getSource();
+    Map<String, TypeValue> attributesMap = new HashMap<>();
+    
+    ExpressionVertex portTypeVertex = signatureEdge.getSource();
     portTypeVertex.elaborate();
     // must be (Type) -> (Type)
     TypeValue typeConstructor = new FunctionTypeValue(
@@ -107,31 +196,21 @@ public class PrimitiveNodeVertex extends ExpressionVertex {
           typeConstructor, portType);
     }
 
-    // check that both the input type and output type are tuple typevalues
-    // whose entries are PortTypeValue, then extract the identifier-typevalue
+    // look for PortTypeValues in the function signature,
+    // then extract the identifier-typevalue
     // pairs and add them to the port type map
     extractPortTypes(portType.getInputType(), portTypeMap);
     extractPortTypes(portType.getOutputType(), portTypeMap);
-
-    Map<String, TypeValue> attributesMap = new HashMap<>();
-    ExpressionVertex attributesVertex = attributesEdge.getSource();
-    attributesVertex.elaborate();
-    if (!(attributesVertex.getType()
-        .isSubtypeOf(TypeTypeValue.getInstance()))) {
-      throw new TypeMismatchException(
-          TypeTypeValue.getInstance(),
-          attributesVertex.getType());
-    }
-
-    // check for NIL
-    if (!(attributesVertex.getValue()
-        .equals(NilTypeValue.getInstance()))) {
-      // TODO: evaluate the expression and get the attributes
-      throw new UnsupportedOperationException(
-          "node with attributes not supported");
-    }
+    
+    // look for non-PortTypeValues in the input type only,
+    // then extract the pairs and add to the attributes map
+    // TODO check for and disallow attributes in the output type
+    extractAttributes(portType.getInputType(), attributesMap);
+    
+    // TODO check for ports/attributes with exactly the same key
 
     this.node = new NodeTypeValue(attributesMap, portTypeMap);
+    this.instantiationSignature = constructInstantiationSignature(portType);
   }
 
   @Override
@@ -148,15 +227,6 @@ public class PrimitiveNodeVertex extends ExpressionVertex {
     writer.write("];");
     writer.newLine();
   }
-
-
-  @Override
-  public TypeValue getType() {
-    // because this is a function, return a function type
-    // TODO type-check this as elaborate() does
-    return (TypeValue) portTypeEdge.getSource().getValue();
-  }
-
 
   @Override
   public void verify() throws Exception {

@@ -1,6 +1,5 @@
 package org.manifold.compiler.front;
 
-import org.manifold.compiler.NilTypeValue;
 import org.manifold.compiler.TypeValue;
 import org.manifold.compiler.Value;
 
@@ -10,20 +9,8 @@ public class PrimitiveNodeDefinitionExpression extends Expression {
     return typevalueExpr;
   }
 
-  private final Expression attributesExpr;
-  public Expression getAttributesExpression() {
-    return attributesExpr;
-  }
-
   public PrimitiveNodeDefinitionExpression (Expression typevalue) {
     this.typevalueExpr = typevalue;
-    this.attributesExpr = new LiteralExpression(NilTypeValue.getInstance());
-  }
-
-  public PrimitiveNodeDefinitionExpression (
-      Expression typevalue, Expression attributes) {
-    this.typevalueExpr = typevalue;
-    this.attributesExpr = attributes;
   }
 
   @Override

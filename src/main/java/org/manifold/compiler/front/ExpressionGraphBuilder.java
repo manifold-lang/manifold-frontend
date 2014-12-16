@@ -212,16 +212,11 @@ public class ExpressionGraphBuilder implements ExpressionVisitor {
   public void visit(
       PrimitiveNodeDefinitionExpression nExpr) throws Exception {
     nExpr.getTypeValueExpression().accept(this);
-    ExpressionVertex vPortType = lastVertex;
-    ExpressionEdge ePortType = new ExpressionEdge(vPortType, null);
-    exprGraph.addEdge(ePortType);
+    ExpressionVertex vSignature = lastVertex;
+    ExpressionEdge eSignature = new ExpressionEdge(vSignature, null);
+    exprGraph.addEdge(eSignature);
 
-    nExpr.getAttributesExpression().accept(this);
-    ExpressionVertex vAttributes = lastVertex;
-    ExpressionEdge eAttributes = new ExpressionEdge(vAttributes, null);
-    exprGraph.addEdge(eAttributes);
-    PrimitiveNodeVertex vNode = new PrimitiveNodeVertex(exprGraph,
-        ePortType, eAttributes);
+    PrimitiveNodeVertex vNode = new PrimitiveNodeVertex(exprGraph, eSignature);
     exprGraph.addNonVariableVertex(vNode);
     this.lastVertex = vNode;
   }

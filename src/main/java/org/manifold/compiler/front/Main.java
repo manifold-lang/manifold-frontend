@@ -221,14 +221,7 @@ class ExpressionContextVisitor extends ManifoldBaseVisitor<Expression> {
     // extract port-mapping type
     FunctionTypeValueContext typeCtx = context.functionTypeValue();
     Expression typevalue = typeCtx.accept(this);
-    // are there any attributes?
-    if (context.tupleTypeValue() != null) {
-      TupleTypeValueContext attributeTypesContext = context.tupleTypeValue();
-      Expression attributes = attributeTypesContext.accept(this);
-      return new PrimitiveNodeDefinitionExpression(typevalue, attributes);
-    } else {
-      return new PrimitiveNodeDefinitionExpression(typevalue);
-    }
+    return new PrimitiveNodeDefinitionExpression(typevalue);
   }
 
   @Override
