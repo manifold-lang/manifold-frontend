@@ -4,6 +4,7 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +22,7 @@ import org.manifold.compiler.TypeMismatchException;
 import org.manifold.compiler.TypeValue;
 import org.manifold.compiler.UndeclaredAttributeException;
 import org.manifold.compiler.UndeclaredIdentifierException;
+import org.manifold.compiler.UndefinedBehaviourError;
 import org.manifold.compiler.Value;
 
 public class NodeValueVertex extends ExpressionVertex {
@@ -58,6 +60,24 @@ public class NodeValueVertex extends ExpressionVertex {
     this.inputEdge = inputEdge;
     this.inputEdge.setTarget(this);
     this.inputEdge.setName("input");
+  }
+
+  private FuturePortValue unwrapPort(Value inputPortValue) {
+    if (inputPortValue instanceof TupleValue) {
+      TupleValue inputPortTuple = (TupleValue) inputPortValue;
+      if (inputPortTuple.getSize() == 1) {
+        // get "first" entry
+        Iterator<Value> it = inputPortTuple.getEntries().values().iterator();
+        // possibly wrapped again?
+        return unwrapPort(it.next());
+      } else {
+        throw new UndefinedBehaviourError("cannot unwrap");
+      }
+    } else if (inputPortValue instanceof FuturePortValue) {
+      return (FuturePortValue) inputPortValue;
+    } else {
+      throw new UndefinedBehaviourError("value not a port or 1-tuple of ports");
+    }
   }
 
   @Override
@@ -105,12 +125,15 @@ public class NodeValueVertex extends ExpressionVertex {
       FuturePortValue futurePort;
       Map<String, Value> inputPortAttrs;
       if (inputPortType.getAttributes().isEmpty()) {
-        futurePort = (FuturePortValue) inputPortValue;
+        // in the case where a single output port is directly used as input,
+        // this is a tuple of size 1 that needs to be "unwrapped" first
+        futurePort = unwrapPort(inputPortValue);
         futureInputPorts.put(inputPortName, futurePort);
         inputPortAttrs = new HashMap<>(); // no attributes
       } else {
         TupleValue inputPortTuple = (TupleValue) inputPortValue;
-        futurePort = (FuturePortValue) inputPortTuple.entry("0");
+        // same story here about unwrapping the port
+        futurePort = unwrapPort(inputPortTuple.entry("0"));
         TupleValue attributesValue = (TupleValue) inputPortTuple.entry("1");
         inputPortAttrs = attributesValue.getEntries();
       }
