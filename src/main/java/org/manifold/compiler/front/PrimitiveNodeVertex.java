@@ -38,7 +38,7 @@ public class PrimitiveNodeVertex extends ExpressionVertex {
     super(g);
     this.signatureEdge = portTypeEdge;
     this.signatureEdge.setTarget(this);
-    this.signatureEdge.setName("port type");
+    this.signatureEdge.setName("ports/attrs");
   }
 
   @Override
