@@ -13,34 +13,42 @@ public class TupleTypeValue extends TypeValue {
   private final Map<String, TypeValue> subtypes;
   // TODO default values
   // TODO the order of labels is important
-  
+
   public Map<String, TypeValue> getSubtypes() {
     return ImmutableMap.copyOf(subtypes);
   }
-  
+
   public int getSize() {
     return subtypes.size();
   }
-  
+
   public TypeValue entry(int i){
     return subtypes.get(i);
   }
-  
+
   public TupleTypeValue(Map<String, TypeValue> subtypes) {
     this.subtypes = subtypes;
   }
-  
+
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("( ");
-    for (TypeValue type : subtypes.values()) {
-      sb.append(type.toString()).append(" ");
+    for (Map.Entry<String, TypeValue> e : subtypes.entrySet()) {
+      String key = e.getKey();
+      TypeValue type = e.getValue();
+      sb.append(key).append(":");
+      if (type == null) {
+        sb.append("null");
+      } else {
+        sb.append(type.toString());
+      }
+      sb.append(" ");
     }
     sb.append(")");
     return sb.toString();
   }
-  
+
   @Override
   public boolean equals(Object other) {
     if (this == other) {
@@ -88,9 +96,9 @@ public class TupleTypeValue extends TypeValue {
       }
     }
     return true;
-  
+
   }
-  
+
   @Override
   public void accept(SchematicValueVisitor v) {
     if (v instanceof FrontendValueVisitor) {
@@ -101,5 +109,5 @@ public class TupleTypeValue extends TypeValue {
           "cannot accept non-frontend ValueVisitor into a frontend Value");
     }
   }
-  
+
 }

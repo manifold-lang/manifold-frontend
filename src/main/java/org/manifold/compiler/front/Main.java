@@ -19,8 +19,12 @@ import org.apache.commons.cli.Options;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.manifold.compiler.BooleanValue;
+import org.manifold.compiler.ConnectionValue;
 import org.manifold.compiler.Frontend;
 import org.manifold.compiler.IntegerValue;
+import org.manifold.compiler.NodeTypeValue;
+import org.manifold.compiler.NodeValue;
+import org.manifold.compiler.PortTypeValue;
 import org.manifold.compiler.UndefinedBehaviourError;
 import org.manifold.compiler.middle.Schematic;
 import org.manifold.parser.ManifoldBaseVisitor;
@@ -70,6 +74,8 @@ public class Main implements Frontend {
       Iterator<FunctionInvocationVertex> iterator = funcalls.iterator();
       FunctionInvocationVertex v = iterator.next();
       funcalls.remove(v);
+      log.debug("elaborating function "
+          + Integer.toString(System.identityHashCode(v)));
       v.elaborate();
       // TODO it would be more efficient for the vertex to tell us whether
       // any new function invocations were created during elaboration
@@ -79,6 +85,95 @@ public class Main implements Frontend {
         }
       }
     }
+  }
+
+  public static void elaborateSchematicTypes(ExpressionGraph g, Schematic s)
+      throws Exception {
+    // look for all primitive node/port vertices in the expression graph;
+    // for each one, find any variables to which
+    // it is directly assigned, and use the non-namespaced identifier
+    // as the type name in the schematic
+    for (ExpressionVertex v : g.getNonVariableVertices()) {
+      if (v instanceof PrimitivePortVertex ||
+          v instanceof PrimitiveNodeVertex) {
+        v.elaborate(); // usually redundant but always safe
+        List<ExpressionEdge> outgoingEdges = g.getEdgesFromSource(v);
+        for (ExpressionEdge e : outgoingEdges) {
+          if (e.getTarget() instanceof VariableReferenceVertex) {
+            VariableReferenceVertex id = (VariableReferenceVertex)
+                e.getTarget();
+            String typename = id.getIdentifier().getName();
+            // now add to the correct schematic type list
+            if (v instanceof PrimitivePortVertex) {
+              log.debug("elaborated port type " + typename);
+              PortTypeValue portType = (PortTypeValue) v.getValue();
+              s.addPortType(typename, portType);
+            } else if (v instanceof PrimitiveNodeVertex) {
+              log.debug("elaborated node type " + typename);
+              NodeTypeValue nodeType = (NodeTypeValue) v.getValue();
+              s.addNodeType(typename, nodeType);
+            }
+          }
+        } // for (e: outgoingEdges)
+      } // if (v instanceof ...)
+    }
+  }
+
+  public static void elaborateNodes(ExpressionGraph g, Schematic s)
+      throws Exception {
+    // In the first pass, elaborate every NodeValueVertex
+    // in the expression graph. In the second pass, connect the inputs of
+    // every NodeValueVertex, then add to the schematic
+    // each node and each connection that was created this way.
+
+    log.debug("elaborating nodes");
+
+    List<NodeValueVertex> nodeVertices = new LinkedList<>();
+    for (ExpressionVertex v : g.getNonVariableVertices()) {
+      if (v instanceof NodeValueVertex) {
+        nodeVertices.add((NodeValueVertex) v);
+      }
+    }
+
+    // pass 1
+    log.debug("pass 1");
+    for (NodeValueVertex nv : nodeVertices) {
+      log.debug("elaborating node "
+          + Integer.toString(System.identityHashCode(nv)));
+      nv.elaborate();
+    }
+    // pass 2
+    log.debug("pass 2");
+    List<ConnectionValue> connections = new LinkedList<>();
+    List<NodeValue> nodes = new LinkedList<>();
+    for (NodeValueVertex nv : nodeVertices) {
+      log.debug("connecting node "
+          + Integer.toString(System.identityHashCode(nv)));
+      List<ConnectionValue> cs = nv.connect();
+      if (cs.size() == 1) {
+        log.debug("1 connection made");
+      } else {
+        log.debug(Integer.toString(cs.size()) + " connections made");
+      }
+      connections.addAll(cs);
+      nodes.add(nv.getNodeValue());
+    }
+    // build schematic
+    // TODO a better way of naming nodes and connections,
+    // perhaps pulling meaningful names from variables/identifiers.
+    Integer nodeID = 1;
+    for (NodeValue node : nodes) {
+      String nodeName = "n" + nodeID.toString();
+      s.addNode(nodeName, node);
+      nodeID += 1;
+    }
+    Integer connectionID = 1;
+    for (ConnectionValue conn : connections) {
+      String connName = "c" + connectionID.toString();
+      s.addConnection(connName, conn);
+      connectionID += 1;
+    }
+
   }
 
   @Override
@@ -158,7 +253,6 @@ public class Main implements Frontend {
       log.debug(id);
     }
 
-    // let's see if we can do this before static type-checking
     ExpressionGraphBuilder exprGraphBuilder = new ExpressionGraphBuilder(
         expressions, namespaces);
     ExpressionGraph exprGraph = exprGraphBuilder.build();
@@ -176,7 +270,9 @@ public class Main implements Frontend {
     File elaboratedDot = new File(inputFile.getName() + ".elaborated.dot");
     exprGraph.writeDOTFile(elaboratedDot);
 
-    // TODO write out the schematic
+    elaborateSchematicTypes(exprGraph, schematic);
+
+    elaborateNodes(exprGraph, schematic);
 
     return schematic;
 

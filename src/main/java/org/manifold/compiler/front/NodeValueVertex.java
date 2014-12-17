@@ -4,16 +4,28 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+import org.manifold.compiler.ConnectionValue;
+import org.manifold.compiler.InvalidAttributeException;
 import org.manifold.compiler.NodeTypeValue;
 import org.manifold.compiler.NodeValue;
 import org.manifold.compiler.PortTypeValue;
+import org.manifold.compiler.PortValue;
+import org.manifold.compiler.TypeMismatchException;
 import org.manifold.compiler.TypeValue;
+import org.manifold.compiler.UndeclaredAttributeException;
+import org.manifold.compiler.UndeclaredIdentifierException;
 import org.manifold.compiler.Value;
 
 public class NodeValueVertex extends ExpressionVertex {
+
+  private static Logger log = LogManager.getLogger("NodeValueVertex");
 
   private final NodeTypeValue nodeType;
   @Override
@@ -54,12 +66,14 @@ public class NodeValueVertex extends ExpressionVertex {
     if (futureOutputPorts != null) {
       return;
     }
+    log.debug("type signature is " + signature.toString());
     // decompose signature into (input) -> (output)
     TupleTypeValue inputType = (TupleTypeValue) signature.getInputType();
     TupleTypeValue outputType = (TupleTypeValue) signature.getOutputType();
     // construct values for all future output ports
     // simultaneously build a collection of all input port names
     Set<String> inputPortNames = new HashSet<>();
+    Set<String> outputPortNames = new HashSet<>();
     inputPortNames.addAll(nodeType.getPorts().keySet());
     Map<String, Value> futurePortMap = new HashMap<>();
     for (String outputPortName : outputType.getSubtypes().keySet()) {
@@ -68,6 +82,7 @@ public class NodeValueVertex extends ExpressionVertex {
           this, outputPortName, outputPortType);
       futurePortMap.put(outputPortName, futurePort);
       inputPortNames.remove(outputPortName);
+      outputPortNames.add(outputPortName);
     }
     futureOutputPorts = new TupleValue(outputType, futurePortMap);
 
@@ -103,6 +118,19 @@ public class NodeValueVertex extends ExpressionVertex {
       portAttrs.put(inputPortName, inputPortAttrs);
     }
 
+    // we must also get output port attributes, which appear as function inputs
+    for (String outputPortName : outputPortNames) {
+      PortTypeValue outputPortType = nodeType.getPorts().get(outputPortName);
+      Map<String, Value> outputPortAttrs;
+      if (outputPortType.getAttributes().isEmpty()) {
+        outputPortAttrs = new HashMap<>(); // no attributes
+      } else {
+        TupleValue attributesValue = (TupleValue) input.entry(outputPortName);
+        outputPortAttrs = attributesValue.getEntries();
+      }
+      portAttrs.put(outputPortName, outputPortAttrs);
+    }
+
     for (String attrName : nodeType.getAttributes().keySet()) {
       Value attrValue = input.entry(attrName);
       nodeAttrs.put(attrName, attrValue);
@@ -110,6 +138,23 @@ public class NodeValueVertex extends ExpressionVertex {
 
     node = new NodeValue(nodeType, nodeAttrs, portAttrs);
 
+  }
+
+  // Connect all input ports to their sources and return all connections formed.
+  public List<ConnectionValue> connect()
+      throws UndeclaredIdentifierException, UndeclaredAttributeException,
+      InvalidAttributeException, TypeMismatchException {
+    List<ConnectionValue> connections = new LinkedList<>();
+    for (Map.Entry<String, FuturePortValue> e : futureInputPorts.entrySet()) {
+      String inputPortName = e.getKey();
+      FuturePortValue source = e.getValue();
+      PortValue sourcePort = source.getPort();
+      PortValue targetPort = node.getPort(inputPortName);
+      // TODO connection attributes; for now we assume none
+      Map<String, Value> attrs = new HashMap<>();
+      ConnectionValue conn = new ConnectionValue(sourcePort, targetPort, attrs);
+    }
+    return connections;
   }
 
   @Override

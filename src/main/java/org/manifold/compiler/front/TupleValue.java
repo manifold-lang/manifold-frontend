@@ -34,7 +34,10 @@ public class TupleValue extends Value {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("( ");
-    for (Value value : entries.values()) {
+    for (Map.Entry<String, Value> e : entries.entrySet()) {
+      String key = e.getKey();
+      Value value = e.getValue();
+      sb.append(key).append(":");
       if (value == null) {
         sb.append("null");
       } else {

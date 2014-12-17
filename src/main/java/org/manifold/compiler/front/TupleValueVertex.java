@@ -5,12 +5,16 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.manifold.compiler.TypeValue;
 import org.manifold.compiler.Value;
 
 import com.google.common.collect.ImmutableMap;
 
 public class TupleValueVertex extends ExpressionVertex {
+
+  private static Logger log = LogManager.getLogger("FunctionInvocationVertex");
 
   private TupleValue value = null;
 
@@ -55,9 +59,11 @@ public class TupleValueVertex extends ExpressionVertex {
 
   @Override
   public void elaborate() throws Exception {
+    log.debug("elaborating tuple value");
     Map<String, Value> values = new HashMap<>();
     Map<String, TypeValue> types = new HashMap<>();
     for (Map.Entry<String, ExpressionEdge> entry : valueEdges.entrySet()) {
+      log.debug("elaborating tuple entry '" + entry.getKey() + "'");
       ExpressionVertex vSource = entry.getValue().getSource();
       vSource.elaborate();
       values.put(entry.getKey(), vSource.getValue());

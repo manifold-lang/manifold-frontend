@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.manifold.compiler.NilTypeValue;
 import org.manifold.compiler.NodeTypeValue;
 import org.manifold.compiler.PortTypeValue;
@@ -14,6 +16,8 @@ import org.manifold.compiler.UndefinedBehaviourError;
 import org.manifold.compiler.Value;
 
 public class PrimitiveNodeVertex extends ExpressionVertex {
+
+  private static Logger log = LogManager.getLogger("PrimitiveNodeVertex");
 
   private NodeTypeValue node = null;
   @Override
@@ -27,7 +31,7 @@ public class PrimitiveNodeVertex extends ExpressionVertex {
     // because this is a function, return a function type
     return instantiationSignature;
   }
-  
+
   private ExpressionEdge signatureEdge;
   public ExpressionEdge getSignatureEdge() {
     return signatureEdge;
@@ -106,15 +110,15 @@ public class PrimitiveNodeVertex extends ExpressionVertex {
       }
     }
   }
-  
+
   private FunctionTypeValue constructInstantiationSignature(
       FunctionTypeValue oldSig) {
     Map<String, TypeValue> inputTypes = new HashMap<>();
     Map<String, TypeValue> outputTypes = new HashMap<>();
-    
+
     TupleTypeValue oldInputs = (TupleTypeValue) oldSig.getInputType();
     TupleTypeValue oldOutputs = (TupleTypeValue) oldSig.getOutputType();
-    
+
     // iterate over the old input types to build part of the new input type.
     // when a non-Port type is encountered, this is an attribute;
     // add it to the input types as-is.
@@ -146,7 +150,7 @@ public class PrimitiveNodeVertex extends ExpressionVertex {
         inputTypes.put(key, attr);
       }
     }
-    
+
     // iterate over the old output types to build the new output type and the
     // remainder of the new input type.
     // all types encountered here should be Port types;
@@ -163,7 +167,7 @@ public class PrimitiveNodeVertex extends ExpressionVertex {
         inputTypes.put(key, new TupleTypeValue(port.getAttributes()));
       }
     }
-    
+
     return new FunctionTypeValue(
         new TupleTypeValue(inputTypes), new TupleTypeValue(outputTypes));
   }
@@ -173,10 +177,11 @@ public class PrimitiveNodeVertex extends ExpressionVertex {
     if (node != null) {
       return;
     }
-    
+    log.debug("elaborating primitive node");
+
     Map<String, PortTypeValue> portTypeMap = new HashMap<>();
     Map<String, TypeValue> attributesMap = new HashMap<>();
-    
+
     ExpressionVertex portTypeVertex = signatureEdge.getSource();
     portTypeVertex.elaborate();
     // must be (Type) -> (Type)
@@ -199,18 +204,43 @@ public class PrimitiveNodeVertex extends ExpressionVertex {
     // look for PortTypeValues in the function signature,
     // then extract the identifier-typevalue
     // pairs and add them to the port type map
+    log.debug("extracting input port types");
     extractPortTypes(portType.getInputType(), portTypeMap);
+    log.debug("extracting output port types");
     extractPortTypes(portType.getOutputType(), portTypeMap);
-    
+
     // look for non-PortTypeValues in the input type only,
     // then extract the pairs and add to the attributes map
     // TODO check for and disallow attributes in the output type
+    log.debug("extracting attributes");
     extractAttributes(portType.getInputType(), attributesMap);
-    
+
     // TODO check for ports/attributes with exactly the same key
 
     this.node = new NodeTypeValue(attributesMap, portTypeMap);
+    log.debug("constructed node type " + debugNodeType(node));
     this.instantiationSignature = constructInstantiationSignature(portType);
+    log.debug("instantiation signature is "
+        + instantiationSignature.toString());
+  }
+
+  private String debugNodeType(NodeTypeValue n) {
+    StringBuilder sb = new StringBuilder();
+    sb.append("[");
+    sb.append(" ports: [ ");
+    for (Map.Entry<String, PortTypeValue> e : n.getPorts().entrySet()) {
+      sb.append(e.getKey()).append(":")
+        .append(e.getValue().getSignalType()).append(" ");
+    }
+    sb.append("]");
+    sb.append(" attributes: [ ");
+    for (Map.Entry<String, TypeValue> e : n.getAttributes().entrySet()) {
+      sb.append(e.getKey()).append(":")
+      .append(e.getValue()).append(" ");
+    }
+    sb.append("] ");
+    sb.append("]");
+    return sb.toString();
   }
 
   @Override

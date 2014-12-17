@@ -3,12 +3,16 @@ package org.manifold.compiler.front;
 import java.io.BufferedWriter;
 import java.io.IOException;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.manifold.compiler.NodeTypeValue;
 import org.manifold.compiler.TypeValue;
 import org.manifold.compiler.UndefinedBehaviourError;
 import org.manifold.compiler.Value;
 
 public class FunctionInvocationVertex extends ExpressionVertex {
+
+  private static Logger log = LogManager.getLogger("FunctionInvocationVertex");
 
   private ExpressionEdge functionEdge;
   public ExpressionEdge getFunctionEdge() {
@@ -88,6 +92,7 @@ public class FunctionInvocationVertex extends ExpressionVertex {
     Value function = vFunction.getValue();
     if (function instanceof NodeTypeValue) {
       // we're not calling a function; we're instantiating a node!
+      log.debug("function invocation is node instantiation");
       NodeTypeValue nodeType = (NodeTypeValue) function;
       FunctionTypeValue signature = (FunctionTypeValue) vFunction.getType();
       NodeValueVertex vNode = new NodeValueVertex(getExpressionGraph(),
