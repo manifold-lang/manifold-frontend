@@ -176,6 +176,7 @@ public class NodeValueVertex extends ExpressionVertex {
       // TODO connection attributes; for now we assume none
       Map<String, Value> attrs = new HashMap<>();
       ConnectionValue conn = new ConnectionValue(sourcePort, targetPort, attrs);
+      connections.add(conn);
     }
     return connections;
   }
