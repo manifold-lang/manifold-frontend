@@ -37,7 +37,7 @@ public class ExpressionGraph {
     }
   }
 
-  public void createVariableVertex(VariableIdentifier vID)
+  public void addVertex(VariableIdentifier vID)
       throws MultipleDefinitionException {
     if (variableVertices.containsKey(vID)) {
       throw new MultipleDefinitionException(vID);
@@ -50,7 +50,7 @@ public class ExpressionGraph {
   public List<ExpressionVertex> getNonVariableVertices() {
     return ImmutableList.copyOf(nonVariableVertices);
   }
-  public void addNonVariableVertex(ExpressionVertex v) {
+  public void addVertex(ExpressionVertex v) {
     nonVariableVertices.add(v);
   }
 

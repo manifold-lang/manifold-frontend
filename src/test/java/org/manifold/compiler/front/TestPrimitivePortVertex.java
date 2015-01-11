@@ -17,16 +17,16 @@ public class TestPrimitivePortVertex {
     ConstantValueVertex vSignalType = new ConstantValueVertex(g,
         BooleanTypeValue.getInstance());
     ExpressionEdge eSignalType = new ExpressionEdge(vSignalType, null);
-    g.addNonVariableVertex(vSignalType);
+    g.addVertex(vSignalType);
     g.addEdge(eSignalType);
     ConstantValueVertex vAttributes = new ConstantValueVertex(g,
         NilTypeValue.getInstance());
     ExpressionEdge eAttributes = new ExpressionEdge(vAttributes, null);
-    g.addNonVariableVertex(vAttributes);
+    g.addVertex(vAttributes);
     g.addEdge(eAttributes);
     PrimitivePortVertex vPort = new PrimitivePortVertex(g,
         eSignalType, eAttributes);
-    g.addNonVariableVertex(vPort);
+    g.addVertex(vPort);
     
     assertEquals(vPort, eSignalType.getTarget());
     assertEquals(vPort, eAttributes.getTarget());
@@ -38,16 +38,16 @@ public class TestPrimitivePortVertex {
     ConstantValueVertex vSignalType = new ConstantValueVertex(g,
         BooleanTypeValue.getInstance());
     ExpressionEdge eSignalType = new ExpressionEdge(vSignalType, null);
-    g.addNonVariableVertex(vSignalType);
+    g.addVertex(vSignalType);
     g.addEdge(eSignalType);
     ConstantValueVertex vAttributes = new ConstantValueVertex(g,
         NilTypeValue.getInstance());
     ExpressionEdge eAttributes = new ExpressionEdge(vAttributes, null);
-    g.addNonVariableVertex(vAttributes);
+    g.addVertex(vAttributes);
     g.addEdge(eAttributes);
     PrimitivePortVertex vPort = new PrimitivePortVertex(g,
         eSignalType, eAttributes);
-    g.addNonVariableVertex(vPort);
+    g.addVertex(vPort);
     
     vPort.elaborate();
     Value v = vPort.getValue();

@@ -63,7 +63,7 @@ public class ExpressionGraphBuilder implements ExpressionVisitor {
       VariableIdentifier qualifiedID = new VariableIdentifier(
           nsID, vID.getName());
       log.debug("constructing vertex for '" + qualifiedID + "'");
-      exprGraph.createVariableVertex(qualifiedID);
+      exprGraph.addVertex(qualifiedID);
     }
   }
 
@@ -77,7 +77,7 @@ public class ExpressionGraphBuilder implements ExpressionVisitor {
   public void visit(LiteralExpression lExpr) {
     ConstantValueVertex v = new ConstantValueVertex(exprGraph,
         lExpr.getValue());
-    exprGraph.addNonVariableVertex(v);
+    exprGraph.addVertex(v);
     this.lastVertex = v;
   }
 
@@ -103,7 +103,7 @@ public class ExpressionGraphBuilder implements ExpressionVisitor {
     }
     TupleTypeValueVertex vTuple = new TupleTypeValueVertex(exprGraph,
         typeValueEdges, defaultValueEdges);
-    exprGraph.addNonVariableVertex(vTuple);
+    exprGraph.addVertex(vTuple);
     this.lastVertex = vTuple;
   }
   
@@ -120,7 +120,7 @@ public class ExpressionGraphBuilder implements ExpressionVisitor {
     
     FunctionTypeValueVertex vFunctionType = new FunctionTypeValueVertex(
         exprGraph, eIn, eOut);
-    exprGraph.addNonVariableVertex(vFunctionType);
+    exprGraph.addVertex(vFunctionType);
     exprGraph.addEdge(eIn);
     exprGraph.addEdge(eOut);
     this.lastVertex =  vFunctionType;
@@ -148,7 +148,7 @@ public class ExpressionGraphBuilder implements ExpressionVisitor {
       // construct a constant value vertex with the identifier's value
       ConstantValueVertex vReserved = new ConstantValueVertex(exprGraph,
           ReservedIdentifiers.getInstance().getValue(vExpr.getIdentifier()));
-      exprGraph.addNonVariableVertex(vReserved);
+      exprGraph.addVertex(vReserved);
       lastVertex = vReserved;
     } else {
       // since we have already constructed all variable reference vertices,
@@ -176,7 +176,7 @@ public class ExpressionGraphBuilder implements ExpressionVisitor {
     exprGraph.addEdge(eAttributes);
     PrimitivePortVertex vPort = new PrimitivePortVertex(exprGraph,
         eSignalType, eAttributes);
-    exprGraph.addNonVariableVertex(vPort);
+    exprGraph.addVertex(vPort);
     this.lastVertex = vPort;
   }
 
@@ -194,7 +194,7 @@ public class ExpressionGraphBuilder implements ExpressionVisitor {
     exprGraph.addEdge(eAttributes);
     PrimitiveNodeVertex vNode = new PrimitiveNodeVertex(exprGraph,
         ePortType, eAttributes);
-    exprGraph.addNonVariableVertex(vNode);
+    exprGraph.addVertex(vNode);
     this.lastVertex = vNode;
   }
 
