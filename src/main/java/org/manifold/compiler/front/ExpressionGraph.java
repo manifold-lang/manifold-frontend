@@ -63,7 +63,6 @@ public class ExpressionGraph {
 
   private List<ExpressionEdge> edges = new ArrayList<>();
   public void addEdge(ExpressionEdge e) {
-    // TODO assert that both endpoints are in the graph
     edges.add(e);
   }
 

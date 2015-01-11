@@ -124,19 +124,13 @@ public class Main implements Frontend {
       log.debug(id);
     }
 
-    // let's see if we can do this before static type-checking
     ExpressionGraphBuilder exprGraphBuilder = new ExpressionGraphBuilder(
         expressions, namespaces);
     ExpressionGraph exprGraph = exprGraphBuilder.build();
-    
-    // TODO expression graph correctness checks:
-    // * all variables are assigned exactly once
 
     log.debug("writing out initial expression graph");
     File exprGraphDot = new File(inputFile.getName() + ".exprs.dot");
     exprGraph.writeDOTFile(exprGraphDot);
-    
-    // TODO write out the schematic
 
     return schematic;
 
@@ -172,8 +166,6 @@ class ExpressionContextVisitor extends ManifoldBaseVisitor<Expression> {
     // are there any attributes?
     if (context.tupleTypeValue() != null) {
       TupleTypeValueContext attributeTypesContext = context.tupleTypeValue();
-      // TODO(murphy) the default expression visitor does not work here;
-      // we need a visitTupleType() or visitTupleTypeValue()
       Expression attributes = attributeTypesContext.accept(this);
       return new PrimitiveNodeDefinitionExpression(typevalue, attributes);
     } else {
@@ -190,8 +182,6 @@ class ExpressionContextVisitor extends ManifoldBaseVisitor<Expression> {
     // are there any attributes?
     if (context.tupleTypeValue() != null) {
       TupleTypeValueContext attributeTypesContext = context.tupleTypeValue();
-      // TODO(murphy) the default expression visitor does not work here;
-      // we need a visitTupleType() or visitTupleTypeValue()
       Expression attributes = attributeTypesContext.accept(this);
       return new PrimitivePortDefinitionExpression(typevalue, attributes);
     } else {
@@ -215,7 +205,6 @@ class ExpressionContextVisitor extends ManifoldBaseVisitor<Expression> {
       if (entryCtx.IDENTIFIER() != null) {
         identifier = entryCtx.IDENTIFIER().getText();
       } else {
-        // TODO verify this against the specification
         identifier = nextAnonymousID.toString();
         nextAnonymousID += 1;
       }
