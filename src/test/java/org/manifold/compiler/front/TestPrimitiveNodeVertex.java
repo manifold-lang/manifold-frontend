@@ -9,6 +9,7 @@ import java.util.Map;
 import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.PatternLayout;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.manifold.compiler.BooleanTypeValue;
@@ -32,30 +33,36 @@ public class TestPrimitiveNodeVertex {
       TypeValue signalType) {
     ConstantValueVertex vSignalType = new ConstantValueVertex(g, signalType);
     ExpressionEdge eSignalType = new ExpressionEdge(vSignalType, null);
-    g.addNonVariableVertex(vSignalType);
+    g.addVertex(vSignalType);
     g.addEdge(eSignalType);
     ConstantValueVertex vAttributes = new ConstantValueVertex(g,
         NilTypeValue.getInstance());
     ExpressionEdge eAttributes = new ExpressionEdge(vAttributes, null);
-    g.addNonVariableVertex(vAttributes);
+    g.addVertex(vAttributes);
     g.addEdge(eAttributes);
     PrimitivePortVertex vPort = new PrimitivePortVertex(g,
         eSignalType, eAttributes);
-    g.addNonVariableVertex(vPort);
+    g.addVertex(vPort);
     return vPort;
+  }
+  
+  private ExpressionGraph g;
+  private NamespaceIdentifier defaultNamespace;
+  
+  @Before
+  public void setup() {
+    g = new ExpressionGraph();
+    defaultNamespace = new NamespaceIdentifier("");
   }
   
   @Test
   public void testConstructorSetsEdgeTargets() 
       throws MultipleDefinitionException, VariableNotDefinedException {
-    ExpressionGraph g = new ExpressionGraph();
-    NamespaceIdentifier defaultNamespace = new NamespaceIdentifier("");
-    
     PrimitivePortVertex vInPort = generatePort(g, 
         BooleanTypeValue.getInstance());
     VariableIdentifier idXIn = new VariableIdentifier(
         defaultNamespace, "xIn");
-    g.createVariableVertex(idXIn);
+    g.addVertex(idXIn);
     VariableReferenceVertex xIn = g.getVariableVertex(idXIn);
     // xIn = vInPort
     ExpressionEdge eIn = new ExpressionEdge(vInPort, xIn);
@@ -65,7 +72,7 @@ public class TestPrimitiveNodeVertex {
         BooleanTypeValue.getInstance());
     VariableIdentifier idXOut = new VariableIdentifier(
         defaultNamespace, "xOut");
-    g.createVariableVertex(idXOut);
+    g.addVertex(idXOut);
     VariableReferenceVertex xOut = g.getVariableVertex(idXOut);
     // xOut = vOutPort
     ExpressionEdge eOut = new ExpressionEdge(vOutPort, xOut);
@@ -77,7 +84,7 @@ public class TestPrimitiveNodeVertex {
     inputMap.put("x", eInputType);
     TupleTypeValueVertex vInputType = new TupleTypeValueVertex(g,
         inputMap, new HashMap<>());
-    g.addNonVariableVertex(vInputType);
+    g.addVertex(vInputType);
     
     Map<String, ExpressionEdge> outputMap = new HashMap<>();
     ExpressionEdge eOutputType = new ExpressionEdge(xOut, null);
@@ -85,7 +92,7 @@ public class TestPrimitiveNodeVertex {
     outputMap.put("xbar", eOutputType);
     TupleTypeValueVertex vOutputType = new TupleTypeValueVertex(g,
         outputMap, new HashMap<>());
-    g.addNonVariableVertex(vOutputType);
+    g.addVertex(vOutputType);
     
     ExpressionEdge eInputTuple = new ExpressionEdge(vInputType, null);
     g.addEdge(eInputTuple);
@@ -94,12 +101,12 @@ public class TestPrimitiveNodeVertex {
     
     FunctionTypeValueVertex vNodePorts = new FunctionTypeValueVertex(g, 
         eInputTuple, eOutputTuple);
-    g.addNonVariableVertex(vNodePorts);
+    g.addVertex(vNodePorts);
     ExpressionEdge eNodePorts = new ExpressionEdge(vNodePorts, null);
     g.addEdge(eNodePorts);
-    
+
     PrimitiveNodeVertex vNode = new PrimitiveNodeVertex(g, eNodePorts);
-    g.addNonVariableVertex(vNode);
+    g.addVertex(vNode);
     
     assertEquals(vNode, eNodePorts.getTarget());
   }
@@ -107,14 +114,11 @@ public class TestPrimitiveNodeVertex {
   @Test
   public void testElaborate_noAttributes() 
       throws Exception {
-    ExpressionGraph g = new ExpressionGraph();
-    NamespaceIdentifier defaultNamespace = new NamespaceIdentifier("");
-    
     PrimitivePortVertex vInPort = generatePort(g, 
         BooleanTypeValue.getInstance());
     VariableIdentifier idXIn = new VariableIdentifier(
         defaultNamespace, "xIn");
-    g.createVariableVertex(idXIn);
+    g.addVertex(idXIn);
     VariableReferenceVertex xIn = g.getVariableVertex(idXIn);
     // xIn = vInPort
     ExpressionEdge eIn = new ExpressionEdge(vInPort, xIn);
@@ -124,7 +128,7 @@ public class TestPrimitiveNodeVertex {
         BooleanTypeValue.getInstance());
     VariableIdentifier idXOut = new VariableIdentifier(
         defaultNamespace, "xOut");
-    g.createVariableVertex(idXOut);
+    g.addVertex(idXOut);
     VariableReferenceVertex xOut = g.getVariableVertex(idXOut);
     // xOut = vOutPort
     ExpressionEdge eOut = new ExpressionEdge(vOutPort, xOut);
@@ -136,7 +140,7 @@ public class TestPrimitiveNodeVertex {
     inputMap.put("x", eInputType);
     TupleTypeValueVertex vInputType = new TupleTypeValueVertex(g,
         inputMap, new HashMap<>());
-    g.addNonVariableVertex(vInputType);
+    g.addVertex(vInputType);
     
     Map<String, ExpressionEdge> outputMap = new HashMap<>();
     ExpressionEdge eOutputType = new ExpressionEdge(xOut, null);
@@ -144,7 +148,7 @@ public class TestPrimitiveNodeVertex {
     outputMap.put("xbar", eOutputType);
     TupleTypeValueVertex vOutputType = new TupleTypeValueVertex(g,
         outputMap, new HashMap<>());
-    g.addNonVariableVertex(vOutputType);
+    g.addVertex(vOutputType);
     
     ExpressionEdge eInputTuple = new ExpressionEdge(vInputType, null);
     g.addEdge(eInputTuple);
@@ -153,12 +157,12 @@ public class TestPrimitiveNodeVertex {
     
     FunctionTypeValueVertex vNodePorts = new FunctionTypeValueVertex(g, 
         eInputTuple, eOutputTuple);
-    g.addNonVariableVertex(vNodePorts);
+    g.addVertex(vNodePorts);
     ExpressionEdge eNodePorts = new ExpressionEdge(vNodePorts, null);
     g.addEdge(eNodePorts);
     
     PrimitiveNodeVertex vNode = new PrimitiveNodeVertex(g, eNodePorts);
-    g.addNonVariableVertex(vNode);
+    g.addVertex(vNode);
     
     vNode.elaborate();
     Value v = vNode.getValue();
@@ -187,18 +191,15 @@ public class TestPrimitiveNodeVertex {
   @Test
   public void testElaborate_inputNil() 
       throws Exception {
-    ExpressionGraph g = new ExpressionGraph();
-    NamespaceIdentifier defaultNamespace = new NamespaceIdentifier("");
-    
     ConstantValueVertex nil = new ConstantValueVertex(g,
         NilTypeValue.getInstance());
-    g.addNonVariableVertex(nil);
+    g.addVertex(nil);
     
     PrimitivePortVertex vInPort = generatePort(g, 
         BooleanTypeValue.getInstance());
     VariableIdentifier idXIn = new VariableIdentifier(
         defaultNamespace, "xIn");
-    g.createVariableVertex(idXIn);
+    g.addVertex(idXIn);
     VariableReferenceVertex xIn = g.getVariableVertex(idXIn);
     // xIn = vInPort
     ExpressionEdge eIn = new ExpressionEdge(vInPort, xIn);
@@ -208,7 +209,7 @@ public class TestPrimitiveNodeVertex {
         BooleanTypeValue.getInstance());
     VariableIdentifier idXOut = new VariableIdentifier(
         defaultNamespace, "xOut");
-    g.createVariableVertex(idXOut);
+    g.addVertex(idXOut);
     VariableReferenceVertex xOut = g.getVariableVertex(idXOut);
     // xOut = vOutPort
     ExpressionEdge eOut = new ExpressionEdge(vOutPort, xOut);
@@ -220,7 +221,7 @@ public class TestPrimitiveNodeVertex {
     inputMap.put("0", eInputType);
     TupleTypeValueVertex vInputType = new TupleTypeValueVertex(g,
         inputMap, new HashMap<>());
-    g.addNonVariableVertex(vInputType);
+    g.addVertex(vInputType);
     
     Map<String, ExpressionEdge> outputMap = new HashMap<>();
     ExpressionEdge eOutputType = new ExpressionEdge(xOut, null);
@@ -228,7 +229,7 @@ public class TestPrimitiveNodeVertex {
     outputMap.put("x", eOutputType);
     TupleTypeValueVertex vOutputType = new TupleTypeValueVertex(g,
         outputMap, new HashMap<>());
-    g.addNonVariableVertex(vOutputType);
+    g.addVertex(vOutputType);
     
     ExpressionEdge eInputTuple = new ExpressionEdge(vInputType, null);
     g.addEdge(eInputTuple);
@@ -237,12 +238,12 @@ public class TestPrimitiveNodeVertex {
     
     FunctionTypeValueVertex vNodePorts = new FunctionTypeValueVertex(g, 
         eInputTuple, eOutputTuple);
-    g.addNonVariableVertex(vNodePorts);
+    g.addVertex(vNodePorts);
     ExpressionEdge eNodePorts = new ExpressionEdge(vNodePorts, null);
     g.addEdge(eNodePorts);
     
     PrimitiveNodeVertex vNode = new PrimitiveNodeVertex(g, eNodePorts);
-    g.addNonVariableVertex(vNode);
+    g.addVertex(vNode);
     
     vNode.elaborate();
     Value v = vNode.getValue();
@@ -264,19 +265,16 @@ public class TestPrimitiveNodeVertex {
   
   @Test
   public void testElaborate_outputNil() 
-      throws Exception {
-    ExpressionGraph g = new ExpressionGraph();
-    NamespaceIdentifier defaultNamespace = new NamespaceIdentifier("");
-    
+      throws Exception { 
     ConstantValueVertex nil = new ConstantValueVertex(g,
         NilTypeValue.getInstance());
-    g.addNonVariableVertex(nil);
+    g.addVertex(nil);
     
     PrimitivePortVertex vInPort = generatePort(g, 
         BooleanTypeValue.getInstance());
     VariableIdentifier idXIn = new VariableIdentifier(
         defaultNamespace, "xIn");
-    g.createVariableVertex(idXIn);
+    g.addVertex(idXIn);
     VariableReferenceVertex xIn = g.getVariableVertex(idXIn);
     // xIn = vInPort
     ExpressionEdge eIn = new ExpressionEdge(vInPort, xIn);
@@ -286,7 +284,7 @@ public class TestPrimitiveNodeVertex {
         BooleanTypeValue.getInstance());
     VariableIdentifier idXOut = new VariableIdentifier(
         defaultNamespace, "xOut");
-    g.createVariableVertex(idXOut);
+    g.addVertex(idXOut);
     VariableReferenceVertex xOut = g.getVariableVertex(idXOut);
     // xOut = vOutPort
     ExpressionEdge eOut = new ExpressionEdge(vOutPort, xOut);
@@ -298,7 +296,7 @@ public class TestPrimitiveNodeVertex {
     inputMap.put("x", eInputType);
     TupleTypeValueVertex vInputType = new TupleTypeValueVertex(g,
         inputMap, new HashMap<>());
-    g.addNonVariableVertex(vInputType);
+    g.addVertex(vInputType);
     
     Map<String, ExpressionEdge> outputMap = new HashMap<>();
     ExpressionEdge eOutputType = new ExpressionEdge(nil, null);
@@ -306,7 +304,7 @@ public class TestPrimitiveNodeVertex {
     outputMap.put("0", eOutputType);
     TupleTypeValueVertex vOutputType = new TupleTypeValueVertex(g,
         outputMap, new HashMap<>());
-    g.addNonVariableVertex(vOutputType);
+    g.addVertex(vOutputType);
     
     ExpressionEdge eInputTuple = new ExpressionEdge(vInputType, null);
     g.addEdge(eInputTuple);
@@ -315,12 +313,12 @@ public class TestPrimitiveNodeVertex {
     
     FunctionTypeValueVertex vNodePorts = new FunctionTypeValueVertex(g, 
         eInputTuple, eOutputTuple);
-    g.addNonVariableVertex(vNodePorts);
+    g.addVertex(vNodePorts);
     ExpressionEdge eNodePorts = new ExpressionEdge(vNodePorts, null);
     g.addEdge(eNodePorts);
     
     PrimitiveNodeVertex vNode = new PrimitiveNodeVertex(g, eNodePorts);
-    g.addNonVariableVertex(vNode);
+    g.addVertex(vNode);
     
     vNode.elaborate();
     Value v = vNode.getValue();

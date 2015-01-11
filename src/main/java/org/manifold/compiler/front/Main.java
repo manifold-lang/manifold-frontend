@@ -257,9 +257,6 @@ public class Main implements Frontend {
         expressions, namespaces);
     ExpressionGraph exprGraph = exprGraphBuilder.build();
 
-    // TODO expression graph correctness checks:
-    // * all variables are assigned exactly once
-
     log.debug("writing out initial expression graph");
     File exprGraphDot = new File(inputFile.getName() + ".exprs.dot");
     exprGraph.writeDOTFile(exprGraphDot);
@@ -352,7 +349,6 @@ class ExpressionContextVisitor extends ManifoldBaseVisitor<Expression> {
       if (entryCtx.IDENTIFIER() != null) {
         identifier = entryCtx.IDENTIFIER().getText();
       } else {
-        // TODO verify this against the specification
         identifier = nextAnonymousID.toString();
         nextAnonymousID += 1;
       }

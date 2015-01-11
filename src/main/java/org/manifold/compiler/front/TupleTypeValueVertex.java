@@ -12,7 +12,6 @@ import org.manifold.compiler.Value;
 import com.google.common.collect.ImmutableMap;
 
 public class TupleTypeValueVertex extends ExpressionVertex {
-  
   private TupleTypeValue type = null;
   @Override
   public Value getValue() {
@@ -84,14 +83,12 @@ public class TupleTypeValueVertex extends ExpressionVertex {
 
   @Override
   public boolean isElaborationtimeKnowable() {
-    // TODO Auto-generated method stub
-    return false;
+    return true;
   }
 
   @Override
   public boolean isRuntimeKnowable() {
-    // TODO Auto-generated method stub
-    return false;
+    return true;
   }
 
   @Override

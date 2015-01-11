@@ -98,7 +98,7 @@ public class FunctionInvocationVertex extends ExpressionVertex {
       NodeValueVertex vNode = new NodeValueVertex(getExpressionGraph(),
           nodeType, signature, inputEdge);
       // now inputEdge.target is vNode
-      getExpressionGraph().addNonVariableVertex(vNode);
+      getExpressionGraph().addVertex(vNode);
       // change source of all edges out from this vertex
       // to have vNode as their source
       for (ExpressionEdge e : getExpressionGraph().getEdgesFromSource(this)) {

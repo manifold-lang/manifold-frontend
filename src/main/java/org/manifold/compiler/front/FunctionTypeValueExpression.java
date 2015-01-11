@@ -35,13 +35,10 @@ public class FunctionTypeValueExpression extends Expression {
 
   @Override
   public void verify(Scope scope) throws Exception {
-    // TODO Auto-generated method stub
-    
   }
 
   @Override
   public boolean isAssignable() {
-    // TODO Auto-generated method stub
     return false;
   }
 

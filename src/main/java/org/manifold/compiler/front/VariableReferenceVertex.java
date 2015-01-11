@@ -49,13 +49,9 @@ public class VariableReferenceVertex extends ExpressionVertex {
       return incoming.get(0);
     } else if (incoming.size() == 0) {
       // not assigned
-      // TODO we would like to throw this exception but we need a Variable
-      //throw new VariableNotAssignedException(id);
       throw new UndefinedBehaviourError("variable '" + id + "' not assigned");
     } else { 
       // multiply assigned
-   // TODO we would like to throw this exception but we need a Variable
-      //throw new MultipleAssignmentException(id);
       throw new UndefinedBehaviourError("variable '" + id + 
           "' multiply assigned");
     }
@@ -74,18 +70,15 @@ public class VariableReferenceVertex extends ExpressionVertex {
   @Override
   public void verify() throws Exception {
     // TODO Auto-generated method stub
-    
   }
 
   @Override
   public boolean isElaborationtimeKnowable() {
-    // TODO Auto-generated method stub
-    return false;
+    return true;
   }
 
   @Override
   public boolean isRuntimeKnowable() {
-    // TODO Auto-generated method stub
     return false;
   }
 

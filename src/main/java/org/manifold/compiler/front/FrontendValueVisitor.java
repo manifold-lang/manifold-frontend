@@ -3,8 +3,6 @@ package org.manifold.compiler.front;
 import org.manifold.compiler.SchematicValueVisitor;
 
 public interface FrontendValueVisitor extends SchematicValueVisitor {
-  public void visit(PrimitiveFunctionValue pFunc);
-
   public void visit(TupleValue tuple);
 
   public void visit(TupleTypeValue tupleTypeValue);
