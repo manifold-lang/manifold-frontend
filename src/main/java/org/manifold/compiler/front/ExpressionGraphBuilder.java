@@ -11,7 +11,8 @@ import org.manifold.compiler.UndefinedBehaviourError;
 
 public class ExpressionGraphBuilder implements ExpressionVisitor {
 
-  private static Logger log = LogManager.getLogger("ExpressionGraph");
+  private static Logger log = LogManager.getLogger(
+      ExpressionGraphBuilder.class);
 
   private List<Expression> expressions;
   private Map<NamespaceIdentifier, Namespace> namespaces;
@@ -123,7 +124,7 @@ public class ExpressionGraphBuilder implements ExpressionVisitor {
     exprGraph.addVertex(vFunctionType);
     exprGraph.addEdge(eIn);
     exprGraph.addEdge(eOut);
-    this.lastVertex =  vFunctionType;
+    this.lastVertex = vFunctionType;
   }
   
   @Override

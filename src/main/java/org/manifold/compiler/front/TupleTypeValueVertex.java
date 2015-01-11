@@ -15,7 +15,7 @@ import com.google.common.collect.ImmutableMap;
 
 public class TupleTypeValueVertex extends ExpressionVertex {
 
-  private static Logger log = LogManager.getLogger("TupleTypeValueVertex");
+  private static Logger log = LogManager.getLogger(TupleTypeValueVertex.class);
   
   private TupleTypeValue type = null;
   @Override

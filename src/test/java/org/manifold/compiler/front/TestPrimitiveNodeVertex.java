@@ -9,6 +9,7 @@ import java.util.Map;
 import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.PatternLayout;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.manifold.compiler.BooleanTypeValue;
@@ -45,12 +46,18 @@ public class TestPrimitiveNodeVertex {
     return vPort;
   }
   
+  private ExpressionGraph g;
+  private NamespaceIdentifier defaultNamespace;
+  
+  @Before
+  public void setup() {
+    g = new ExpressionGraph();
+    defaultNamespace = new NamespaceIdentifier("");
+  }
+  
   @Test
   public void testConstructorSetsEdgeTargets() 
       throws MultipleDefinitionException, VariableNotDefinedException {
-    ExpressionGraph g = new ExpressionGraph();
-    NamespaceIdentifier defaultNamespace = new NamespaceIdentifier("");
-    
     PrimitivePortVertex vInPort = generatePort(g, 
         BooleanTypeValue.getInstance());
     VariableIdentifier idXIn = new VariableIdentifier(
@@ -115,9 +122,6 @@ public class TestPrimitiveNodeVertex {
   @Test
   public void testElaborate_noAttributes() 
       throws Exception {
-    ExpressionGraph g = new ExpressionGraph();
-    NamespaceIdentifier defaultNamespace = new NamespaceIdentifier("");
-    
     PrimitivePortVertex vInPort = generatePort(g, 
         BooleanTypeValue.getInstance());
     VariableIdentifier idXIn = new VariableIdentifier(
@@ -202,9 +206,6 @@ public class TestPrimitiveNodeVertex {
   @Test
   public void testElaborate_inputNil() 
       throws Exception {
-    ExpressionGraph g = new ExpressionGraph();
-    NamespaceIdentifier defaultNamespace = new NamespaceIdentifier("");
-    
     ConstantValueVertex nil = new ConstantValueVertex(g,
         NilTypeValue.getInstance());
     g.addVertex(nil);
@@ -286,10 +287,7 @@ public class TestPrimitiveNodeVertex {
   
   @Test
   public void testElaborate_outputNil() 
-      throws Exception {
-    ExpressionGraph g = new ExpressionGraph();
-    NamespaceIdentifier defaultNamespace = new NamespaceIdentifier("");
-    
+      throws Exception { 
     ConstantValueVertex nil = new ConstantValueVertex(g,
         NilTypeValue.getInstance());
     g.addVertex(nil);
