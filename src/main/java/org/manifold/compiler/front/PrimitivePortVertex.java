@@ -16,7 +16,6 @@ public class PrimitivePortVertex extends ExpressionVertex {
   private PortTypeValue port = null;
   @Override
   public Value getValue() {
-    // TODO make sure that elaborate() gets called first
     return port;
   }
 
@@ -75,7 +74,6 @@ public class PrimitivePortVertex extends ExpressionVertex {
     // check for NIL
     if (!(attributesVertex.getValue()
         .equals(NilTypeValue.getInstance()))) {
-      // TODO: evaluate the expression and get the attributes
       throw new UnsupportedOperationException(
           "port with attributes not supported");
     }

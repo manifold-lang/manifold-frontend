@@ -88,14 +88,12 @@ public class TupleTypeValueVertex extends ExpressionVertex {
 
   @Override
   public boolean isElaborationtimeKnowable() {
-    // TODO Auto-generated method stub
-    return false;
+    return true;
   }
 
   @Override
   public boolean isRuntimeKnowable() {
-    // TODO Auto-generated method stub
-    return false;
+    return true;
   }
 
   @Override
