@@ -21,7 +21,7 @@ tupleValue:
   '(' tupleValueEntry (',' tupleValueEntry)* ')' |
   '(' ')';
 
-functionTypeValue: tupleTypeValue '->' expression;
+functionTypeValue: tupleTypeValue '->' tupleTypeValue;
 functionValue: functionTypeValue '{' (expression EXPRESSION_TERMINATOR)* '}';
 
 ////////////////////////////////////////////////////////
@@ -54,6 +54,8 @@ expression:
   | expression '.' (IDENTIFIER | INTEGER_VALUE) # StaticAttributeAccessExpression
   | namespacedIdentifier # VariableReferenceExpression
   | expression '=' expression # AssignmentExpression
+  | 'primitive' 'port' typevalue (':' tupleTypeValue)? # PrimitivePortDefinitionExpression
+  | 'primitive' 'node' functionTypeValue (':' tupleTypeValue)? # PrimitiveNodeDefinitionExpression
   ;
 
 EXPRESSION_TERMINATOR: ';';

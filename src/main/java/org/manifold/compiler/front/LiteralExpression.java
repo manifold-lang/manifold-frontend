@@ -17,6 +17,10 @@ public class LiteralExpression extends Expression {
 
   @Override
   public Value getValue(Scope scope) {
+    return getValue();
+  }
+
+  public Value getValue() {
     return value;
   }
 
@@ -41,8 +45,8 @@ public class LiteralExpression extends Expression {
   }
 
   @Override
-  public void accept(ExpressionVisitor visitor) {
+  public void accept(ExpressionVisitor visitor) throws Exception {
     visitor.visit(this);
   }
-  
+
 }

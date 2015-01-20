@@ -20,6 +20,7 @@ jar {
   manifest {
     attributes 'Implementation-Title': 'Manifold Frontend', 'Implementation-Version': version, 'Main-Class': 'org.manifold.compiler.front.Main'
   }
+  from { configurations.antlr4.collect { it.isDirectory() ? it : zipTree(it) } }
 }
 
 repositories {

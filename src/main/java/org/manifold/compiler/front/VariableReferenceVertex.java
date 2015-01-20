@@ -2,6 +2,11 @@ package org.manifold.compiler.front;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.util.List;
+
+import org.manifold.compiler.TypeValue;
+import org.manifold.compiler.UndefinedBehaviourError;
+import org.manifold.compiler.Value;
 
 public class VariableReferenceVertex extends ExpressionVertex {
   private VariableIdentifier id;
@@ -9,7 +14,8 @@ public class VariableReferenceVertex extends ExpressionVertex {
     return id;
   }
   
-  public VariableReferenceVertex(VariableIdentifier id) {
+  public VariableReferenceVertex(ExpressionGraph g, VariableIdentifier id) {
+    super(g);
     this.id = id;
   }
   
@@ -31,5 +37,56 @@ public class VariableReferenceVertex extends ExpressionVertex {
     writer.write("\"");
     writer.write("];");
     writer.newLine();
+  }
+
+  private TypeValue type = null;
+  private Value value = null;
+  
+  private ExpressionEdge findAssigningEdge() {
+    ExpressionGraph g = getExpressionGraph();
+    List<ExpressionEdge> incoming = g.getEdgesToTarget(this);
+    if (incoming.size() == 1) {
+      return incoming.get(0);
+    } else if (incoming.size() == 0) {
+      // not assigned
+      throw new UndefinedBehaviourError("variable '" + id + "' not assigned");
+    } else { 
+      // multiply assigned
+      throw new UndefinedBehaviourError("variable '" + id + 
+          "' multiply assigned");
+    }
+  }
+  
+  @Override
+  public TypeValue getType() {
+    return type;
+  }
+
+  @Override
+  public Value getValue() {
+    return value;
+  }
+
+  @Override
+  public void verify() throws Exception {
+    // TODO Auto-generated method stub
+  }
+
+  @Override
+  public boolean isElaborationtimeKnowable() {
+    return true;
+  }
+
+  @Override
+  public boolean isRuntimeKnowable() {
+    return false;
+  }
+
+  @Override
+  public void elaborate() throws Exception {
+    ExpressionEdge e = findAssigningEdge();
+    e.getSource().elaborate();
+    type = e.getSource().getType();
+    value = e.getSource().getValue();
   }
 }
