@@ -1,31 +1,26 @@
 package org.manifold.compiler.front;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.base.Preconditions;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
-
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
+import java.util.*;
 
 public class ExpressionGraph {
 
   private static Logger log = LogManager.getLogger(ExpressionGraph.class);
 
+  Set<ExpressionVertex> allVertices = new HashSet<>();
+
   private Map<VariableIdentifier, VariableReferenceVertex> variableVertices =
       new HashMap<>();
-  public Map<VariableIdentifier, VariableReferenceVertex> getVariableVertices()
-  {
+  public Map<VariableIdentifier, VariableReferenceVertex> getVariableVertices() {
     return ImmutableMap.copyOf(variableVertices);
   }
   public VariableReferenceVertex getVariableVertex(VariableIdentifier vID)
@@ -42,7 +37,9 @@ public class ExpressionGraph {
     if (variableVertices.containsKey(vID)) {
       throw new MultipleDefinitionException(vID);
     } else {
-      variableVertices.put(vID, new VariableReferenceVertex(this, vID));
+      VariableReferenceVertex v = new VariableReferenceVertex(this, vID);
+      variableVertices.put(vID, v);
+      allVertices.add(v);
     }
   }
 
@@ -52,17 +49,18 @@ public class ExpressionGraph {
   }
   public void addVertex(ExpressionVertex v) {
     nonVariableVertices.add(v);
+    allVertices.add(v);
   }
 
-  public List<ExpressionVertex> getVertices() {
-    List<ExpressionVertex> vertices = new LinkedList<>();
-    vertices.addAll(getVariableVertices().values());
-    vertices.addAll(getNonVariableVertices());
-    return vertices;
+  public Collection<ExpressionVertex> getVertices() {
+    return allVertices;
   }
 
   private List<ExpressionEdge> edges = new ArrayList<>();
   public void addEdge(ExpressionEdge e) {
+    Preconditions.checkArgument(getVertices().contains(e.getSource())
+                    && e.getTarget() == null || getVertices().contains(e.getTarget()),
+            "Edge had unexpected vertices " + e.toString());
     edges.add(e);
   }
 
