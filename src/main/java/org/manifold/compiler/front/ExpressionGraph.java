@@ -86,6 +86,10 @@ public class ExpressionGraph {
     return edgesTo;
   }
 
+  public List<ExpressionEdge> getEdges() {
+    return ImmutableList.copyOf(edges);
+  }
+
   public List<String> getPrintableEdges() {
     List<String> edgeList = new LinkedList<>();
     for (ExpressionEdge e : edges) {
