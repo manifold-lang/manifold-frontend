@@ -205,12 +205,12 @@ public class ExpressionGraphBuilder implements ExpressionVisitor {
   private void verifyVariablesSingleAssignment() {
     Map<ExpressionVertex, List<ExpressionEdge>> inboundEdges = new HashMap<>();
     exprGraph.getEdges().forEach(exprEdge -> {
-      ExpressionVertex v = exprEdge.getTarget();
-      if (v instanceof VariableReferenceVertex) {
-        inboundEdges.putIfAbsent(v, new ArrayList<>());
-        inboundEdges.get(v).add(exprEdge);
-      }
-    });
+        ExpressionVertex v = exprEdge.getTarget();
+        if (v instanceof VariableReferenceVertex) {
+          inboundEdges.putIfAbsent(v, new ArrayList<>());
+          inboundEdges.get(v).add(exprEdge);
+        }
+      });
 
     List<String> errors = new ArrayList<>();
     inboundEdges.forEach((vertex, edges) -> {
@@ -218,7 +218,9 @@ public class ExpressionGraphBuilder implements ExpressionVisitor {
           StringBuilder error = new StringBuilder();
           error.append(String.format("Vertex %s has %d incoming edges:",
               vertex.toString(), edges.size()));
-          edges.forEach(edge -> error.append(" {").append(edge.toString()).append("}"));
+          edges.forEach(edge -> error.append(" {")
+              .append(edge.toString())
+              .append("}"));
           errors.add(error.toString());
         }
       });
