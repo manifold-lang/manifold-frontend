@@ -60,7 +60,7 @@ public class ExpressionGraph {
   public void addEdge(ExpressionEdge e) {
     Preconditions.checkArgument(
         getVertices().contains(e.getSource())
-            && e.getTarget() == null || getVertices().contains(e.getTarget()),
+            && (e.getTarget() == null || getVertices().contains(e.getTarget())),
         "Edge had unexpected vertices " + e.toString());
     edges.add(e);
   }
