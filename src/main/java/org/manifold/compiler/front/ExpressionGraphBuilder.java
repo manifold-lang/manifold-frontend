@@ -1,12 +1,13 @@
 package org.manifold.compiler.front;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+import org.manifold.compiler.*;
+
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
-import org.manifold.compiler.UndefinedBehaviourError;
 
 
 public class ExpressionGraphBuilder implements ExpressionVisitor {
@@ -53,6 +54,8 @@ public class ExpressionGraphBuilder implements ExpressionVisitor {
     for (Expression expr : expressions) {
       expr.accept(this);
     }
+
+    verifyVariablesSingleAssignment();
 
     return exprGraph;
   }
@@ -199,4 +202,31 @@ public class ExpressionGraphBuilder implements ExpressionVisitor {
     this.lastVertex = vNode;
   }
 
+  private void verifyVariablesSingleAssignment() {
+    Map<ExpressionVertex, List<ExpressionEdge>> inboundEdges = new HashMap<>();
+    exprGraph.getEdges().forEach(exprEdge -> {
+        ExpressionVertex v = exprEdge.getTarget();
+        if (v instanceof VariableReferenceVertex) {
+          inboundEdges.putIfAbsent(v, new ArrayList<>());
+          inboundEdges.get(v).add(exprEdge);
+        }
+      });
+
+    List<String> errors = new ArrayList<>();
+    inboundEdges.forEach((vertex, edges) -> {
+        if (edges.size() != 1) {
+          StringBuilder error = new StringBuilder();
+          error.append(String.format("Vertex %s has %d incoming edges:",
+              vertex.toString(), edges.size()));
+          edges.forEach(edge -> error.append(" {")
+              .append(edge.toString())
+              .append("}"));
+          errors.add(error.toString());
+        }
+      });
+
+    if (!errors.isEmpty()) {
+      throw new RuntimeException(errors.toString());
+    }
+  }
 }
