@@ -211,11 +211,8 @@ public class PrimitiveNodeVertex extends ExpressionVertex {
 
     // look for non-PortTypeValues in the input type only,
     // then extract the pairs and add to the attributes map
-    // TODO check for and disallow attributes in the output type
     log.debug("extracting attributes");
     extractAttributes(portType.getInputType(), attributesMap);
-
-    // TODO check for ports/attributes with exactly the same key
 
     this.node = new NodeTypeValue(attributesMap, portTypeMap);
     log.debug("constructed node type " + debugNodeType(node));

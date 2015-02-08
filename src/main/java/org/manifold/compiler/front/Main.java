@@ -159,8 +159,6 @@ public class Main implements Frontend {
       nodes.add(nv.getNodeValue());
     }
     // build schematic
-    // TODO a better way of naming nodes and connections,
-    // perhaps pulling meaningful names from variables/identifiers.
     Integer nodeID = 1;
     for (NodeValue node : nodes) {
       String nodeName = "n" + nodeID.toString();
@@ -296,7 +294,7 @@ class ExpressionContextVisitor extends ManifoldBaseVisitor<Expression> {
     );
   }
 
-  // TODO KEY INSIGHT: combine the port type/port attributes and
+  // KEY INSIGHT: combine the port type/port attributes and
   // node attributes in a single FunctionTypeValue signature.
   // As an example, if we have port types xIn(a: Int) and xOut(b: Int)
   // and want a node type xDev whose attributes are p,q: Bool,
