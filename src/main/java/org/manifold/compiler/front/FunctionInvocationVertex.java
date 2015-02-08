@@ -80,6 +80,26 @@ public class FunctionInvocationVertex extends ExpressionVertex {
     writer.newLine();
   }
 
+  private void elaborateNodeInstantiation(Value function,
+      ExpressionVertex vFunction) throws Exception {
+    log.debug("function invocation is node instantiation");
+    NodeTypeValue nodeType = (NodeTypeValue) function;
+    FunctionTypeValue signature = (FunctionTypeValue) vFunction.getType();
+    NodeValueVertex vNode = new NodeValueVertex(getExpressionGraph(),
+        nodeType, signature, inputEdge);
+    // now inputEdge.target is vNode
+    getExpressionGraph().addVertex(vNode);
+    // change source of all edges out from this vertex
+    // to have vNode as their source
+    for (ExpressionEdge e : getExpressionGraph().getEdgesFromSource(this)) {
+      e.setSource(vNode);
+    }
+    // destroy the function edge
+    getExpressionGraph().removeEdge(functionEdge);
+    // now remove this vertex from the graph
+    getExpressionGraph().removeVertex(this);
+  }
+  
   @Override
   public void elaborate() throws Exception {
     // Elaborate argument
@@ -92,22 +112,7 @@ public class FunctionInvocationVertex extends ExpressionVertex {
     Value function = vFunction.getValue();
     if (function instanceof NodeTypeValue) {
       // we're not calling a function; we're instantiating a node!
-      log.debug("function invocation is node instantiation");
-      NodeTypeValue nodeType = (NodeTypeValue) function;
-      FunctionTypeValue signature = (FunctionTypeValue) vFunction.getType();
-      NodeValueVertex vNode = new NodeValueVertex(getExpressionGraph(),
-          nodeType, signature, inputEdge);
-      // now inputEdge.target is vNode
-      getExpressionGraph().addVertex(vNode);
-      // change source of all edges out from this vertex
-      // to have vNode as their source
-      for (ExpressionEdge e : getExpressionGraph().getEdgesFromSource(this)) {
-        e.setSource(vNode);
-      }
-      // destroy the function edge
-      getExpressionGraph().removeEdge(functionEdge);
-      // now remove this vertex from the graph
-      getExpressionGraph().removeVertex(this);
+      elaborateNodeInstantiation(function, vFunction);
     } else {
       throw new UndefinedBehaviourError("don't know how to invoke '"
           + function.toString() + "'");
