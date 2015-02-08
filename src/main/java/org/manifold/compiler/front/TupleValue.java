@@ -1,33 +1,54 @@
 package org.manifold.compiler.front;
 
-import java.util.List;
+import java.util.Map;
 
 import org.manifold.compiler.SchematicValueVisitor;
 import org.manifold.compiler.UndefinedBehaviourError;
 import org.manifold.compiler.Value;
 
+import com.google.common.collect.ImmutableMap;
+
 public class TupleValue extends Value {
 
-  private final List<Expression> entries;
-  
+  private final Map<String, Value> entries;
+  // TODO the order of labels is important
+  public Map<String, Value> getEntries() {
+    return ImmutableMap.copyOf(entries);
+  }
+
   public int getSize() {
     return entries.size();
   }
-  
-  public Expression entry(int i) {
-    return entries.get(i);
+
+  public Value entry(String key) {
+    return entries.get(key);
   }
-  
-  public Value getValue(int i, Scope scope) {
-    return entry(i).getValue(scope);
-  }
-  
-  public TupleValue(TupleTypeValue type, List<Expression> values) {
+
+  public TupleValue(TupleTypeValue type, Map<String, Value> values) {
     super(type);
     // TODO check values against expected types
     this.entries = values;
   }
-  
+
+  @Override
+  public String toString() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("( ");
+    for (Map.Entry<String, Value> e : entries.entrySet()) {
+      String key = e.getKey();
+      Value value = e.getValue();
+      sb.append(key).append(":");
+      if (value == null) {
+        sb.append("null");
+      } else {
+        sb.append(value.toString());
+      }
+      sb.append(" ");
+    }
+    sb.append(")");
+    return sb.toString();
+  }
+
   @Override
   public boolean isElaborationtimeKnowable() {
     return true;
@@ -37,7 +58,7 @@ public class TupleValue extends Value {
   public boolean isRuntimeKnowable() {
     return false;
   }
-  
+
   @Override
   public void accept(SchematicValueVisitor v) {
     if (v instanceof FrontendValueVisitor) {
@@ -48,5 +69,5 @@ public class TupleValue extends Value {
           "cannot accept non-frontend ValueVisitor into a frontend Value");
     }
   }
-  
+
 }

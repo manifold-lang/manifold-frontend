@@ -56,6 +56,13 @@ public class ExpressionGraph {
     return allVertices;
   }
 
+  public void removeVertex(ExpressionVertex v) {
+    // remove all occurrences from map variableVertices
+    while (variableVertices.values().remove(v)) { }
+    // simple removal from nonVariableVertices
+    nonVariableVertices.remove(v);
+  }
+  
   private List<ExpressionEdge> edges = new ArrayList<>();
   public void addEdge(ExpressionEdge e) {
     Preconditions.checkArgument(
@@ -63,6 +70,9 @@ public class ExpressionGraph {
             && (e.getTarget() == null || getVertices().contains(e.getTarget())),
         "Edge had unexpected vertices " + e.toString());
     edges.add(e);
+  }
+  public void removeEdge(ExpressionEdge e) {
+    edges.remove(e);
   }
 
   public List<ExpressionEdge> getEdgesFromSource(ExpressionVertex v) {
@@ -104,7 +114,7 @@ public class ExpressionGraph {
     FileWriter fw = new FileWriter(file);
     try (BufferedWriter writer = new BufferedWriter(fw)) {
       // write graph header and attributes
-      writer.write("digraph G {");
+      writer.write("digraph \"" + file.getName() + "\" {");
       writer.newLine();
       // write all vertices
       Set<ExpressionVertex> visited = new HashSet<ExpressionVertex>();
@@ -136,6 +146,7 @@ public class ExpressionGraph {
       writer.write("}");
       writer.newLine();
     }
+    fw.close();
   }
 
 }

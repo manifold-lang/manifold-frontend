@@ -1,14 +1,12 @@
 package org.manifold.compiler.front;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
-import org.manifold.compiler.*;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 
 public class ExpressionGraphBuilder implements ExpressionVisitor {
 
@@ -72,9 +70,22 @@ public class ExpressionGraphBuilder implements ExpressionVisitor {
   }
 
   @Override
-  public void visit(FunctionInvocationExpression fExpr) {
-    throw new UndefinedBehaviourError("don't know how to visit "
-        + "function invocation expression");
+  public void visit(FunctionInvocationExpression fExpr) throws Exception {
+    // get the vertex corresponding to the function being called
+    fExpr.getFunctionExpression().accept(this);
+    ExpressionVertex vFunction = lastVertex;
+    ExpressionEdge eFunction = new ExpressionEdge(vFunction, null);
+    // then get the input vertex
+    fExpr.getInputExpression().accept(this);
+    ExpressionVertex vInput = lastVertex;
+    ExpressionEdge eInput = new ExpressionEdge(vInput, null);
+    
+    FunctionInvocationVertex vInvocation = new FunctionInvocationVertex(
+        exprGraph, eFunction, eInput);
+    exprGraph.addVertex(vInvocation);
+    exprGraph.addEdge(eFunction);
+    exprGraph.addEdge(eInput);
+    this.lastVertex = vInvocation;
   }
 
   @Override
@@ -107,6 +118,22 @@ public class ExpressionGraphBuilder implements ExpressionVisitor {
     }
     TupleTypeValueVertex vTuple = new TupleTypeValueVertex(exprGraph,
         typeValueEdges, defaultValueEdges);
+    exprGraph.addVertex(vTuple);
+    this.lastVertex = vTuple;
+  }
+  
+  @Override
+  public void visit(TupleValueExpression tExpr) throws Exception {
+    Map<String, ExpressionEdge> valueEdges = new HashMap<>();
+    for (Map.Entry<String, Expression> e 
+        : tExpr.getValueExpressions().entrySet()) {
+      String identifier = e.getKey();
+      e.getValue().accept(this);
+      ExpressionEdge eValue = new ExpressionEdge(lastVertex, null);
+      valueEdges.put(identifier, eValue);
+      exprGraph.addEdge(eValue);
+    }
+    TupleValueVertex vTuple = new TupleValueVertex(exprGraph, valueEdges);
     exprGraph.addVertex(vTuple);
     this.lastVertex = vTuple;
   }
@@ -188,16 +215,10 @@ public class ExpressionGraphBuilder implements ExpressionVisitor {
   public void visit(
       PrimitiveNodeDefinitionExpression nExpr) throws Exception {
     nExpr.getTypeValueExpression().accept(this);
-    ExpressionVertex vPortType = lastVertex;
-    ExpressionEdge ePortType = new ExpressionEdge(vPortType, null);
-    exprGraph.addEdge(ePortType);
-
-    nExpr.getAttributesExpression().accept(this);
-    ExpressionVertex vAttributes = lastVertex;
-    ExpressionEdge eAttributes = new ExpressionEdge(vAttributes, null);
-    exprGraph.addEdge(eAttributes);
-    PrimitiveNodeVertex vNode = new PrimitiveNodeVertex(exprGraph,
-        ePortType, eAttributes);
+    ExpressionVertex vSignature = lastVertex;
+    ExpressionEdge eSignature = new ExpressionEdge(vSignature, null);
+    exprGraph.addEdge(eSignature);
+    PrimitiveNodeVertex vNode = new PrimitiveNodeVertex(exprGraph, eSignature);
     exprGraph.addVertex(vNode);
     this.lastVertex = vNode;
   }

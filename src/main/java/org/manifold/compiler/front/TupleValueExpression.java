@@ -1,18 +1,24 @@
 package org.manifold.compiler.front;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.manifold.compiler.TypeValue;
 import org.manifold.compiler.Value;
 
-public class PrimitiveNodeDefinitionExpression extends Expression {
-  private final Expression typevalueExpr;
-  public Expression getTypeValueExpression() {
-    return typevalueExpr;
-  }
+import com.google.common.collect.ImmutableMap;
 
-  public PrimitiveNodeDefinitionExpression (Expression typevalue) {
-    this.typevalueExpr = typevalue;
-  }
+public class TupleValueExpression extends Expression {
 
+  private Map<String, Expression> valueExpressions;
+  public Map<String, Expression> getValueExpressions() {
+    return ImmutableMap.copyOf(valueExpressions);
+  }
+  
+  public TupleValueExpression(Map<String, Expression> valueExpressions) {
+    this.valueExpressions = new HashMap<>(valueExpressions);
+  }
+  
   @Override
   public TypeValue getType(Scope scope) {
     // TODO Auto-generated method stub
@@ -50,4 +56,5 @@ public class PrimitiveNodeDefinitionExpression extends Expression {
   public void accept(ExpressionVisitor visitor) throws Exception {
     visitor.visit(this);
   }
+  
 }
