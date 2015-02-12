@@ -83,29 +83,32 @@ In particular, you are required to
 # Frontend Language
 
 The front end language is what most users interact with most of the time. This
-is the language used for designing real systems using Manifold.
+is the language used for designing real systems with Manifold.
+
+## Variables and Expressions
+
+*TODO basic introduction*
 
 ## Booleans
 
 The most fundamental type in Manifold is the `manifold.Boolean` type. A
-`manifold.Boolean` represents a single bit of information (true or false),
+`manifold.Boolean` represents a single bit of information: true or false,
 represented as `manifold.true` or `manifold.false`. For example, we might turn
 on our time machine by setting
 
 ```
-manifold.Boolean timeMachineOn = manifold.true
+manifold.Boolean timeMachineActivated = manifold.true
 ```
 
-The compiler can generally infer the type of a variable so it is equivalent to
-write
+The compiler can infer the type of the variable so it is equivalent to write
 
 ```
-transmogrifier = manifold.true
+timeMachineActivated = manifold.true
 ```
 
 ## Compiletime vs Runtime
 
-In Manifold, you should domain logic as naturally as possible and let the
+In Manifold, you write domain logic as naturally as possible and let the
 compiler decide how to represent that logic in hardware.
 
 To this end, almost any expression in Manifold can be evaluated either
@@ -114,15 +117,12 @@ To this end, almost any expression in Manifold can be evaluated either
  - on the physical hardware, at **runtime**
 
 Certain operations, of course, can *only* be executed at a specific "time" --
-for example, top level io ports may *only* be read at runtime. Likewise, certain
-operations can *only* be executed at compiletime, such as referencing an
-external file in the compilation environment.
+For example, top level io ports may *only* be read at runtime. Referencing an
+external file in the compilation environment may only happen at compiletime.
 
-Manifold is designed such that you do not need to think about the difference
-between these two types of operations but take fine control over them, if
+Manifold is designed so that you don't need to think about the difference
+between these two types of operations but may take control over them, if
 desired.
-
-### Explicit Compiletime vs Runtime
 
 ## Tuples
 
@@ -133,19 +133,19 @@ primitive types.
 
 For example, suppose you are describing the input to some hardware for a time
 machine that can travel to any year with an optional invisibility shield. You
-could define a tuple which groups and names these variables
+could define a tuple which groups and names these variables,
 
 ```
 (year: manifold.Integer, invisibility: manifold.Boolean) input
 ```
 
-and instantiate that tuple with some values as
+create such a tuple,
 
 ```
 input = (year: 5000, invisibility: manifold.true)
 ```
 
-and access the properties in that instantiated tuple
+and access the properties in that tuple
 
 ```
 input.invisibility # => 500
@@ -155,8 +155,9 @@ input.year         # => true
 ### Default Properties
 
 The declaration may also include a default value for any property. 
+
 ```
-(year: manifold.Integer = 5000, invisible: manifold.Boolean = manifold.false)
+(year: manifold.Integer = 3000, invisible: manifold.Boolean = manifold.false)
 ```
 
 Any property which does not have a default value is required; any property which
@@ -171,6 +172,7 @@ example, an ordered pair (x,y) might be represented as
 ```
 (manifold.Integer, manifold.Integer)
 ```
+
 where the first `manifold.Integer` is implicitly named `0` and the second `1`.
 
 ```
@@ -288,7 +290,7 @@ there will be a compiletime error
 
 ## Integers
 
-*TODO Can we please represent integers in terms of tuples? Pleeeeeease?*
+*TODO Can we please represent integers in terms of tuples??*
 
 ## Enums
 
@@ -445,13 +447,15 @@ Array(SpaceshipEngine, 5) engines
 
 ## Constraints
 
+*TODO*
+
 ## Packages and Namespacing
 
-# Core Library
+# Digital Hardware Core Library
 
- - recall
- - count
- - cycle
+ - `recall`
+ - `count`
+ - `cycle`
 
 # Intermediate Language
 
@@ -478,9 +482,6 @@ Array(SpaceshipEngine, 5) engines
 
 ### Constraints
 
-# Backends
-
-??
  
 
 
