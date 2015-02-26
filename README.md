@@ -208,7 +208,7 @@ or, with the equivalent shorthand,
 (manifold.Integer...3) array = (1, 2, 3)
 ```
 
-Sometimes it makes more sense to set the width of a tuple using a compiletime
+Sometimes it makes more sense to set the width of a tuple using a statically
 evaluable expression. This often increases the readability and maintainability
 of code.
 
@@ -219,7 +219,7 @@ manifold.Integer width = 5
 
 ### Inferred Width Repeated Positional Properties
 
-It is also possible to statically infer the width of a tuple at compiletime from
+It is also possible to statically infer the width of a tuple statically from
 the value being passed to it. Simply reference a named property within the same
 tuple of type `manifold.Integer` instead of a width expression.
 
@@ -297,10 +297,10 @@ cast will happen successfully
 ```
 
 If a tuple is cast to another tuple type with missing *positional* properties,
-there will be a compiletime error
+there will be a compile time error
 
 ```
-# Causes compiletime TupleCastIllegalException
+# Causes compile time TupleCastIllegalException
 (manifold.Integer...3 = 0) array = (1, 2, 3, 4)
 ```
 
@@ -422,8 +422,7 @@ travel = (year: manifold.Integer year, invisibility: manifold.Boolean invisibili
 ```
 
 This example defines a function called `travel` which accepts either our time
-machine input tuple or just an input year. Overloaded implementations may freely
-call eachother.
+machine input tuple or just an input year. Overloaded implementations may freely call eachother.
 
 ## Types
 
@@ -444,7 +443,7 @@ Type Bit = manifold.Boolean
 
 ### Parameterized Types
 
-Some types have compiletime parameters (like generics in C++). Such types are
+Some types have parameters (like generics in C++). Such types are
 defined via the `=>` syntax. Take, for example, this simple definition of an
 `Array` type
 
@@ -457,6 +456,8 @@ Using this defined type, a developer could declare an instance of `Array` as
 ```
 Array(SpaceshipEngine, 5) engines
 ```
+
+Note that all parameters must be statically evaluable.
 
 ## Packages and Namespacing
 
