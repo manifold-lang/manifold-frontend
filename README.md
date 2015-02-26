@@ -12,15 +12,13 @@ not nearly as expressive or approachable as modern programming languages.
 
 More recently, several projects have spring up that provide tooling to use
 existing *programming* languages as hardware languages. These projects include
-**[CλaSH](http:#clash.ewi.utwente.nl/ClaSH/Home.html)**,
-**[MyHDL](http:#www.myhdl.org/doku.php)**, and many others. This approach has
+**[CλaSH](http://clash.ewi.utwente.nl/ClaSH/Home.html)**,
+**[MyHDL](http://www.myhdl.org/doku.php)**, and many others. This approach has
 not gained widespread use because programming languages are not true to the
 underlying domain of hardware programming (see [The Challenges of Hardware
-Synthesis from C-like Languages](http:#www1.cs.columbia.edu/~sedwards/papers/edw
-ards2005challenges.pdf)).
+Synthesis from C-like Languages](http://www1.cs.columbia.edu/~sedwardspapersedwards2005challenges.pdf)).
 
-Manifold is a reimagining of a hardware design language that remains true to the
-underlying domain, like VHDL and Verilog, while also leveraging 30 years of
+Manifold is a reimagining of a hardware design language that remains true to the underlying domain, like VHDL and Verilog, while also leveraging 30 years of
 improved language design, like CλaSH and MyHDL. In particular, Manifold provides
 
  - affordances for creating reusable modules a package manager to enable
@@ -29,10 +27,6 @@ improved language design, like CλaSH and MyHDL. In particular, Manifold provide
  - of targeting not on;y digital hardware but other areas of system engineering
  - such as microfluidics a powerful constraint system capable of representing
  - complex requirements
-
-# Scope
-
-*TODO
 
 # Philosophy
 
@@ -177,7 +171,7 @@ position.1  # => 4
 
 ### Repeated Positional Properties (Arrays)
 
-"Arrays in Manifold are a special case of tuples which have many positional
+Arrays in Manifold are a special case of tuples which have many positional
 "properties of a particular type. For example, an integer array of width 3 could
 "be defined as
 
@@ -268,41 +262,38 @@ there will be a compiletime error
 (manifold.Integer...3 = 0) array = (1, 2, 3, 4)
 ```
 
-## Integers
-
-An int
-
 ## Enums
 
-An enum allows you to restrict a domain to a small set of named values. 
+An enum allows you to restrict a domain to a fixed set of named values. For example, if you want to represent the states of a traffic light, you might define a TrafficLightState enum as follows
 
 ```
-Enum TrafficLightState = {on, off, blinking}
-TrafficLightState state = TrafficLightState.on
+Type TrafficLight = Enum(
+    (green: boolean, yellow:boolean, red: boolean),
+    green: (1, 0, 0),
+    yellow: (0, 1, 0),
+    red: (0, 0, 1),
+    turn: (cycle(hz: 1), 0, 0)
+)
 ```
 
-```
-Enum TrafficLightDelay = {short: 5, long: 20}
-
-TrafficLightDelay dely1 = TrafficLightDelay.short
-TrafficLightDelay dely2 = TrafficLightDelay.medium # compiletime error
-TrafficLightDelay delay3 = 5
-TrafficLightDelay delay4 = 10 # compiletime error
-manifold.Integer delay5 = TrafficLightDelay.short
-```
+This enum can then be used as 
 
 ```
-Enum Bar = {foo: (0, name: 1), baz: (5)} # compiletime error
+TrafficLight south = TrafficLight.green
+TrafficLight east = (0, 0, 1)
+# But 'TrafficLight east = (0, 1, 1)' would be rejected by the compiler
 ```
 
-```
-Enum Bar = {foo: (0, name: 1), baz: (5, name: 10)}
+If no type or values are specified for an enum, integers are used implicitly
 
-Bar bar = Bar.baz
-bar.name
-bar.0
-Bar.baz[0]
-Bar.baz.name
+```
+Type Color = Enum(
+    green,
+    red,
+    blue
+)
+Color color = Color.red
+Color color = 0
 ```
 
 ## Functions
@@ -311,7 +302,7 @@ A function is an entity that, given an input value, uses some logic to produce
 an output value.
 
 Suppose you were to write a function that determined if an input to the time
-machine was unsafe (ie targeting a year after the robot uprising and without the
+machine was unsafe (i.e. targeting a year after the robot uprising and without the
 invisibility shield). This function takes in some input in the form `(year:
 manifold.Integer, invisible: manifold.Boolean invisible)` and produces some
 output in the form of a `manifold.Boolean`.
@@ -465,5 +456,10 @@ cycle
 # Backends
 
 ??
+ 
+
+
+
+
 
 
