@@ -1,3 +1,6 @@
+* = import Manifold.core
+* = import Manifold.digital
+
 Light = (green: boolean, yellow:boolean, red:boolean)
 
 GREEN = (1, 0, 0)
