@@ -232,6 +232,25 @@ you only need the destination year of your time machine, you need only write
 (year: year) = (year: 5000, invisible: false)
 ```
 
+#### `*` Destructuring Assignment
+
+The special symbol `*` on the lefthand side of an assignment operation allows you to extract all values from a tuple into local scope, called `*` destructuring assignment. For example, after the statement
+
+```
+* = (year: 5000, invisible: false)
+```
+
+We could reference `year` and `invisible` in the function's scope.
+
+Note that the `*` operator does not act recursively or work on unnamed properties. If the tuple being destructures contains a property with the same name as a variable in local scope, a compiler error will be thrown.
+
+Properites may be explicitly excluded from the destructuring assignment by including their name in parenthesis after the `*`
+
+```
+invisible = true
+*(invisible) = (year: 5000, invisible: false)
+```
+
 ### Casting
 
 If a tuple is cast to another tuple type with additional properties and a
@@ -416,17 +435,41 @@ Using this defined type, a developer could declare an instance of `Array` as
 Array(SpaceshipEngine, 5) engines
 ```
 
-## Constraints
-
-???
-
 ## Packages and Namespacing
+
+Manifold features a modern package management system.
+
+Values within packages (remember types and functions are just values) are brought into local scope using the `import` keyword and regular variable assignment. The following statement imports the `parallel` function from the `manifold` package.
+
+```
+parallel = import manifold.parallel
+```
+
+You may use destructuring assignment with packages
+
+```
+(parallel) = import manifold
+```
+
+and even `*` destructuring assignment to import everything from the package into local scope
+
+```
+* = import manifold
+```
 
 # Core Library
 
-recall
-count
-cycle
+## parallel
+
+## series
+
+# Digital Hardware Library
+
+## recall
+
+## count
+
+## cycle
 
 # Intermediate Language
 
