@@ -54,6 +54,10 @@ improved language design, like CλaSH and MyHDL. In particular, Manifold provide
 
 # Terminology, Notation and Conventions
 
+## Documentation Conventions
+
+ - Terminology with a specific technical definition will be **bold** the first time it is used to emphasize the precision and degree of specificity of the term.
+
 ## Naming Conventions
 
 In order to make Manifold readable and logically consistent, naming conventions
@@ -93,26 +97,43 @@ write
 transmogrifier = manifold.true
 ```
 
-## Compiletime vs Runtime
+## Annotations
+
+Manifold supports a system capable of annotating variables with additional metadata using **annotations**. These annotations are similar to Java's annotations in syntax, being prefixed by a *@* and optionally taking parameters
+
+```
+@bar Integer width = 5
+@foo(10, true) Integer height = 200
+```
+
+At the moment, annotations are defined by the compiler but user-defined annotations are planned for future versions of the spec.
+
+## Static vs Dynamic Values
 
 In Manifold, you should domain logic as naturally as possible and let the
 compiler decide how to represent that logic in hardware.
 
 To this end, almost any expression in Manifold can be evaluated either
 
- - on the sequential processor where the Manifold code is being compiled, at **compiletime**
- - on the physical hardware, at **runtime**
+ - on the sequential processor where the Manifold code is being compiled, at **compile time** statements are evaluated **statically**
+ - on the physical hardware, at **run time** statements are evaluated **dynamically**
 
 Certain operations, of course, can *only* be executed at a specific "time" --
-for example, top level io ports may *only* be read at runtime. Likewise, certain
-operations can *only* be executed at compiletime, such as referencing an
-external file in the compilation environment.
+for example, top level io ports may *only* be read dynamically at runtime.
+Likewise, certain operations can *only* be executed statically at compiletime,
+such as referencing an external file in the compilation environment.
 
 Manifold is designed such that you do not need to think about the difference
 between these two types of operations but take fine control over them, if
 desired.
 
-### Explicit Compiletime vs Runtime
+### Explicit Static vs Dynamic
+
+Values may be constrained in whether they may be static or dynamic using annotations. For example, we can mandate that `width` is known statically, at compile time, by defining it as
+
+```
+@static Integer width 
+```
 
 ## Tuples
 
@@ -120,6 +141,8 @@ A tuple is an ordered set of values that can be passed around as one logical
 entity. Tuples are the glue that allow us to build domain objects -- like
 numbers, genomes, and time machines -- out of `manifold.Boolean`s and other
 primitive types.
+
+A **tuple type** defines a format for a **tuple**, an ordered set of **named properties** and **unnamed properties**.
 
 For example, suppose you are describing the input to some hardware for a time
 machine that can travel to any year with an optional invisibility shield. You
