@@ -1,0 +1,42 @@
+Light = (green: boolean, yellow:boolean, red:boolean)
+
+GREEN = (1, 0, 0)
+YELLOW = (0, 1 ,0)
+RED = (0, 0, 1)
+
+SECONDS_NS_GREEN  = 10
+SECONDS_NS_YELLOW = 3
+SECONDS_EW_GREEN  = 15
+SECONDS_EW_YELLOW = 2
+
+SECONDS_NS_TOTAL = SECONDS_NS_GREEN + SECONDS_NS_YELLOW
+SECONDS_EW_TOTAL = SECONDS_EW_GREEN + SECONDS_EW_YELLOW
+SECONDS_TOTAL    = SECONDS_NS_TOTAL + SECONDS_EW_TOTAL
+
+Light s_light = Light n_light = Light ns_light
+Light e_light = Light w_light = Light ew_light
+
+led[0..3]  = n_light
+led[6..9]  = w_light
+led[3..6]  = s_light
+led[9..12] = e_light
+
+seconds = count(hz: 1, mod: SECONDS_TOTAL)
+
+if (seconds < SECONDS_NS_GREEN) {
+  ns_light = GREEN
+  ew_light = RED
+
+} else if (seconds < SECONDS_NS_TOTAL) {
+  ns_light = YELLOW
+  ew_light = RED
+
+} else if (seconds < SECONDS_NS_TOTAL + SECONDS_EW_GREEN) {
+  ns_light = RED
+  ew_light = GREEN
+
+} else {
+  ns_light = RED
+  ew_light = YELLOW
+}
+
