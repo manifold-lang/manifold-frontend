@@ -1,19 +1,14 @@
-Manifold is a high level language for creating all kinds of systems the way we
-write software.
-
-Currently, it focuses on hardware and microfludics design.
-
 # Introduction
 
 In much the same way that computer programs are written in programming
-languages, digital circuits is "written" in a **hardware description language**.
+languages, hardware is "written" in **hardware description languages**.
 
 The two hardware languages in wide use today are **VHDL** and **Verilog**. Both
 were designed in the early 1980's and both have remained frozen in time since,
 while our understanding of how to build expressive, powerful, and usable
 programming languages has grown considerably. These languages are in widespread
-use because they are the best tool for the job but they aren't nearly as
-expressive or approachable as modern programming languages.
+use because they are the best tool for the job of hardware design but they are
+not nearly as expressive or approachable as modern programming languages.
 
 More recently, several projects have spring up that provide tooling to use
 existing *programming* languages as hardware languages. These projects include
@@ -26,89 +21,87 @@ ards2005challenges.pdf)).
 
 Manifold is a reimagining of a hardware design language that remains true to the
 underlying domain, like VHDL and Verilog, while also leveraging 30 years of
-improved language design, like CλaSH and MyHDL. 
+improved language design, like CλaSH and MyHDL. In particular, Manifold provides
 
-Manifold doesn't only do digitial circuits -- it can be extended to design all
-kinds of systems, including analog circuits, microfluidics, and mechanical
-systems.
+ - affordances for creating reusable modules a package manager to enable
+ - widespread distribution of modules a functional programming inspired language
+ - that is true to the underlying domain a flexible compilation system, capable
+ - of targeting not on;y digital hardware but other areas of system engineering
+ - such as microfluidics a powerful constraint system capable of representing
+ - complex requirements
 
-You should use manifold becase
+# Scope
 
- - it allows you to design circuits, microfluidics, and other systems in an elegant and consistent way
- - it allows you to express solutions to hard problems in simple text files
- - it allows you to encapsulate these solutions within "modules"
- - it allows you to reuse these modules within your own projects
- - it allows you to share modules between projects, people, and organizations
- - it allows you to leverage the ecosystem of poweful software development tools
+*TODO
 
 # Philosophy
 
-**The compiler should work hard so that you don't have to.** (But hopefully the
-compiler can be as elegant as the code it compiles!) Prefer implicit
-specification over explicit. Provide smart defaults and painless overrides. Do
-as much work as possible at compile time. Allow developers to express domain
-logic as naturally as possible and let the compiler decide how to implement it. 
+**The compiler should work hard so that developers don't have to. Prefer
+**implicit specification over explicit. Provide smart defaults and painless
+**overrides. Do as much work at compile time as possible. Allow developers to
+**express domain logic as naturally as possible and let the compiler decide how
+**to implement it. Use type inference wherever possible. Batteries included but
+**removable.
 
-**Optimize for readability over writeability.** Developers spend 15 hours reading
-code and 5 hours modifying code for every 1 hour of writing code. Avoid
-confusing abbreviations or acronyms. Enforce part-of-speech naming conventions.
-Prefer longer, descriptive, unambiguous names (within reason). Code should be as
-self-documenting as possible. Brevity is best for both readability and
-writeability.
+**Optimize for readability over writeability. Developers spend 15 hours reading
+**code and 5 hours modifying code for every 1 hour of writing code. Avoid
+**confusing abbreviations or acronyms. Enforce part-of-speech naming
+**conventions. Prefer longer, descriptive, unambiguous names (within reason).
+**Code should be as self-documenting as possible. Brevity is best for both
+**readability and writeability.
 
-**Be true to the underlying domain.** Borrow concepts from sequential programming
-where possible but avoid inaccurate polysonomy. Expose all hardware primitives
-available as naturally as possible.
+**Be high to the underlying domain. Borrow concepts from sequential programming
+**where possible but avoid inaccurate polysonomy. Expose all hardware primitives
+**available as naturally as possible.
 
-**Build powerful self-hosted abstractions atop a minimal set of primitives.**
-Provide a powerful macro system to create the illusion of complex language
-features. Build smart abstractions around complexity.
+**Build powerful self-hosted abstractions atop a minimal set of primitives.
+**Provide a powerful macro system to create the illusion of complex language
+**features. Build facades around complicated subsystems.
 
 # Terminology, Notation and Conventions
 
 ## Naming Conventions
 
 In order to make Manifold readable and logically consistent, naming conventions
-are enforced by a linguistic linter that runs, by default, during every
-compilation (*not implemented yet*).
+are enforced by a linter that runs, by default, during every compilation.
 
-In particular, you are required to
-
- - avoid all acronyms and abbreviations that are not taught in introductory computer science courses, except where doing so becomes awkward or defies strong convention 
- - write type names in `UpperCamelCase` and all other names in `lowerCamelCase`
- - always use the same word to refer to the same idea and different words to refer to different ideas (avoid confusing polysemy and unnecessary synonymy)
- - Prefer verb phrases for function names and noun phrases for all other names, except where doing so becomes awkward or defies strong convention
- - Prefer one word names to two word names, two word names to three word names, etc.
+ - Avoid all acronyms and abbreviations that are not taught in introductory
+ - computer science courses, except where doing so becomes awkward or defies
+ - strong convention Write type names in `UpperCamelCase` and all other names in
+ - `lowerCamelCase` Always use the same word to refer to the same idea and
+ - different words to refer to different ideas (avoid confusing polysemy and
+ - unnecessary synonymy) Prefer verb phrases for function names and noun phrases
+ - for all other names, except where doing so becomes awkward or defies strong
+ - convention Prefer one word names to two word names, two word names to three
+ - word names, etc. Prefer shorter simpler words to longer more complicated
+ - words
 
 # Frontend Language
 
-The front end language is what most users interact with most of the time. This
-is the language used for designing real systems with Manifold.
-
-## Variables and Expressions
-
-*TODO basic introduction*
+The Manifold frontend language elegantly expresses systems across many problem
+domains, including digital hardware and microfluidics, as text.
 
 ## Booleans
 
 The most fundamental type in Manifold is the `manifold.Boolean` type. A
-`manifold.Boolean` represents a single bit of information: true or false,
+`manifold.Boolean` represents a single bit of information (true or false),
 represented as `manifold.true` or `manifold.false`. For example, we might turn
 on our time machine by setting
 
 ```
-manifold.Boolean timeMachineActivated = manifold.true
+manifold.Boolean timeMachineOn = manifold.true
 ```
 
-The compiler can infer the type of the variable so it is equivalent to write
+The compiler can generally infer the type of a variable so it is equivalent to
+write
 
 ```
-timeMachineActivated = manifold.true
+transmogrifier = manifold.true
 ```
 
 ## Compiletime vs Runtime
 
-In Manifold, you write domain logic as naturally as possible and let the
+In Manifold, you should domain logic as naturally as possible and let the
 compiler decide how to represent that logic in hardware.
 
 To this end, almost any expression in Manifold can be evaluated either
@@ -117,12 +110,15 @@ To this end, almost any expression in Manifold can be evaluated either
  - on the physical hardware, at **runtime**
 
 Certain operations, of course, can *only* be executed at a specific "time" --
-For example, top level io ports may *only* be read at runtime. Referencing an
-external file in the compilation environment may only happen at compiletime.
+for example, top level io ports may *only* be read at runtime. Likewise, certain
+operations can *only* be executed at compiletime, such as referencing an
+external file in the compilation environment.
 
-Manifold is designed so that you don't need to think about the difference
-between these two types of operations but may take control over them, if
+Manifold is designed such that you do not need to think about the difference
+between these two types of operations but take fine control over them, if
 desired.
+
+### Explicit Compiletime vs Runtime
 
 ## Tuples
 
@@ -133,19 +129,19 @@ primitive types.
 
 For example, suppose you are describing the input to some hardware for a time
 machine that can travel to any year with an optional invisibility shield. You
-could define a tuple which groups and names these variables,
+could define a tuple which groups and names these variables
 
 ```
 (year: manifold.Integer, invisibility: manifold.Boolean) input
 ```
 
-create such a tuple,
+and instantiate that tuple with some values as
 
 ```
 input = (year: 5000, invisibility: manifold.true)
 ```
 
-and access the properties in that tuple
+and access the properties in that instantiated tuple
 
 ```
 input.invisibility # => 500
@@ -155,9 +151,8 @@ input.year         # => true
 ### Default Properties
 
 The declaration may also include a default value for any property. 
-
 ```
-(year: manifold.Integer = 3000, invisible: manifold.Boolean = manifold.false)
+(year: manifold.Integer = 5000, invisible: manifold.Boolean = manifold.false)
 ```
 
 Any property which does not have a default value is required; any property which
@@ -172,7 +167,6 @@ example, an ordered pair (x,y) might be represented as
 ```
 (manifold.Integer, manifold.Integer)
 ```
-
 where the first `manifold.Integer` is implicitly named `0` and the second `1`.
 
 ```
@@ -216,20 +210,6 @@ tuple of type `manifold.Integer` instead of a width expression.
 (manifold.Integer...width, width: manifold.Integer) array = (0, 1, 2, 3, 4, 5)
 array.1      # => 1
 array.width  # => 5
-```
-
-### Subscript Operator
-
-*TODO This is super speculative. Do we even want to include this in the spec right now?*
-
-```
-Type TimeMachineSettings = (year: year, invisible: invisible)
-TimeMachineSettings settings = (year: 5, invisible: high)
-
-settings[TimeMachineSettings.Property.year]
-
-TimeMachineSettings.Property property = TimeMachineSettings.Property.year
-settings[property]
 ```
 
 ### Destructuring Assignment
@@ -290,11 +270,11 @@ there will be a compiletime error
 
 ## Integers
 
-*TODO Can we please represent integers in terms of tuples??*
+An int
 
 ## Enums
 
-*TODO*
+An enum allows you to restrict a domain to a small set of named values. 
 
 ```
 Enum TrafficLightState = {on, off, blinking}
@@ -447,15 +427,15 @@ Array(SpaceshipEngine, 5) engines
 
 ## Constraints
 
-*TODO*
+???
 
 ## Packages and Namespacing
 
-# Digital Hardware Core Library
+# Core Library
 
- - `recall`
- - `count`
- - `cycle`
+recall
+count
+cycle
 
 # Intermediate Language
 
@@ -482,10 +462,8 @@ Array(SpaceshipEngine, 5) engines
 
 ### Constraints
 
- 
+# Backends
 
-
-
-
+??
 
 
