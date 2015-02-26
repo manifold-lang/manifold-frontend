@@ -3,9 +3,9 @@
 
 Light = (green: boolean, yellow:boolean, red:boolean)
 
-GREEN = (1, 0, 0)
+GREEN  = (1, 0, 0)
 YELLOW = (0, 1 ,0)
-RED = (0, 0, 1)
+RED    = (0, 0, 1)
 
 SECONDS_NS_GREEN  = 10
 SECONDS_NS_YELLOW = 3
@@ -42,4 +42,3 @@ if (seconds < SECONDS_NS_GREEN) {
   ns_light = RED
   ew_light = YELLOW
 }
-
