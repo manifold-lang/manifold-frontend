@@ -33,9 +33,8 @@ improved language design, like CλaSH and MyHDL. In particular, Manifold provide
 The compiler should work hard so that developers don't have to. Prefer
 implicit specification over explicit. Provide smart defaults and painless
 overrides. Do as much work at compile time as possible. Allow developers to
-express domain logic as naturally as possible and let the compiler decide how
-to implement it. Use type inference wherever possible. Batteries included but
-removable.
+express domain logic naturally and let the compiler decide how
+to implement it. Use type inference wherever possible.
 
 Optimize for readability over writeability. Developers spend 15 hours reading
 code and 5 hours modifying code for every 1 hour of writing code. Avoid
@@ -44,7 +43,7 @@ conventions. Prefer longer, descriptive, unambiguous names (within reason).
 Code should be as self-documenting as possible. Brevity is best for both
 readability and writeability.
 
-Be high to the underlying domain. Borrow concepts from sequential programming
+Be true to the underlying domain. Borrow concepts from sequential programming
 where possible but avoid inaccurate polysonomy. Expose all hardware primitives
 available as naturally as possible.
 
@@ -78,19 +77,16 @@ features. Build facades around complicated subsystems.
 
 ## Naming Conventions
 
-In order to make Manifold readable and logically consistent, naming conventions
-are enforced by a linter that runs, by default, during every compilation.
+*There are only two hard problems in computer science: cache invalidation, naming things, and off by one errors*
 
- - Avoid all acronyms and abbreviations that are not taught in introductory
- - computer science courses, except where doing so becomes awkward or defies
- - strong convention Write type names in `UpperCamelCase` and all other names in
- - `lowerCamelCase` Always use the same word to refer to the same idea and
- - different words to refer to different ideas (avoid confusing polysemy and
- - unnecessary synonymy) Prefer verb phrases for function names and noun phrases
- - for all other names, except where doing so becomes awkward or defies strong
- - convention Prefer one word names to two word names, two word names to three
- - word names, etc. Prefer shorter simpler words to longer more complicated
- - words
+Within the Manifold, there are strict conventions to make naming things easier and more consistent:
+
+ - Avoid all acronyms and abbreviations that are not taught in introductory computer science courses, except where doing so becomes awkward or defies strong convention
+ - Write type names in `UpperCamelCase` and all other names in `lowerCamelCase`
+ - Always use the same word to refer to the same idea and different words to refer to different ideas
+ - Prefer verb phrases for function names and noun phrases for all other names, except where doing so becomes awkward or defies strong convention 
+ - Prefer one word names to two word names, two word names to three word names, etc. except where doing so creates ambiguity within a level of abstraction
+ - Prefer shorter simpler words to longer more complicated words
 
 # Frontend Language
 
