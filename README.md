@@ -30,33 +30,51 @@ improved language design, like CλaSH and MyHDL. In particular, Manifold provide
 
 # Philosophy
 
-**The compiler should work hard so that developers don't have to. Prefer
-**implicit specification over explicit. Provide smart defaults and painless
-**overrides. Do as much work at compile time as possible. Allow developers to
-**express domain logic as naturally as possible and let the compiler decide how
-**to implement it. Use type inference wherever possible. Batteries included but
-**removable.
+The compiler should work hard so that developers don't have to. Prefer
+implicit specification over explicit. Provide smart defaults and painless
+overrides. Do as much work at compile time as possible. Allow developers to
+express domain logic as naturally as possible and let the compiler decide how
+to implement it. Use type inference wherever possible. Batteries included but
+removable.
 
-**Optimize for readability over writeability. Developers spend 15 hours reading
-**code and 5 hours modifying code for every 1 hour of writing code. Avoid
-**confusing abbreviations or acronyms. Enforce part-of-speech naming
-**conventions. Prefer longer, descriptive, unambiguous names (within reason).
-**Code should be as self-documenting as possible. Brevity is best for both
-**readability and writeability.
+Optimize for readability over writeability. Developers spend 15 hours reading
+code and 5 hours modifying code for every 1 hour of writing code. Avoid
+confusing abbreviations or acronyms. Enforce part-of-speech naming
+conventions. Prefer longer, descriptive, unambiguous names (within reason).
+Code should be as self-documenting as possible. Brevity is best for both
+readability and writeability.
 
-**Be high to the underlying domain. Borrow concepts from sequential programming
-**where possible but avoid inaccurate polysonomy. Expose all hardware primitives
-**available as naturally as possible.
+Be high to the underlying domain. Borrow concepts from sequential programming
+where possible but avoid inaccurate polysonomy. Expose all hardware primitives
+available as naturally as possible.
 
-**Build powerful self-hosted abstractions atop a minimal set of primitives.
-**Provide a powerful macro system to create the illusion of complex language
-**features. Build facades around complicated subsystems.
+Build powerful self-hosted abstractions atop a minimal set of primitives.
+Provide a powerful macro system to create the illusion of complex language
+features. Build facades around complicated subsystems.
 
 # Terminology, Notation and Conventions
 
 ## Documentation Conventions
 
  - Terminology with a specific technical definition will be **bold** the first time it is used to emphasize the precision and degree of specificity of the term.
+
+## Glossary
+
+*TODO*
+
+ - backend
+ - compiletime
+ - connection
+ - digital hardware
+ - dynamic
+ - frontend
+ - node
+ - port
+ - runtime
+ - schematic
+ - static
+ - tuple
+
 
 ## Naming Conventions
 
@@ -76,8 +94,8 @@ are enforced by a linter that runs, by default, during every compilation.
 
 # Frontend Language
 
-The Manifold frontend language elegantly expresses systems across many problem
-domains, including digital hardware and microfluidics, as text.
+The Manifold frontend language expresses systems in many problem
+domains, including digital hardware and microfluidics, as text. It is optimized for conceptual elegance, expressiveness, and human readability.  
 
 ## Booleans
 
@@ -481,48 +499,68 @@ and even `*` destructuring assignment to import everything from the package into
 * = import manifold
 ```
 
-# Core Library
+## Core Library
 
-## parallel
+### parallel
 
-## series
+### series
 
-# Digital Hardware Library
+## Digital Hardware Library
 
-## recall
+### recall
 
-## count
+### count
 
-## cycle
+### cycle
 
 # Intermediate Language
 
- - **port**
- - **node**
- - **connection**
- - **constraint**
+The Manifold intermediate language expresses systems in many problem
+domains, including digital hardware and microfluidics, as JSON. It is optimized for simplicity and machine readability.  
+
+The intermediate language describes systems in terms of three primitives:
+
+ - **Nodes** are the entities of the system: latches, capacitors, reaction chambers, etc 
+ - **Connections** relate nodes to eachother: wires, physical attachments, etc
+ - **Ports** define what connections are allowed between nodes: a capacitor accepts one analog electircal input and one analog electrical output.
+
+Each of these primitives are defined in terms of types (**node types**, **connection types**, and **port types**) and instances (**nodes**, **connections**, and **ports**). 
+
+Type information goes into **definition files** which are shipped with the back end that supports them. For example, the digital hardware backend provides the digital hardware definition file which defines node types such as latches, clocks, and i/o pins.
+
+Programs written in the Manifold frontend language compile into **schematic files** which can then be compiled into domain specific artifacts by the appropriate back end. For example, a description of a digital hardware circuit in the Manifold frontend would be compiled to a digital hardware schematic file that, when fed into the digitial harware backend, would produce a VHDL or Verilog file.
 
 ## Definition Files
 
-### Port Definitions
+```
+{
+  "node_types": {...}
+  "connection_types": {...}
+  "port_types": {...}
+}
+```
 
-### Node Definitions
+### Port Types
 
-### Connection Definitions
+### Node Types
+
+### Connection Types
 
 ## Schematic Files
+
+```
+{
+  "nodes": {...}
+  "connections": {...}
+  "ports": {...}
+}
+```
 
 ### Nodes
 
 ### Ports
 
 ### Connections
-
-### Constraints
-
-# Backends
-
-??
  
 
 
