@@ -143,7 +143,7 @@ desired.
 
 ### Explicit Static vs Dynamic
 
-Values may be constrained in whether they may be static or dynamic using annotations. For example, we can mandate that `width` is known statically (at compile time) by defining it as
+Values may be explicitly constrained to being knowable at compile time or run time using annotations. For example, we can require that `width` is known statically (at compile time) by defining it as
 
 ```
 @static Integer width 
