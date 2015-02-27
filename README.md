@@ -95,20 +95,20 @@ domains, including digital hardware and microfluidics, as text. It is optimized 
 
 ## Booleans
 
-The most fundamental type in Manifold is the `manifold.Boolean` type. A
-`manifold.Boolean` represents a single bit of information (true or false),
-represented as `manifold.true` or `manifold.false`. For example, we might turn
+The most fundamental type in Manifold is the `Boolean` type. A
+`Boolean` represents a single bit of information (true or false),
+represented as `true` or `false`. For example, we might turn
 on our time machine by setting
 
 ```
-manifold.Boolean timeMachineOn = manifold.true
+Boolean timeMachineOn = true
 ```
 
 The compiler can generally infer the type of a variable so it is equivalent to
 write
 
 ```
-transmogrifier = manifold.true
+transmogrifier = true
 ```
 
 ## Annotations
@@ -153,7 +153,7 @@ Values may be explicitly constrained to being knowable at compile time or run ti
 
 A tuple is an ordered set of values that can be passed around as one logical
 entity. Tuples are the glue that allow us to build domain objects -- like
-numbers, genomes, and time machines -- out of `manifold.Boolean`s and other
+numbers, genomes, and time machines -- out of `Boolean`s and other
 primitive types.
 
 A **tuple type** defines a format for a **tuple**, an ordered set of **named properties** and **unnamed properties**.
@@ -163,13 +163,13 @@ machine that can travel to any year with an optional invisibility shield. You
 could define a tuple which groups and names these variables
 
 ```
-(year: manifold.Integer, invisibility: manifold.Boolean) input
+(year: Integer, invisibility: Boolean) input
 ```
 
 and instantiate that tuple with some values as
 
 ```
-input = (year: 5000, invisibility: manifold.true)
+input = (year: 5000, invisibility: true)
 ```
 
 and access the properties in that instantiated tuple
@@ -183,7 +183,7 @@ input.year         # => true
 
 The declaration may also include a default value for any property. 
 ```
-(year: manifold.Integer = 5000, invisible: manifold.Boolean = manifold.false)
+(year: Integer = 5000, invisible: Boolean = false)
 ```
 
 Any property which does not have a default value is required; any property which
@@ -196,12 +196,12 @@ properties; these properties are named by their position in the tuple. For
 example, an ordered pair (x,y) might be represented as
 
 ```
-(manifold.Integer, manifold.Integer)
+(Integer, Integer)
 ```
-where the first `manifold.Integer` is implicitly named `0` and the second `1`.
+where the first `Integer` is implicitly named `0` and the second `1`.
 
 ```
-(manifold.Integer, manifold.Integer) position = (2, 4)
+(Integer, Integer) position = (2, 4)
 position.0  # => 2
 position.1  # => 4
 ```
@@ -213,13 +213,13 @@ Arrays in Manifold are a special case of tuples which have many positional
 "be defined as
 
 ```
-(manifold.Integer, manifold.Integer, manifold.Integer) array = (1, 2, 3)
+(Integer, Integer, Integer) array = (1, 2, 3)
 ```
 
 or, with the equivalent shorthand,
 
 ```
-(manifold.Integer...3) array = (1, 2, 3)
+(Integer...3) array = (1, 2, 3)
 ```
 
 Sometimes it makes more sense to set the width of a tuple using a statically
@@ -227,18 +227,18 @@ evaluable expression. This often increases the readability and maintainability
 of code.
 
 ```
-manifold.Integer width = 5
-(manifold.Integer...width) array = (1, 2, 3, 4, 5)
+Integer width = 5
+(Integer...width) array = (1, 2, 3, 4, 5)
 ```
 
 ### Inferred Width Repeated Positional Properties
 
 It is also possible to statically infer the width of a tuple statically from
 the value being passed to it. Simply reference a named property within the same
-tuple of type `manifold.Integer` instead of a width expression.
+tuple of type `Integer` instead of a width expression.
 
 ```
-(manifold.Integer...width, width: manifold.Integer) array = (0, 1, 2, 3, 4, 5)
+(Integer...width, width: Integer) array = (0, 1, 2, 3, 4, 5)
 array.1      # => 1
 array.width  # => 5
 ```
@@ -249,7 +249,7 @@ You may use destructuring assignment to extract the values from a tuple into
 individual variables.
 
 ```
-(year: manifold.Integer year, invisible: manifold.Boolean invisible) = (year: 5000, invisible: false)
+(year: Integer year, invisible: Boolean invisible) = (year: 5000, invisible: false)
 ```
 
 This statement creates, in the local scope, the variables `year` and
@@ -295,10 +295,10 @@ default value is provided for each of those properties, the cast will happen
 successfully, using those default values.
 
 ```
-(manifold.Integer...6 = 0) array = (1, 2, 3, 4)
+(Integer...6 = 0) array = (1, 2, 3, 4)
 # Array will have the value (1, 2, 3, 4, 0, 0)
 
-(year: manifold.Integer = 5, invisibility: manifold.Boolean = false) settings = (year: 5)
+(year: Integer = 5, invisibility: Boolean = false) settings = (year: 5)
 # Settings will have the value (year: 5, invisibility: false)
 ```
 
@@ -306,7 +306,7 @@ If a tuple is cast to another tuple type with missing *named* properties, the
 cast will happen successfully
 
 ```
-(year: manifold.Integer) settings = (year: 5, invisibility: false)
+(year: Integer) settings = (year: 5, invisibility: false)
 # Settings will have the value (year: 5)
 ```
 
@@ -315,7 +315,7 @@ there will be a compile time error
 
 ```
 # Causes compile time TupleCastIllegalException
-(manifold.Integer...3 = 0) array = (1, 2, 3, 4)
+(Integer...3 = 0) array = (1, 2, 3, 4)
 ```
 
 ## Enums
@@ -360,13 +360,13 @@ an output value.
 Suppose you were to write a function that determined if an input to the time
 machine was unsafe (i.e. targeting a year after the robot uprising and without the
 invisibility shield). This function takes in some input in the form `(year:
-manifold.Integer, invisible: manifold.Boolean invisible)` and produces some
-output in the form of a `manifold.Boolean`.
+Integer, invisible: Boolean invisible)` and produces some
+output in the form of a `Boolean`.
 
 ```
-TimeMachineInput = (year: manifold.Integer, invisible: manifold.Boolean invisible)
+TimeMachineInput = (year: Integer, invisible: Boolean invisible)
 
-Function isDangerous = TimeMachineInput -> manifold.Boolean dangerous {
+Function isDangerous = TimeMachineInput -> Boolean dangerous {
   dangerous = year > 5000 and !invisible
 }
 ```
@@ -376,7 +376,7 @@ variables defined in the function definition are assigned to directly.
 
 This function could be invoked as
 ```
-settings = (year: 10000, invisibility: manifold.false)
+settings = (year: 10000, invisibility: false)
 dangerous = isDangerous settings
 ```
 
@@ -397,13 +397,13 @@ count function supplied by the core library can be used to track system uptime
 in seconds as
 
 ```
-manifold.Integer uptime = manifold.count(clock(hz: 1))
+Integer uptime = count(clock(hz: 1))
 ```
 This function can "remember" values from clock tick to clock tick 
 
-All state in Manifold is derived from the `manifold.recall` primitive function
+All state in Manifold is derived from the `recall` primitive function
 ```
-Function manifold.recall = (T next, default: T) -> T current {...}
+Function recall = (T next, default: T) -> T current {...}
 ```
 
 This primitive acts like a hardware flipflop in that the output value `current`
@@ -411,10 +411,10 @@ will always take on the value that the input `next` had during the previous
 clock tick. As an example, we could implement a simple counter as
 
 ```
-manifold.Integer ticks = manifold.recall(ticks + 1, default: 0)
+Integer ticks = recall(ticks + 1, default: 0)
 ```
 
-Note that the output value of `manifold.recall` is used as an input value to
+Note that the output value of `recall` is used as an input value to
 itself! This might seem strange in the sequential programming paradigm but it is
 perfectly natural in hardware!
 
@@ -425,12 +425,12 @@ this rule: assigning to a function variable multiple times will overload that
 function to support different input and output types. For example
 
 ```
-travel = manifold.Integer year -> manifold.Boolean success {
+travel = Integer year -> Boolean success {
   success = travel (year, false)
 }
 
-travel = (year: manifold.Integer year, invisibility: manifold.Boolean invisibility) 
-    -> manifold.Boolean success {
+travel = (year: Integer year, invisibility: Boolean invisibility) 
+    -> Boolean success {
   ...
 }
 ```
@@ -440,19 +440,19 @@ machine input tuple or just an input year. Overloaded implementations may freely
 
 ## Types
 
- - `manifold.Boolean` is a single bit of data, with the value `manifold.high` or `manifold.false`. 
- - `manifold.Function` is an entity that produces an output value given an input value and potentially some internal state.
- - `manifold.Tuple` is a structured group of values.
- - `manifold.Enum`
- - `manifold.Integer`
- - `manifold.Type` is the "type" of all types in Manifold (including itself)
+ - `Boolean` is a single bit of data, with the value `high` or `false`. 
+ - `Function` is an entity that produces an output value given an input value and potentially some internal state.
+ - `Tuple` is a structured group of values.
+ - `Enum`
+ - `Integer`
+ - `Type` is the "type" of all types in Manifold (including itself)
 
-Since types are first class objects of type `manifold.Type`, a new type can be
+Since types are first class objects of type `Type`, a new type can be
 defined via variable assignment. For example, the definition of Bit might look
 like
 
 ```
-Type Bit = manifold.Boolean
+Type Bit = Boolean
 ```
 
 ### Parameterized Types
@@ -462,7 +462,7 @@ defined via the `=>` syntax. Take, for example, this simple definition of an
 `Array` type
 
 ```
-Type Array = (manifold.Type T, manifold.Integer width) => (T...width, width: width)
+Type Array = (Type T, Integer width) => (T...width, width: width)
 ```
 
 Using this defined type, a you could declare an instance of `Array` as
@@ -480,7 +480,7 @@ Manifold features a modern package management system.
 Values within packages (remember types and functions are just values) are brought into local scope using the `import` keyword and regular variable assignment. The following statement imports the `parallel` function from the `manifold` package.
 
 ```
-parallel = import manifold.parallel
+parallel = import parallel
 ```
 
 You may use destructuring assignment with packages
@@ -489,7 +489,7 @@ You may use destructuring assignment with packages
 (parallel) = import manifold
 ```
 
-and even `*` destructuring assignment to import everything from the package into local scope
+or `*` destructuring assignment to import everything from the package into local scope
 
 ```
 * = import manifold
@@ -497,17 +497,25 @@ and even `*` destructuring assignment to import everything from the package into
 
 ## Core Library
 
-### parallel
+### `Boolean`
 
-### series
+### `Integer`
+
+### `Tuple`
+
+### `Type`
+
+### `parallel(...)`
+
+### `series(...)`
 
 ## Digital Hardware Library
 
-### recall
+### `recall(...)`
 
-### count
+### `count(...)`
 
-### cycle
+### `cycle(...)`
 
 # Intermediate Language
 
