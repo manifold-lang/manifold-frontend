@@ -30,18 +30,18 @@ improved language design, like CλaSH and MyHDL. In particular, Manifold provide
 
 # Philosophy
 
-The compiler should work hard so that developers don't have to. Prefer
+The compiler should work hard so that you don't have to. Prefer
 implicit specification over explicit. Provide smart defaults and painless
-overrides. Do as much work at compile time as possible. Allow developers to
+overrides. Do as much work at compile time as possible. You should
 express domain logic naturally and let the compiler decide how
 to implement it. Use type inference wherever possible.
 
-Optimize for readability over writeability. Developers spend 15 hours reading
-code and 5 hours modifying code for every 1 hour of writing code. Avoid
-confusing abbreviations or acronyms. Enforce part-of-speech naming
-conventions. Prefer longer, descriptive, unambiguous names (within reason).
-Code should be as self-documenting as possible. Brevity is best for both
-readability and writeability.
+Optimize for readability over writeability. On average, developers spend 15
+hours reading code and 5 hours modifying code for every 1 hour of writing code.
+Avoid confusing abbreviations or acronyms. Enforce part-of-speech naming
+conventions. Prefer longer, descriptive, unambiguous names (within reason). Code
+should be as self-documenting as possible. Brevity is best for both readability
+and writeability.
 
 Be true to the underlying domain. Borrow concepts from sequential programming
 where possible but avoid inaccurate polysonomy. Expose all hardware primitives
@@ -143,7 +143,7 @@ desired.
 
 ### Explicit Static vs Dynamic
 
-Values may be constrained in whether they may be static or dynamic using annotations. For example, we can mandate that `width` is known statically, at compile time, by defining it as
+Values may be constrained in whether they may be static or dynamic using annotations. For example, we can mandate that `width` is known statically (at compile time) by defining it as
 
 ```
 @static Integer width 
@@ -465,7 +465,7 @@ defined via the `=>` syntax. Take, for example, this simple definition of an
 Type Array = (manifold.Type T, manifold.Integer width) => (T...width, width: width)
 ```
 
-Using this defined type, a developer could declare an instance of `Array` as
+Using this defined type, a you could declare an instance of `Array` as
 
 ```
 Array(SpaceshipEngine, 5) engines
