@@ -101,48 +101,47 @@ public class ExpressionGraph {
    * Precondition: there are no variable id conflicts between subGraph and this graph. That is
    *               each variable identifier in the subgraph is generated WRT its scope.
    *
-   * @param subGraph ExpressionGraph to be added (elaborated function)
-   * @param inputEdge edge of this graph to connect to subgraph (function args)
-   * @param inputVertex vertex in the subgraph that inputEdge should connect to (function args)
-   * @param outputVertex vertex in the subgraph that outputEdges should connect from (function return)
-   * @param outputEdges edges that outputVertex connect from (function return)
+   * In the final graph, subGraphInput/subGraphOutput will no longer exist, and the edges from/to them
+   * should be from mainGraphInput/mainGraphOutput respectively.
+   *
+   * The edge from mainGraphInput to the function vertex & the edge from the function vertex to mainGraphOutput
+   * are not removed (since 1 vertex can potentially point to multiple functions), so they should be deleted by
+   * the caller.
+   *
+   * @param subGraph  ExpressionGraph to be added (elaborated function)
+   * @param mainGraphInput Vertex in the main graph whose target is the function invocation that generated subGraph
+   * @param subGraphInput Entry vertex in subGraph
+   * @param mainGraphOutput Vertex in the main graph whose source is the function invocation that generated subGraph
+   * @param subGraphOutput Exit vertex in subGraph
    */
   public void addSubExpressionGraph(ExpressionGraph subGraph,
-                                    ExpressionEdge inputEdge, ExpressionVertex inputVertex,
-                                    VariableReferenceVertex outputVertex, List<ExpressionEdge> outputEdges) {
+                                    ExpressionVertex mainGraphInput, ExpressionVertex subGraphInput,
+                                    ExpressionVertex mainGraphOutput, ExpressionVertex subGraphOutput) {
 
     // Sanity checks
-    // input/output vertices exist in subgraph
+    // input/output vertices exist in mainGraph and subGraph
     Preconditions.checkArgument(subGraph.allVertices.containsAll(
-        ImmutableList.of(inputVertex, outputVertex)));
+        ImmutableList.of(subGraphInput, subGraphOutput)));
+    Preconditions.checkArgument(this.allVertices.containsAll(
+        ImmutableList.of(mainGraphInput, mainGraphOutput)));
 
-    // edges exist in main graph
-    // TODO(max) - edge check is kind of expensive (O(n) search through edges) maybe change to a set?
-    Preconditions.checkArgument(this.edges.containsAll(
-        ImmutableList.of(inputEdge, outputEdges)));
-
-    // all output edges have common source
-    Preconditions.checkArgument(outputEdges.stream()
-        .map(ExpressionEdge::getSource)
-        .distinct()
-        .count() == 1);
+    // first, remove the function invocation vertex & the edges dealing with it
+    List<ExpressionEdge> oldEdges = this.getEdgesFromSource(mainGraphInput);
 
     // subGraph is being thrown away after, so we can just add the vertices/edges directly
-    subGraph.allVertices.forEach(this::addVertex);
+    // do not add the input/output vertices since they are being replaced by the main graph's vertices
+    subGraph.allVertices.stream()
+        .filter(vertex -> (vertex != subGraphInput && vertex != subGraphOutput))
+        .forEach(this::addVertex);
+
+    // subGraphOutput's in edges -> switch source to mainGraphOutput
+    subGraph.getEdgesToTarget(subGraphOutput).forEach(edge -> edge.setTarget(mainGraphOutput));
+
+    // subGraphInput's out edges -> switch source to mainGraphInput
+    subGraph.getEdgesFromSource(subGraphInput).forEach(edge -> edge.setSource(mainGraphInput));
+
     subGraph.edges.forEach(this::addEdge);
 
-    // removing old vertices - kind of awkward, but they're guaranteed to be var references (right?)
-    VariableReferenceVertex oldInputVertex = (VariableReferenceVertex) inputEdge.getTarget();
-    VariableReferenceVertex oldOutputVertex = (VariableReferenceVertex) outputEdges.get(0).getSource();
-
-    allVertices.remove(oldInputVertex);
-    allVertices.remove(oldOutputVertex);
-    variableVertices.remove(oldInputVertex.getId());
-    variableVertices.remove(oldOutputVertex.getId());
-
-    // set the edges
-    inputEdge.setTarget(inputVertex);
-    outputEdges.forEach(edge -> edge.setSource(outputVertex));
   }
 
 

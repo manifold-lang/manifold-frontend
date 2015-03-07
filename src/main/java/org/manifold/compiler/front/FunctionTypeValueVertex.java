@@ -32,7 +32,7 @@ public class FunctionTypeValueVertex extends ExpressionVertex {
     this.inputTypeEdge.setTarget(this);
     this.inputTypeEdge.setName("input type");
     this.outputTypeEdge = outputTypeEdge;
-    this.outputTypeEdge.setTarget(this);
+    this.outputTypeEdge.setTarget(this); // should this be setSource? that causes stack overflow in tests though
     this.outputTypeEdge.setName("output type");
   }
   
