@@ -1,44 +1,36 @@
 * = import Manifold.core
 * = import Manifold.digital
 
-Light = (green: boolean, yellow:boolean, red:boolean)
+Type TrafficLight = (
+	green:Boolean  = false,
+	yellow:Boolean = false,
+	red:Boolean    = false
+)
 
-GREEN  = (1, 0, 0)
-YELLOW = (0, 1 ,0)
-RED    = (0, 0, 1)
+GREEN_SECONDS  = 10
+YELLOW_SECONDS = 3
+TOTAL_SECONDS  = 2 * (GREEN_SECONDS + YELLOW_SECONDS)
 
-SECONDS_NS_GREEN  = 10
-SECONDS_NS_YELLOW = 3
-SECONDS_EW_GREEN  = 15
-SECONDS_EW_YELLOW = 2
+seconds = Manifold.Digital.count(hz: 1, mod: TOTAL_SECONDS)
 
-SECONDS_NS_TOTAL = SECONDS_NS_GREEN + SECONDS_NS_YELLOW
-SECONDS_EW_TOTAL = SECONDS_EW_GREEN + SECONDS_EW_YELLOW
-SECONDS_TOTAL    = SECONDS_NS_TOTAL + SECONDS_EW_TOTAL
+if (seconds < GREEN_SECONDS) {
+  north_light = south_light = (green: true)
+  east_light = west_light = (red: true)
 
-Light s_light = Light n_light = Light ns_light
-Light e_light = Light w_light = Light ew_light
+} else if (seconds < GREEN_SECONDS + YELLOW_SECONDS) {
+  north_light = south_light = (yellow: true)
+  east_light = west_light = (red: true)
 
-led[0..3]  = n_light
-led[6..9]  = w_light
-led[3..6]  = s_light
-led[9..12] = e_light
-
-seconds = count(hz: 1, mod: SECONDS_TOTAL)
-
-if (seconds < SECONDS_NS_GREEN) {
-  ns_light = GREEN
-  ew_light = RED
-
-} else if (seconds < SECONDS_NS_TOTAL) {
-  ns_light = YELLOW
-  ew_light = RED
-
-} else if (seconds < SECONDS_NS_TOTAL + SECONDS_EW_GREEN) {
-  ns_light = RED
-  ew_light = GREEN
+} else if (seconds < GREEN_SECONDS + YELLOW_SECONDS + GREEN_SECONDS) {
+  north_light = south_light = (red: true)
+  east_light = west_light = (green: true)
 
 } else {
-  ns_light = RED
-  ew_light = YELLOW
+  north_light = south_light = (red: true)
+  east_light = west_light = (yellow: true)
 }
+
+Manifold.Digital.led[0..3]  = TrafficLight north_light
+Manifold.Digital.led[6..9]  = TrafficLight west_light
+Manifold.Digital.led[3..6]  = TrafficLight south_light
+Manifold.Digital.led[9..12] = TrafficLight east_light
