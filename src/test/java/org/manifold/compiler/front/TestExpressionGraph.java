@@ -4,6 +4,8 @@ import com.google.common.collect.ImmutableList;
 import org.junit.Before;
 import org.junit.Test;
 import org.manifold.compiler.BooleanValue;
+import org.manifold.compiler.StringTypeValue;
+import org.manifold.compiler.StringValue;
 
 import java.io.File;
 
@@ -55,17 +57,14 @@ public class TestExpressionGraph {
     ExpressionVertex mainInputVertex = mainGraph.getVariableVertex(mainInput);
     ExpressionVertex mainOutputVertex = mainGraph.getVariableVertex(mainOutput);
 
-    // function call vertex
-    /* this doesn't currently work due to a potential bug in FunctionTypeValueVertex where source is set instead of
-       target, but the test doesn't really need it (since in actual use we'd remove this vertex + its edges before
-       replacing it with the subgraph
-    ExpressionEdge inputEdge = new ExpressionEdge(mainInputVertex, null);
-    ExpressionEdge outputEdge = new ExpressionEdge(null, mainOutputVertex);
-    ExpressionVertex function = new FunctionTypeValueVertex(mainGraph, inputEdge, outputEdge);
-    mainGraph.addVertex(function);
+    // dummy vertex to remove
+    ExpressionVertex dummyVertex = new ConstantValueVertex(mainGraph,
+        new StringValue(StringTypeValue.getInstance(), "yo"));
+    ExpressionEdge inputEdge = new ExpressionEdge(mainInputVertex, dummyVertex);
+    ExpressionEdge outputEdge = new ExpressionEdge(dummyVertex, mainOutputVertex);
+    mainGraph.addVertex(dummyVertex);
     mainGraph.addEdge(inputEdge);
     mainGraph.addEdge(outputEdge);
-    */
 
     // init subgraph
     ExpressionGraph subGraph = new ExpressionGraph();
@@ -93,7 +92,7 @@ public class TestExpressionGraph {
     mainGraph.writeDOTFile(new File("build/mainGraph.txt"));
     subGraph.writeDOTFile(new File("build/subGraph.txt"));
 
-    mainGraph.addSubExpressionGraph(subGraph, mainInputVertex, subInputVertex, mainOutputVertex, subOutputVertex);
+    mainGraph.addSubExpressionGraph(subGraph, inputEdge, subInputVertex, outputEdge, subOutputVertex);
     mainGraph.writeDOTFile(new File("build/merged.txt"));
   }
 }

@@ -109,24 +109,31 @@ public class ExpressionGraph {
    * the caller.
    *
    * @param subGraph  ExpressionGraph to be added (elaborated function)
-   * @param mainGraphInput Vertex in the main graph whose target is the function invocation that generated subGraph
+   * @param mainGraphInput Variable -> Function call edge in main graph
    * @param subGraphInput Entry vertex in subGraph
-   * @param mainGraphOutput Vertex in the main graph whose source is the function invocation that generated subGraph
+   * @param mainGraphOutput Function return -> Variable edge in main graph
    * @param subGraphOutput Exit vertex in subGraph
    */
   public void addSubExpressionGraph(ExpressionGraph subGraph,
-                                    ExpressionVertex mainGraphInput, ExpressionVertex subGraphInput,
-                                    ExpressionVertex mainGraphOutput, ExpressionVertex subGraphOutput) {
+                                    ExpressionEdge mainGraphInput, ExpressionVertex subGraphInput,
+                                    ExpressionEdge mainGraphOutput, ExpressionVertex subGraphOutput) {
 
     // Sanity checks
     // input/output vertices exist in mainGraph and subGraph
     Preconditions.checkArgument(subGraph.allVertices.containsAll(
         ImmutableList.of(subGraphInput, subGraphOutput)));
-    Preconditions.checkArgument(this.allVertices.containsAll(
+    Preconditions.checkArgument(this.edges.containsAll(
         ImmutableList.of(mainGraphInput, mainGraphOutput)));
 
+    // input edge and output edge should be connected through the same node (the function invocation)
+    Preconditions.checkArgument(mainGraphInput.getTarget() == mainGraphOutput.getSource());
+
     // first, remove the function invocation vertex & the edges dealing with it
-    List<ExpressionEdge> oldEdges = this.getEdgesFromSource(mainGraphInput);
+    this.allVertices.remove(mainGraphInput.getTarget());
+    this.edges.removeAll(ImmutableList.of(mainGraphInput, mainGraphOutput));
+
+    ExpressionVertex inputVertex = mainGraphInput.getSource();
+    ExpressionVertex outputVertex = mainGraphOutput.getTarget();
 
     // subGraph is being thrown away after, so we can just add the vertices/edges directly
     // do not add the input/output vertices since they are being replaced by the main graph's vertices
@@ -135,13 +142,12 @@ public class ExpressionGraph {
         .forEach(this::addVertex);
 
     // subGraphOutput's in edges -> switch source to mainGraphOutput
-    subGraph.getEdgesToTarget(subGraphOutput).forEach(edge -> edge.setTarget(mainGraphOutput));
+    subGraph.getEdgesToTarget(subGraphOutput).forEach(edge -> edge.setTarget(outputVertex));
 
     // subGraphInput's out edges -> switch source to mainGraphInput
-    subGraph.getEdgesFromSource(subGraphInput).forEach(edge -> edge.setSource(mainGraphInput));
+    subGraph.getEdgesFromSource(subGraphInput).forEach(edge -> edge.setSource(inputVertex));
 
     subGraph.edges.forEach(this::addEdge);
-
   }
 
 
