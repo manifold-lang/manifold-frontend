@@ -3,13 +3,14 @@ package org.manifold.compiler.front;
 import org.manifold.compiler.TypeValue;
 import org.manifold.compiler.Value;
 
+// TODO dead code
 public class Variable {
   private final VariableIdentifier identifier;
   private TypeValue type;
   private final Scope scope;
 
   private boolean assigned = false;
-  private Expression valueExpression;
+  private Object valueExpression; // was Expression
 
   public Variable(Scope scope, VariableIdentifier identifier) {
     this.scope = scope;
@@ -38,29 +39,7 @@ public class Variable {
   }
 
   public Value getValue() {
-    if (!isAssigned()) {
-      return null;
-    } else {
-      return valueExpression.getValue(scope);
-    }
-  }
-
-  public void setValueExpression(Expression valExpr)
-      throws MultipleAssignmentException {
-    if (isAssigned()) {
-      throw new MultipleAssignmentException(this);
-    }
-
-    this.valueExpression = valExpr;
-    this.assigned = true;
-  }
-
-  public Expression getValueExpression() throws VariableNotAssignedException {
-    if (isAssigned()) {
-      return this.valueExpression;
-    } else {
-      throw new VariableNotAssignedException(this);
-    }
+    return null;
   }
 
   public void verify() {

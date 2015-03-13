@@ -1,5 +1,7 @@
 package org.manifold.compiler.front;
 
+// TODO dead code
+
 public class Namespace {
   private NamespaceIdentifier absoluteName;
   private Scope privateScope = new Scope();
