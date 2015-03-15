@@ -110,6 +110,61 @@ public class ExpressionGraph {
   public ExpressionGraph() {
   }
 
+  /**
+   * Adds the provided subgraph to this graph
+   * Precondition: there are no variable id conflicts between subGraph and this graph. That is
+   *               each variable identifier in the subgraph is generated WRT its scope.
+   *
+   * In the final graph, subGraphInput/subGraphOutput will no longer exist, and the edges from/to them
+   * should be from mainGraphInput/mainGraphOutput respectively.
+   *
+   * The edge from mainGraphInput to the function vertex & the edge from the function vertex to mainGraphOutput
+   * are not removed (since 1 vertex can potentially point to multiple functions), so they should be deleted by
+   * the caller.
+   *
+   * @param subGraph  ExpressionGraph to be added (elaborated function)
+   * @param mainGraphInput Variable -> Function call edge in main graph
+   * @param subGraphInput Entry vertex in subGraph
+   * @param mainGraphOutput Function return -> Variable edge in main graph
+   * @param subGraphOutput Exit vertex in subGraph
+   */
+  public void addSubExpressionGraph(ExpressionGraph subGraph,
+                                    ExpressionEdge mainGraphInput, ExpressionVertex subGraphInput,
+                                    ExpressionEdge mainGraphOutput, ExpressionVertex subGraphOutput) {
+
+    // Sanity checks
+    // input/output vertices exist in mainGraph and subGraph
+    Preconditions.checkArgument(subGraph.allVertices.containsAll(
+        ImmutableList.of(subGraphInput, subGraphOutput)));
+    Preconditions.checkArgument(this.edges.containsAll(
+        ImmutableList.of(mainGraphInput, mainGraphOutput)));
+
+    // input edge and output edge should be connected through the same node (the function invocation)
+    Preconditions.checkArgument(mainGraphInput.getTarget() == mainGraphOutput.getSource());
+
+    // first, remove the function invocation vertex & the edges dealing with it
+    this.allVertices.remove(mainGraphInput.getTarget());
+    this.edges.removeAll(ImmutableList.of(mainGraphInput, mainGraphOutput));
+
+    ExpressionVertex inputVertex = mainGraphInput.getSource();
+    ExpressionVertex outputVertex = mainGraphOutput.getTarget();
+
+    // subGraph is being thrown away after, so we can just add the vertices/edges directly
+    // do not add the input/output vertices since they are being replaced by the main graph's vertices
+    subGraph.allVertices.stream()
+        .filter(vertex -> (vertex != subGraphInput && vertex != subGraphOutput))
+        .forEach(this::addVertex);
+
+    // subGraphOutput's in edges -> switch source to mainGraphOutput
+    subGraph.getEdgesToTarget(subGraphOutput).forEach(edge -> edge.setTarget(outputVertex));
+
+    // subGraphInput's out edges -> switch source to mainGraphInput
+    subGraph.getEdgesFromSource(subGraphInput).forEach(edge -> edge.setSource(inputVertex));
+
+    subGraph.edges.forEach(this::addEdge);
+  }
+
+
   public void writeDOTFile(File file) throws IOException {
     FileWriter fw = new FileWriter(file);
     try (BufferedWriter writer = new BufferedWriter(fw)) {

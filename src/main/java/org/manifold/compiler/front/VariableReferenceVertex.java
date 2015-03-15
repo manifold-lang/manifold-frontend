@@ -18,6 +18,10 @@ public class VariableReferenceVertex extends ExpressionVertex {
     super(g);
     this.id = id;
   }
+
+  public VariableIdentifier getId() {
+    return id;
+  }
   
   @Override
   public String toString() {
