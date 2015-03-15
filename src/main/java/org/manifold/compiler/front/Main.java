@@ -313,12 +313,12 @@ class ExpressionContextVisitor extends ManifoldBaseVisitor<ExpressionVertex> {
     List<TupleTypeValueEntryContext> entries = context.tupleTypeValueEntry();
     Map<String, ExpressionEdge> typeValueEdges = new HashMap<>();
     Map<String, ExpressionEdge> defaultValueEdges = new HashMap<>();
+    Integer nextAnonymousID = 0;
     for (TupleTypeValueEntryContext entryCtx : entries) {
       // each child has a typevalue, and may have
       // an identifier (named field)
       // and an expression (default value)
       String identifier;
-      Integer nextAnonymousID = 0;
       if (entryCtx.IDENTIFIER() != null) {
         identifier = entryCtx.IDENTIFIER().getText();
       } else {
