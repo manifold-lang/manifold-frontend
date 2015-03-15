@@ -19,6 +19,7 @@ public class TestScope {
    * those tests if errors show up.
    */
 
+  /*
   @Test
   public void testGetParentScope() {
     Scope foo = new Scope(null);
@@ -74,7 +75,7 @@ public class TestScope {
     assertFalse(s.isVariableDefined(getVariableIdentifier()));
   }
 
-  /*
+  
   @Test
   public void testGetVariableType() throws MultipleDefinitionException,
       TypeMismatchException, VariableNotDefinedException {
@@ -84,7 +85,7 @@ public class TestScope {
     assertEquals(getTypeExpression().getValue(s),
         s.getVariableType(getVariableIdentifier()));
   }
-  */
+  
 
   @Test(expected = VariableNotDefinedException.class)
   public void testGetVariableNotDefined() throws VariableNotDefinedException {
@@ -164,4 +165,5 @@ public class TestScope {
     s.assignVariable(getVariableIdentifier(), getValueExpression());
   }
 
+  */
 }

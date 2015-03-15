@@ -8,9 +8,9 @@ import org.manifold.compiler.Value;
 
 public class FunctionValue extends Value {
   
-  private final List<Expression> body;
+  private ExpressionGraph body;
   
-  public FunctionValue(FunctionTypeValue type, List<Expression> body) {
+  public FunctionValue(FunctionTypeValue type, ExpressionGraph body) {
     super(type);
     this.body = body;
   }
@@ -21,7 +21,7 @@ public class FunctionValue extends Value {
     // correctly?
   }
 
-  public List<Expression> getBody() {
+  public ExpressionGraph getBody() {
     return body;
   }
   
@@ -37,13 +37,8 @@ public class FunctionValue extends Value {
   
   @Override
   public void accept(SchematicValueVisitor v) {
-    if (v instanceof FrontendValueVisitor) {
-      FrontendValueVisitor visitor = (FrontendValueVisitor) v;
-      visitor.visit(this);
-    } else {
-      throw new UndefinedBehaviourError(
-          "cannot accept non-frontend ValueVisitor into a frontend Value");
-    }
+    throw new UndefinedBehaviourError(
+        "cannot accept non-frontend ValueVisitor into a frontend Value");
   }
   
 }
