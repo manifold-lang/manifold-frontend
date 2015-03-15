@@ -40,6 +40,8 @@ import org.manifold.parser.ManifoldParser.TupleTypeValueEntryContext;
 import org.manifold.parser.ManifoldParser.TupleValueContext;
 import org.manifold.parser.ManifoldParser.TupleValueEntryContext;
 
+import com.google.common.base.Throwables;
+
 public class Main implements Frontend {
 
   private static Logger log = LogManager.getLogger("DefaultFrontend");
@@ -296,8 +298,8 @@ class ExpressionContextVisitor extends ManifoldBaseVisitor<ExpressionVertex> {
     } else {
       vAttributes = new ConstantValueVertex(exprGraph, 
           NilTypeValue.getInstance());
-      exprGraph.addVertex(vAttributes);
     }
+    exprGraph.addVertex(vAttributes);
     ExpressionEdge eAttributes = new ExpressionEdge(vAttributes, null);
     exprGraph.addEdge(eAttributes);
     PrimitivePortVertex vPort = new PrimitivePortVertex(exprGraph,
@@ -344,11 +346,11 @@ class ExpressionContextVisitor extends ManifoldBaseVisitor<ExpressionVertex> {
   public ExpressionVertex visitTupleValue(TupleValueContext context) {
     List<TupleValueEntryContext> entries = context.tupleValueEntry();
     Map<String, ExpressionEdge> valueEdges = new HashMap<>();
+    Integer nextAnonymousID = 0;
     for (TupleValueEntryContext entryCtx : entries) {
       // each child has a value, and may have an identifier (named field)
       ExpressionVertex vxValue = entryCtx.expression().accept(this);
       String identifier;
-      Integer nextAnonymousID = 0;
       if (entryCtx.IDENTIFIER() != null) {
         identifier = entryCtx.IDENTIFIER().getText();
       } else {
@@ -404,10 +406,15 @@ class ExpressionContextVisitor extends ManifoldBaseVisitor<ExpressionVertex> {
     } else {
       // this is a variable
       // TODO scope
-      try {
-        VariableReferenceVertex v = exprGraph.getVariableVertex(id);
-        return v;
-      } catch (VariableNotDefinedException e) {
+      if (exprGraph.containsVariable(id)) {
+        try {
+          VariableReferenceVertex v = exprGraph.getVariableVertex(id);
+          return v;
+        } catch (VariableNotDefinedException e) {
+          // cannot actually happen
+          throw Throwables.propagate(e);
+        }
+      } else {
         // doesn't exist yet
         try {
           exprGraph.addVertex(id);
