@@ -9,6 +9,7 @@ import java.util.Map;
 import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.PatternLayout;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -27,6 +28,11 @@ public class TestPrimitiveNodeVertex {
     LogManager.getRootLogger().removeAllAppenders();
     LogManager.getRootLogger().addAppender(
         new ConsoleAppender(layout, ConsoleAppender.SYSTEM_ERR));
+  }
+  
+  @AfterClass
+  public static void afterClass() {
+    LogManager.getRootLogger().removeAllAppenders();
   }
   
   private PrimitivePortVertex generatePort(ExpressionGraph g,

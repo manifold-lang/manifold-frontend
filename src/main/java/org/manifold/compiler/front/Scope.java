@@ -7,6 +7,8 @@ import java.util.Set;
 import org.manifold.compiler.TypeValue;
 import org.manifold.compiler.Value;
 
+// TODO dead code
+
 public class Scope {
   private final Scope parentScope;
   private final Map<VariableIdentifier, Variable> symbolTable;
@@ -74,13 +76,6 @@ public class Scope {
   public Value getVariableValue(VariableIdentifier identifier)
       throws VariableNotAssignedException, VariableNotDefinedException {
     return getVariable(identifier).getValue();
-  }
-
-  public void assignVariable(VariableIdentifier identifier,
-      Expression valueExpression) throws VariableNotDefinedException,
-      MultipleAssignmentException {
-    Variable v = getVariable(identifier);
-    v.setValueExpression(valueExpression);
   }
 
 }

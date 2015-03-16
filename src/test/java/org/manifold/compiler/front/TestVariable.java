@@ -11,6 +11,7 @@ import org.manifold.compiler.TypeValue;
 import org.manifold.compiler.Value;
 
 public class TestVariable {
+  /*
   private NamespaceIdentifier getNamespaceIdentifier() {
     return new NamespaceIdentifier("manifold::is::cool");
   }
@@ -60,7 +61,7 @@ public class TestVariable {
         getTypeExpression().getValue(getVariable().getScope())
     );
   }
-  */
+  
 
   @Test
   public void testGetValueUnassigned() throws VariableNotAssignedException {
@@ -87,7 +88,7 @@ public class TestVariable {
     v.setValueExpression(getValueExpression());
   }
 
-  /*
+  
   @Test(expected = TypeMismatchException.class)
   public void verify_nontypeThrow() throws
       TypeMismatchException,

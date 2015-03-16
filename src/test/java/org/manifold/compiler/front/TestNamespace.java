@@ -7,7 +7,7 @@ import org.junit.Test;
 import org.manifold.compiler.BooleanTypeValue;
 
 public class TestNamespace {
-
+/*
   private NamespaceIdentifier getNamespaceIdentifier() {
     return new NamespaceIdentifier("manifold:is:cool");
   }
@@ -38,5 +38,5 @@ public class TestNamespace {
     Scope pub = n.getPublicScope();
     assertNotSame("private scope and public scope not distinct", priv, pub);
   }
-
+*/
 }

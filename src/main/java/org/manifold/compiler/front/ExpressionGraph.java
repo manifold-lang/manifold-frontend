@@ -1,16 +1,24 @@
 package org.manifold.compiler.front;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.base.Preconditions;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
-
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+
+import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 
 public class ExpressionGraph {
 
@@ -23,6 +31,11 @@ public class ExpressionGraph {
   public Map<VariableIdentifier, VariableReferenceVertex> getVariableVertices() {
     return ImmutableMap.copyOf(variableVertices);
   }
+  
+  public boolean containsVariable(VariableIdentifier vID) {
+    return variableVertices.containsKey(vID);
+  }
+  
   public VariableReferenceVertex getVariableVertex(VariableIdentifier vID)
       throws VariableNotDefinedException {
     if (variableVertices.containsKey(vID)) {
@@ -204,4 +217,32 @@ public class ExpressionGraph {
     fw.close();
   }
 
+  public void verifyVariablesSingleAssignment() {
+    Map<ExpressionVertex, List<ExpressionEdge>> inboundEdges = new HashMap<>();
+    getEdges().forEach(exprEdge -> {
+        ExpressionVertex v = exprEdge.getTarget();
+        if (v instanceof VariableReferenceVertex) {
+          inboundEdges.putIfAbsent(v, new ArrayList<>());
+          inboundEdges.get(v).add(exprEdge);
+        }
+      });
+
+    List<String> errors = new ArrayList<>();
+    inboundEdges.forEach((vertex, edges) -> {
+        if (edges.size() != 1) {
+          StringBuilder error = new StringBuilder();
+          error.append(String.format("Vertex %s has %d incoming edges:",
+              vertex.toString(), edges.size()));
+          edges.forEach(edge -> error.append(" {")
+              .append(edge.toString())
+              .append("}"));
+          errors.add(error.toString());
+        }
+      });
+
+    if (!errors.isEmpty()) {
+      throw new RuntimeException(errors.toString());
+    }
+  }
+  
 }

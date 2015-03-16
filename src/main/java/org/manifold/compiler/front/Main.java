@@ -13,6 +13,7 @@ import java.util.Set;
 
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.misc.ParseCancellationException;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Options;
@@ -22,6 +23,7 @@ import org.manifold.compiler.BooleanValue;
 import org.manifold.compiler.ConnectionValue;
 import org.manifold.compiler.Frontend;
 import org.manifold.compiler.IntegerValue;
+import org.manifold.compiler.NilTypeValue;
 import org.manifold.compiler.NodeTypeValue;
 import org.manifold.compiler.NodeValue;
 import org.manifold.compiler.PortTypeValue;
@@ -37,7 +39,8 @@ import org.manifold.parser.ManifoldParser.TupleTypeValueContext;
 import org.manifold.parser.ManifoldParser.TupleTypeValueEntryContext;
 import org.manifold.parser.ManifoldParser.TupleValueContext;
 import org.manifold.parser.ManifoldParser.TupleValueEntryContext;
-import org.manifold.parser.ManifoldParser.TypevalueContext;
+
+import com.google.common.base.Throwables;
 
 public class Main implements Frontend {
 
@@ -190,83 +193,26 @@ public class Main implements Frontend {
 
     // Specify our entry point
     ManifoldParser.SchematicContext context = parser.schematic();
-
-    ExpressionContextVisitor visitor = new ExpressionContextVisitor();
-
-    List<Expression> expressions = new LinkedList<>();
+    ExpressionContextVisitor graphBuilder = new ExpressionContextVisitor();
     List<ExpressionContext> expressionContexts = context.expression();
-
     for (ExpressionContext expressionContext : expressionContexts) {
-      expressions.add(visitor.visit(expressionContext));
+      graphBuilder.visit(expressionContext);
     }
-
-    log.debug("expressions:");
-    for (Expression expr : expressions) {
-      log.debug(expr.toString());
-    }
-
-    Map<NamespaceIdentifier, Namespace> namespaces = new HashMap<>();
-
-    NamespaceIdentifier defaultNamespaceID = new NamespaceIdentifier("");
-    Namespace defaultNamespace = new Namespace(defaultNamespaceID);
-    namespaces.put(defaultNamespaceID, defaultNamespace);
-    // "top-level" bindings go into the private scope of the default namespace
-
-    Schematic schematic = new Schematic(inputFile.getName());
-
-    // Build top-level scope
-    for (Expression expr : expressions) {
-      if (expr instanceof VariableAssignmentExpression) {
-        VariableAssignmentExpression assign =
-            (VariableAssignmentExpression) expr;
-        Expression lvalue = assign.getLvalueExpression();
-        Expression rvalue = assign.getRvalueExpression();
-
-        // the lvalue must be an expression we can assign to
-        if (lvalue.isAssignable()) {
-          // for now we are only handling the simplest case of
-          // the lvalue being a single variable reference
-          if (lvalue instanceof VariableReferenceExpression) {
-            VariableReferenceExpression vRef =
-                (VariableReferenceExpression) lvalue;
-            VariableIdentifier identifier = vRef.getIdentifier();
-            // Do not assign a type yet.
-            defaultNamespace.getPrivateScope().defineVariable(
-                identifier);
-            defaultNamespace.getPrivateScope().assignVariable(
-                identifier, rvalue);
-          } else {
-            throw new UndefinedBehaviourError(
-                "unhandled lvalue type" + lvalue.getClass());
-          }
-        } else {
-          throw new IllegalAssignmentException(lvalue);
-        }
-      }
-    }
-
-    log.debug("top-level identifiers:");
-    for (VariableIdentifier id :
-        defaultNamespace.getPrivateScope().getSymbolIdentifiers()) {
-      log.debug(id);
-    }
-
-    ExpressionGraphBuilder exprGraphBuilder = new ExpressionGraphBuilder(
-        expressions, namespaces);
-    ExpressionGraph exprGraph = exprGraphBuilder.build();
-
+    ExpressionGraph exprGraph = graphBuilder.getExpressionGraph();
     log.debug("writing out initial expression graph");
     File exprGraphDot = new File(inputFile.getName() + ".exprs.dot");
     exprGraph.writeDOTFile(exprGraphDot);
 
+    exprGraph.verifyVariablesSingleAssignment();
+    
+    Schematic schematic = new Schematic(inputFile.getName());
+    
     elaborateFunctions(exprGraph);
-
     log.debug("writing out expression graph after function elaboration");
     File elaboratedDot = new File(inputFile.getName() + ".elaborated.dot");
     exprGraph.writeDOTFile(elaboratedDot);
 
     elaborateSchematicTypes(exprGraph, schematic);
-
     elaborateNodes(exprGraph, schematic);
 
     return schematic;
@@ -274,24 +220,45 @@ public class Main implements Frontend {
   }
 }
 
-class ExpressionContextVisitor extends ManifoldBaseVisitor<Expression> {
+class ExpressionContextVisitor extends ManifoldBaseVisitor<ExpressionVertex> {
 
+  private ExpressionGraph exprGraph;
+  public ExpressionGraph getExpressionGraph() {
+    return this.exprGraph;
+  }
+  
+  public ExpressionContextVisitor() {
+    this.exprGraph = new ExpressionGraph();
+  }
+  
   @Override
-  public Expression visitAssignmentExpression(
+  public ExpressionVertex visitAssignmentExpression(
       ManifoldParser.AssignmentExpressionContext context) {
-    return new VariableAssignmentExpression(
-        visit(context.expression(0)),
-        visit(context.expression(1))
-    );
+    // get the vertex corresponding to the lvalue
+    ExpressionVertex vLeft = context.expression(0).accept(this);
+    // then get the rvalue...
+    ExpressionVertex vRight = context.expression(1).accept(this);
+    ExpressionEdge e = new ExpressionEdge(vRight, vLeft);
+    exprGraph.addEdge(e);
+    return vRight;
   }
 
   @Override
-  public Expression visitFunctionInvocationExpression(
+  public ExpressionVertex visitFunctionInvocationExpression(
       ManifoldParser.FunctionInvocationExpressionContext context) {
-    return new FunctionInvocationExpression (
-        visit(context.expression(0)),
-        visit(context.expression(1))
-    );
+    // get the vertex corresponding to the function being called
+    ExpressionVertex vFunction = context.expression(0).accept(this);
+    ExpressionEdge eFunction = new ExpressionEdge(vFunction, null);
+    // then get the input vertex
+    ExpressionVertex vInput = context.expression(1).accept(this);
+    ExpressionEdge eInput = new ExpressionEdge(vInput, null);
+    
+    FunctionInvocationVertex vInvocation = new FunctionInvocationVertex(
+        exprGraph, eFunction, eInput);
+    exprGraph.addVertex(vInvocation);
+    exprGraph.addEdge(eFunction);
+    exprGraph.addEdge(eInput);
+    return vInvocation;
   }
 
   // KEY INSIGHT: combine the port type/port attributes and
@@ -307,68 +274,83 @@ class ExpressionContextVisitor extends ManifoldBaseVisitor<Expression> {
   // vResult = xDev(u: (0: uVal, 1: (a: 3)), p: True, q: False, v: (b: 4))
   //
   @Override
-  public Expression visitPrimitiveNodeDefinitionExpression(
+  public ExpressionVertex visitPrimitiveNodeDefinitionExpression(
       ManifoldParser.PrimitiveNodeDefinitionExpressionContext context) {
-    // extract port-mapping type
-    FunctionTypeValueContext typeCtx = context.functionTypeValue();
-    Expression typevalue = typeCtx.accept(this);
-    return new PrimitiveNodeDefinitionExpression(typevalue);
+    ExpressionVertex vSignature = context.functionTypeValue().accept(this);
+    ExpressionEdge eSignature = new ExpressionEdge(vSignature, null);
+    exprGraph.addEdge(eSignature);
+    PrimitiveNodeVertex vNode = new PrimitiveNodeVertex(exprGraph, eSignature);
+    exprGraph.addVertex(vNode);
+    return vNode;
   }
 
   @Override
-  public Expression visitPrimitivePortDefinitionExpression(
+  public ExpressionVertex visitPrimitivePortDefinitionExpression(
       ManifoldParser.PrimitivePortDefinitionExpressionContext context) {
-    // extract signal type
-    TypevalueContext typeCtx = context.typevalue();
-    Expression typevalue = typeCtx.accept(this);
-    // are there any attributes?
+
+    ExpressionVertex vSignalType = context.typevalue().accept(this);
+    ExpressionEdge eSignalType = new ExpressionEdge(vSignalType, null);
+    exprGraph.addEdge(eSignalType);
+
+    ExpressionVertex vAttributes;
     if (context.tupleTypeValue() != null) {
-      TupleTypeValueContext attributeTypesContext = context.tupleTypeValue();
-      Expression attributes = attributeTypesContext.accept(this);
-      return new PrimitivePortDefinitionExpression(typevalue, attributes);
+      vAttributes = context.tupleTypeValue().accept(this);
     } else {
-      return new PrimitivePortDefinitionExpression(typevalue);
+      vAttributes = new ConstantValueVertex(exprGraph, 
+          NilTypeValue.getInstance());
     }
+    exprGraph.addVertex(vAttributes);
+    ExpressionEdge eAttributes = new ExpressionEdge(vAttributes, null);
+    exprGraph.addEdge(eAttributes);
+    PrimitivePortVertex vPort = new PrimitivePortVertex(exprGraph,
+        eSignalType, eAttributes);
+    exprGraph.addVertex(vPort);
+    return vPort;
   }
 
   @Override
-  public Expression visitTupleTypeValue(TupleTypeValueContext context) {
-    // visit all children
+  public ExpressionVertex visitTupleTypeValue(TupleTypeValueContext context) {
     List<TupleTypeValueEntryContext> entries = context.tupleTypeValueEntry();
-    Map<String, Expression> typeExprs = new HashMap<>();
-    Map<String, Expression> defaultValues = new HashMap<>();
+    Map<String, ExpressionEdge> typeValueEdges = new HashMap<>();
+    Map<String, ExpressionEdge> defaultValueEdges = new HashMap<>();
+    Integer nextAnonymousID = 0;
     for (TupleTypeValueEntryContext entryCtx : entries) {
       // each child has a typevalue, and may have
       // an identifier (named field)
       // and an expression (default value)
-      Expression typevalue = entryCtx.typevalue().accept(this);
       String identifier;
-      Integer nextAnonymousID = 0;
       if (entryCtx.IDENTIFIER() != null) {
         identifier = entryCtx.IDENTIFIER().getText();
       } else {
         identifier = nextAnonymousID.toString();
         nextAnonymousID += 1;
       }
-      typeExprs.put(identifier, typevalue);
+      ExpressionVertex vxTypeValue = entryCtx.typevalue().accept(this);
+      ExpressionEdge eTypeValue = new ExpressionEdge(vxTypeValue, null);
+      typeValueEdges.put(identifier, eTypeValue);
+      exprGraph.addEdge(eTypeValue);
       if (entryCtx.expression() != null) {
-        Expression defaultValue = entryCtx.expression().accept(this);
-        defaultValues.put(identifier, defaultValue);
+        ExpressionVertex vxDefaultValue = entryCtx.expression().accept(this);
+        ExpressionEdge eDefaultValue = new ExpressionEdge(vxDefaultValue, null);
+        defaultValueEdges.put(identifier, eDefaultValue);
+        exprGraph.addEdge(eDefaultValue);
       }
     }
-    return new TupleTypeValueExpression(typeExprs, defaultValues);
+    TupleTypeValueVertex vTuple = new TupleTypeValueVertex(exprGraph,
+        typeValueEdges, defaultValueEdges);
+    exprGraph.addVertex(vTuple);
+    return vTuple;
   }
 
   @Override
-  public Expression visitTupleValue(TupleValueContext context) {
-    // visit all children
+  public ExpressionVertex visitTupleValue(TupleValueContext context) {
     List<TupleValueEntryContext> entries = context.tupleValueEntry();
-    Map<String, Expression> valueExprs = new HashMap<>();
+    Map<String, ExpressionEdge> valueEdges = new HashMap<>();
+    Integer nextAnonymousID = 0;
     for (TupleValueEntryContext entryCtx : entries) {
       // each child has a value, and may have an identifier (named field)
-      Expression value = entryCtx.expression().accept(this);
+      ExpressionVertex vxValue = entryCtx.expression().accept(this);
       String identifier;
-      Integer nextAnonymousID = 0;
       if (entryCtx.IDENTIFIER() != null) {
         identifier = entryCtx.IDENTIFIER().getText();
       } else {
@@ -376,45 +358,93 @@ class ExpressionContextVisitor extends ManifoldBaseVisitor<Expression> {
         identifier = nextAnonymousID.toString();
         nextAnonymousID += 1;
       }
-      valueExprs.put(identifier, value);
+      ExpressionEdge eValue = new ExpressionEdge(vxValue, null);
+      valueEdges.put(identifier, eValue);
+      exprGraph.addEdge(eValue);
     }
-    return new TupleValueExpression(valueExprs);
+    TupleValueVertex vTuple = new TupleValueVertex(exprGraph, valueEdges);
+    exprGraph.addVertex(vTuple);
+    return vTuple;
   }
 
   @Override
-  public Expression visitFunctionTypeValue(FunctionTypeValueContext context) {
-    Expression inputExpr = context.tupleTypeValue(0).accept(this);
-    Expression outputExpr = context.tupleTypeValue(1).accept(this);
-    return new FunctionTypeValueExpression(inputExpr, outputExpr);
+  public ExpressionVertex visitFunctionTypeValue(
+      FunctionTypeValueContext context) {
+    // get the vertex corresponding to the input type
+    ExpressionVertex vIn = context.tupleTypeValue(0).accept(this);
+    ExpressionEdge eIn = new ExpressionEdge(vIn, null);
+    // then get the output type vertex
+    ExpressionVertex vOut = context.tupleTypeValue(1).accept(this);
+    ExpressionEdge eOut = new ExpressionEdge(vOut, null);
+    
+    FunctionTypeValueVertex vFunctionType = new FunctionTypeValueVertex(
+        exprGraph, eIn, eOut);
+    exprGraph.addVertex(vFunctionType);
+    exprGraph.addEdge(eIn);
+    exprGraph.addEdge(eOut);
+    return vFunctionType;
   }
 
   @Override
-  public Expression visitNamespacedIdentifier(
+  public ExpressionVertex visitNamespacedIdentifier(
       NamespacedIdentifierContext context) {
-
+    // keeping in mind that we may have constructed this variable already...
     List<TerminalNode> identifierNodes = context.IDENTIFIER();
     List<String> identifierStrings = new LinkedList<>();
     for (TerminalNode node : identifierNodes) {
       identifierStrings.add(node.getText());
     }
 
-    VariableIdentifier variable = new VariableIdentifier(identifierStrings);
-
-    return new VariableReferenceExpression(variable);
+    VariableIdentifier id = new VariableIdentifier(identifierStrings);
+    if (ReservedIdentifiers.getInstance()
+        .isReservedIdentifier(id)) {
+      // construct a constant value vertex with the identifier's value
+      ConstantValueVertex vReserved = new ConstantValueVertex(exprGraph,
+          ReservedIdentifiers.getInstance().getValue(id));
+      exprGraph.addVertex(vReserved);
+      return vReserved;
+    } else {
+      // this is a variable
+      // TODO scope
+      if (exprGraph.containsVariable(id)) {
+        try {
+          VariableReferenceVertex v = exprGraph.getVariableVertex(id);
+          return v;
+        } catch (VariableNotDefinedException e) {
+          // cannot actually happen
+          throw Throwables.propagate(e);
+        }
+      } else {
+        // doesn't exist yet
+        try {
+          exprGraph.addVertex(id);
+        } catch (MultipleDefinitionException e2) {
+          System.err.println("multiple definitions of variable " + id);
+          throw new ParseCancellationException();
+        }
+        try {
+          VariableReferenceVertex v = exprGraph.getVariableVertex(id);
+          return v;
+        } catch (VariableNotDefinedException e2) {
+          throw new UndefinedBehaviourError("failed to define variable "
+              + id);
+        }
+      }
+    }
   }
 
   @Override
-  public Expression visitTerminal(TerminalNode node) {
+  public ExpressionVertex visitTerminal(TerminalNode node) {
     if (node.getSymbol().getType() == ManifoldLexer.INTEGER_VALUE) {
-      return new LiteralExpression(
-          new IntegerValue(Integer.valueOf(node.getText()))
-      );
-
+      ConstantValueVertex v = new ConstantValueVertex(exprGraph,
+          new IntegerValue(Integer.valueOf(node.getText())));
+      exprGraph.addVertex(v);
+      return v;
     } else if (node.getSymbol().getType() == ManifoldLexer.BOOLEAN_VALUE) {
-      return new LiteralExpression(
-        BooleanValue.getInstance(Boolean.parseBoolean(node.getText()))
-      );
-
+      ConstantValueVertex v = new ConstantValueVertex(exprGraph,
+          BooleanValue.getInstance(Boolean.parseBoolean(node.getText())));
+      exprGraph.addVertex(v);
+      return v;
     } else {
       throw new UndefinedBehaviourError(
           "unknown terminal node '" + node.getSymbol().getText() + "'");
