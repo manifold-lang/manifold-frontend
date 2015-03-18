@@ -112,6 +112,17 @@ The compiler can infer the type of the variable so it is equivalent to write
 timeMachineOn = true
 ```
 
+## Annotations
+
+Manifold supports a system capable of annotating variables with additional metadata using **annotations**. These annotations are similar to Java's annotations in syntax, being prefixed by a *@* and optionally taking parameters
+
+```
+@bar Integer width = 5
+@foo(10, true) Integer height = 200
+```
+
+At the moment, annotations are defined by the compiler but user-defined annotations are planned for future versions of the spec.
+
 ## Compile-Time vs Run-Time
 
 In Manifold, you write domain logic as naturally as possible and let the
@@ -605,7 +616,7 @@ A schematic written in the Manifold front-end language will compile into a  inte
 
  
 
-
+ 
 
 
 
