@@ -63,6 +63,8 @@ public class Main implements Frontend {
     // Maintain a set of unelaborated function invocations and
     // iterate until this set is empty.
 
+    int step = 1;
+
     Set<FunctionInvocationVertex> funcalls = new LinkedHashSet<>();
     // Add all function invocations initially present in the graph
     for (ExpressionVertex v : g.getNonVariableVertices()) {
@@ -80,6 +82,11 @@ public class Main implements Frontend {
       log.debug("elaborating function "
           + Integer.toString(System.identityHashCode(v)));
       v.elaborate();
+      log.debug("writing out expression graph at function elaboration step " +
+          step);
+      File elaboratedDot = new File("tmp.elaborated.step" + step + ".dot");
+      g.writeDOTFile(elaboratedDot);
+      step++;
       // TODO it would be more efficient for the vertex to tell us whether
       // any new function invocations were created during elaboration
       for (ExpressionVertex vNew : g.getNonVariableVertices()) {
@@ -204,9 +211,9 @@ public class Main implements Frontend {
     exprGraph.writeDOTFile(exprGraphDot);
 
     exprGraph.verifyVariablesSingleAssignment();
-    
+
     Schematic schematic = new Schematic(inputFile.getName());
-    
+
     elaborateFunctions(exprGraph);
     log.debug("writing out expression graph after function elaboration");
     File elaboratedDot = new File(inputFile.getName() + ".elaborated.dot");
@@ -226,11 +233,11 @@ class ExpressionContextVisitor extends ManifoldBaseVisitor<ExpressionVertex> {
   public ExpressionGraph getExpressionGraph() {
     return this.exprGraph;
   }
-  
+
   public ExpressionContextVisitor() {
     this.exprGraph = new ExpressionGraph();
   }
-  
+
   @Override
   public ExpressionVertex visitAssignmentExpression(
       ManifoldParser.AssignmentExpressionContext context) {
@@ -252,7 +259,7 @@ class ExpressionContextVisitor extends ManifoldBaseVisitor<ExpressionVertex> {
     // then get the input vertex
     ExpressionVertex vInput = context.expression(1).accept(this);
     ExpressionEdge eInput = new ExpressionEdge(vInput, null);
-    
+
     FunctionInvocationVertex vInvocation = new FunctionInvocationVertex(
         exprGraph, eFunction, eInput);
     exprGraph.addVertex(vInvocation);
@@ -264,7 +271,7 @@ class ExpressionContextVisitor extends ManifoldBaseVisitor<ExpressionVertex> {
   @Override
   public ExpressionVertex visitFunctionValue(
       ManifoldParser.FunctionValueContext ctx) {
-    ExpressionContextVisitor functionGraphBuilder = 
+    ExpressionContextVisitor functionGraphBuilder =
         new ExpressionContextVisitor();
     ctx.expression().forEach(functionGraphBuilder::visit);
     ExpressionGraph fSubGraph = functionGraphBuilder.getExpressionGraph();
@@ -280,7 +287,7 @@ class ExpressionContextVisitor extends ManifoldBaseVisitor<ExpressionVertex> {
 
     return fValueVertex;
   }
-  
+
   // KEY INSIGHT: combine the port type/port attributes and
   // node attributes in a single FunctionTypeValue signature.
   // As an example, if we have port types xIn(a: Int) and xOut(b: Int)
@@ -316,7 +323,7 @@ class ExpressionContextVisitor extends ManifoldBaseVisitor<ExpressionVertex> {
     if (context.tupleTypeValue() != null) {
       vAttributes = context.tupleTypeValue().accept(this);
     } else {
-      vAttributes = new ConstantValueVertex(exprGraph, 
+      vAttributes = new ConstantValueVertex(exprGraph,
           NilTypeValue.getInstance());
     }
     exprGraph.addVertex(vAttributes);
@@ -396,7 +403,7 @@ class ExpressionContextVisitor extends ManifoldBaseVisitor<ExpressionVertex> {
     // then get the output type vertex
     ExpressionVertex vOut = context.tupleTypeValue(1).accept(this);
     ExpressionEdge eOut = new ExpressionEdge(vOut, null);
-    
+
     FunctionTypeValueVertex vFunctionType = new FunctionTypeValueVertex(
         exprGraph, eIn, eOut);
     exprGraph.addVertex(vFunctionType);

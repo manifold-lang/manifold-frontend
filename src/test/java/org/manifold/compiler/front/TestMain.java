@@ -28,7 +28,7 @@ public class TestMain {
     LogManager.getRootLogger().addAppender(
         new ConsoleAppender(layout, ConsoleAppender.SYSTEM_ERR));
   }
-  
+
   private File writeTempSchematic(String contents) throws IOException {
     File input = File.createTempFile("tmp", ".manifold");
     input.deleteOnExit();
@@ -38,7 +38,7 @@ public class TestMain {
     writer.close();
     return input;
   }
-  
+
   private Schematic invokeFrontend(String[] args) throws Exception {
     Options options = new Options();
     Main frontend = new Main();
@@ -47,7 +47,7 @@ public class TestMain {
     CommandLine cli = parser.parse(options, args);
     return frontend.invokeFrontend(cli);
   }
-  
+
   @Test
   public void testSimpleElaboration() throws Exception {
     StringBuilder sb = new StringBuilder();
@@ -58,6 +58,25 @@ public class TestMain {
       .append("xOutputPin = primitive node (x: xIn) -> (Nil);")
       .append("a = xInputPin();")
       .append("b = xNot(x:a);")
+      .append("xOutputPin(x:b);");
+    File in = writeTempSchematic(sb.toString());
+    String[] args = { in.getAbsolutePath() };
+    Schematic actual = invokeFrontend(args);
+    assertNotNull(actual);
+    // TODO check for expected structure
+  }
+
+  @Test
+  public void testNonPrimitiveElaboration() throws Exception {
+    StringBuilder sb = new StringBuilder();
+    sb
+      .append("xIn = primitive port Bool; xOut = primitive port Bool;")
+      .append("xNot = primitive node (x: xIn) -> (xbar: xOut);")
+      .append("xInputPin = primitive node (Nil) -> (x: xOut);")
+      .append("xOutputPin = primitive node (x: xIn) -> (Nil);")
+      .append("invert = (p: Bool) -> (q: Bool) { q = xNot(x: p); };")
+      .append("a = xInputPin();")
+      .append("b = invert(p:a);")
       .append("xOutputPin(x:b);");
     File in = writeTempSchematic(sb.toString());
     String[] args = { in.getAbsolutePath() };

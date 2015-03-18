@@ -12,19 +12,19 @@ import org.manifold.compiler.TypeValue;
 import org.manifold.compiler.Value;
 
 public class FunctionValueVertex extends ExpressionVertex {
-  
+
   private static Logger log = LogManager.getLogger(FunctionValueVertex.class);
-  
+
   private final ExpressionEdge functionTypeEdge;
   public ExpressionEdge getFunctionTypeEdge() {
     return this.functionTypeEdge;
   }
-  
+
   private final ExpressionGraph functionBody;
   public ExpressionGraph getFunctionBody() {
     return this.functionBody;
   }
-  
+
   public FunctionValueVertex(ExpressionGraph exprGraph,
       ExpressionEdge functionTypeEdge, ExpressionGraph functionBody) {
     super(exprGraph);
@@ -34,7 +34,7 @@ public class FunctionValueVertex extends ExpressionVertex {
   }
 
   private FunctionTypeValue type = null;
-  
+
   @Override
   public TypeValue getType() {
     // this is a function, so return a function type
@@ -47,16 +47,6 @@ public class FunctionValueVertex extends ExpressionVertex {
     return this.function;
   }
 
-  private TupleValueVertex vInput = null;
-  public TupleValueVertex getInputVertex() {
-    return this.vInput;
-  }
-  
-  private TupleValueVertex vOutput = null;
-  public TupleValueVertex getOutputVertex() {
-    return this.vOutput;
-  }
-  
   @Override
   public void elaborate() throws Exception {
     if (function != null) {
@@ -72,7 +62,6 @@ public class FunctionValueVertex extends ExpressionVertex {
           typeConstructor, typeVertex.getValue());
     }
     type = (FunctionTypeValue) typeVertex.getValue();
-    function = new FunctionValue(type, functionBody);
     // inject input/output TupleValues
     TupleTypeValue inputType = (TupleTypeValue) type.getInputType();
     TupleTypeValue outputType = (TupleTypeValue) type.getOutputType();
@@ -85,7 +74,7 @@ public class FunctionValueVertex extends ExpressionVertex {
     }
     for (String argName : outputType.getSubtypes().keySet()) {
       // "name resolution": look for a variable reference vertex with this name in the subgraph
-      for (Map.Entry<VariableIdentifier, VariableReferenceVertex> vRef 
+      for (Map.Entry<VariableIdentifier, VariableReferenceVertex> vRef
           : functionBody.getVariableVertices().entrySet()) {
         if (vRef.getKey().getName().equals(argName)) {
           ExpressionEdge e = new ExpressionEdge(vRef.getValue(), null);
@@ -95,17 +84,18 @@ public class FunctionValueVertex extends ExpressionVertex {
         }
       }
     }
-    vInput = new TupleValueVertex(functionBody, inputEdges);
+    TupleValueVertex vInput = new TupleValueVertex(functionBody, inputEdges);
     functionBody.addVertex(vInput);
-    vOutput = new TupleValueVertex(functionBody, outputEdges);
+    TupleValueVertex vOutput = new TupleValueVertex(functionBody, outputEdges);
     functionBody.addVertex(vOutput);
+    function = new FunctionValue(type, functionBody, vInput, vOutput);
     // TODO inject StaticAttributeAccesses to assign each variable from the input
   }
 
   @Override
   public void verify() throws Exception {
     // TODO Auto-generated method stub
-    
+
   }
 
   @Override
@@ -119,9 +109,27 @@ public class FunctionValueVertex extends ExpressionVertex {
   }
 
   @Override
+  public String toString() {
+    if (function == null) {
+      return "function value (not elaborated)";
+    } else {
+      return "function value " + type.toString();
+    }
+  }
+
+  @Override
   public void writeToDOTFile(BufferedWriter writer) throws IOException {
-    // TODO Auto-generated method stub
-    
+    String objectID = Integer.toString(System.identityHashCode(this));
+    String label = this.toString();
+    writer.write(objectID);
+    writer.write(" [");
+    writer.write("label=\"");
+    writer.write(objectID);
+    writer.write("\n");
+    writer.write(label);
+    writer.write("\"");
+    writer.write("];");
+    writer.newLine();
   }
 
   @Override

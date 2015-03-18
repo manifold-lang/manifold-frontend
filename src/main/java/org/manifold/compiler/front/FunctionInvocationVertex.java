@@ -113,19 +113,17 @@ public class FunctionInvocationVertex extends ExpressionVertex {
     // now remove this vertex from the graph
     getExpressionGraph().removeVertex(this);
   }
-  
-  private void elaborateNonPrimitiveFunction(Value f,
-      ExpressionVertex v) throws Exception {
+
+  private void elaborateNonPrimitiveFunction(Value f) throws Exception {
     log.debug("function invocation is non-primitive elaboration");
     FunctionValue function = (FunctionValue) f;
-    FunctionValueVertex vFunction = (FunctionValueVertex) v;
-    FunctionTypeValue signature = (FunctionTypeValue) vFunction.getType();
+    FunctionTypeValue signature = (FunctionTypeValue) f.getType();
     TupleTypeValue inputType = (TupleTypeValue) signature.getInputType();
     TupleTypeValue outputType = (TupleTypeValue) signature.getOutputType();
-    // calculate renaming map (body -> this.exprGraph) 
-    Map<VariableReferenceVertex, VariableReferenceVertex> renamingMap = 
+    // calculate renaming map (body -> this.exprGraph)
+    Map<VariableReferenceVertex, VariableReferenceVertex> renamingMap =
         new HashMap<>();
-    for (Entry<VariableIdentifier, VariableReferenceVertex> entry 
+    for (Entry<VariableIdentifier, VariableReferenceVertex> entry
         : function.getBody().getVariableVertices().entrySet()) {
       VariableReferenceVertex varTarget;
       if (getExpressionGraph().containsVariable(entry.getKey())) {
@@ -164,14 +162,14 @@ public class FunctionInvocationVertex extends ExpressionVertex {
       break;
     }
     // identify subgraph (body) input and output vertices
-    ExpressionVertex subGraphInput = vFunction.getInputVertex();
-    ExpressionVertex subGraphOutput = vFunction.getOutputVertex();
+    ExpressionVertex subGraphInput = function.getInputVertex();
+    ExpressionVertex subGraphOutput = function.getOutputVertex();
     // perform copy
-    getExpressionGraph().addSubExpressionGraph(function.getBody(), 
-        mainGraphInput, subGraphInput, mainGraphOutput, subGraphOutput, 
+    getExpressionGraph().addSubExpressionGraph(function.getBody(),
+        mainGraphInput, subGraphInput, mainGraphOutput, subGraphOutput,
         renamingMap);
   }
-  
+
   @Override
   public void elaborate() throws Exception {
     // Elaborate argument
@@ -187,7 +185,7 @@ public class FunctionInvocationVertex extends ExpressionVertex {
       elaborateNodeInstantiation(function, vFunction);
     } else if (function instanceof FunctionValue) {
       // non-primitive function elaboration
-      elaborateNonPrimitiveFunction(function, vFunction);
+      elaborateNonPrimitiveFunction(function);
     } else {
       throw new UndefinedBehaviourError("don't know how to invoke '"
           + function.toString() + "'");
