@@ -2,7 +2,9 @@ package org.manifold.compiler.front;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.util.Map;
 
+import com.google.common.base.Preconditions;
 import org.manifold.compiler.TypeTypeValue;
 import org.manifold.compiler.TypeValue;
 import org.manifold.compiler.Value;
@@ -59,6 +61,13 @@ public class FunctionTypeValueVertex extends ExpressionVertex {
     writer.write("];");
     writer.newLine();
   }
+
+  @Override
+  public ExpressionVertex copy(ExpressionGraph g, Map<ExpressionEdge, ExpressionEdge> edgeMap) {
+    Preconditions.checkArgument(edgeMap.containsKey(inputTypeEdge) && edgeMap.containsKey(outputTypeEdge));
+    return new FunctionTypeValueVertex(g, edgeMap.get(inputTypeEdge), edgeMap.get(outputTypeEdge));
+  }
+
 
   @Override
   public TypeValue getType() {

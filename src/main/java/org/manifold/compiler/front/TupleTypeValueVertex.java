@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.common.base.Preconditions;
 import org.manifold.compiler.TypeTypeValue;
 import org.manifold.compiler.TypeValue;
 import org.manifold.compiler.Value;
@@ -68,6 +69,21 @@ public class TupleTypeValueVertex extends ExpressionVertex {
     writer.write("\"");
     writer.write("];");
     writer.newLine();
+  }
+
+  @Override
+  public ExpressionVertex copy(ExpressionGraph g, Map<ExpressionEdge, ExpressionEdge> edgeMap) {
+    Map<String, ExpressionEdge> newTypeValueEdges = new HashMap<>();
+    Map<String, ExpressionEdge> newDefaultValueEdges = new HashMap<>();
+    typeValueEdges.forEach((key, val) -> {
+      Preconditions.checkArgument(edgeMap.containsKey(val));
+      newTypeValueEdges.put(key, edgeMap.get(val));
+    });
+    defaultValueEdges.forEach((key, val) -> {
+      Preconditions.checkArgument(edgeMap.containsKey(val));
+      newDefaultValueEdges.put(key, edgeMap.get(val));
+    });
+    return new TupleTypeValueVertex(g, newTypeValueEdges, newDefaultValueEdges);
   }
 
   @Override

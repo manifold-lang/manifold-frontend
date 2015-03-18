@@ -2,6 +2,7 @@ package org.manifold.compiler.front;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.util.Map;
 
 import org.manifold.compiler.TypeValue;
 import org.manifold.compiler.Value;
@@ -24,4 +25,6 @@ public abstract class ExpressionVertex {
   public abstract boolean isRuntimeKnowable();
   public abstract void writeToDOTFile(BufferedWriter writer) throws IOException;
 
+  // creates a copy of this vertex but WRT the new expression graph
+  public abstract ExpressionVertex copy(ExpressionGraph g, Map<ExpressionEdge, ExpressionEdge> edgeMap);
 }

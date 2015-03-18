@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.google.common.base.Throwables;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
@@ -131,9 +132,7 @@ public class ExpressionGraph {
    * In the final graph, subGraphInput/subGraphOutput will no longer exist, and the edges from/to them
    * should be from mainGraphInput/mainGraphOutput respectively.
    *
-   * The edge from mainGraphInput to the function vertex & the edge from the function vertex to mainGraphOutput
-   * are not removed (since 1 vertex can potentially point to multiple functions), so they should be deleted by
-   * the caller.
+   * Vertices and edges from the subgraph are copied into the mainGraph
    *
    * @param subGraph  ExpressionGraph to be added (elaborated function)
    * @param mainGraphInput Variable -> Function call edge in main graph
@@ -147,7 +146,7 @@ public class ExpressionGraph {
 
     // Sanity checks
     // input/output vertices exist in mainGraph and subGraph
-    Preconditions.checkArgument(subGraph.allVertices.containsAll(
+    Preconditions.checkArgument(subGraph.getVertices().containsAll(
         ImmutableList.of(subGraphInput, subGraphOutput)));
     Preconditions.checkArgument(this.edges.containsAll(
         ImmutableList.of(mainGraphInput, mainGraphOutput)));
@@ -162,19 +161,51 @@ public class ExpressionGraph {
     ExpressionVertex inputVertex = mainGraphInput.getSource();
     ExpressionVertex outputVertex = mainGraphOutput.getTarget();
 
-    // subGraph is being thrown away after, so we can just add the vertices/edges directly
+    // map of subgraph edge -> new edge to be inserted
+    Map<ExpressionEdge, ExpressionEdge> exprEdgeMap = new HashMap<>();
+    subGraph.getEdges().forEach(e -> {
+      // copy source/target for now since ExpressionEdge doesn't like creating with null on both
+      // they will be replaced with the correct vertices later
+      ExpressionEdge newEdge = new ExpressionEdge(e.getSource(), e.getTarget());
+      exprEdgeMap.put(e, newEdge);
+    });
+
+    // map of subgraph vertex -> new vertex
+    Map<ExpressionVertex, ExpressionVertex> exprVertexMap = new HashMap<>();
+
     // do not add the input/output vertices since they are being replaced by the main graph's vertices
-    subGraph.allVertices.stream()
+    subGraph.getVertices().stream()
         .filter(vertex -> (vertex != subGraphInput && vertex != subGraphOutput))
-        .forEach(this::addVertex);
+        .forEach(v -> {
+          ExpressionVertex newVertex;
+          if (v instanceof VariableReferenceVertex) {
+            // special case
+            // TODO: probably can handle renaming here?
+            VariableIdentifier ref = ((VariableReferenceVertex) v).getId();
+            try {
+              this.addVertex(ref);
+              newVertex = this.getVariableVertex(ref);
+            } catch (MultipleDefinitionException | VariableNotDefinedException e) {
+              throw Throwables.propagate(e);
+            }
+          } else {
+            newVertex = v.copy(this, exprEdgeMap);
+            this.addVertex(newVertex);
+          }
+          exprVertexMap.put(v, newVertex);
+        });
 
-    // subGraphOutput's in edges -> switch source to mainGraphOutput
-    subGraph.getEdgesToTarget(subGraphOutput).forEach(edge -> edge.setTarget(outputVertex));
+    // input/output vertex
+    exprVertexMap.put(subGraphInput, inputVertex);
+    exprVertexMap.put(subGraphOutput, outputVertex);
 
-    // subGraphInput's out edges -> switch source to mainGraphInput
-    subGraph.getEdgesFromSource(subGraphInput).forEach(edge -> edge.setSource(inputVertex));
+    // each edge in subgraph -> edge in main graph should refer to the same source/target
+    subGraph.getEdges().forEach(edge -> {
+      exprEdgeMap.get(edge).setSource(exprVertexMap.get(edge.getSource()));
+      exprEdgeMap.get(edge).setTarget(exprVertexMap.get(edge.getTarget()));
+    });
 
-    subGraph.edges.forEach(this::addEdge);
+    this.edges.addAll(exprEdgeMap.values());
   }
 
 

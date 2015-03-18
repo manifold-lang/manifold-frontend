@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.google.common.base.Preconditions;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.manifold.compiler.ConnectionValue;
@@ -223,4 +224,9 @@ public class NodeValueVertex extends ExpressionVertex {
     writer.newLine();
   }
 
+  @Override
+  public ExpressionVertex copy(ExpressionGraph g, Map<ExpressionEdge, ExpressionEdge> edgeMap) {
+    Preconditions.checkArgument(edgeMap.containsKey(signature));
+    return new NodeValueVertex(g, nodeType, signature, edgeMap.get(signature));
+  }
 }

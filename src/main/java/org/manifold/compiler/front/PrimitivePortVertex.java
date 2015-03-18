@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.common.base.Preconditions;
 import org.manifold.compiler.NilTypeValue;
 import org.manifold.compiler.PortTypeValue;
 import org.manifold.compiler.TypeTypeValue;
@@ -93,6 +94,12 @@ public class PrimitivePortVertex extends ExpressionVertex {
     writer.write("\"");
     writer.write("];");
     writer.newLine();
+  }
+
+  @Override
+  public ExpressionVertex copy(ExpressionGraph g, Map<ExpressionEdge, ExpressionEdge> edgeMap) {
+    Preconditions.checkArgument(edgeMap.containsKey(signalTypeEdge) && edgeMap.containsKey(signalTypeEdge));
+    return new PrimitivePortVertex(g, edgeMap.get(signalTypeEdge), edgeMap.get(signalTypeEdge));
   }
 
   @Override
