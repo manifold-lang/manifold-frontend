@@ -6,6 +6,8 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -17,6 +19,13 @@ import org.apache.log4j.PatternLayout;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.manifold.compiler.middle.Schematic;
+import org.manifold.compiler.middle.serialization.SchematicSerializer;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 public class TestMain {
 
@@ -83,6 +92,21 @@ public class TestMain {
     Schematic actual = invokeFrontend(args);
     assertNotNull(actual);
     // TODO check for expected structure
+    // serialize and print, for now
+    JsonObject schematicJson = SchematicSerializer.serialize(actual);
+    String schematicFilename = actual.getName() + ".schematic";
+    Path schematicPath = Paths.get(schematicFilename);
+    File schematicFile = schematicPath.toFile();
+    FileWriter fileWriter = new FileWriter(schematicFile);
+    try {
+      Gson gson = new GsonBuilder().setPrettyPrinting().create();
+      JsonParser jp = new JsonParser();
+      JsonElement je = jp.parse(schematicJson.toString());
+      String prettyJsonString = gson.toJson(je);
+      fileWriter.write(prettyJsonString);
+    } finally {
+      fileWriter.close();
+    }
   }
 
 }

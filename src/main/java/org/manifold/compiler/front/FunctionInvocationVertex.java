@@ -114,7 +114,8 @@ public class FunctionInvocationVertex extends ExpressionVertex {
     getExpressionGraph().removeVertex(this);
   }
 
-  private void elaborateNonPrimitiveFunction(Value f) throws Exception {
+  private void elaborateNonPrimitiveFunction(Value f,
+      ExpressionVertex input) throws Exception {
     log.debug("function invocation is non-primitive elaboration");
     FunctionValue function = (FunctionValue) f;
     FunctionTypeValue signature = (FunctionTypeValue) f.getType();
@@ -128,6 +129,7 @@ public class FunctionInvocationVertex extends ExpressionVertex {
       VariableReferenceVertex varTarget;
       if (getExpressionGraph().containsVariable(entry.getKey())) {
         // if the main graph contains this variable, don't rename; use existing
+        log.debug("preserving variable " + entry.getKey());
         varTarget = getExpressionGraph().getVariableVertex(entry.getKey());
       } else {
         // otherwise, create a fresh variable in the main graph and map to that
@@ -141,6 +143,8 @@ public class FunctionInvocationVertex extends ExpressionVertex {
           newNames.add(newName);
           VariableIdentifier newID = new VariableIdentifier(newNames);
           if (!getExpressionGraph().containsVariable(newID)) {
+            log.debug("renaming local variable " + entry.getKey()
+                + " to " + newID);
             getExpressionGraph().addVertex(newID);
             varTarget = getExpressionGraph().getVariableVertex(newID);
             break;
@@ -151,16 +155,14 @@ public class FunctionInvocationVertex extends ExpressionVertex {
     }
     // identify main graph input and output edges
     // we assume there's exactly one of each
-    ExpressionEdge mainGraphInput = null;
-    for (ExpressionEdge e : getExpressionGraph().getEdgesToTarget(this)) {
-      mainGraphInput = e;
-      break;
-    }
+    ExpressionEdge mainGraphInput = inputEdge;
+    log.debug("main graph input is " + mainGraphInput);
     ExpressionEdge mainGraphOutput = null;
     for (ExpressionEdge e : getExpressionGraph().getEdgesFromSource(this)) {
       mainGraphOutput = e;
       break;
     }
+    log.debug("main graph output is " + mainGraphOutput);
     // identify subgraph (body) input and output vertices
     ExpressionVertex subGraphInput = function.getInputVertex();
     ExpressionVertex subGraphOutput = function.getOutputVertex();
@@ -168,6 +170,10 @@ public class FunctionInvocationVertex extends ExpressionVertex {
     getExpressionGraph().addSubExpressionGraph(function.getBody(),
         mainGraphInput, subGraphInput, mainGraphOutput, subGraphOutput,
         renamingMap);
+    // destroy the function edge
+    getExpressionGraph().removeEdge(functionEdge);
+    // now remove this vertex from the graph
+    getExpressionGraph().removeVertex(this);
   }
 
   @Override
@@ -185,7 +191,7 @@ public class FunctionInvocationVertex extends ExpressionVertex {
       elaborateNodeInstantiation(function, vFunction);
     } else if (function instanceof FunctionValue) {
       // non-primitive function elaboration
-      elaborateNonPrimitiveFunction(function);
+      elaborateNonPrimitiveFunction(function, vInput);
     } else {
       throw new UndefinedBehaviourError("don't know how to invoke '"
           + function.toString() + "'");

@@ -30,6 +30,7 @@ public class FunctionValueVertex extends ExpressionVertex {
     super(exprGraph);
     this.functionTypeEdge = functionTypeEdge;
     this.functionTypeEdge.setTarget(this);
+    this.functionTypeEdge.setName("type");
     this.functionBody = functionBody;
   }
 
@@ -89,7 +90,21 @@ public class FunctionValueVertex extends ExpressionVertex {
     TupleValueVertex vOutput = new TupleValueVertex(functionBody, outputEdges);
     functionBody.addVertex(vOutput);
     function = new FunctionValue(type, functionBody, vInput, vOutput);
-    // TODO inject StaticAttributeAccesses to assign each variable from the input
+    // inject StaticAttributeAccesses to assign each variable from the input
+    // TODO we're making a few guesses about "name resolution" here
+    for (Map.Entry<VariableIdentifier, VariableReferenceVertex> entry
+          : functionBody.getVariableVertices().entrySet()) {
+      String varName = entry.getKey().getName();
+      if (inputType.getSubtypes().containsKey(varName)) {
+        ExpressionEdge eInput = new ExpressionEdge(vInput, null);
+        functionBody.addEdge(eInput);
+        StaticAttributeAccessVertex vAccess = new StaticAttributeAccessVertex(
+            functionBody, eInput, varName);
+        functionBody.addVertex(vAccess);
+        ExpressionEdge eAssign = new ExpressionEdge(vAccess, entry.getValue());
+        functionBody.addEdge(eAssign);
+      }
+    }
   }
 
   @Override

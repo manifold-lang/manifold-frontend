@@ -15,6 +15,7 @@ import java.util.Set;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+import org.manifold.compiler.UndefinedBehaviourError;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Throwables;
@@ -32,11 +33,11 @@ public class ExpressionGraph {
   public Map<VariableIdentifier, VariableReferenceVertex> getVariableVertices() {
     return ImmutableMap.copyOf(variableVertices);
   }
-  
+
   public boolean containsVariable(VariableIdentifier vID) {
     return variableVertices.containsKey(vID);
   }
-  
+
   public VariableReferenceVertex getVariableVertex(VariableIdentifier vID)
       throws VariableNotDefinedException {
     if (variableVertices.containsKey(vID)) {
@@ -62,6 +63,9 @@ public class ExpressionGraph {
     return ImmutableList.copyOf(nonVariableVertices);
   }
   public void addVertex(ExpressionVertex v) {
+    if (v == null) {
+      throw new UndefinedBehaviourError("attempt to add null vertex to graph");
+    }
     nonVariableVertices.add(v);
     allVertices.add(v);
   }
@@ -76,7 +80,7 @@ public class ExpressionGraph {
     // simple removal from nonVariableVertices
     nonVariableVertices.remove(v);
   }
-  
+
   private List<ExpressionEdge> edges = new ArrayList<>();
   public void addEdge(ExpressionEdge e) {
     Preconditions.checkArgument(
@@ -282,5 +286,5 @@ public class ExpressionGraph {
       throw new RuntimeException(errors.toString());
     }
   }
-  
+
 }
