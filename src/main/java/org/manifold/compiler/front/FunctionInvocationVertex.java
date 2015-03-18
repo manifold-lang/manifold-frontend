@@ -2,15 +2,21 @@ package org.manifold.compiler.front;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Random;
 
-import com.google.common.base.Preconditions;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.manifold.compiler.NodeTypeValue;
 import org.manifold.compiler.TypeValue;
 import org.manifold.compiler.UndefinedBehaviourError;
 import org.manifold.compiler.Value;
+
+import com.google.common.base.Preconditions;
 
 public class FunctionInvocationVertex extends ExpressionVertex {
 
@@ -108,6 +114,64 @@ public class FunctionInvocationVertex extends ExpressionVertex {
     getExpressionGraph().removeVertex(this);
   }
   
+  private void elaborateNonPrimitiveFunction(Value f,
+      ExpressionVertex v) throws Exception {
+    log.debug("function invocation is non-primitive elaboration");
+    FunctionValue function = (FunctionValue) f;
+    FunctionValueVertex vFunction = (FunctionValueVertex) v;
+    FunctionTypeValue signature = (FunctionTypeValue) vFunction.getType();
+    TupleTypeValue inputType = (TupleTypeValue) signature.getInputType();
+    TupleTypeValue outputType = (TupleTypeValue) signature.getOutputType();
+    // calculate renaming map (body -> this.exprGraph) 
+    Map<VariableReferenceVertex, VariableReferenceVertex> renamingMap = 
+        new HashMap<>();
+    for (Entry<VariableIdentifier, VariableReferenceVertex> entry 
+        : function.getBody().getVariableVertices().entrySet()) {
+      VariableReferenceVertex varTarget;
+      if (getExpressionGraph().containsVariable(entry.getKey())) {
+        // if the main graph contains this variable, don't rename; use existing
+        varTarget = getExpressionGraph().getVariableVertex(entry.getKey());
+      } else {
+        // otherwise, create a fresh variable in the main graph and map to that
+        String oldName = entry.getKey().getName();
+        Random rng = new Random();
+        while (true) {
+          // choose a random suffix and mangle
+          Integer i = rng.nextInt(Integer.MAX_VALUE);
+          String newName = oldName + "_" + i.toString();
+          List<String> newNames = new ArrayList<>();
+          newNames.add(newName);
+          VariableIdentifier newID = new VariableIdentifier(newNames);
+          if (!getExpressionGraph().containsVariable(newID)) {
+            getExpressionGraph().addVertex(newID);
+            varTarget = getExpressionGraph().getVariableVertex(newID);
+            break;
+          }
+        }
+      }
+      renamingMap.put(entry.getValue(), varTarget);
+    }
+    // identify main graph input and output edges
+    // we assume there's exactly one of each
+    ExpressionEdge mainGraphInput = null;
+    for (ExpressionEdge e : getExpressionGraph().getEdgesToTarget(this)) {
+      mainGraphInput = e;
+      break;
+    }
+    ExpressionEdge mainGraphOutput = null;
+    for (ExpressionEdge e : getExpressionGraph().getEdgesFromSource(this)) {
+      mainGraphOutput = e;
+      break;
+    }
+    // identify subgraph (body) input and output vertices
+    ExpressionVertex subGraphInput = vFunction.getInputVertex();
+    ExpressionVertex subGraphOutput = vFunction.getOutputVertex();
+    // perform copy
+    getExpressionGraph().addSubExpressionGraph(function.getBody(), 
+        mainGraphInput, subGraphInput, mainGraphOutput, subGraphOutput, 
+        renamingMap);
+  }
+  
   @Override
   public void elaborate() throws Exception {
     // Elaborate argument
@@ -121,6 +185,9 @@ public class FunctionInvocationVertex extends ExpressionVertex {
     if (function instanceof NodeTypeValue) {
       // we're not calling a function; we're instantiating a node!
       elaborateNodeInstantiation(function, vFunction);
+    } else if (function instanceof FunctionValue) {
+      // non-primitive function elaboration
+      elaborateNonPrimitiveFunction(function, vFunction);
     } else {
       throw new UndefinedBehaviourError("don't know how to invoke '"
           + function.toString() + "'");

@@ -261,6 +261,26 @@ class ExpressionContextVisitor extends ManifoldBaseVisitor<ExpressionVertex> {
     return vInvocation;
   }
 
+  @Override
+  public ExpressionVertex visitFunctionValue(
+      ManifoldParser.FunctionValueContext ctx) {
+    ExpressionContextVisitor functionGraphBuilder = 
+        new ExpressionContextVisitor();
+    ctx.expression().forEach(functionGraphBuilder::visit);
+    ExpressionGraph fSubGraph = functionGraphBuilder.getExpressionGraph();
+
+    ExpressionVertex fTypeVertex = visitFunctionTypeValue(
+        ctx.functionTypeValue());
+    ExpressionEdge fTypeEdge = new ExpressionEdge(fTypeVertex, null);
+
+    FunctionValueVertex fValueVertex = new FunctionValueVertex(
+        exprGraph, fTypeEdge, fSubGraph);
+    exprGraph.addVertex(fValueVertex);
+    exprGraph.addEdge(fTypeEdge);
+
+    return fValueVertex;
+  }
+  
   // KEY INSIGHT: combine the port type/port attributes and
   // node attributes in a single FunctionTypeValue signature.
   // As an example, if we have port types xIn(a: Int) and xOut(b: Int)

@@ -1,7 +1,5 @@
 package org.manifold.compiler.front;
 
-import java.util.List;
-
 import org.manifold.compiler.SchematicValueVisitor;
 import org.manifold.compiler.UndefinedBehaviourError;
 import org.manifold.compiler.Value;

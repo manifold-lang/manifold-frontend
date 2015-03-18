@@ -13,11 +13,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.google.common.base.Throwables;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 import com.google.common.base.Preconditions;
+import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
@@ -80,7 +80,7 @@ public class ExpressionGraph {
   private List<ExpressionEdge> edges = new ArrayList<>();
   public void addEdge(ExpressionEdge e) {
     Preconditions.checkArgument(
-        getVertices().contains(e.getSource())
+        (e.getSource() == null || getVertices().contains(e.getSource()))
             && (e.getTarget() == null || getVertices().contains(e.getTarget())),
         "Edge had unexpected vertices " + e.toString());
     edges.add(e);
@@ -142,7 +142,8 @@ public class ExpressionGraph {
    */
   public void addSubExpressionGraph(ExpressionGraph subGraph,
                                     ExpressionEdge mainGraphInput, ExpressionVertex subGraphInput,
-                                    ExpressionEdge mainGraphOutput, ExpressionVertex subGraphOutput) {
+                                    ExpressionEdge mainGraphOutput, ExpressionVertex subGraphOutput,
+                                    Map<VariableReferenceVertex, VariableReferenceVertex> variableRenamingMap) {
 
     // Sanity checks
     // input/output vertices exist in mainGraph and subGraph
@@ -164,9 +165,8 @@ public class ExpressionGraph {
     // map of subgraph edge -> new edge to be inserted
     Map<ExpressionEdge, ExpressionEdge> exprEdgeMap = new HashMap<>();
     subGraph.getEdges().forEach(e -> {
-        // copy source/target for now since ExpressionEdge doesn't like creating with null on both
-        // they will be replaced with the correct vertices later
-        ExpressionEdge newEdge = new ExpressionEdge(e.getSource(), e.getTarget());
+        // replace these with the correct vertices later
+        ExpressionEdge newEdge = new ExpressionEdge(null, null);
         exprEdgeMap.put(e, newEdge);
       });
 
@@ -179,14 +179,17 @@ public class ExpressionGraph {
         .forEach(v -> {
             ExpressionVertex newVertex;
             if (v instanceof VariableReferenceVertex) {
-              // special case
-              // TODO: probably can handle renaming here?
-              VariableIdentifier ref = ((VariableReferenceVertex) v).getId();
-              try {
-                this.addVertex(ref);
-                newVertex = this.getVariableVertex(ref);
-              } catch (MultipleDefinitionException | VariableNotDefinedException e) {
-                throw Throwables.propagate(e);
+              // special case; handle renaming here
+              if (variableRenamingMap.containsKey(v)) {
+                newVertex = variableRenamingMap.get(v);
+              } else {
+                VariableIdentifier ref = ((VariableReferenceVertex) v).getId();
+                try {
+                  this.addVertex(ref);
+                  newVertex = this.getVariableVertex(ref);
+                } catch (MultipleDefinitionException | VariableNotDefinedException e) {
+                  throw Throwables.propagate(e);
+                }
               }
             } else {
               newVertex = v.copy(this, exprEdgeMap);
@@ -201,8 +204,12 @@ public class ExpressionGraph {
 
     // each edge in subgraph -> edge in main graph should refer to the same source/target
     subGraph.getEdges().forEach(edge -> {
-        exprEdgeMap.get(edge).setSource(exprVertexMap.get(edge.getSource()));
-        exprEdgeMap.get(edge).setTarget(exprVertexMap.get(edge.getTarget()));
+        if (edge.getSource() != null) {
+          exprEdgeMap.get(edge).setSource(exprVertexMap.get(edge.getSource()));
+        }
+        if (edge.getTarget() != null) {
+          exprEdgeMap.get(edge).setTarget(exprVertexMap.get(edge.getTarget()));
+        }
       });
 
     this.edges.addAll(exprEdgeMap.values());

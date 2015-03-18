@@ -1,9 +1,12 @@
 package org.manifold.compiler.front;
 
-import org.manifold.compiler.UndefinedBehaviourError;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 
 public class ExpressionEdge {
 
+  private static Logger log = LogManager.getLogger(ExpressionEdge.class);
+  
   private String name = "";
   public String getName() {
     return name;
@@ -30,8 +33,7 @@ public class ExpressionEdge {
 
   public ExpressionEdge(ExpressionVertex from, ExpressionVertex to) {
     if (from == null && to == null) {
-      throw new UndefinedBehaviourError(
-          "attempt to create a totally disconnected ExpressionEdge");
+      log.warn("attempt to create a totally disconnected ExpressionEdge");
     }
     source = from;
     target = to;
