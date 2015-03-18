@@ -2,7 +2,9 @@ package org.manifold.compiler.front;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.util.Map;
 
+import com.google.common.base.Preconditions;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.manifold.compiler.NodeTypeValue;
@@ -78,6 +80,12 @@ public class FunctionInvocationVertex extends ExpressionVertex {
     writer.write("\"");
     writer.write("];");
     writer.newLine();
+  }
+
+  @Override
+  public ExpressionVertex copy(ExpressionGraph g, Map<ExpressionEdge, ExpressionEdge> edgeMap) {
+    Preconditions.checkArgument(edgeMap.containsKey(functionEdge) && edgeMap.containsKey(inputEdge));
+    return new FunctionInvocationVertex(g, edgeMap.get(functionEdge), edgeMap.get(inputEdge));
   }
 
   private void elaborateNodeInstantiation(Value function,
