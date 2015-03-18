@@ -1,7 +1,5 @@
 Manifold is a high level language for creating all kinds of systems the way we
-write software.
-
-Currently, it focuses on hardware and microfludics design.
+write software. Currently, it focuses on hardware and microfluidics design.
 
 # Introduction
 
@@ -17,29 +15,29 @@ expressive or approachable as modern programming languages.
 
 More recently, several projects have spring up that provide tooling to use
 existing *programming* languages as hardware languages. These projects include
-**[CλaSH](http:#clash.ewi.utwente.nl/ClaSH/Home.html)**,
-**[MyHDL](http:#www.myhdl.org/doku.php)**, and many others. This approach has
+**[CλaSH](http://www.clash-lang.org/)**,
+**[MyHDL](http://www.myhdl.org/doku.php)**, and many others. This approach has
 not gained widespread use because programming languages are not true to the
 underlying domain of hardware programming (see [The Challenges of Hardware
-Synthesis from C-like Languages](http:#www1.cs.columbia.edu/~sedwards/papers/edw
+Synthesis from C-like Languages](http://www1.cs.columbia.edu/~sedwards/papers/edw
 ards2005challenges.pdf)).
 
 Manifold is a reimagining of a hardware design language that remains true to the
 underlying domain, like VHDL and Verilog, while also leveraging 30 years of
 improved language design, like CλaSH and MyHDL.
 
-However, Manifold doesn't only do digitial circuits -- it can be extended to
+However, Manifold doesn't only do digital circuits -- it can be extended to
 design all kinds of systems, including analog circuits, microfluidics, and
 mechanical systems.
 
-You should use manifold becase
+You should use Manifold because
 
  - it allows you to design circuits, microfluidics, and other systems in an elegant and consistent way
  - it allows you to express solutions to hard problems in simple text files
  - it allows you to encapsulate these solutions within "modules"
  - it allows you to reuse these modules within your own projects
- - it allows you to share modules between projects, people, and organizations
- - it allows you to leverage the ecosystem of poweful software development tools
+ - it allows you to share modules among projects, teams, and organizations
+ - it allows you to leverage the ecosystem of powerful software development tools
 
 # Philosophy
 
@@ -72,30 +70,25 @@ Terminology with a specific technical definition will be **bold** the first time
 
 ## Glossary
 
- - **back-end** refers to the process of converting the intermediate representation into a domain specific output product.
- - **compile-time** refers to the schematic while it is being processed by the front-end and back-end compilers, as opposed run-time.
- - **digital hardware** are computer systems dealing with 
- - **domain** refers to particular field of design, such as microfluidics or digial hardware; differet domains have its different back-end comilers.
+ - **back-end** refers to the process of converting the intermediate representation into a domain specific output product
+ - **compile-time** refers to the schematic while it is being processed by the front-end and back-end compilers, as opposed run-time
+ - **domain** refers to particular field of design, such as microfluidics or digital hardware; different domains have its different back-end compilers
  - **dynamic** refers to values that can be *only* determined at run-time
- - **front-end** refers to the high level language and the process of converting the high level language into a domain specific output product.
- - **microfluidics** are miniturized systems dealing with small volumes of fluids 
- - **run-time** refers to the schematic while it is being used in a domain-specific way after all Manifold compilation steps have completed, as oposed to comile-time.
+ - **front-end** refers to the high level language and the process of converting the high level language into a domain specific output product
+ - **microfluidics** are miniaturized systems dealing with small volumes of fluids 
+ - **run-time** refers to the schematic while it is being used in a domain-specific way after all Manifold compilation steps have completed, as opposed to compile-time
  - **schematic** refers to a description of a system in Manifold, analogous to a software program
  - **static** refers to values that can be determined at compile-time
 
 ## Naming Conventions
 
-In order to make Manifold readable and logically consistent, naming conventions
-are enforced by a linguistic linter that runs, by default, during every
-compilation (*not implemented yet*).
-
-In particular, you are required to
+In order to make Manifold readable and conceptually consistent, the following naming conventions are adhered within Manifold and in the implementation of Manifold.
 
  - avoid all acronyms and abbreviations that are not taught in introductory computer science courses, except where doing so becomes awkward or defies strong convention 
  - write type names in `UpperCamelCase` and all other names in `lowerCamelCase`
- - always use the same word to refer to the same idea and different words to refer to different ideas (avoid confusing polysemy and unnecessary synonymy)
+ - always use the same word to refer to the same idea and different words to refer to different ideas (avoid confusing polysonomy and unnecessary synonymy)
  - Prefer verb phrases for function names and noun phrases for all other names, except where doing so becomes awkward or defies strong convention
- - Prefer one word names to two word names, two word names to three word names, etc.
+ - Prefer one word names to two word names, two word names to three word names, etc
 
 # Front-End Language
 
@@ -104,33 +97,33 @@ domains, including digital hardware and microfluidics, as text. It is optimized 
 
 ## Booleans
 
-The most fundamental type in Manifold is the `manifold.Boolean` type. A
-`manifold.Boolean` represents a single bit of information: true or false,
-represented as `manifold.true` or `manifold.false`. For example, we might turn
+The most fundamental type in Manifold is the `Manifold.Boolean` type. A
+`Manifold.Boolean` represents a single bit of information: true or false,
+represented as `Manifold.true` or `Manifold.false`. For example, we might turn
 on our time machine by setting
 
 ```
-Boolean time_machine_on = true
+Boolean timeMachineOn = true
 ```
 
 The compiler can infer the type of the variable so it is equivalent to write
 
 ```
-time_machine_on = true
+timeMachineOn = true
 ```
 
-## Compiletime vs Runtime
+## Compile-Time vs Run-Time
 
 In Manifold, you write domain logic as naturally as possible and let the
 compiler decide how to represent that logic in hardware.
 
 To this end, almost any expression in Manifold can be evaluated either
 
- - on the sequential processor where the Manifold code is being compiled, at **compiletime**
- - on the physical hardware, at **runtime**
+ - on the sequential processor where the Manifold code is being compiled, at **compile-time**
+ - on the physical hardware, at **run-time**
 
 Certain operations, of course, can *only* be executed at a specific "time" --
-for example, top level io ports may *only* be read dynamically at run-time.
+for example, top level I/O ports may *only* be read dynamically at run-time.
 Likewise, certain operations can *only* be executed statically at compile-time,
 such as referencing an external file in the compilation environment.
 
@@ -148,13 +141,13 @@ Values may be explicitly constrained to being knowable at compile time or run ti
 
 If a variable or property is annotated as `@static` then we guarantee that its value is known at compile-time. Its value is additionally available at run-time.
 
-If a variable or property is annotated as `@dyanmic` then we guarantee that its value is *not* known at compile-time but is known at run-time.
+If a variable or property is annotated as `@dynamic` then we guarantee that its value is *not* known at compile-time but is known at run-time.
 
 ## Tuples
 
 A tuple is an ordered set of values that can be passed around as one logical
 entity. Tuples are the glue that allow us to build domain objects -- like
-numbers, genomes, and time machines -- out of `manifold.Boolean`s and other
+numbers, genomes, and time machines -- out of `Manifold.Boolean`s and other
 primitive types.
 
 For example, suppose you are describing the input to some hardware for a time
@@ -162,13 +155,13 @@ machine that can travel to any year with an optional invisibility shield. You
 could define a tuple which groups and names these variables,
 
 ```
-(year: manifold.Integer, invisibility: manifold.Boolean) input
+(year: Manifold.Integer, invisibility: Manifold.Boolean) input
 ```
 
 create such a tuple,
 
 ```
-input = (year: 5000, invisibility: manifold.true)
+input = (year: 5000, invisibility: Manifold.true)
 ```
 
 and access the properties in that tuple
@@ -183,7 +176,7 @@ input.year         # => true
 The declaration may also include a default value for any property. 
 
 ```
-(year: manifold.Integer = 3000, invisible: manifold.Boolean = manifold.false)
+(year: Manifold.Integer = 3000, invisible: Manifold.Boolean = Manifold.false)
 ```
 
 Any property which does not have a default value is required; any property which
@@ -196,40 +189,40 @@ properties; these properties are named by their position in the tuple. For
 example, an ordered pair (x,y) might be represented as
 
 ```
-(manifold.Integer, manifold.Integer)
+(Manifold.Integer, Manifold.Integer)
 ```
 
-where the first `manifold.Integer` is implicitly named `0` and the second `1`.
+where the first `Manifold.Integer` is implicitly named `0` and the second `1`.
 
 ```
-(manifold.Integer, manifold.Integer) position = (2, 4)
+(Manifold.Integer, Manifold.Integer) position = (2, 4)
 position.0  # => 2
 position.1  # => 4
 ```
 
 ### Repeated Positional Properties (Arrays)
 
-"Arrays in Manifold are a special case of tuples which have many positional
+Arrays in Manifold are a special case of tuples which have many positional
 "properties of a particular type. For example, an integer array of width 3 could
 "be defined as
 
 ```
-(manifold.Integer, manifold.Integer, manifold.Integer) array = (1, 2, 3)
+(Manifold.Integer, Manifold.Integer, Manifold.Integer) array = (1, 2, 3)
 ```
 
 or, with the equivalent shorthand,
 
 ```
-(manifold.Integer...3) array = (1, 2, 3)
+(Manifold.Integer...3) array = (1, 2, 3)
 ```
 
-Sometimes it makes more sense to set the width of a tuple using a compiletime
+Sometimes it makes more sense to set the width of a tuple using a compile-time
 evaluable expression. This often increases the readability and maintainability
 of code.
 
 ```
-manifold.Integer width = 5
-(manifold.Integer...width) array = (1, 2, 3, 4, 5)
+Manifold.Integer width = 5
+(Manifold.Integer...width) array = (1, 2, 3, 4, 5)
 ```
 
 ### Inferred Width Repeated Positional Properties
@@ -263,7 +256,7 @@ You may use destructuring assignment to extract the values from a tuple into
 individual variables.
 
 ```
-(year: manifold.Integer year, invisible: manifold.Boolean invisible) = (year: 5000, invisible: false)
+(year: Manifold.Integer year, invisible: Manifold.Boolean invisible) = (year: 5000, invisible: false)
 ```
 
 This statement creates, in the local scope, the variables `year` and
@@ -290,10 +283,10 @@ default value is provided for each of those properties, the cast will happen
 successfully, using those default values.
 
 ```
-(manifold.Integer...6 = 0) array = (1, 2, 3, 4)
+(Manifold.Integer...6 = 0) array = (1, 2, 3, 4)
 # Array will have the value (1, 2, 3, 4, 0, 0)
 
-(year: manifold.Integer = 5, invisibility: manifold.Boolean = false) settings = (year: 5)
+(year: Manifold.Integer = 5, invisibility: Manifold.Boolean = false) settings = (year: 5)
 # Settings will have the value (year: 5, invisibility: false)
 ```
 
@@ -301,16 +294,16 @@ If a tuple is cast to another tuple type with missing *named* properties, the
 cast will happen successfully
 
 ```
-(year: manifold.Integer) settings = (year: 5, invisibility: false)
+(year: Manifold.Integer) settings = (year: 5, invisibility: false)
 # Settings will have the value (year: 5)
 ```
 
 If a tuple is cast to another tuple type with missing *positional* properties,
-there will be a compiletime error
+there will be a compile-time error
 
 ```
-# Causes compiletime TupleCastIllegalException
-(manifold.Integer...3 = 0) array = (1, 2, 3, 4)
+# Causes compile-time TupleCastIllegalException
+(Manifold.Integer...3 = 0) array = (1, 2, 3, 4)
 ```
 
 If a tuple with one property of type `A`, `(A)`, is cast to type `A`, then the value of the property will be extracted. In this way, parenthesis used to group statements work as expected.
@@ -321,35 +314,36 @@ Boolean winning = (true)
 
 ## Enums
 
-*TODO*
+An enum allows you to restrict a domain to a fixed set of named values. For example, if you want to represent the states of a traffic light, you might define a TrafficLightState enum as follows
 
 ```
-Enum TrafficLightState = {on, off, blinking}
-TrafficLightState state = TrafficLightState.on
+Type TrafficLight = Enum(
+    (green: boolean, yellow:boolean, red: boolean),
+    green: (1, 0, 0),
+    yellow: (0, 1, 0),
+    red: (0, 0, 1),
+    turn: (cycle(hz: 1), 0, 0)
+)
 ```
 
-```
-Enum TrafficLightDelay = {short: 5, long: 20}
-
-TrafficLightDelay dely1 = TrafficLightDelay.short
-TrafficLightDelay dely2 = TrafficLightDelay.medium # compiletime error
-TrafficLightDelay delay3 = 5
-TrafficLightDelay delay4 = 10 # compiletime error
-manifold.Integer delay5 = TrafficLightDelay.short
-```
+This enum can then be used as 
 
 ```
-Enum Bar = {foo: (0, name: 1), baz: (5)} # compiletime error
+TrafficLight south = TrafficLight.green
+TrafficLight east = (0, 0, 1)
+# But 'TrafficLight east = (0, 1, 1)' would be rejected by the compiler
 ```
 
-```
-Enum Bar = {foo: (0, name: 1), baz: (5, name: 10)}
+If no type or values are specified for an enum, integers are used implicitly
 
-Bar bar = Bar.baz
-bar.name
-bar.0
-Bar.baz[0]
-Bar.baz.name
+```
+Type Color = Enum(
+    green,
+    red,
+    blue
+)
+Color color = Color.red
+Color color = 0
 ```
 
 ## Functions
@@ -358,15 +352,15 @@ A function is an entity that, given an input value, uses some logic to produce
 an output value.
 
 Suppose you were to write a function that determined if an input to the time
-machine was unsafe (ie targeting a year after the robot uprising and without the
+machine was unsafe (i.e. targeting a year after the robot uprising and without the
 invisibility shield). This function takes in some input in the form `(year:
-manifold.Integer, invisible: manifold.Boolean invisible)` and produces some
-output in the form of a `manifold.Boolean`.
+Manifold.Integer, invisible: Manifold.Boolean invisible)` and produces some
+output in the form of a `Manifold.Boolean`.
 
 ```
-TimeMachineInput = (year: manifold.Integer, invisible: manifold.Boolean invisible)
+TimeMachineInput = (year: Manifold.Integer, invisible: Manifold.Boolean invisible)
 
-Function isDangerous = TimeMachineInput -> manifold.Boolean dangerous {
+Function isDangerous = TimeMachineInput -> Manifold.Boolean dangerous {
   dangerous = year > 5000 and !invisible
 }
 ```
@@ -376,7 +370,7 @@ variables defined in the function definition are assigned to directly.
 
 This function could be invoked as
 ```
-settings = (year: 10000, invisibility: manifold.false)
+settings = (year: 10000, invisibility: Manifold.false)
 dangerous = isDangerous settings
 ```
 
@@ -397,13 +391,13 @@ count function supplied by the core library can be used to track system uptime
 in seconds as
 
 ```
-manifold.Integer uptime = manifold.count(clock(hz: 1))
+Manifold.Integer uptime = Manifold.count(clock(hz: 1))
 ```
 This function can "remember" values from clock tick to clock tick 
 
-All state in Manifold is derived from the `manifold.recall` primitive function
+All state in Manifold is derived from the `Manifold.recall` primitive function
 ```
-Function manifold.recall = (T next, default: T) -> T current {...}
+Function Manifold.recall = (T next, default: T) -> T current {...}
 ```
 
 This primitive acts like a hardware flipflop in that the output value `current`
@@ -411,10 +405,10 @@ will always take on the value that the input `next` had during the previous
 clock tick. As an example, we could implement a simple counter as
 
 ```
-manifold.Integer ticks = manifold.recall(ticks + 1, default: 0)
+Manifold.Integer ticks = Manifold.recall(ticks + 1, default: 0)
 ```
 
-Note that the output value of `manifold.recall` is used as an input value to
+Note that the output value of `Manifold.recall` is used as an input value to
 itself! This might seem strange in the sequential programming paradigm but it is
 perfectly natural in hardware!
 
@@ -425,45 +419,44 @@ this rule: assigning to a function variable multiple times will overload that
 function to support different input and output types. For example
 
 ```
-travel = manifold.Integer year -> manifold.Boolean success {
+travel = Manifold.Integer year -> Manifold.Boolean success {
   success = travel (year, false)
 }
 
-travel = (year: manifold.Integer year, invisibility: manifold.Boolean invisibility) 
-    -> manifold.Boolean success {
+travel = (year: Manifold.Integer year, invisibility: Manifold.Boolean invisibility) 
+    -> Manifold.Boolean success {
   ...
 }
 ```
 
 This example defines a function called `travel` which accepts either our time
-machine input tuple or just an input year. Overloaded implementations may freely
-call eachother.
+machine input tuple or just an input year. Overloaded implementations may freely call each other.
 
 ## Types
 
- - `manifold.Boolean` is a single bit of data, with the value `manifold.high` or `manifold.false`. 
- - `manifold.Function` is an entity that produces an output value given an input value and potentially some internal state.
- - `manifold.Tuple` is a structured group of values.
- - `manifold.Enum`
- - `manifold.Integer`
- - `manifold.Type` is the "type" of all types in Manifold (including itself)
+ - `Manifold.Boolean` is a single bit of data, with the value `Manifold.high` or `Manifold.false`. 
+ - `Manifold.Function` is an entity that produces an output value given an input value and potentially some internal state.
+ - `Manifold.Tuple` is a structured group of values.
+ - `Manifold.Enum`
+ - `Manifold.Integer`
+ - `Manifold.Type` is the "type" of all types in Manifold (including itself)
 
-Since types are first class objects of type `manifold.Type`, a new type can be
+Since types are first class objects of type `Manifold.Type`, a new type can be
 defined via variable assignment. For example, the definition of Bit might look
 like
 
 ```
-Type Bit = manifold.Boolean
+Type Bit = Manifold.Boolean
 ```
 
 ### Parameterized Types
 
-Some types have compiletime parameters (like generics in C++). Such types are
+Some types have compile-time parameters (like generics in C++). Such types are
 defined via the `=>` syntax. Take, for example, this simple definition of an
 `Array` type
 
 ```
-Type Array = (manifold.Type T, manifold.Integer width) => (T...width, width: width)
+Type Array = (Manifold.Type T, Manifold.Integer width) => (T...width, width: width)
 ```
 
 Using this defined type, a developer could declare an instance of `Array` as
@@ -491,13 +484,13 @@ parallel = import parallel
 You may use destructuring assignment with packages
 
 ```
-(parallel) = import manifold
+(parallel) = import Manifold
 ```
 
 or `*` destructuring assignment to import everything from the package into local scope
 
 ```
-* = import manifold
+* = import Manifold
 ```
 
 ## Core Library
@@ -510,7 +503,7 @@ or `*` destructuring assignment to import everything from the package into local
 
 ### `Void`
 
-A type describing the lack of a value. Eqivilant to `()`.
+A type describing the lack of a value. Equivalent to `()`.
 
 ### `Type`
 
@@ -540,14 +533,14 @@ A type describing the lack of a value. Eqivilant to `()`.
 The intermediate language describes systems in terms of three primitives:
 
  - **Nodes** are the entities of the system such as latches, capacitors, reaction chambers, etc 
- - **Connections** relate nodes to eachother, such as with wires, physical attachments, etc
- - **Ports** define what connections are allowed between nodes, for example a capacitor accepts one analog electircal input and one analog electrical output.
+ - **Connections** relate nodes to each other, such as with wires, physical attachments, etc
+ - **Ports** define what connections are allowed between nodes, for example a capacitor accepts one analog electrical input and one analog electrical output.
 
 Each of these primitives are defined in terms of types (**node types**, **connection types**, and **port types**) and instances (**nodes**, **connections**, and **ports**). 
 
 Type information goes into **definition files** which are shipped with the back end that supports them. For example, the digital hardware back-end provides the digital hardware definition file which defines node types such as latches, clocks, and i/o pins.
 
-Programs written in the Manifold front-end language compile into **schematic files** which can then be compiled into domain specific artifacts by the appropriate back end. For example, a description of a digital hardware circuit in the Manifold front-end would be compiled to a digital hardware schematic file that, when fed into the digitial harware back-end, would produce a VHDL or Verilog file.
+Programs written in the Manifold front-end language compile into **schematic files** which can then be compiled into domain specific artifacts by the appropriate back end. For example, a description of a digital hardware circuit in the Manifold front-end would be compiled to a digital hardware schematic file that, when fed into the digital hardware back-end, would produce a VHDL or Verilog file.
 
 ## Definition Files
 
@@ -592,7 +585,7 @@ Each back-end compiler includes a definition file which declares all of its supp
 
 ## Schematic Files
 
-A schematic written in the manifold front-end language will compile into a  intermediate file of this format. 
+A schematic written in the Manifold front-end language will compile into a  intermediate file of this format. 
 
 ```
 {
