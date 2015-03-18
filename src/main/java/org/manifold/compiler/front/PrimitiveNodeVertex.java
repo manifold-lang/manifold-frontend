@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.common.base.Preconditions;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.manifold.compiler.NilTypeValue;
@@ -253,6 +254,12 @@ public class PrimitiveNodeVertex extends ExpressionVertex {
     writer.write("\"");
     writer.write("];");
     writer.newLine();
+  }
+
+  @Override
+  public ExpressionVertex copy(ExpressionGraph g, Map<ExpressionEdge, ExpressionEdge> edgeMap) {
+    Preconditions.checkArgument(edgeMap.containsKey(signatureEdge));
+    return new PrimitiveNodeVertex(g, edgeMap.get(signatureEdge));
   }
 
   @Override

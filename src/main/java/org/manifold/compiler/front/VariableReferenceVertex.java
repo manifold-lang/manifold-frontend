@@ -3,6 +3,7 @@ package org.manifold.compiler.front;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 import org.manifold.compiler.TypeValue;
 import org.manifold.compiler.UndefinedBehaviourError;
@@ -41,6 +42,11 @@ public class VariableReferenceVertex extends ExpressionVertex {
     writer.write("\"");
     writer.write("];");
     writer.newLine();
+  }
+
+  @Override
+  public ExpressionVertex copy(ExpressionGraph g, Map<ExpressionEdge, ExpressionEdge> edgeMap) {
+    return new VariableReferenceVertex(g, id);
   }
 
   private TypeValue type = null;

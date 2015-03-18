@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.common.base.Preconditions;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.manifold.compiler.TypeValue;
@@ -105,6 +106,16 @@ public class TupleValueVertex extends ExpressionVertex {
     writer.write("\"");
     writer.write("];");
     writer.newLine();
+  }
+
+  @Override
+  public ExpressionVertex copy(ExpressionGraph g, Map<ExpressionEdge, ExpressionEdge> edgeMap) {
+    Map<String, ExpressionEdge> newValueEdges = new HashMap<>();
+    valueEdges.forEach((key, val) -> {
+        Preconditions.checkArgument(edgeMap.containsKey(val));
+        newValueEdges.put(key, edgeMap.get(val));
+      });
+    return new TupleValueVertex(g, newValueEdges);
   }
 
 }
