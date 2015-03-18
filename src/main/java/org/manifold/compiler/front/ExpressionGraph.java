@@ -164,11 +164,11 @@ public class ExpressionGraph {
     // map of subgraph edge -> new edge to be inserted
     Map<ExpressionEdge, ExpressionEdge> exprEdgeMap = new HashMap<>();
     subGraph.getEdges().forEach(e -> {
-      // copy source/target for now since ExpressionEdge doesn't like creating with null on both
-      // they will be replaced with the correct vertices later
-      ExpressionEdge newEdge = new ExpressionEdge(e.getSource(), e.getTarget());
-      exprEdgeMap.put(e, newEdge);
-    });
+        // copy source/target for now since ExpressionEdge doesn't like creating with null on both
+        // they will be replaced with the correct vertices later
+        ExpressionEdge newEdge = new ExpressionEdge(e.getSource(), e.getTarget());
+        exprEdgeMap.put(e, newEdge);
+      });
 
     // map of subgraph vertex -> new vertex
     Map<ExpressionVertex, ExpressionVertex> exprVertexMap = new HashMap<>();
@@ -177,23 +177,23 @@ public class ExpressionGraph {
     subGraph.getVertices().stream()
         .filter(vertex -> (vertex != subGraphInput && vertex != subGraphOutput))
         .forEach(v -> {
-          ExpressionVertex newVertex;
-          if (v instanceof VariableReferenceVertex) {
-            // special case
-            // TODO: probably can handle renaming here?
-            VariableIdentifier ref = ((VariableReferenceVertex) v).getId();
-            try {
-              this.addVertex(ref);
-              newVertex = this.getVariableVertex(ref);
-            } catch (MultipleDefinitionException | VariableNotDefinedException e) {
-              throw Throwables.propagate(e);
+            ExpressionVertex newVertex;
+            if (v instanceof VariableReferenceVertex) {
+              // special case
+              // TODO: probably can handle renaming here?
+              VariableIdentifier ref = ((VariableReferenceVertex) v).getId();
+              try {
+                this.addVertex(ref);
+                newVertex = this.getVariableVertex(ref);
+              } catch (MultipleDefinitionException | VariableNotDefinedException e) {
+                throw Throwables.propagate(e);
+              }
+            } else {
+              newVertex = v.copy(this, exprEdgeMap);
+              this.addVertex(newVertex);
             }
-          } else {
-            newVertex = v.copy(this, exprEdgeMap);
-            this.addVertex(newVertex);
-          }
-          exprVertexMap.put(v, newVertex);
-        });
+            exprVertexMap.put(v, newVertex);
+          });
 
     // input/output vertex
     exprVertexMap.put(subGraphInput, inputVertex);
@@ -201,9 +201,9 @@ public class ExpressionGraph {
 
     // each edge in subgraph -> edge in main graph should refer to the same source/target
     subGraph.getEdges().forEach(edge -> {
-      exprEdgeMap.get(edge).setSource(exprVertexMap.get(edge.getSource()));
-      exprEdgeMap.get(edge).setTarget(exprVertexMap.get(edge.getTarget()));
-    });
+        exprEdgeMap.get(edge).setSource(exprVertexMap.get(edge.getSource()));
+        exprEdgeMap.get(edge).setTarget(exprVertexMap.get(edge.getTarget()));
+      });
 
     this.edges.addAll(exprEdgeMap.values());
   }

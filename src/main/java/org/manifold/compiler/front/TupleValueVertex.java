@@ -112,9 +112,9 @@ public class TupleValueVertex extends ExpressionVertex {
   public ExpressionVertex copy(ExpressionGraph g, Map<ExpressionEdge, ExpressionEdge> edgeMap) {
     Map<String, ExpressionEdge> newValueEdges = new HashMap<>();
     valueEdges.forEach((key, val) -> {
-      Preconditions.checkArgument(edgeMap.containsKey(val));
-      newValueEdges.put(key, edgeMap.get(val));
-    });
+        Preconditions.checkArgument(edgeMap.containsKey(val));
+        newValueEdges.put(key, edgeMap.get(val));
+      });
     return new TupleValueVertex(g, newValueEdges);
   }
 

@@ -76,13 +76,13 @@ public class TupleTypeValueVertex extends ExpressionVertex {
     Map<String, ExpressionEdge> newTypeValueEdges = new HashMap<>();
     Map<String, ExpressionEdge> newDefaultValueEdges = new HashMap<>();
     typeValueEdges.forEach((key, val) -> {
-      Preconditions.checkArgument(edgeMap.containsKey(val));
-      newTypeValueEdges.put(key, edgeMap.get(val));
-    });
+        Preconditions.checkArgument(edgeMap.containsKey(val));
+        newTypeValueEdges.put(key, edgeMap.get(val));
+      });
     defaultValueEdges.forEach((key, val) -> {
-      Preconditions.checkArgument(edgeMap.containsKey(val));
-      newDefaultValueEdges.put(key, edgeMap.get(val));
-    });
+        Preconditions.checkArgument(edgeMap.containsKey(val));
+        newDefaultValueEdges.put(key, edgeMap.get(val));
+      });
     return new TupleTypeValueVertex(g, newTypeValueEdges, newDefaultValueEdges);
   }
 
