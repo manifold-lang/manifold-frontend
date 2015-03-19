@@ -79,6 +79,7 @@ public class ExpressionGraph {
     while (variableVertices.values().remove(v)) { }
     // simple removal from nonVariableVertices
     nonVariableVertices.remove(v);
+    allVertices.remove(v);
   }
 
   private List<ExpressionEdge> edges = new ArrayList<>();
