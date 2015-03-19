@@ -164,9 +164,6 @@ public class ExpressionGraph {
     this.allVertices.remove(mainGraphInput.getTarget());
     this.edges.removeAll(ImmutableList.of(mainGraphInput, mainGraphOutput));
 
-    ExpressionVertex inputVertex = mainGraphInput.getSource();
-    ExpressionVertex outputVertex = mainGraphOutput.getTarget();
-
     // map of subgraph edge -> new edge to be inserted
     Map<ExpressionEdge, ExpressionEdge> exprEdgeMap = new HashMap<>();
     subGraph.getEdges().forEach(e -> {
@@ -204,6 +201,8 @@ public class ExpressionGraph {
           });
 
     // input/output vertex
+    ExpressionVertex inputVertex = mainGraphInput.getSource();
+    ExpressionVertex outputVertex = mainGraphOutput.getTarget();
     exprVertexMap.put(subGraphInput, inputVertex);
     exprVertexMap.put(subGraphOutput, outputVertex);
 

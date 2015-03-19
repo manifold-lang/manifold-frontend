@@ -56,9 +56,9 @@ public class FunctionValueVertex extends ExpressionVertex {
     log.debug("elaborating function definition");
     ExpressionVertex typeVertex = functionTypeEdge.getSource();
     typeVertex.elaborate();
-    TypeValue typeConstructor = new FunctionTypeValue(
-        TypeTypeValue.getInstance(), TypeTypeValue.getInstance());
     if (!(typeVertex.getValue() instanceof FunctionTypeValue)) {
+      TypeValue typeConstructor = new FunctionTypeValue(
+          TypeTypeValue.getInstance(), TypeTypeValue.getInstance());
       throw new TypeMismatchException(
           typeConstructor, typeVertex.getValue());
     }

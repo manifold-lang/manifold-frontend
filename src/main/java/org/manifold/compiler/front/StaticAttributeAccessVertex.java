@@ -73,7 +73,7 @@ public class StaticAttributeAccessVertex extends ExpressionVertex {
 
   @Override
   public boolean isRuntimeKnowable() {
-    return false;
+    return true;
   }
 
   @Override

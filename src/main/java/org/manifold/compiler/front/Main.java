@@ -62,9 +62,6 @@ public class Main implements Frontend {
   public static void elaborateFunctions(ExpressionGraph g) throws Exception {
     // Maintain a set of unelaborated function invocations and
     // iterate until this set is empty.
-
-    int step = 1;
-
     Set<FunctionInvocationVertex> funcalls = new LinkedHashSet<>();
     // Add all function invocations initially present in the graph
     for (ExpressionVertex v : g.getNonVariableVertices()) {
@@ -72,7 +69,7 @@ public class Main implements Frontend {
         funcalls.add((FunctionInvocationVertex) v);
       }
     }
-
+    int step = 1;
     // now proceed
     while (!(funcalls.isEmpty())) {
       // get next vertex
