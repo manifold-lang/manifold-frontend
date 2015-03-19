@@ -1,17 +1,39 @@
 package org.manifold.compiler.front;
 
-import com.google.common.collect.ImmutableList;
+import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.apache.log4j.ConsoleAppender;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.PatternLayout;
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.manifold.compiler.BooleanValue;
 import org.manifold.compiler.StringTypeValue;
 import org.manifold.compiler.StringValue;
 
-import java.io.File;
+import com.google.common.collect.ImmutableList;
 
 public class TestExpressionGraph {
   ExpressionGraph expressionGraph;
 
+  @BeforeClass
+  public static void setupLogging() {
+    PatternLayout layout = new PatternLayout(
+        "%-5p [%t]: %m%n");
+    LogManager.getRootLogger().removeAllAppenders();
+    LogManager.getRootLogger().addAppender(
+        new ConsoleAppender(layout, ConsoleAppender.SYSTEM_ERR));
+  }
+  
+  @AfterClass
+  public static void afterClass() {
+    LogManager.getRootLogger().removeAllAppenders();
+  }
+  
   @Before
   public void setup() {
     expressionGraph = new ExpressionGraph();
@@ -92,7 +114,8 @@ public class TestExpressionGraph {
     mainGraph.writeDOTFile(new File("build/mainGraph.txt"));
     subGraph.writeDOTFile(new File("build/subGraph.txt"));
 
-    mainGraph.addSubExpressionGraph(subGraph, inputEdge, subInputVertex, outputEdge, subOutputVertex);
+    Map<VariableReferenceVertex, VariableReferenceVertex> dontRename = new HashMap<>();
+    mainGraph.addSubExpressionGraph(subGraph, inputEdge, subInputVertex, outputEdge, subOutputVertex, dontRename);
     mainGraph.writeDOTFile(new File("build/merged.txt"));
   }
 }
