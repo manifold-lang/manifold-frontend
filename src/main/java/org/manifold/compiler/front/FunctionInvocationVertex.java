@@ -176,8 +176,11 @@ public class FunctionInvocationVertex extends ExpressionVertex {
     getExpressionGraph().removeVertex(this);
   }
 
+  private boolean elaborated = false;
+  
   @Override
   public void elaborate() throws Exception {
+    if (elaborated) return;
     // Elaborate argument
     ExpressionVertex vInput = inputEdge.getSource();
     vInput.elaborate();
@@ -196,6 +199,7 @@ public class FunctionInvocationVertex extends ExpressionVertex {
       throw new UndefinedBehaviourError("don't know how to invoke '"
           + function.toString() + "'");
     }
+    elaborated = true;
   }
 
 }
