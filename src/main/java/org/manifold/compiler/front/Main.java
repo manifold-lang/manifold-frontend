@@ -239,9 +239,9 @@ class ExpressionContextVisitor extends ManifoldBaseVisitor<ExpressionVertex> {
   public ExpressionVertex visitAssignmentExpression(
       ManifoldParser.AssignmentExpressionContext context) {
     // get the vertex corresponding to the lvalue
-    ExpressionVertex vLeft = context.expression(0).accept(this);
+    ExpressionVertex vLeft = context.lvalue().accept(this);
     // then get the rvalue...
-    ExpressionVertex vRight = context.expression(1).accept(this);
+    ExpressionVertex vRight = context.rvalue().accept(this);
     ExpressionEdge e = new ExpressionEdge(vRight, vLeft);
     exprGraph.addEdge(e);
     return vRight;
@@ -251,10 +251,10 @@ class ExpressionContextVisitor extends ManifoldBaseVisitor<ExpressionVertex> {
   public ExpressionVertex visitFunctionInvocationExpression(
       ManifoldParser.FunctionInvocationExpressionContext context) {
     // get the vertex corresponding to the function being called
-    ExpressionVertex vFunction = context.expression(0).accept(this);
+    ExpressionVertex vFunction = context.reference().accept(this);
     ExpressionEdge eFunction = new ExpressionEdge(vFunction, null);
     // then get the input vertex
-    ExpressionVertex vInput = context.expression(1).accept(this);
+    ExpressionVertex vInput = context.rvalue().accept(this);
     ExpressionEdge eInput = new ExpressionEdge(vInput, null);
 
     FunctionInvocationVertex vInvocation = new FunctionInvocationVertex(
@@ -413,13 +413,7 @@ class ExpressionContextVisitor extends ManifoldBaseVisitor<ExpressionVertex> {
   public ExpressionVertex visitNamespacedIdentifier(
       NamespacedIdentifierContext context) {
     // keeping in mind that we may have constructed this variable already...
-    List<TerminalNode> identifierNodes = context.IDENTIFIER();
-    List<String> identifierStrings = new LinkedList<>();
-    for (TerminalNode node : identifierNodes) {
-      identifierStrings.add(node.getText());
-    }
-
-    VariableIdentifier id = new VariableIdentifier(identifierStrings);
+    VariableIdentifier id = getVariableIdentifier(context);
     if (ReservedIdentifiers.getInstance()
         .isReservedIdentifier(id)) {
       // construct a constant value vertex with the identifier's value
@@ -473,6 +467,16 @@ class ExpressionContextVisitor extends ManifoldBaseVisitor<ExpressionVertex> {
       throw new UndefinedBehaviourError(
           "unknown terminal node '" + node.getSymbol().getText() + "'");
     }
+  }
+
+  private VariableIdentifier getVariableIdentifier(NamespacedIdentifierContext context) {
+    List<TerminalNode> identifierNodes = context.IDENTIFIER();
+    List<String> identifierStrings = new LinkedList<>();
+    for (TerminalNode node : identifierNodes) {
+      identifierStrings.add(node.getText());
+    }
+
+    return new VariableIdentifier(identifierStrings);
   }
 
 }

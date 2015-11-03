@@ -26,3 +26,6 @@ nbproject/private/
 *.out
 /bin
 
+# manifold output files
+tmp*.dot
+tmp*.schematic

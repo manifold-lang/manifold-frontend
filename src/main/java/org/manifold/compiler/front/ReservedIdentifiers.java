@@ -3,10 +3,7 @@ package org.manifold.compiler.front;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.manifold.compiler.BooleanTypeValue;
-import org.manifold.compiler.IntegerTypeValue;
-import org.manifold.compiler.NilTypeValue;
-import org.manifold.compiler.Value;
+import org.manifold.compiler.*;
 
 public class ReservedIdentifiers {
   private static final ReservedIdentifiers instance = new ReservedIdentifiers();
@@ -26,6 +23,8 @@ public class ReservedIdentifiers {
         "Bool"), BooleanTypeValue.getInstance());
     addIdentifier(new VariableIdentifier(defaultNamespace, 
         "Int"), IntegerTypeValue.getInstance());
+    addIdentifier(new VariableIdentifier(defaultNamespace,
+        "Type"), TypeTypeValue.getInstance());
   }
   
   public void addIdentifier(VariableIdentifier id, Value v) {

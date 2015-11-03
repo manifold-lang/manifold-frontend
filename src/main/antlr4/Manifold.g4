@@ -12,8 +12,9 @@ WHITESPACE: [ \t\r\n]+ -> skip;
 
 INTEGER_VALUE: [0-9]+;
 BOOLEAN_VALUE: 'false' | 'true';
+TYPE_KEYWORD: 'Type';
 
-tupleTypeValueEntry: (IDENTIFIER ':')? typevalue (':' expression)?;
+tupleTypeValueEntry: (IDENTIFIER ':')? typevalue ('=' expression)?;
 tupleTypeValue: '(' tupleTypeValueEntry (',' tupleTypeValueEntry)* ')';
 
 tupleValueEntry: (IDENTIFIER ':')? expression;
@@ -39,24 +40,51 @@ namespacedIdentifier: (IDENTIFIER '::')* IDENTIFIER;
 //                                                    //
 ////////////////////////////////////////////////////////
 
-typevalue:
+type:
     namespacedIdentifier # Typename
   | tupleTypeValue # TupleType
+  ;
+
+typevalue:
+    type # SimpleType
   | functionTypeValue # FunctionType
   ;
 
-expression:
+// TODO: implement type declarations and undefined variable declarations
+//declaration:
+//    type namespacedIdentifier # UndefinedDeclaration
+//  | TYPE_KEYWORD namespacedIdentifier '=' type # TypeDeclaration
+//  ;
+
+reference:
+    tupleValue # Tuple
+  | reference '.' (IDENTIFIER | INTEGER_VALUE) # StaticAttributeAccessExpression
+  | namespacedIdentifier # VariableReferenceExpression
+  ;
+
+// TODO implement arglist for multiple parameter passing to functions
+// arglist:
+//     rvalue arglist | ;
+
+rvalue:
     BOOLEAN_VALUE # Boolean
   | INTEGER_VALUE # Integer
-  | tupleValue # Tuple
   | functionValue # Function
-  | expression expression # FunctionInvocationExpression
-  | expression '.' (IDENTIFIER | INTEGER_VALUE) # StaticAttributeAccessExpression
-  | namespacedIdentifier # VariableReferenceExpression
-  | expression '=' expression # AssignmentExpression
+  | reference rvalue # FunctionInvocationExpression // TODO: function invocation needs to be 'reference arglist'
+  | reference # RValueExpression
+  | lvalue '=' rvalue # AssignmentExpression
   | 'primitive' 'port' typevalue (':' tupleTypeValue)? # PrimitivePortDefinitionExpression
   | 'primitive' 'node' functionTypeValue # PrimitiveNodeDefinitionExpression
   ;
+
+lvalue:
+  // TODO: implement declarations as lvalues
+  // declaration # AssignmentDeclaration
+  reference # LValueExpression
+  ;
+
+// TODO: declarations as expressions
+expression: /* declaration | */ rvalue;
 
 EXPRESSION_TERMINATOR: ';';
 

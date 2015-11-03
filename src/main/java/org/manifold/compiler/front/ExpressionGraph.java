@@ -49,10 +49,15 @@ public class ExpressionGraph {
 
   public void addVertex(VariableIdentifier vID)
       throws MultipleDefinitionException {
+    addVertex(new VariableReferenceVertex(this, vID));
+  }
+
+  public void addVertex(VariableReferenceVertex v)
+    throws MultipleDefinitionException {
+    VariableIdentifier vID = v.getId();
     if (variableVertices.containsKey(vID)) {
       throw new MultipleDefinitionException(vID);
     } else {
-      VariableReferenceVertex v = new VariableReferenceVertex(this, vID);
       variableVertices.put(vID, v);
       allVertices.add(v);
     }
