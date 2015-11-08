@@ -3,13 +3,7 @@ package org.manifold.compiler.front;
 import java.io.File;
 import java.io.FileInputStream;
 import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -242,6 +236,7 @@ class ExpressionContextVisitor extends ManifoldBaseVisitor<ExpressionVertex> {
     ExpressionVertex vLeft = context.lvalue().accept(this);
     // then get the rvalue...
     ExpressionVertex vRight = context.rvalue().accept(this);
+
     ExpressionEdge e = new ExpressionEdge(vRight, vLeft);
     exprGraph.addEdge(e);
     return vRight;
@@ -369,7 +364,7 @@ class ExpressionContextVisitor extends ManifoldBaseVisitor<ExpressionVertex> {
   @Override
   public ExpressionVertex visitTupleValue(TupleValueContext context) {
     List<TupleValueEntryContext> entries = context.tupleValueEntry();
-    Map<String, ExpressionEdge> valueEdges = new HashMap<>();
+    LinkedHashMap<String, ExpressionEdge> valueEdges = new LinkedHashMap<>();
     Integer nextAnonymousID = 0;
     for (TupleValueEntryContext entryCtx : entries) {
       // each child has a value, and may have an identifier (named field)

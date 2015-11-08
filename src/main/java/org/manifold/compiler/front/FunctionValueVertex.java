@@ -3,6 +3,7 @@ package org.manifold.compiler.front;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.apache.log4j.LogManager;
@@ -66,8 +67,8 @@ public class FunctionValueVertex extends ExpressionVertex {
     // inject input/output TupleValues
     TupleTypeValue inputType = (TupleTypeValue) type.getInputType();
     TupleTypeValue outputType = (TupleTypeValue) type.getOutputType();
-    Map<String, ExpressionEdge> inputEdges = new HashMap<>();
-    Map<String, ExpressionEdge> outputEdges = new HashMap<>();
+    LinkedHashMap<String, ExpressionEdge> inputEdges = new LinkedHashMap<>();
+    LinkedHashMap<String, ExpressionEdge> outputEdges = new LinkedHashMap<>();
     for (String argName : inputType.getSubtypes().keySet()) {
       ExpressionEdge e = new ExpressionEdge(null, null); // I know what I'm doing
       functionBody.addEdge(e);
