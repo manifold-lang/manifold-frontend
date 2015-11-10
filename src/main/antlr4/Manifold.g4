@@ -4,6 +4,8 @@ grammar Manifold;
 
 WHITESPACE: [ \t\r\n]+ -> skip;
 
+COMMENT: '/*' .*? '*/' -> skip;
+
 ////////////////////////////////////////////////////////
 //                                                    //
 //                        Values                      //
