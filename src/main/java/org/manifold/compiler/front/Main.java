@@ -56,12 +56,6 @@ public class Main implements Frontend {
 
   }
 
-  class FrontendBuildException extends Error {
-    FrontendBuildException(String msg) {
-      super(msg);
-    }
-  }
-
   public static void elaborateFunctions(ExpressionGraph g) throws Exception {
     // Maintain a set of unelaborated function invocations and
     // iterate until this set is empty.
