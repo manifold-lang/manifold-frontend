@@ -29,3 +29,11 @@ nbproject/private/
 # manifold output files
 tmp*.dot
 tmp*.schematic
+
+# Build files
+/tmp*
+/*.dot
+
+# IDEA projects
+/.idea
+/*.iml
