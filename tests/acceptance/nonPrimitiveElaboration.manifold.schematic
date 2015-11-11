@@ -10,6 +10,13 @@
     }
   },
   "nodeTypes": {
+    "xNot": {
+      "attributes": {},
+      "ports": {
+        "xbar": "xOut",
+        "x": "xIn"
+      }
+    },
     "xInputPin": {
       "attributes": {},
       "ports": {
@@ -19,13 +26,6 @@
     "xOutputPin": {
       "attributes": {},
       "ports": {
-        "x": "xIn"
-      }
-    },
-    "xNot": {
-      "attributes": {},
-      "ports": {
-        "xbar": "xOut",
         "x": "xIn"
       }
     }

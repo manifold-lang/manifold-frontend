@@ -1,6 +1,7 @@
 package org.manifold.compiler.front;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -61,7 +62,12 @@ public class VariableReferenceVertex extends ExpressionVertex {
       // not assigned
       throw new UndefinedBehaviourError("variable '" + id + "' not assigned");
     } else { 
-      // multiply assigned
+      // multiply assigned/
+      try {
+        g.writeDOTFile(new File("g.yolo.dot"));
+      } catch (java.io.IOException err) {
+
+      }
       throw new UndefinedBehaviourError("variable '" + id + 
           "' multiply assigned");
     }

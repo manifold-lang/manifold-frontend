@@ -1,0 +1,54 @@
+{
+  "name": "tuples.manifold",
+  "userDefinedTypes": {},
+  "portTypes": {
+    "xOut": {
+      "attributes": {}
+    },
+    "xIn1": {
+      "attributes": {}
+    },
+    "xIn2": {
+      "attributes": {}
+    }
+  },
+  "nodeTypes": {
+    "xOutputPin": {
+      "attributes": {},
+      "ports": {
+        "x": "xOut"
+      }
+    },
+    "xIn2Pin": {
+      "attributes": {},
+      "ports": {
+        "x": "xIn2"
+      }
+    },
+    "xIn1Pin": {
+      "attributes": {},
+      "ports": {
+        "x": "xIn1"
+      }
+    }
+  },
+  "constraintTypes": {},
+  "nodes": {
+    "n1": {
+      "type": "xIn1Pin",
+      "attributes": {},
+      "portAttrs": {
+        "x": {}
+      }
+    },
+    "n2": {
+      "type": "xIn2Pin",
+      "attributes": {},
+      "portAttrs": {
+        "x": {}
+      }
+    }
+  },
+  "connections": {},
+  "constraints": {}
+}

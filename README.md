@@ -95,15 +95,15 @@ In order to make Manifold readable and conceptually consistent, the following na
 The Manifold front-end language expresses systems in many problem
 domains, including digital hardware and microfluidics, as text. It is optimized for conceptual elegance, expressiveness, and human readability.  
 
-## Booleans
+## Bools
 
-The most fundamental type in Manifold is the `Boolean` type. A
-`Boolean` represents a single bit of information: true or false,
+The most fundamental type in Manifold is the `Bool` type. A
+`Bool` represents a single bit of information: true or false,
 represented as `true` or `false`. For example, we might turn
 on our time machine by setting
 
 ```
-Boolean timeMachineOn = true
+Bool timeMachineOn = true
 ```
 
 The compiler can infer the type of the variable so it is equivalent to write
@@ -117,8 +117,8 @@ timeMachineOn = true
 Manifold supports a system capable of annotating variables with additional metadata using **annotations**. These annotations are similar to Java's annotations in syntax, being prefixed by a *@* and optionally taking parameters
 
 ```
-@bar Integer width = 5
-@foo(10, true) Integer height = 200
+@bar Int width = 5
+@foo(10, true) Int height = 200
 ```
 
 At the moment, annotations are defined by the compiler but user-defined annotations are planned for future versions of the spec.
@@ -147,7 +147,7 @@ desired.
 Values may be explicitly constrained to being knowable at compile time or run time using annotations. For example, we can require that `width` is known statically (at compile time) by defining it as
 
 ```
-@static Integer width 
+@static Int width 
 ```
 
 If a variable or property is annotated as `@static` then we guarantee that its value is known at compile-time. Its value is additionally available at run-time.
@@ -158,7 +158,7 @@ If a variable or property is annotated as `@dynamic` then we guarantee that its 
 
 A tuple is an ordered set of values that can be passed around as one logical
 entity. Tuples are the glue that allow us to build domain objects -- like
-numbers, genomes, and time machines -- out of `Boolean`s and other
+numbers, genomes, and time machines -- out of `Bool`s and other
 primitive types.
 
 For example, suppose you are describing the input to some hardware for a time
@@ -166,7 +166,7 @@ machine that can travel to any year with an optional invisibility shield. You
 could define a tuple which groups and names these variables,
 
 ```
-(year: Integer, invisibility: Boolean) input
+(year: Int, invisibility: Bool) input
 ```
 
 create such a tuple,
@@ -187,7 +187,7 @@ input.year         # => true
 The declaration may also include a default value for any property. 
 
 ```
-(year: Integer = 3000, invisible: Boolean = false)
+(year: Int = 3000, invisible: Bool = false)
 ```
 
 Any property which does not have a default value is required; any property which
@@ -200,13 +200,13 @@ properties; these properties are named by their position in the tuple. For
 example, an ordered pair (x,y) might be represented as
 
 ```
-(Integer, Integer)
+(Int, Int)
 ```
 
-where the first `Integer` is implicitly named `0` and the second `1`.
+where the first `Int` is implicitly named `0` and the second `1`.
 
 ```
-(Integer, Integer) position = (2, 4)
+(Int, Int) position = (2, 4)
 position.0  # => 2
 position.1  # => 4
 ```
@@ -217,13 +217,13 @@ Arrays in Manifold are a special case of tuples which have many positional
 properties of a particular type. For example, an integer array of width 3 could be defined as
 
 ```
-(Integer, Integer, Integer) array = (1, 2, 3)
+(Int, Int, Int) array = (1, 2, 3)
 ```
 
 or, with the equivalent shorthand,
 
 ```
-(Integer...3) array = (1, 2, 3)
+(Int...3) array = (1, 2, 3)
 ```
 
 Sometimes it makes more sense to set the width of a tuple using a compile-time
@@ -231,17 +231,17 @@ evaluable expression. This often increases the readability and maintainability
 of code.
 
 ```
-Integer width = 5
-(Integer...width) array = (1, 2, 3, 4, 5)
+Int width = 5
+(Int...width) array = (1, 2, 3, 4, 5)
 ```
 
 ### Inferred Width Repeated Positional Properties
 
 It is also possible to infer the width of a tuple statically from
-the value being passed to it. Instead of a width expression, provide the definition of an `Integer` variable. This will create an additional property on the tuple containing the width of the array.
+the value being passed to it. Instead of a width expression, provide the definition of an `Int` variable. This will create an additional property on the tuple containing the width of the array.
 
 ```
-(Integer...Integer width) array = (0, 1, 2, 3, 4, 5)
+(Int...Int width) array = (0, 1, 2, 3, 4, 5)
 array.1      # => 1
 array.width  # => 5
 ```
@@ -266,7 +266,7 @@ You may use destructuring assignment to extract the values from a tuple into
 individual variables.
 
 ```
-(year: Integer year, invisible: Boolean invisible) = (year: 5000, invisible: false)
+(year: Int year, invisible: Bool invisible) = (year: 5000, invisible: false)
 ```
 
 This statement creates, in the local scope, the variables `year` and
@@ -293,10 +293,10 @@ default value is provided for each of those properties, the cast will happen
 successfully, using those default values.
 
 ```
-(Integer...6 = 0) array = (1, 2, 3, 4)
+(Int...6 = 0) array = (1, 2, 3, 4)
 # Array will have the value (1, 2, 3, 4, 0, 0)
 
-(year: Integer = 5, invisibility: Boolean = false) settings = (year: 5)
+(year: Int = 5, invisibility: Bool = false) settings = (year: 5)
 # Settings will have the value (year: 5, invisibility: false)
 ```
 
@@ -304,7 +304,7 @@ If a tuple is cast to another tuple type with missing *named* properties, the
 cast will happen successfully
 
 ```
-(year: Integer) settings = (year: 5, invisibility: false)
+(year: Int) settings = (year: 5, invisibility: false)
 # Settings will have the value (year: 5)
 ```
 
@@ -313,13 +313,13 @@ there will be a compile-time error
 
 ```
 # Causes compile-time TupleCastIllegalException
-(Integer...3 = 0) array = (1, 2, 3, 4)
+(Int...3 = 0) array = (1, 2, 3, 4)
 ```
 
 If a tuple with one property of type `A`, `(A)`, is cast to type `A`, then the value of the property will be extracted. In this way, parenthesis used to group statements work as expected.
 
 ```
-Boolean winning = (true)
+Bool winning = (true)
 ```
 
 ## Enums
@@ -328,7 +328,7 @@ An enum allows you to restrict a domain to a fixed set of named values. For exam
 
 ```
 Type TrafficLight = Enum(
-    (green: Boolean, yellow: Boolean, red: Boolean),
+    (green: Bool, yellow: Bool, red: Bool),
     green: (1, 0, 0),
     yellow: (0, 1, 0),
     red: (0, 0, 1)
@@ -363,13 +363,13 @@ an output value.
 Suppose you were to write a function that determined if an input to the time
 machine was unsafe (i.e. targeting a year after the robot uprising and without the
 invisibility shield). This function takes in some input in the form `(year:
-Integer, invisible: Boolean invisible)` and produces some
-output in the form of a `Boolean`.
+Int, invisible: Bool invisible)` and produces some
+output in the form of a `Bool`.
 
 ```
-TimeMachineInput = (year: Integer, invisible: Boolean invisible)
+TimeMachineInput = (year: Int, invisible: Bool invisible)
 
-Function isDangerous = TimeMachineInput -> Boolean dangerous {
+isDangerous = TimeMachineInput -> Bool dangerous {
   dangerous = year > 5000 and !invisible
 }
 ```
@@ -400,13 +400,13 @@ count function supplied by the core library can be used to track system uptime
 in seconds as
 
 ```
-Integer uptime = count(clock(hz: 1))
+Int uptime = count(clock(hz: 1))
 ```
 This function can "remember" values from clock tick to clock tick 
 
 All state in Manifold is derived from the `recall` primitive function
 ```
-Function recall = (T next, default: T) -> T current {...}
+recall = (T next, default: T) -> T current {...}
 ```
 
 This primitive acts like a hardware flipflop in that the output value `current`
@@ -414,7 +414,7 @@ will always take on the value that the input `next` had during the previous
 clock tick. As an example, we could implement a simple counter as
 
 ```
-Integer ticks = recall(ticks + 1, default: 0)
+Int ticks = recall(ticks + 1, default: 0)
 ```
 
 Note that the output value of `recall` is used as an input value to
@@ -428,12 +428,12 @@ this rule: assigning to a function variable multiple times will overload that
 function to support different input and output types. For example
 
 ```
-travel = Integer year -> Boolean success {
+travel = Int year -> Bool success {
   success = travel (year, false)
 }
 
-travel = (year: Integer year, invisibility: Boolean invisibility) 
-    -> Boolean success {
+travel = (year: Int year, invisibility: Bool invisibility) 
+    -> Bool success {
   ...
 }
 ```
@@ -443,11 +443,11 @@ machine input tuple or just an input year. Overloaded implementations may freely
 
 ## Types
 
- - `Boolean` is a single bit of data, with the value `high` or `false`. 
+ - `Bool` is a single bit of data, with the value `high` or `false`. 
  - `Function` is an entity that produces an output value given an input value and potentially some internal state.
  - `Tuple` is a structured group of values.
  - `Enum`
- - `Integer`
+ - `Int`
  - `Type` is the "type" of all types in Manifold (including itself)
 
 Since types are first class objects of type `Type`, a new type can be
@@ -455,7 +455,7 @@ defined via variable assignment. For example, the definition of Bit might look
 like
 
 ```
-Type Bit = Boolean
+Type Bit = Bool
 ```
 
 ### Parameterized Types
@@ -465,7 +465,7 @@ defined via the `=>` syntax. Take, for example, this simple definition of an
 `Array` type
 
 ```
-Type Array = (Type T, Integer width) => (T...width, width: width)
+Type Array = (Type T, Int width) => (T...width, width: width)
 ```
 
 Using this defined type, a developer could declare an instance of `Array` as
@@ -504,9 +504,9 @@ or `*` destructuring assignment to import everything from the package into local
 
 ## Core Library
 
-### `Boolean`
+### `Bool`
 
-### `Integer`
+### `Int`
 
 ### `Tuple`
 
@@ -516,19 +516,19 @@ A type describing the lack of a value. Equivalent to `()`.
 
 ### `Type`
 
-### `parallel <T, U> ((T -> U)...@static Integer width) -> (T...width)`
+### `parallel <T, U> ((T -> U)...@static Int width) -> (T...width)`
 
-### `series <T> ((T -> T)...@static Integer width) -> T`
+### `series <T> ((T -> T)...@static Int width) -> T`
 
 ## Digital Hardware Library
 
 ### `recall<T> (T initial, T next) -> T`
 
-### `count (Integer hz, Integer mod) -> Integer`
+### `count (Int hz, Int mod) -> Int`
 
-### `cycle<T> (Integer hz, T...) -> T`
+### `cycle<T> (Int hz, T...) -> T`
 
-### `if ((Boolean, Void -> Void)...)`
+### `if ((Bool, Void -> Void)...)`
 
 ## Microfluidics Library
 

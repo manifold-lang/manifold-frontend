@@ -1,5 +1,8 @@
 package org.manifold.compiler.front;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.manifold.compiler.SchematicValueVisitor;
@@ -10,7 +13,9 @@ import com.google.common.collect.ImmutableMap;
 
 public class TupleValue extends Value {
 
+  // TODO: Make entries optional for array-like tuples.
   private final Map<String, Value> entries;
+  private final List<Value> ordered;
   // TODO the order of labels is important
   public Map<String, Value> getEntries() {
     return ImmutableMap.copyOf(entries);
@@ -24,11 +29,21 @@ public class TupleValue extends Value {
     return entries.get(key);
   }
 
-  public TupleValue(TupleTypeValue type, Map<String, Value> values) {
+  public Value atIndex(int idx) {
+    return ordered.get(idx);
+  }
+
+  public TupleValue(TupleTypeValue type, Map<String, Value> values, List<Value> order) {
     super(type);
     // TODO check values against expected types
     this.entries = values;
+    this.ordered = order;
   }
+
+  public TupleValue(TupleTypeValue type, LinkedHashMap<String, Value> values) {
+    this(type, values, new ArrayList<Value>(values.values()));
+  }
+
 
   @Override
   public String toString() {

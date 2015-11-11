@@ -2,13 +2,7 @@ package org.manifold.compiler.front;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import com.google.common.base.Preconditions;
 import org.apache.log4j.LogManager;
@@ -96,7 +90,7 @@ public class NodeValueVertex extends ExpressionVertex {
     Set<String> inputPortNames = new HashSet<>();
     Set<String> outputPortNames = new HashSet<>();
     inputPortNames.addAll(nodeType.getPorts().keySet());
-    Map<String, Value> futurePortMap = new HashMap<>();
+    LinkedHashMap<String, Value> futurePortMap = new LinkedHashMap<>();
     for (String outputPortName : outputType.getSubtypes().keySet()) {
       PortTypeValue outputPortType = nodeType.getPorts().get(outputPortName);
       FuturePortValue futurePort = new FuturePortValue(

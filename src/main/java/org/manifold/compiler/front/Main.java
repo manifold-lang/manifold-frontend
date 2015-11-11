@@ -36,6 +36,7 @@ import org.manifold.parser.ManifoldParser.TupleTypeValueContext;
 import org.manifold.parser.ManifoldParser.TupleTypeValueEntryContext;
 import org.manifold.parser.ManifoldParser.TupleValueContext;
 import org.manifold.parser.ManifoldParser.TupleValueEntryContext;
+import org.manifold.parser.ManifoldParser.RValueExpressionContext;
 
 import com.google.common.base.Throwables;
 
@@ -204,7 +205,7 @@ public class Main implements Frontend {
       @Override
       public void syntaxError(@NotNull Recognizer<?, ?> recognizer, @Nullable Object offendingSymbol, int line,
                               int charPositionInLine, @NotNull String msg, @Nullable RecognitionException e) {
-        errors.append("Error at line ").append(line - 1).append(", char ")
+        errors.append("Error at line ").append(line).append(", char ")
                 .append(charPositionInLine).append(": ").append(msg).append("\n");
       }
 
@@ -516,6 +517,20 @@ class ExpressionContextVisitor extends ManifoldBaseVisitor<ExpressionVertex> {
     }
 
     return new VariableIdentifier(identifierStrings);
+  }
+
+  @Override
+  public StaticAttributeAccessVertex visitStaticAttributeAccessExpression(
+          @NotNull ManifoldParser.StaticAttributeAccessExpressionContext ctx) {
+    ExpressionVertex vRef = ctx.reference().accept(this);
+    ExpressionEdge e = new ExpressionEdge(vRef, null);
+    exprGraph.addEdge(e);
+
+    if (ctx.INTEGER_VALUE() != null) {
+      return new StaticNumberAttributeAccessVertex(exprGraph, e, Integer.parseInt(ctx.INTEGER_VALUE().toString()));
+    }
+
+    return new StaticStringAttributeAccessVertex(exprGraph, e, ctx.IDENTIFIER().toString());
   }
 
 }

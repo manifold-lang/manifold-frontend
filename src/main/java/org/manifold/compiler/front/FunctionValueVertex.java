@@ -99,7 +99,7 @@ public class FunctionValueVertex extends ExpressionVertex {
       if (inputType.getSubtypes().containsKey(varName)) {
         ExpressionEdge eInput = new ExpressionEdge(vInput, null);
         functionBody.addEdge(eInput);
-        StaticAttributeAccessVertex vAccess = new StaticAttributeAccessVertex(
+        StaticAttributeAccessVertex vAccess = new StaticStringAttributeAccessVertex(
             functionBody, eInput, varName);
         functionBody.addVertex(vAccess);
         ExpressionEdge eAssign = new ExpressionEdge(vAccess, entry.getValue());
