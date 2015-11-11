@@ -79,6 +79,7 @@ test {
   }
   dependencies {
     runtime fileTree(dir: "tests/acceptance", include: "*.manifold")
+    runtime fileTree(dir: "tests/buildErrors", include: "*.manifold")
   }
 }
 

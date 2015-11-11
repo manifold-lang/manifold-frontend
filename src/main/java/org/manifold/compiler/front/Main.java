@@ -5,8 +5,11 @@ import java.io.FileInputStream;
 import java.nio.file.Paths;
 import java.util.*;
 
-import org.antlr.v4.runtime.ANTLRInputStream;
-import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.*;
+import org.antlr.v4.runtime.atn.ATNConfigSet;
+import org.antlr.v4.runtime.dfa.DFA;
+import org.antlr.v4.runtime.misc.NotNull;
+import org.antlr.v4.runtime.misc.Nullable;
 import org.antlr.v4.runtime.misc.ParseCancellationException;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.apache.commons.cli.CommandLine;
@@ -51,6 +54,12 @@ public class Main implements Frontend {
   public void registerArguments(Options options) {
     // TODO Auto-generated method stub
 
+  }
+
+  class FrontendBuildException extends Error {
+    FrontendBuildException(String msg) {
+      super(msg);
+    }
   }
 
   public static void elaborateFunctions(ExpressionGraph g) throws Exception {
@@ -189,8 +198,43 @@ public class Main implements Frontend {
     // Pass the tokens to the parser
     ManifoldParser parser = new ManifoldParser(tokens);
 
+    StringBuilder errors = new StringBuilder();
+    parser.addErrorListener(new ANTLRErrorListener() {
+
+      @Override
+      public void syntaxError(@NotNull Recognizer<?, ?> recognizer, @Nullable Object offendingSymbol, int line,
+                              int charPositionInLine, @NotNull String msg, @Nullable RecognitionException e) {
+        errors.append("Error at line ").append(line - 1).append(", char ")
+                .append(charPositionInLine).append(": ").append(msg).append("\n");
+      }
+
+      @Override
+      public void reportAmbiguity(@NotNull Parser recognizer, @NotNull DFA dfa, int startIndex, int stopIndex,
+                                  boolean exact, @Nullable BitSet ambigAlts, @NotNull ATNConfigSet configs) {
+        // Pass
+      }
+
+      @Override
+      public void reportAttemptingFullContext(@NotNull Parser recognizer, @NotNull DFA dfa, int startIndex,
+                                              int stopIndex, @Nullable BitSet conflictingAlts,
+                                              @NotNull ATNConfigSet configs) {
+        // Pass
+      }
+
+      @Override
+      public void reportContextSensitivity(@NotNull Parser recognizer, @NotNull DFA dfa, int startIndex, int stopIndex,
+                                           int prediction, @NotNull ATNConfigSet configs) {
+        // Pass
+      }
+    });
+
     // Specify our entry point
     ManifoldParser.SchematicContext context = parser.schematic();
+
+    if (errors.length() != 0) {
+      throw new FrontendBuildException(errors.toString());
+    }
+
     ExpressionContextVisitor graphBuilder = new ExpressionContextVisitor();
     List<ExpressionContext> expressionContexts = context.expression();
     for (ExpressionContext expressionContext : expressionContexts) {
