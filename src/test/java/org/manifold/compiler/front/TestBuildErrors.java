@@ -44,7 +44,7 @@ public class TestBuildErrors extends AbstractTestFiles {
     boolean isCaught = false;
     try {
       getSchematicJSON(testFile.getAbsolutePath());
-    } catch (Main.FrontendBuildException error) {
+    } catch (FrontendBuildException error) {
       isCaught = true;
       String actualError = error.getMessage();
 
