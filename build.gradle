@@ -71,7 +71,10 @@ jacoco {
 }
 
 test {
-  testLogging.showStandardStreams = true
+  testLogging {
+      showStandardStreams = true
+      exceptionFormat = 'full'
+  }
   jacoco {
     append = false
     destinationFile = file("$buildDir/jacoco/jacocoTest.exec")

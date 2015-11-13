@@ -5,10 +5,7 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.PosixParser;
-import org.apache.log4j.ConsoleAppender;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
-import org.apache.log4j.PatternLayout;
+import org.apache.log4j.*;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -113,6 +110,7 @@ public abstract class AbstractTestFiles {
   public static void setupLogging() {
     PatternLayout layout = new PatternLayout(
             "%-5p [%t]: %m%n");
+    LogManager.getRootLogger().setLevel(Level.WARN);
     LogManager.getRootLogger().removeAllAppenders();
     LogManager.getRootLogger().addAppender(
             new ConsoleAppender(layout, SYSTEM_ERR));
