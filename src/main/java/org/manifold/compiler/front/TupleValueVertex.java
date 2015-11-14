@@ -1,16 +1,15 @@
 package org.manifold.compiler.front;
 
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
+import com.google.common.base.Preconditions;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.manifold.compiler.TypeValue;
 import org.manifold.compiler.Value;
 
-import com.google.common.base.Preconditions;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class TupleValueVertex extends ExpressionVertex {
 
@@ -34,8 +33,7 @@ public class TupleValueVertex extends ExpressionVertex {
 
   private MappedArray<String, ExpressionEdge> valueEdges;
   public MappedArray<String, ExpressionEdge> getValueEdges() {
-    // Return a clone so valueEdges can't be modified. We can't use an ImmutableMap since that would ruin the
-    // guarantee on order
+    // Return a clone so valueEdges we want an "immutable" version
     return MappedArray.copyOf(valueEdges);
   }
 
@@ -65,8 +63,7 @@ public class TupleValueVertex extends ExpressionVertex {
 
     MappedArray<String, Value> values = new MappedArray<>();
     // TODO(nikklassen) this should also be a MappedArray
-    Map<String, TypeValue> types = new HashMap<>();
-
+    Map<String, TypeValue> types = new LinkedHashMap<>();
     for (MappedArray<String, ExpressionEdge>.Entry entry : valueEdges) {
       log.debug("elaborating tuple entry '" + entry.getKey() + "'");
       ExpressionVertex vSource = entry.getValue().getSource();
