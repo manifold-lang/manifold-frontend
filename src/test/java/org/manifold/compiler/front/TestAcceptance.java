@@ -21,7 +21,8 @@ import java.util.Collection;
  * an error will be thrown. To clear it, the ".manifold.schematic" file can be deleted.
  */
 public class TestAcceptance extends AbstractTestFiles {
-  @Parameterized.Parameters
+
+  @Parameterized.Parameters(name = "{0}")
   public static final Collection<File[]> filesToTest() {
     return getFilesToTest("tests/acceptance");
   }

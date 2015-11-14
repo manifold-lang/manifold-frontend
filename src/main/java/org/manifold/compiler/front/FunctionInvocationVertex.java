@@ -180,7 +180,9 @@ public class FunctionInvocationVertex extends ExpressionVertex {
   
   @Override
   public void elaborate() throws Exception {
-    if (elaborated) { return; }
+    if (elaborated) {
+      return;
+    }
     // Elaborate argument
     ExpressionVertex vInput = inputEdge.getSource();
     vInput.elaborate();
