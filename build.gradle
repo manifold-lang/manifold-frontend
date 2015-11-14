@@ -6,6 +6,7 @@ apply plugin: 'checkstyle'
 apply plugin: 'antlr4'
 apply plugin: 'application'
 apply plugin: 'maven'
+apply plugin: 'idea'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -54,7 +55,7 @@ buildscript {
         url  'https://oss.jfrog.org/oss-snapshot-local/'
     }
     jcenter()
-}
+  }
 
   dependencies {
     classpath 'org.ajoberstar:gradle-jacoco:0.2.0'
@@ -134,4 +135,12 @@ uploadArchives {
       repository(url: "file://localhost/var/www/releases")
     }
   }
+}
+
+idea {
+    module {
+        excludeDirs -= file("$buildDir")
+        excludeDirs += files { file("$buildDir").listFiles() }
+        excludeDirs -= file("$buildDir/generated-src")
+    }
 }
