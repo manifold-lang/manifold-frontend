@@ -403,7 +403,7 @@ class ExpressionContextVisitor extends ManifoldBaseVisitor<ExpressionVertex> {
   @Override
   public ExpressionVertex visitTupleValue(TupleValueContext context) {
     List<TupleValueEntryContext> entries = context.tupleValueEntry();
-    LinkedHashMap<String, ExpressionEdge> valueEdges = new LinkedHashMap<>();
+    MappedArray<String, ExpressionEdge> valueEdges = new MappedArray<>();
     Integer nextAnonymousID = 0;
     for (TupleValueEntryContext entryCtx : entries) {
       // each child has a value, and may have an identifier (named field)
@@ -520,11 +520,15 @@ class ExpressionContextVisitor extends ManifoldBaseVisitor<ExpressionVertex> {
     ExpressionEdge e = new ExpressionEdge(vRef, null);
     exprGraph.addEdge(e);
 
+    StaticAttributeAccessVertex attributeVertex;
     if (ctx.INTEGER_VALUE() != null) {
-      return new StaticNumberAttributeAccessVertex(exprGraph, e, Integer.parseInt(ctx.INTEGER_VALUE().toString()));
+      attributeVertex = new StaticNumberAttributeAccessVertex(exprGraph, e, Integer.parseInt(ctx.INTEGER_VALUE().toString()));
+    } else {
+      attributeVertex = new StaticStringAttributeAccessVertex(exprGraph, e, ctx.IDENTIFIER().toString());
     }
 
-    return new StaticStringAttributeAccessVertex(exprGraph, e, ctx.IDENTIFIER().toString());
+    exprGraph.addVertex(attributeVertex);
+    return attributeVertex;
   }
 
 }

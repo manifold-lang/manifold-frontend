@@ -1,24 +1,15 @@
 package org.manifold.compiler.front;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.manifold.compiler.SchematicValueVisitor;
 import org.manifold.compiler.UndefinedBehaviourError;
 import org.manifold.compiler.Value;
 
-import com.google.common.collect.ImmutableMap;
-
 public class TupleValue extends Value {
 
-  // TODO: Make entries optional for array-like tuples.
-  private final Map<String, Value> entries;
-  private final List<Value> ordered;
-  // TODO the order of labels is important
-  public Map<String, Value> getEntries() {
-    return ImmutableMap.copyOf(entries);
+  private final MappedArray<String, Value> entries;
+
+  public MappedArray<String, Value> getEntries() {
+    return MappedArray.copyOf(entries);
   }
 
   public int getSize() {
@@ -26,32 +17,30 @@ public class TupleValue extends Value {
   }
 
   public Value entry(String key) {
+    if (!entries.containsKey(key)) {
+      throw new IllegalArgumentException("No value for entry " + key);
+    }
     return entries.get(key);
   }
 
   public Value atIndex(int idx) {
-    return ordered.get(idx);
+    return entries.get(idx);
   }
 
-  public TupleValue(TupleTypeValue type, Map<String, Value> values, List<Value> order) {
+  public TupleValue(TupleTypeValue type, MappedArray<String, Value> entries) {
     super(type);
-    // TODO check values against expected types
-    this.entries = values;
-    this.ordered = order;
+    // TODO check entries against expected types
+    this.entries = entries;
   }
-
-  public TupleValue(TupleTypeValue type, LinkedHashMap<String, Value> values) {
-    this(type, values, new ArrayList<Value>(values.values()));
-  }
-
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("( ");
-    for (Map.Entry<String, Value> e : entries.entrySet()) {
+    for (MappedArray<String, Value>.Entry e : entries) {
       String key = e.getKey();
       Value value = e.getValue();
+
       sb.append(key).append(":");
       if (value == null) {
         sb.append("null");

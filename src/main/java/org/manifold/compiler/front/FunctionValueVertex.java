@@ -66,8 +66,8 @@ public class FunctionValueVertex extends ExpressionVertex {
     // inject input/output TupleValues
     TupleTypeValue inputType = (TupleTypeValue) type.getInputType();
     TupleTypeValue outputType = (TupleTypeValue) type.getOutputType();
-    LinkedHashMap<String, ExpressionEdge> inputEdges = new LinkedHashMap<>();
-    LinkedHashMap<String, ExpressionEdge> outputEdges = new LinkedHashMap<>();
+    MappedArray<String, ExpressionEdge> inputEdges = new MappedArray<>();
+    MappedArray<String, ExpressionEdge> outputEdges = new MappedArray<>();
     for (String argName : inputType.getSubtypes().keySet()) {
       ExpressionEdge e = new ExpressionEdge(null, null); // I know what I'm doing
       functionBody.addEdge(e);

@@ -51,6 +51,7 @@ abstract class StaticAttributeAccessVertex extends ExpressionVertex {
     log.debug("elaborating static attribute access");
     ExpressionVertex vExpr = exprEdge.getSource();
     vExpr.elaborate();
+
     Value val = vExpr.getValue();
     TupleValue tupleValue = (TupleValue) val;
     this.value = getVal(tupleValue);
@@ -141,7 +142,7 @@ class StaticNumberAttributeAccessVertex extends StaticAttributeAccessVertex {
   }
   @Override
   protected final String indexRepresentation() {
-    return this.attributeIDX + "";
+    return Integer.toString(this.attributeIDX);
   }
 
   @Override

@@ -2,7 +2,7 @@ package org.manifold.compiler.front;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.log4j.LogManager;
@@ -32,19 +32,19 @@ public class TupleValueVertex extends ExpressionVertex {
     }
   }
 
-  private LinkedHashMap<String, ExpressionEdge> valueEdges;
-  public LinkedHashMap<String, ExpressionEdge> getValueEdges() {
+  private MappedArray<String, ExpressionEdge> valueEdges;
+  public MappedArray<String, ExpressionEdge> getValueEdges() {
     // Return a clone so valueEdges can't be modified. We can't use an ImmutableMap since that would ruin the
     // guarantee on order
-    return new LinkedHashMap<>(valueEdges);
+    return MappedArray.copyOf(valueEdges);
   }
 
   public TupleValueVertex(ExpressionGraph g,
-      LinkedHashMap<String, ExpressionEdge> valueEdges) {
+      MappedArray<String, ExpressionEdge> valueEdges) {
     super(g);
-    this.valueEdges = new LinkedHashMap<>(valueEdges);
-    for (Map.Entry<String, ExpressionEdge> e
-        : this.valueEdges.entrySet()) {
+    this.valueEdges = MappedArray.copyOf(valueEdges);
+    for (MappedArray<String, ExpressionEdge>.Entry e
+        : this.valueEdges) {
       e.getValue().setTarget(this);
       e.getValue().setName(e.getKey());
     }
@@ -62,9 +62,12 @@ public class TupleValueVertex extends ExpressionVertex {
   @Override
   public void elaborate() throws Exception {
     log.debug("elaborating tuple value");
-    LinkedHashMap<String, Value> values = new LinkedHashMap<>();
-    LinkedHashMap<String, TypeValue> types = new LinkedHashMap<>();
-    for (Map.Entry<String, ExpressionEdge> entry : valueEdges.entrySet()) {
+
+    MappedArray<String, Value> values = new MappedArray<>();
+    // TODO(nikklassen) this should also be a MappedArray
+    Map<String, TypeValue> types = new HashMap<>();
+
+    for (MappedArray<String, ExpressionEdge>.Entry entry : valueEdges) {
       log.debug("elaborating tuple entry '" + entry.getKey() + "'");
       ExpressionVertex vSource = entry.getValue().getSource();
       vSource.elaborate();
@@ -111,11 +114,11 @@ public class TupleValueVertex extends ExpressionVertex {
 
   @Override
   public ExpressionVertex copy(ExpressionGraph g, Map<ExpressionEdge, ExpressionEdge> edgeMap) {
-    LinkedHashMap<String, ExpressionEdge> newValueEdges = new LinkedHashMap<>();
-    valueEdges.forEach((key, val) -> {
-        Preconditions.checkArgument(edgeMap.containsKey(val));
-        newValueEdges.put(key, edgeMap.get(val));
-      });
+    MappedArray<String, ExpressionEdge> newValueEdges = new MappedArray<>();
+    for (MappedArray<String, ExpressionEdge>.Entry entry : valueEdges) {
+      Preconditions.checkArgument(edgeMap.containsKey(entry.getValue()));
+      newValueEdges.put(entry.getKey(), edgeMap.get(entry.getValue()));
+    }
     return new TupleValueVertex(g, newValueEdges);
   }
 

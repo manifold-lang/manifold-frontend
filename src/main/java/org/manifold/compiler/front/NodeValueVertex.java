@@ -90,7 +90,8 @@ public class NodeValueVertex extends ExpressionVertex {
     Set<String> inputPortNames = new HashSet<>();
     Set<String> outputPortNames = new HashSet<>();
     inputPortNames.addAll(nodeType.getPorts().keySet());
-    LinkedHashMap<String, Value> futurePortMap = new LinkedHashMap<>();
+    MappedArray<String, Value> futurePortMap = new MappedArray<>();
+
     for (String outputPortName : outputType.getSubtypes().keySet()) {
       PortTypeValue outputPortType = nodeType.getPorts().get(outputPortName);
       FuturePortValue futurePort = new FuturePortValue(
@@ -128,9 +129,10 @@ public class NodeValueVertex extends ExpressionVertex {
       } else {
         TupleValue inputPortTuple = (TupleValue) inputPortValue;
         // same story here about unwrapping the port
-        futurePort = unwrapPort(inputPortTuple.entry("0"));
-        TupleValue attributesValue = (TupleValue) inputPortTuple.entry("1");
-        inputPortAttrs = attributesValue.getEntries();
+        futurePort = unwrapPort(inputPortTuple.atIndex(0));
+        TupleValue attributesValue = (TupleValue) inputPortTuple.atIndex(1);
+        // TODO this can probably be done better, it assumes that all tuple values are named
+        inputPortAttrs = MappedArray.toMap(attributesValue.getEntries());
       }
       futureInputPorts.put(inputPortName, futurePort);
       portAttrs.put(inputPortName, inputPortAttrs);
@@ -144,7 +146,7 @@ public class NodeValueVertex extends ExpressionVertex {
         outputPortAttrs = new HashMap<>(); // no attributes
       } else {
         TupleValue attributesValue = (TupleValue) input.entry(outputPortName);
-        outputPortAttrs = attributesValue.getEntries();
+        outputPortAttrs = MappedArray.toMap(attributesValue.getEntries());
       }
       portAttrs.put(outputPortName, outputPortAttrs);
     }
