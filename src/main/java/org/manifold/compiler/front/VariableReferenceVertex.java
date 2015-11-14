@@ -62,14 +62,7 @@ public class VariableReferenceVertex extends ExpressionVertex {
       // not assigned
       throw new UndefinedBehaviourError("variable '" + id + "' not assigned");
     } else { 
-      // multiply assigned/
-      try {
-        g.writeDOTFile(new File("g.yolo.dot"));
-      } catch (java.io.IOException err) {
-
-      }
-      throw new UndefinedBehaviourError("variable '" + id + 
-          "' multiply assigned");
+      throw new UndefinedBehaviourError("variable '" + id + "' multiply assigned");
     }
   }
   

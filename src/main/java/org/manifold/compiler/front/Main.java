@@ -522,7 +522,8 @@ class ExpressionContextVisitor extends ManifoldBaseVisitor<ExpressionVertex> {
 
     StaticAttributeAccessVertex attributeVertex;
     if (ctx.INTEGER_VALUE() != null) {
-      attributeVertex = new StaticNumberAttributeAccessVertex(exprGraph, e, Integer.parseInt(ctx.INTEGER_VALUE().toString()));
+      attributeVertex = new StaticNumberAttributeAccessVertex(
+          exprGraph, e, Integer.parseInt(ctx.INTEGER_VALUE().toString()));
     } else {
       attributeVertex = new StaticStringAttributeAccessVertex(exprGraph, e, ctx.IDENTIFIER().toString());
     }
