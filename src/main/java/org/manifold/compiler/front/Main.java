@@ -438,16 +438,16 @@ class ExpressionContextVisitor extends ManifoldBaseVisitor<ExpressionVertex> {
   }
 
   private ExpressionVertex unpackTuple(List<TupleValueEntryContext> entries) {
-    VariableIdentifier vId = new VariableIdentifier(Arrays.asList("tmp_" + nextTmpVar));
+    VariableIdentifier tmpTupleId = new VariableIdentifier(Arrays.asList("tmp_" + nextTmpVar));
     nextTmpVar += 1;
-    ExpressionVertex tmpTuple = createVariableVertex(vId);
+    ExpressionVertex tmpTuple = createVariableVertex(tmpTupleId);
 
     int entryNum = 0;
-    boolean hasNsId = false;
+    boolean containsNamedEntry = false;
     for (TupleValueEntryContext entryCtx : entries) {
-      ExpressionVertex vxValue = entryCtx.expression().accept(this);
+      ExpressionVertex entryVertex = entryCtx.expression().accept(this);
 
-      if (!(vxValue instanceof VariableReferenceVertex)) {
+      if (!(entryVertex instanceof VariableReferenceVertex)) {
         String err = createLineError(entryCtx, "Unpacking target must be a variable");
         throw new FrontendBuildException(err);
       }
@@ -455,15 +455,19 @@ class ExpressionContextVisitor extends ManifoldBaseVisitor<ExpressionVertex> {
       ExpressionVertex attrVertex;
       TerminalNode entryId = entryCtx.IDENTIFIER();
       if (entryId != null) {
+
         attrVertex = createStaticAttributeAccessExpression(entryId.getText(), tmpTuple);
-        hasNsId = true;
-      } else if (hasNsId) {
+        containsNamedEntry = true;
+
+      } else if (containsNamedEntry) {
+
         String err = createLineError(entryCtx, "Index-based entries must be unpacked before namespaced identifiers");
         throw new FrontendBuildException(err);
+
       } else {
         attrVertex = createStaticAttributeAccessExpression(entryNum, tmpTuple);
       }
-      exprGraph.addEdge(new ExpressionEdge(attrVertex, vxValue));
+      exprGraph.addEdge(new ExpressionEdge(attrVertex, entryVertex));
 
       entryNum += 1;
     }
@@ -572,12 +576,12 @@ class ExpressionContextVisitor extends ManifoldBaseVisitor<ExpressionVertex> {
     return createStaticAttributeAccessExpression(ctx.IDENTIFIER().getText(), vRef);
   }
 
-  private StaticAttributeAccessVertex createStaticAttributeAccessExpression(int i, ExpressionVertex vRef) {
+  private StaticAttributeAccessVertex createStaticAttributeAccessExpression(int entryIdx, ExpressionVertex vRef) {
     ExpressionEdge e = new ExpressionEdge(vRef, null);
     exprGraph.addEdge(e);
 
     StaticAttributeAccessVertex attributeVertex = new StaticNumberAttributeAccessVertex(
-          exprGraph, e, i);
+          exprGraph, e, entryIdx);
 
     exprGraph.addVertex(attributeVertex);
     return attributeVertex;
