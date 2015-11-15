@@ -62,7 +62,8 @@ typevalue:
 
 reference:
     tupleValue # Tuple
-  | reference '.' (IDENTIFIER | INTEGER_VALUE) # StaticAttributeAccessExpression
+  | reference '.' IDENTIFIER # StaticAttributeAccessExpression
+  | reference '[' INTEGER_VALUE ']' # StaticAttributeAccessExpression
   | namespacedIdentifier # VariableReferenceExpression
   ;
 

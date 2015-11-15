@@ -82,13 +82,12 @@ public class TestAcceptance extends AbstractTestFiles {
       }
     } else {
       log.warn("Generating new expected schematic '" + expectedSchematicPath + "'");
-    }
-
-    FileWriter fileWriter = new FileWriter(expectedSchematicPath.toFile());
-    try {
-      fileWriter.write(actualSchematic);
-    } finally {
-      fileWriter.close();
+      FileWriter fileWriter = new FileWriter(expectedSchematicPath.toFile());
+      try {
+        fileWriter.write(actualSchematic);
+      } finally {
+        fileWriter.close();
+      }
     }
   }
 }

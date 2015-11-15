@@ -1,5 +1,5 @@
 {
-  "name": "nonPrimitiveElaboration.manifold",
+  "name": "tuplePropName.manifold",
   "userDefinedTypes": {},
   "portTypes": {
     "xIn": {
@@ -10,44 +10,29 @@
     }
   },
   "nodeTypes": {
-    "xNot": {
+    "xInPin": {
       "attributes": {},
       "ports": {
-        "xbar": "xOut",
         "x": "xIn"
-      }
-    },
-    "xInputPin": {
-      "attributes": {},
-      "ports": {
-        "x": "xOut"
       }
     },
     "xOutputPin": {
       "attributes": {},
       "ports": {
-        "x": "xIn"
+        "x": "xOut"
       }
     }
   },
   "constraintTypes": {},
   "nodes": {
     "n1": {
-      "type": "xInputPin",
+      "type": "xInPin",
       "attributes": {},
       "portAttrs": {
         "x": {}
       }
     },
     "n2": {
-      "type": "xNot",
-      "attributes": {},
-      "portAttrs": {
-        "xbar": {},
-        "x": {}
-      }
-    },
-    "n3": {
       "type": "xOutputPin",
       "attributes": {},
       "portAttrs": {
@@ -60,11 +45,6 @@
       "attributes": {},
       "from": "n1:x",
       "to": "n2:x"
-    },
-    "c2": {
-      "attributes": {},
-      "from": "n2:xbar",
-      "to": "n3:x"
     }
   },
   "constraints": {}

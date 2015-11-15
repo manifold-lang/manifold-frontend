@@ -36,6 +36,7 @@ import org.manifold.parser.ManifoldParser.TupleTypeValueContext;
 import org.manifold.parser.ManifoldParser.TupleTypeValueEntryContext;
 import org.manifold.parser.ManifoldParser.TupleValueContext;
 import org.manifold.parser.ManifoldParser.TupleValueEntryContext;
+import org.manifold.parser.ManifoldParser.RValueExpressionContext;
 
 import com.google.common.base.Throwables;
 
@@ -198,7 +199,7 @@ public class Main implements Frontend {
       @Override
       public void syntaxError(@NotNull Recognizer<?, ?> recognizer, @Nullable Object offendingSymbol, int line,
                               int charPositionInLine, @NotNull String msg, @Nullable RecognitionException e) {
-        errors.append("Error at line ").append(line - 1).append(", char ")
+        errors.append("Error at line ").append(line).append(", char ")
                 .append(charPositionInLine).append(": ").append(msg).append("\n");
       }
 
@@ -402,7 +403,7 @@ class ExpressionContextVisitor extends ManifoldBaseVisitor<ExpressionVertex> {
   @Override
   public ExpressionVertex visitTupleValue(TupleValueContext context) {
     List<TupleValueEntryContext> entries = context.tupleValueEntry();
-    LinkedHashMap<String, ExpressionEdge> valueEdges = new LinkedHashMap<>();
+    MappedArray<String, ExpressionEdge> valueEdges = new MappedArray<>();
     Integer nextAnonymousID = 0;
     for (TupleValueEntryContext entryCtx : entries) {
       // each child has a value, and may have an identifier (named field)
@@ -510,6 +511,25 @@ class ExpressionContextVisitor extends ManifoldBaseVisitor<ExpressionVertex> {
     }
 
     return new VariableIdentifier(identifierStrings);
+  }
+
+  @Override
+  public StaticAttributeAccessVertex visitStaticAttributeAccessExpression(
+          @NotNull ManifoldParser.StaticAttributeAccessExpressionContext ctx) {
+    ExpressionVertex vRef = ctx.reference().accept(this);
+    ExpressionEdge e = new ExpressionEdge(vRef, null);
+    exprGraph.addEdge(e);
+
+    StaticAttributeAccessVertex attributeVertex;
+    if (ctx.INTEGER_VALUE() != null) {
+      attributeVertex = new StaticNumberAttributeAccessVertex(
+          exprGraph, e, Integer.parseInt(ctx.INTEGER_VALUE().toString()));
+    } else {
+      attributeVertex = new StaticStringAttributeAccessVertex(exprGraph, e, ctx.IDENTIFIER().toString());
+    }
+
+    exprGraph.addVertex(attributeVertex);
+    return attributeVertex;
   }
 
 }
