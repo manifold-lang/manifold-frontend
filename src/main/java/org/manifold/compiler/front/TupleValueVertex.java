@@ -8,7 +8,6 @@ import org.manifold.compiler.Value;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class TupleValueVertex extends ExpressionVertex {
@@ -62,8 +61,7 @@ public class TupleValueVertex extends ExpressionVertex {
     log.debug("elaborating tuple value");
 
     MappedArray<String, Value> values = new MappedArray<>();
-    // TODO(nikklassen) this should also be a MappedArray
-    Map<String, TypeValue> types = new LinkedHashMap<>();
+    MappedArray<String, TypeValue> types = new MappedArray<>();
     for (MappedArray<String, ExpressionEdge>.Entry entry : valueEdges) {
       log.debug("elaborating tuple entry '" + entry.getKey() + "'");
       ExpressionVertex vSource = entry.getValue().getSource();

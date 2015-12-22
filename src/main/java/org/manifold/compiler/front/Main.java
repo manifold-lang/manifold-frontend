@@ -1,10 +1,6 @@
 package org.manifold.compiler.front;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.nio.file.Paths;
-import java.util.*;
-
+import com.google.common.base.Throwables;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.atn.ATNConfigSet;
 import org.antlr.v4.runtime.dfa.DFA;
@@ -16,29 +12,17 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Options;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
-import org.manifold.compiler.BooleanValue;
-import org.manifold.compiler.ConnectionValue;
-import org.manifold.compiler.Frontend;
-import org.manifold.compiler.IntegerValue;
-import org.manifold.compiler.NilTypeValue;
-import org.manifold.compiler.NodeTypeValue;
-import org.manifold.compiler.NodeValue;
-import org.manifold.compiler.PortTypeValue;
-import org.manifold.compiler.UndefinedBehaviourError;
+import org.manifold.compiler.*;
 import org.manifold.compiler.middle.Schematic;
 import org.manifold.parser.ManifoldBaseVisitor;
 import org.manifold.parser.ManifoldLexer;
 import org.manifold.parser.ManifoldParser;
-import org.manifold.parser.ManifoldParser.ExpressionContext;
-import org.manifold.parser.ManifoldParser.FunctionTypeValueContext;
-import org.manifold.parser.ManifoldParser.NamespacedIdentifierContext;
-import org.manifold.parser.ManifoldParser.TupleTypeValueContext;
-import org.manifold.parser.ManifoldParser.TupleTypeValueEntryContext;
-import org.manifold.parser.ManifoldParser.TupleValueContext;
-import org.manifold.parser.ManifoldParser.TupleValueEntryContext;
-import org.manifold.parser.ManifoldParser.RValueExpressionContext;
+import org.manifold.parser.ManifoldParser.*;
 
-import com.google.common.base.Throwables;
+import java.io.File;
+import java.io.FileInputStream;
+import java.nio.file.Paths;
+import java.util.*;
 
 public class Main implements Frontend {
 
@@ -375,8 +359,8 @@ class ExpressionContextVisitor extends ManifoldBaseVisitor<ExpressionVertex> {
   @Override
   public ExpressionVertex visitTupleTypeValue(TupleTypeValueContext context) {
     List<TupleTypeValueEntryContext> entries = context.tupleTypeValueEntry();
-    Map<String, ExpressionEdge> typeValueEdges = new HashMap<>();
-    Map<String, ExpressionEdge> defaultValueEdges = new HashMap<>();
+    MappedArray<String, ExpressionEdge> typeValueEdges = new MappedArray<>();
+    MappedArray<String, ExpressionEdge> defaultValueEdges = new MappedArray<>();
     Integer nextAnonymousID = 0;
     for (TupleTypeValueEntryContext entryCtx : entries) {
       // each child has a typevalue, and may have

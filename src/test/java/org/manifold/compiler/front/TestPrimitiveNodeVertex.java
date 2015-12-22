@@ -3,9 +3,6 @@ package org.manifold.compiler.front;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.PatternLayout;
@@ -84,20 +81,20 @@ public class TestPrimitiveNodeVertex {
     ExpressionEdge eOut = new ExpressionEdge(vOutPort, xOut);
     g.addEdge(eOut);
     
-    Map<String, ExpressionEdge> inputMap = new HashMap<>();
+    MappedArray<String, ExpressionEdge> inputMap = new MappedArray<>();
     ExpressionEdge eInputType = new ExpressionEdge(xIn, null);
     g.addEdge(eInputType);
     inputMap.put("x", eInputType);
     TupleTypeValueVertex vInputType = new TupleTypeValueVertex(g,
-        inputMap, new HashMap<>());
+        inputMap, new MappedArray<>());
     g.addVertex(vInputType);
     
-    Map<String, ExpressionEdge> outputMap = new HashMap<>();
+    MappedArray<String, ExpressionEdge> outputMap = new MappedArray<>();
     ExpressionEdge eOutputType = new ExpressionEdge(xOut, null);
     g.addEdge(eOutputType);
     outputMap.put("xbar", eOutputType);
     TupleTypeValueVertex vOutputType = new TupleTypeValueVertex(g,
-        outputMap, new HashMap<>());
+        outputMap, new MappedArray<>());
     g.addVertex(vOutputType);
     
     ExpressionEdge eInputTuple = new ExpressionEdge(vInputType, null);
@@ -140,20 +137,20 @@ public class TestPrimitiveNodeVertex {
     ExpressionEdge eOut = new ExpressionEdge(vOutPort, xOut);
     g.addEdge(eOut);
     
-    Map<String, ExpressionEdge> inputMap = new HashMap<>();
+    MappedArray<String, ExpressionEdge> inputMap = new MappedArray<>();
     ExpressionEdge eInputType = new ExpressionEdge(xIn, null);
     g.addEdge(eInputType);
     inputMap.put("x", eInputType);
     TupleTypeValueVertex vInputType = new TupleTypeValueVertex(g,
-        inputMap, new HashMap<>());
+        inputMap, new MappedArray<>());
     g.addVertex(vInputType);
     
-    Map<String, ExpressionEdge> outputMap = new HashMap<>();
+    MappedArray<String, ExpressionEdge> outputMap = new MappedArray<>();
     ExpressionEdge eOutputType = new ExpressionEdge(xOut, null);
     g.addEdge(eOutputType);
     outputMap.put("xbar", eOutputType);
     TupleTypeValueVertex vOutputType = new TupleTypeValueVertex(g,
-        outputMap, new HashMap<>());
+        outputMap, new MappedArray<>());
     g.addVertex(vOutputType);
     
     ExpressionEdge eInputTuple = new ExpressionEdge(vInputType, null);
@@ -221,20 +218,20 @@ public class TestPrimitiveNodeVertex {
     ExpressionEdge eOut = new ExpressionEdge(vOutPort, xOut);
     g.addEdge(eOut);
     
-    Map<String, ExpressionEdge> inputMap = new HashMap<>();
+    MappedArray<String, ExpressionEdge> inputMap = new MappedArray<>();
     ExpressionEdge eInputType = new ExpressionEdge(nil, null);
     g.addEdge(eInputType);
     inputMap.put("0", eInputType);
     TupleTypeValueVertex vInputType = new TupleTypeValueVertex(g,
-        inputMap, new HashMap<>());
+        inputMap, new MappedArray<>());
     g.addVertex(vInputType);
     
-    Map<String, ExpressionEdge> outputMap = new HashMap<>();
+    MappedArray<String, ExpressionEdge> outputMap = new MappedArray<>();
     ExpressionEdge eOutputType = new ExpressionEdge(xOut, null);
     g.addEdge(eOutputType);
     outputMap.put("x", eOutputType);
     TupleTypeValueVertex vOutputType = new TupleTypeValueVertex(g,
-        outputMap, new HashMap<>());
+        outputMap, new MappedArray<>());
     g.addVertex(vOutputType);
     
     ExpressionEdge eInputTuple = new ExpressionEdge(vInputType, null);
@@ -296,20 +293,20 @@ public class TestPrimitiveNodeVertex {
     ExpressionEdge eOut = new ExpressionEdge(vOutPort, xOut);
     g.addEdge(eOut);
     
-    Map<String, ExpressionEdge> inputMap = new HashMap<>();
+    MappedArray<String, ExpressionEdge> inputMap = new MappedArray<>();
     ExpressionEdge eInputType = new ExpressionEdge(xIn, null);
     g.addEdge(eInputType);
     inputMap.put("x", eInputType);
     TupleTypeValueVertex vInputType = new TupleTypeValueVertex(g,
-        inputMap, new HashMap<>());
+        inputMap, new MappedArray<>());
     g.addVertex(vInputType);
     
-    Map<String, ExpressionEdge> outputMap = new HashMap<>();
+    MappedArray<String, ExpressionEdge> outputMap = new MappedArray<>();
     ExpressionEdge eOutputType = new ExpressionEdge(nil, null);
     g.addEdge(eOutputType);
     outputMap.put("0", eOutputType);
     TupleTypeValueVertex vOutputType = new TupleTypeValueVertex(g,
-        outputMap, new HashMap<>());
+        outputMap, new MappedArray<>());
     g.addVertex(vOutputType);
     
     ExpressionEdge eInputTuple = new ExpressionEdge(vInputType, null);

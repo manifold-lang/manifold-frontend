@@ -1,14 +1,14 @@
 package org.manifold.compiler.front;
 
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.util.Map;
-
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.manifold.compiler.TypeTypeValue;
 import org.manifold.compiler.TypeValue;
 import org.manifold.compiler.Value;
+
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.util.Map;
 
 public class FunctionValueVertex extends ExpressionVertex {
 
@@ -67,12 +67,13 @@ public class FunctionValueVertex extends ExpressionVertex {
     TupleTypeValue outputType = (TupleTypeValue) type.getOutputType();
     MappedArray<String, ExpressionEdge> inputEdges = new MappedArray<>();
     MappedArray<String, ExpressionEdge> outputEdges = new MappedArray<>();
-    for (String argName : inputType.getSubtypes().keySet()) {
+    for (MappedArray<String, TypeValue>.Entry argName : inputType.getSubtypes()) {
       ExpressionEdge e = new ExpressionEdge(null, null); // I know what I'm doing
       functionBody.addEdge(e);
-      inputEdges.put(argName, e);
+      inputEdges.put(argName.getKey(), e);
     }
-    for (String argName : outputType.getSubtypes().keySet()) {
+    for (MappedArray<String, TypeValue>.Entry typeEntry : outputType.getSubtypes()) {
+      String argName = typeEntry.getKey();
       // "name resolution": look for a variable reference vertex with this name in the subgraph
       for (Map.Entry<VariableIdentifier, VariableReferenceVertex> vRef
           : functionBody.getVariableVertices().entrySet()) {

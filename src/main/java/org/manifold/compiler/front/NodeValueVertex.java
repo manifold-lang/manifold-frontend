@@ -1,24 +1,14 @@
 package org.manifold.compiler.front;
 
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.util.*;
-
 import com.google.common.base.Preconditions;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
-import org.manifold.compiler.ConnectionValue;
-import org.manifold.compiler.InvalidAttributeException;
-import org.manifold.compiler.NodeTypeValue;
-import org.manifold.compiler.NodeValue;
-import org.manifold.compiler.PortTypeValue;
-import org.manifold.compiler.PortValue;
+import org.manifold.compiler.*;
 import org.manifold.compiler.TypeMismatchException;
-import org.manifold.compiler.TypeValue;
-import org.manifold.compiler.UndeclaredAttributeException;
-import org.manifold.compiler.UndeclaredIdentifierException;
-import org.manifold.compiler.UndefinedBehaviourError;
-import org.manifold.compiler.Value;
+
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.util.*;
 
 public class NodeValueVertex extends ExpressionVertex {
 
@@ -92,7 +82,8 @@ public class NodeValueVertex extends ExpressionVertex {
     inputPortNames.addAll(nodeType.getPorts().keySet());
     MappedArray<String, Value> futurePortMap = new MappedArray<>();
 
-    for (String outputPortName : outputType.getSubtypes().keySet()) {
+    for (MappedArray<String, TypeValue>.Entry typeEntry : outputType.getSubtypes()) {
+      String outputPortName = typeEntry.getKey();
       PortTypeValue outputPortType = nodeType.getPorts().get(outputPortName);
       FuturePortValue futurePort = new FuturePortValue(
           this, outputPortName, outputPortType);
