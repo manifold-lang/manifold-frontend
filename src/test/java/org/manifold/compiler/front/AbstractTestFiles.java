@@ -63,7 +63,7 @@ public abstract class AbstractTestFiles {
   }
 
   /**
-   * The first (and only) element in each element returned by filesToText().
+   * The first (and only) element in each element returned by filesToTest().
    * If another @Parameterized.Parameter were added below this one, it would refer to the
    * second element, and so on.
    */

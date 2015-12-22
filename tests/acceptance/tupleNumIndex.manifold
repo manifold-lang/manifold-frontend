@@ -5,4 +5,4 @@ xOutputPin = primitive node (x: xOut) -> (Nil);
 
 a = xInPin();
 foo = (a);
-xOutputPin(x:foo[0]);
+xOutputPin(x=foo[0]);

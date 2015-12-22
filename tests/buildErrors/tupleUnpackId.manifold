@@ -6,9 +6,9 @@ xOutputPin = primitive node (x: xOut) -> (Nil);
 a = xInPin();
 b = xInPin();
 
-foo = (a:a, b:b);
+foo = (a=a, b=b);
 
 // Can't have id unpack before index
-(b:c, d) = foo;
+(b=c, d) = foo;
 
-xOutputPin(x:c);
+xOutputPin(x=c);

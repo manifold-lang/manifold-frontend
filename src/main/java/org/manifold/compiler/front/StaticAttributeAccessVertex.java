@@ -44,7 +44,11 @@ abstract class StaticAttributeAccessVertex extends ExpressionVertex {
   }
 
   protected abstract Value getVal(TupleValue tupleValue);
-  protected abstract String indexRepresentation();
+
+  /**
+   * The string representation of the value used to access this attribute
+   */
+  protected abstract String attributeToString();
 
   @Override
   public void elaborate() throws Exception {
@@ -76,7 +80,7 @@ abstract class StaticAttributeAccessVertex extends ExpressionVertex {
 
   @Override
   public String toString() {
-    String retval = "attribute[ " + indexRepresentation() + " ]";
+    String retval = "attribute[ " + attributeToString() + " ]";
     if (this.value == null) {
       retval += " (not elaborated)";
     }
@@ -108,7 +112,7 @@ class StaticStringAttributeAccessVertex extends StaticAttributeAccessVertex {
   }
 
   @Override
-  protected final String indexRepresentation() {
+  protected String attributeToString() {
     return this.attributeID;
   }
 
@@ -140,8 +144,9 @@ class StaticNumberAttributeAccessVertex extends StaticAttributeAccessVertex {
   public final int getAttributeIDX() {
     return this.attributeIDX;
   }
+
   @Override
-  protected final String indexRepresentation() {
+  protected String attributeToString() {
     return Integer.toString(this.attributeIDX);
   }
 

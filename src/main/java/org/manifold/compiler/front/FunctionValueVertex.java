@@ -2,7 +2,6 @@ package org.manifold.compiler.front;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.apache.log4j.LogManager;

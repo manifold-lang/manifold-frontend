@@ -21,7 +21,7 @@ TYPE_KEYWORD: 'Type';
 tupleTypeValueEntry: (IDENTIFIER ':')? typevalue ('=' expression)?;
 tupleTypeValue: '(' tupleTypeValueEntry (',' tupleTypeValueEntry)* ')';
 
-tupleValueEntry: (IDENTIFIER ':')? expression;
+tupleValueEntry: (IDENTIFIER '=')? expression;
 tupleValue:
   '(' tupleValueEntry (',' tupleValueEntry)* ')' |
   '(' ')';

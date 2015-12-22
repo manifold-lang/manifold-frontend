@@ -3,5 +3,5 @@ xNot = primitive node (x: xIn) -> (xbar: xOut);
 xInputPin = primitive node (Nil) -> (x: xOut);
 xOutputPin = primitive node (x: xIn) -> (Nil);
 a = xInputPin();
-b = xNot(x:a);
-xOutputPin(x:b);
+b = xNot(x=a);
+xOutputPin(x=b);

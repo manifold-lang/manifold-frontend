@@ -21,7 +21,7 @@ public class MappedArray<K, V> implements Iterable<MappedArray<K, V>.Entry> {
   }
 
   public MappedArray(List<V> data) {
-    this.data = data;
+    this.data = new ArrayList<>(data);
   }
 
   public MappedArray() {
@@ -30,7 +30,7 @@ public class MappedArray<K, V> implements Iterable<MappedArray<K, V>.Entry> {
 
   public MappedArray(Map<K, Integer> keyedIndices, List<V> data) {
     this.keyedIndices = HashBiMap.create(keyedIndices);
-    this.data = data;
+    this.data = new ArrayList<>(data);
   }
 
   public class Entry {
