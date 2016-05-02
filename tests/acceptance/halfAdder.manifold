@@ -1,0 +1,18 @@
+digitalIn = primitive port Bool;
+digitalOut = primitive port Bool;
+inputPin = primitive node (Nil) -> (out: digitalOut);
+outputPin = primitive node (in: digitalIn) -> (Nil);
+and = primitive node (in0: digitalIn, in1: digitalIn) -> (out: digitalOut);
+xor = primitive node (in0: digitalIn, in1: digitalIn) -> (out: digitalOut);
+
+halfAdder = (a: Bool, b: Bool) -> (sum: Bool, carry: Bool) {
+  sum = xor(in0: a, in1: b);
+  carry = and(in0: a, in1: b);
+};
+
+in0 = inputPin();
+in1 = inputPin();
+
+(out0, out1) = halfAdder(a: in0, b: in1);
+outputPin(in: out0);
+outputPin(in: out1);

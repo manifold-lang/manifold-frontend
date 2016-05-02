@@ -1,25 +1,25 @@
 {
-  "name": "tupleUnpackNamespaced.manifold",
+  "name": "tupleUnpackId.manifold",
   "userDefinedTypes": {},
   "portTypes": {
-    "xOut": {
+    "xIn": {
       "attributes": {}
     },
-    "xIn": {
+    "xOut": {
       "attributes": {}
     }
   },
   "nodeTypes": {
-    "xOutputPin": {
-      "attributes": {},
-      "ports": {
-        "x": "xOut"
-      }
-    },
     "xInPin": {
       "attributes": {},
       "ports": {
         "x": "xIn"
+      }
+    },
+    "xOutputPin": {
+      "attributes": {},
+      "ports": {
+        "x": "xOut"
       }
     }
   },
