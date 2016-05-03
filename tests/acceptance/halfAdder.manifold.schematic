@@ -1,0 +1,124 @@
+{
+  "name": "halfAdder.manifold",
+  "userDefinedTypes": {},
+  "portTypes": {
+    "digitalIn": {
+      "attributes": {}
+    },
+    "digitalOut": {
+      "attributes": {}
+    }
+  },
+  "nodeTypes": {
+    "outputPin": {
+      "attributes": {},
+      "ports": {
+        "in": "digitalIn"
+      }
+    },
+    "inputPin": {
+      "attributes": {},
+      "ports": {
+        "out": "digitalOut"
+      }
+    },
+    "and": {
+      "attributes": {},
+      "ports": {
+        "in0": "digitalIn",
+        "in1": "digitalIn",
+        "out": "digitalOut"
+      }
+    },
+    "xor": {
+      "attributes": {},
+      "ports": {
+        "in0": "digitalIn",
+        "in1": "digitalIn",
+        "out": "digitalOut"
+      }
+    }
+  },
+  "constraintTypes": {},
+  "nodes": {
+    "n1": {
+      "type": "inputPin",
+      "attributes": {},
+      "portAttrs": {
+        "out": {}
+      }
+    },
+    "n2": {
+      "type": "inputPin",
+      "attributes": {},
+      "portAttrs": {
+        "out": {}
+      }
+    },
+    "n3": {
+      "type": "xor",
+      "attributes": {},
+      "portAttrs": {
+        "in0": {},
+        "in1": {},
+        "out": {}
+      }
+    },
+    "n4": {
+      "type": "and",
+      "attributes": {},
+      "portAttrs": {
+        "in0": {},
+        "in1": {},
+        "out": {}
+      }
+    },
+    "n5": {
+      "type": "outputPin",
+      "attributes": {},
+      "portAttrs": {
+        "in": {}
+      }
+    },
+    "n6": {
+      "type": "outputPin",
+      "attributes": {},
+      "portAttrs": {
+        "in": {}
+      }
+    }
+  },
+  "connections": {
+    "c3": {
+      "attributes": {},
+      "from": "n1:out",
+      "to": "n4:in0"
+    },
+    "c4": {
+      "attributes": {},
+      "from": "n2:out",
+      "to": "n4:in1"
+    },
+    "c5": {
+      "attributes": {},
+      "from": "n3:out",
+      "to": "n5:in"
+    },
+    "c1": {
+      "attributes": {},
+      "from": "n1:out",
+      "to": "n3:in0"
+    },
+    "c2": {
+      "attributes": {},
+      "from": "n2:out",
+      "to": "n3:in1"
+    },
+    "c6": {
+      "attributes": {},
+      "from": "n4:out",
+      "to": "n6:in"
+    }
+  },
+  "constraints": {}
+}

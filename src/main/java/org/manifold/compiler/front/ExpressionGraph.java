@@ -150,10 +150,10 @@ public class ExpressionGraph {
    * @param mainGraphOutput Function return -> Variable edge in main graph
    * @param subGraphOutput Exit vertex in subGraph
    */
-  public void addSubExpressionGraph(ExpressionGraph subGraph,
-                                    ExpressionEdge mainGraphInput, ExpressionVertex subGraphInput,
-                                    ExpressionEdge mainGraphOutput, ExpressionVertex subGraphOutput,
-                                    Map<VariableReferenceVertex, VariableReferenceVertex> variableRenamingMap) {
+  public void addFunctionExpressionGraph(ExpressionGraph subGraph,
+                                         ExpressionEdge mainGraphInput, ExpressionVertex subGraphInput,
+                                         ExpressionEdge mainGraphOutput, ExpressionVertex subGraphOutput,
+                                         Map<VariableReferenceVertex, VariableReferenceVertex> variableRenamingMap) {
 
     // Sanity checks
     // input/output vertices exist in mainGraph and subGraph
@@ -182,7 +182,7 @@ public class ExpressionGraph {
 
     // do not add the input/output vertices since they are being replaced by the main graph's vertices
     subGraph.getVertices().stream()
-        .filter(vertex -> (vertex != subGraphInput && vertex != subGraphOutput))
+        .filter(vertex -> vertex != subGraphInput)
         .forEach(v -> {
             ExpressionVertex newVertex;
             if (v instanceof VariableReferenceVertex) {
@@ -205,11 +205,13 @@ public class ExpressionGraph {
             exprVertexMap.put(v, newVertex);
           });
 
-    // input/output vertex
+    // Replace the function input vertex with the vertices from the main graph
     ExpressionVertex inputVertex = mainGraphInput.getSource();
-    ExpressionVertex outputVertex = mainGraphOutput.getTarget();
     exprVertexMap.put(subGraphInput, inputVertex);
-    exprVertexMap.put(subGraphOutput, outputVertex);
+
+    // Connect the function output vertex to the main graph
+    ExpressionEdge outputEdge = new ExpressionEdge(exprVertexMap.get(subGraphOutput), mainGraphOutput.getTarget());
+    this.edges.add(outputEdge);
 
     // each edge in subgraph -> edge in main graph should refer to the same source/target
     subGraph.getEdges().forEach(edge -> {

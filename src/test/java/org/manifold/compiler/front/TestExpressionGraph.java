@@ -115,7 +115,7 @@ public class TestExpressionGraph {
     subGraph.writeDOTFile(new File("build/subGraph.txt"));
 
     Map<VariableReferenceVertex, VariableReferenceVertex> dontRename = new HashMap<>();
-    mainGraph.addSubExpressionGraph(subGraph, inputEdge, subInputVertex, outputEdge, subOutputVertex, dontRename);
+    mainGraph.addFunctionExpressionGraph(subGraph, inputEdge, subInputVertex, outputEdge, subOutputVertex, dontRename);
     mainGraph.writeDOTFile(new File("build/merged.txt"));
   }
 }
