@@ -27,6 +27,7 @@ jar {
 repositories {
   mavenCentral()
   jcenter()
+  mavenLocal()
   maven {
     name 'Manifold release repository'
     url 'http://manifold-lang.org/releases'
@@ -44,7 +45,7 @@ dependencies {
   testCompile 'org.skyscreamer:jsonassert:1.2.3'
   compile 'log4j:log4j:1.2.16'
   compile group: 'commons-cli', name: 'commons-cli', version: '1.2'
-  compile 'org.manifold:manifold-core:0.9.+'
+  compile 'org.manifold:manifold-core:0.11.+'
 }
 
 buildscript {

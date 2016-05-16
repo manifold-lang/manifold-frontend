@@ -3,9 +3,11 @@
   "userDefinedTypes": {},
   "portTypes": {
     "xOut": {
+      "signalType": "Bool",
       "attributes": {}
     },
     "xIn": {
+      "signalType": "Bool",
       "attributes": {}
     }
   },
