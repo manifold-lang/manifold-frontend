@@ -6,6 +6,7 @@ apply plugin: 'checkstyle'
 apply plugin: 'antlr4'
 apply plugin: 'application'
 apply plugin: 'maven'
+apply plugin: 'idea'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -26,6 +27,7 @@ jar {
 repositories {
   mavenCentral()
   jcenter()
+  mavenLocal()
   maven {
     name 'Manifold release repository'
     url 'http://manifold-lang.org/releases'
@@ -40,9 +42,10 @@ dependencies {
   compile 'com.google.code.gson:gson:2.2.4'
   compile 'com.google.guava:guava:17.0'
   testCompile 'junit:junit:4.11'
+  testCompile 'org.skyscreamer:jsonassert:1.2.3'
   compile 'log4j:log4j:1.2.16'
   compile group: 'commons-cli', name: 'commons-cli', version: '1.2'
-  compile 'org.manifold:manifold-core:0.9.+'
+  compile 'org.manifold:manifold-core:0.11.+'
 }
 
 buildscript {
@@ -53,7 +56,7 @@ buildscript {
         url  'https://oss.jfrog.org/oss-snapshot-local/'
     }
     jcenter()
-}
+  }
 
   dependencies {
     classpath 'org.ajoberstar:gradle-jacoco:0.2.0'
@@ -70,11 +73,18 @@ jacoco {
 }
 
 test {
-  testLogging.showStandardStreams = true
+  testLogging {
+      showStandardStreams = true
+      exceptionFormat = 'full'
+  }
   jacoco {
     append = false
     destinationFile = file("$buildDir/jacoco/jacocoTest.exec")
     classDumpFile = file("$buildDir/jacoco/classpathdumps")
+  }
+  dependencies {
+    runtime fileTree(dir: "tests/acceptance", include: "*.manifold")
+    runtime fileTree(dir: "tests/buildErrors", include: "*.manifold")
   }
 }
 
@@ -126,4 +136,12 @@ uploadArchives {
       repository(url: "file://localhost/var/www/releases")
     }
   }
+}
+
+idea {
+    module {
+        excludeDirs -= file("$buildDir")
+        excludeDirs += files { file("$buildDir").listFiles() }
+        excludeDirs -= file("$buildDir/generated-src")
+    }
 }

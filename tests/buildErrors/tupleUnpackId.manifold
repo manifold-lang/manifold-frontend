@@ -1,0 +1,14 @@
+xIn = primitive port Bool;
+xOut = primitive port Bool;
+xInPin = primitive node (Nil) -> (x: xIn);
+xOutputPin = primitive node (x: xOut) -> (Nil);
+
+a = xInPin();
+b = xInPin();
+
+foo = (a=a, b=b);
+
+// Can't have id unpack before index
+(b=c, d) = foo;
+
+xOutputPin(x=c);

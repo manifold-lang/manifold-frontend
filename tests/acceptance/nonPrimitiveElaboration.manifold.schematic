@@ -1,0 +1,73 @@
+{
+  "name": "nonPrimitiveElaboration.manifold",
+  "userDefinedTypes": {},
+  "portTypes": {
+    "xIn": {
+      "signalType": "Bool",
+      "attributes": {}
+    },
+    "xOut": {
+      "signalType": "Bool",
+      "attributes": {}
+    }
+  },
+  "nodeTypes": {
+    "xNot": {
+      "attributes": {},
+      "ports": {
+        "xbar": "xOut",
+        "x": "xIn"
+      }
+    },
+    "xInputPin": {
+      "attributes": {},
+      "ports": {
+        "x": "xOut"
+      }
+    },
+    "xOutputPin": {
+      "attributes": {},
+      "ports": {
+        "x": "xIn"
+      }
+    }
+  },
+  "constraintTypes": {},
+  "nodes": {
+    "n1": {
+      "type": "xInputPin",
+      "attributes": {},
+      "portAttrs": {
+        "x": {}
+      }
+    },
+    "n2": {
+      "type": "xNot",
+      "attributes": {},
+      "portAttrs": {
+        "xbar": {},
+        "x": {}
+      }
+    },
+    "n3": {
+      "type": "xOutputPin",
+      "attributes": {},
+      "portAttrs": {
+        "x": {}
+      }
+    }
+  },
+  "connections": {
+    "c1": {
+      "attributes": {},
+      "from": "n1:x",
+      "to": "n2:x"
+    },
+    "c2": {
+      "attributes": {},
+      "from": "n2:xbar",
+      "to": "n3:x"
+    }
+  },
+  "constraints": {}
+}

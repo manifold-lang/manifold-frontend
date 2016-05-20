@@ -1,14 +1,6 @@
 package org.manifold.compiler.front;
 
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Random;
-
+import com.google.common.base.Preconditions;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.manifold.compiler.NodeTypeValue;
@@ -16,7 +8,10 @@ import org.manifold.compiler.TypeValue;
 import org.manifold.compiler.UndefinedBehaviourError;
 import org.manifold.compiler.Value;
 
-import com.google.common.base.Preconditions;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.util.*;
+import java.util.Map.Entry;
 
 public class FunctionInvocationVertex extends ExpressionVertex {
 
@@ -112,6 +107,10 @@ public class FunctionInvocationVertex extends ExpressionVertex {
     getExpressionGraph().removeEdge(functionEdge);
     // now remove this vertex from the graph
     getExpressionGraph().removeVertex(this);
+
+    // Now actually elaborate the new node, since if this was a non-primitive
+    // it would be resolved and that's what consumers of this API expect
+    vNode.elaborate();
   }
 
   private void elaborateNonPrimitiveFunction(Value f,
@@ -158,16 +157,19 @@ public class FunctionInvocationVertex extends ExpressionVertex {
     ExpressionEdge mainGraphInput = inputEdge;
     log.debug("main graph input is " + mainGraphInput);
     ExpressionEdge mainGraphOutput = null;
-    for (ExpressionEdge e : getExpressionGraph().getEdgesFromSource(this)) {
-      mainGraphOutput = e;
-      break;
+
+    List<ExpressionEdge> sourceEdges = getExpressionGraph().getEdgesFromSource(this);
+    if (sourceEdges.size() > 0) {
+      mainGraphOutput = sourceEdges.get(0);
     }
+
     log.debug("main graph output is " + mainGraphOutput);
     // identify subgraph (body) input and output vertices
     ExpressionVertex subGraphInput = function.getInputVertex();
     ExpressionVertex subGraphOutput = function.getOutputVertex();
+
     // perform copy
-    getExpressionGraph().addSubExpressionGraph(function.getBody(),
+    getExpressionGraph().addFunctionExpressionGraph(function.getBody(),
         mainGraphInput, subGraphInput, mainGraphOutput, subGraphOutput,
         renamingMap);
     // destroy the function edge
@@ -177,10 +179,12 @@ public class FunctionInvocationVertex extends ExpressionVertex {
   }
 
   private boolean elaborated = false;
-  
+
   @Override
   public void elaborate() throws Exception {
-    if (elaborated) return;
+    if (elaborated) {
+      return;
+    }
     // Elaborate argument
     ExpressionVertex vInput = inputEdge.getSource();
     vInput.elaborate();

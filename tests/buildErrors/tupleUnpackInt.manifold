@@ -1,0 +1,3 @@
+// Must unpack to identifier
+(1) = (1, 2);
+

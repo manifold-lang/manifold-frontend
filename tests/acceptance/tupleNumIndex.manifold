@@ -1,0 +1,8 @@
+xIn = primitive port Bool;
+xOut = primitive port Bool;
+xInPin = primitive node (Nil) -> (x: xIn);
+xOutputPin = primitive node (x: xOut) -> (Nil);
+
+a = xInPin();
+foo = (a);
+xOutputPin(x=foo[0]);

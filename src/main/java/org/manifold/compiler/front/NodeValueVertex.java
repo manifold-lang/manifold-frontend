@@ -1,30 +1,14 @@
 package org.manifold.compiler.front;
 
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import com.google.common.base.Preconditions;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
-import org.manifold.compiler.ConnectionValue;
-import org.manifold.compiler.InvalidAttributeException;
-import org.manifold.compiler.NodeTypeValue;
-import org.manifold.compiler.NodeValue;
-import org.manifold.compiler.PortTypeValue;
-import org.manifold.compiler.PortValue;
+import org.manifold.compiler.*;
 import org.manifold.compiler.TypeMismatchException;
-import org.manifold.compiler.TypeValue;
-import org.manifold.compiler.UndeclaredAttributeException;
-import org.manifold.compiler.UndeclaredIdentifierException;
-import org.manifold.compiler.UndefinedBehaviourError;
-import org.manifold.compiler.Value;
+
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.util.*;
 
 public class NodeValueVertex extends ExpressionVertex {
 
@@ -96,8 +80,10 @@ public class NodeValueVertex extends ExpressionVertex {
     Set<String> inputPortNames = new HashSet<>();
     Set<String> outputPortNames = new HashSet<>();
     inputPortNames.addAll(nodeType.getPorts().keySet());
-    Map<String, Value> futurePortMap = new HashMap<>();
-    for (String outputPortName : outputType.getSubtypes().keySet()) {
+    MappedArray<String, Value> futurePortMap = new MappedArray<>();
+
+    for (MappedArray<String, TypeValue>.Entry typeEntry : outputType.getSubtypes()) {
+      String outputPortName = typeEntry.getKey();
       PortTypeValue outputPortType = nodeType.getPorts().get(outputPortName);
       FuturePortValue futurePort = new FuturePortValue(
           this, outputPortName, outputPortType);
@@ -134,9 +120,10 @@ public class NodeValueVertex extends ExpressionVertex {
       } else {
         TupleValue inputPortTuple = (TupleValue) inputPortValue;
         // same story here about unwrapping the port
-        futurePort = unwrapPort(inputPortTuple.entry("0"));
-        TupleValue attributesValue = (TupleValue) inputPortTuple.entry("1");
-        inputPortAttrs = attributesValue.getEntries();
+        futurePort = unwrapPort(inputPortTuple.atIndex(0));
+        TupleValue attributesValue = (TupleValue) inputPortTuple.atIndex(1);
+        // TODO this can probably be done better, it assumes that all tuple values are named
+        inputPortAttrs = MappedArray.toMap(attributesValue.getEntries());
       }
       futureInputPorts.put(inputPortName, futurePort);
       portAttrs.put(inputPortName, inputPortAttrs);
@@ -150,7 +137,7 @@ public class NodeValueVertex extends ExpressionVertex {
         outputPortAttrs = new HashMap<>(); // no attributes
       } else {
         TupleValue attributesValue = (TupleValue) input.entry(outputPortName);
-        outputPortAttrs = attributesValue.getEntries();
+        outputPortAttrs = MappedArray.toMap(attributesValue.getEntries());
       }
       portAttrs.put(outputPortName, outputPortAttrs);
     }

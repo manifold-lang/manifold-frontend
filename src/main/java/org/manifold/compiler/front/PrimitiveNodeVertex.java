@@ -1,20 +1,14 @@
 package org.manifold.compiler.front;
 
+import com.google.common.base.Preconditions;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+import org.manifold.compiler.*;
+
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-
-import com.google.common.base.Preconditions;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
-import org.manifold.compiler.NilTypeValue;
-import org.manifold.compiler.NodeTypeValue;
-import org.manifold.compiler.PortTypeValue;
-import org.manifold.compiler.TypeTypeValue;
-import org.manifold.compiler.TypeValue;
-import org.manifold.compiler.UndefinedBehaviourError;
-import org.manifold.compiler.Value;
 
 public class PrimitiveNodeVertex extends ExpressionVertex {
 
@@ -58,14 +52,14 @@ public class PrimitiveNodeVertex extends ExpressionVertex {
   private void extractPortTypes(TypeValue type,
       Map<String, PortTypeValue> portMap) throws TypeMismatchException {
     if (!(type instanceof TupleTypeValue)) {
-      Map<String, TypeValue> x = new HashMap<>();
+      MappedArray<String, TypeValue> x = new MappedArray<>();
       x.put("x", TypeTypeValue.getInstance());
       throw new TypeMismatchException(
           new TupleTypeValue(x),
           type);
     }
     TupleTypeValue tupleType = (TupleTypeValue) type;
-    for (Map.Entry<String, TypeValue> e : tupleType.getSubtypes().entrySet()) {
+    for (MappedArray<String, TypeValue>.Entry e : tupleType.getSubtypes()) {
       // if any type value is NIL, don't construct a port
       if (e.getValue().equals(NilTypeValue.getInstance())) {
         continue;
@@ -87,14 +81,14 @@ public class PrimitiveNodeVertex extends ExpressionVertex {
   private void extractAttributes(TypeValue type,
       Map<String, TypeValue> attrMap) throws TypeMismatchException {
     if (!(type instanceof TupleTypeValue)) {
-      Map<String, TypeValue> x = new HashMap<>();
+      MappedArray<String, TypeValue> x = new MappedArray<>();
       x.put("x", TypeTypeValue.getInstance());
       throw new TypeMismatchException(
           new TupleTypeValue(x),
           type);
     }
     TupleTypeValue tupleType = (TupleTypeValue) type;
-    for (Map.Entry<String, TypeValue> e : tupleType.getSubtypes().entrySet()) {
+    for (MappedArray<String, TypeValue>.Entry e : tupleType.getSubtypes()) {
       // if any type value is NIL, don't set an attribute
       if (e.getValue().equals(NilTypeValue.getInstance())) {
         continue;
@@ -114,8 +108,8 @@ public class PrimitiveNodeVertex extends ExpressionVertex {
 
   private FunctionTypeValue constructInstantiationSignature(
       FunctionTypeValue oldSig) {
-    Map<String, TypeValue> inputTypes = new HashMap<>();
-    Map<String, TypeValue> outputTypes = new HashMap<>();
+    MappedArray<String, TypeValue> inputTypes = new MappedArray<>();
+    MappedArray<String, TypeValue> outputTypes = new MappedArray<>();
 
     TupleTypeValue oldInputs = (TupleTypeValue) oldSig.getInputType();
     TupleTypeValue oldOutputs = (TupleTypeValue) oldSig.getOutputType();
@@ -127,7 +121,7 @@ public class PrimitiveNodeVertex extends ExpressionVertex {
     // if it does, construct a tuple type value of the form
     // (0: signal type, 1: (attributes)) and add it to the input types.
     // otherwise, only add the signal type to the input types.
-    for (Map.Entry<String, TypeValue> e : oldInputs.getSubtypes().entrySet()) {
+    for (MappedArray<String, TypeValue>.Entry e : oldInputs.getSubtypes()) {
       if (e.getValue().equals(NilTypeValue.getInstance())) {
         continue;
       }
@@ -140,8 +134,8 @@ public class PrimitiveNodeVertex extends ExpressionVertex {
           inputTypes.put(key, port.getSignalType());
         } else {
           // construct (signal type, attributes)
-          TupleTypeValue attrsType = new TupleTypeValue(port.getAttributes());
-          Map<String, TypeValue> sigType = new HashMap<>();
+          TupleTypeValue attrsType = new TupleTypeValue(new MappedArray<>(port.getAttributes()));
+          MappedArray<String, TypeValue> sigType = new MappedArray<>();
           sigType.put("0", port.getSignalType());
           sigType.put("1", attrsType);
           inputTypes.put(key, new TupleTypeValue(sigType));
@@ -157,7 +151,7 @@ public class PrimitiveNodeVertex extends ExpressionVertex {
     // all types encountered here should be Port types;
     // for each one, add the signal type to the output types,
     // and add the attributes, if any exist, as a tuple to the input types.
-    for (Map.Entry<String, TypeValue> e : oldOutputs.getSubtypes().entrySet()) {
+    for (MappedArray<String, TypeValue>.Entry e : oldOutputs.getSubtypes()) {
       if (e.getValue().equals(NilTypeValue.getInstance())) {
         continue;
       }
@@ -165,7 +159,7 @@ public class PrimitiveNodeVertex extends ExpressionVertex {
       PortTypeValue port = (PortTypeValue) e.getValue();
       outputTypes.put(key, port.getSignalType());
       if (!(port.getAttributes().isEmpty())) {
-        inputTypes.put(key, new TupleTypeValue(port.getAttributes()));
+        inputTypes.put(key, new TupleTypeValue(new MappedArray<>(port.getAttributes())));
       }
     }
 

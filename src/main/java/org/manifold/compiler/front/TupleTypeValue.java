@@ -1,20 +1,16 @@
 package org.manifold.compiler.front;
 
-import java.util.Map;
-
 import org.manifold.compiler.SchematicValueVisitor;
 import org.manifold.compiler.TypeValue;
 import org.manifold.compiler.UndefinedBehaviourError;
 
-import com.google.common.collect.ImmutableMap;
-
 public class TupleTypeValue extends TypeValue {
 
-  private final Map<String, TypeValue> subtypes;
+  private final MappedArray<String, TypeValue> subtypes;
   // TODO default values
 
-  public Map<String, TypeValue> getSubtypes() {
-    return ImmutableMap.copyOf(subtypes);
+  public MappedArray<String, TypeValue> getSubtypes() {
+    return MappedArray.copyOf(subtypes);
   }
 
   public int getSize() {
@@ -25,7 +21,7 @@ public class TupleTypeValue extends TypeValue {
     return subtypes.get(i);
   }
 
-  public TupleTypeValue(Map<String, TypeValue> subtypes) {
+  public TupleTypeValue(MappedArray<String, TypeValue> subtypes) {
     this.subtypes = subtypes;
   }
 
@@ -33,7 +29,7 @@ public class TupleTypeValue extends TypeValue {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("( ");
-    for (Map.Entry<String, TypeValue> e : subtypes.entrySet()) {
+    for (MappedArray<String, TypeValue>.Entry e : subtypes) {
       String key = e.getKey();
       TypeValue type = e.getValue();
       sb.append(key).append(":");

@@ -1,0 +1,53 @@
+{
+  "name": "tupleNumIndex.manifold",
+  "userDefinedTypes": {},
+  "portTypes": {
+    "xOut": {
+      "signalType": "Bool",
+      "attributes": {}
+    },
+    "xIn": {
+      "signalType": "Bool",
+      "attributes": {}
+    }
+  },
+  "nodeTypes": {
+    "xOutputPin": {
+      "attributes": {},
+      "ports": {
+        "x": "xOut"
+      }
+    },
+    "xInPin": {
+      "attributes": {},
+      "ports": {
+        "x": "xIn"
+      }
+    }
+  },
+  "constraintTypes": {},
+  "nodes": {
+    "n1": {
+      "type": "xInPin",
+      "attributes": {},
+      "portAttrs": {
+        "x": {}
+      }
+    },
+    "n2": {
+      "type": "xOutputPin",
+      "attributes": {},
+      "portAttrs": {
+        "x": {}
+      }
+    }
+  },
+  "connections": {
+    "c1": {
+      "attributes": {},
+      "from": "n1:x",
+      "to": "n2:x"
+    }
+  },
+  "constraints": {}
+}

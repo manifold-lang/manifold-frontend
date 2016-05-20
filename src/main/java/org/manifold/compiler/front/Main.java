@@ -1,46 +1,28 @@
 package org.manifold.compiler.front;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.antlr.v4.runtime.ANTLRInputStream;
-import org.antlr.v4.runtime.CommonTokenStream;
+import com.google.common.base.Throwables;
+import org.antlr.v4.runtime.*;
+import org.antlr.v4.runtime.atn.ATNConfigSet;
+import org.antlr.v4.runtime.dfa.DFA;
+import org.antlr.v4.runtime.misc.NotNull;
+import org.antlr.v4.runtime.misc.Nullable;
 import org.antlr.v4.runtime.misc.ParseCancellationException;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Options;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
-import org.manifold.compiler.BooleanValue;
-import org.manifold.compiler.ConnectionValue;
-import org.manifold.compiler.Frontend;
-import org.manifold.compiler.IntegerValue;
-import org.manifold.compiler.NilTypeValue;
-import org.manifold.compiler.NodeTypeValue;
-import org.manifold.compiler.NodeValue;
-import org.manifold.compiler.PortTypeValue;
-import org.manifold.compiler.UndefinedBehaviourError;
+import org.manifold.compiler.*;
 import org.manifold.compiler.middle.Schematic;
 import org.manifold.parser.ManifoldBaseVisitor;
 import org.manifold.parser.ManifoldLexer;
 import org.manifold.parser.ManifoldParser;
-import org.manifold.parser.ManifoldParser.ExpressionContext;
-import org.manifold.parser.ManifoldParser.FunctionTypeValueContext;
-import org.manifold.parser.ManifoldParser.NamespacedIdentifierContext;
-import org.manifold.parser.ManifoldParser.TupleTypeValueContext;
-import org.manifold.parser.ManifoldParser.TupleTypeValueEntryContext;
-import org.manifold.parser.ManifoldParser.TupleValueContext;
-import org.manifold.parser.ManifoldParser.TupleValueEntryContext;
+import org.manifold.parser.ManifoldParser.*;
 
-import com.google.common.base.Throwables;
+import java.io.File;
+import java.io.FileInputStream;
+import java.nio.file.Paths;
+import java.util.*;
 
 public class Main implements Frontend {
 
@@ -195,8 +177,43 @@ public class Main implements Frontend {
     // Pass the tokens to the parser
     ManifoldParser parser = new ManifoldParser(tokens);
 
+    StringBuilder errors = new StringBuilder();
+    parser.addErrorListener(new ANTLRErrorListener() {
+
+      @Override
+      public void syntaxError(@NotNull Recognizer<?, ?> recognizer, @Nullable Object offendingSymbol, int line,
+                              int charPositionInLine, @NotNull String msg, @Nullable RecognitionException e) {
+        errors.append("Error at line ").append(line).append(", char ")
+                .append(charPositionInLine).append(": ").append(msg).append("\n");
+      }
+
+      @Override
+      public void reportAmbiguity(@NotNull Parser recognizer, @NotNull DFA dfa, int startIndex, int stopIndex,
+                                  boolean exact, @Nullable BitSet ambigAlts, @NotNull ATNConfigSet configs) {
+        // Pass
+      }
+
+      @Override
+      public void reportAttemptingFullContext(@NotNull Parser recognizer, @NotNull DFA dfa, int startIndex,
+                                              int stopIndex, @Nullable BitSet conflictingAlts,
+                                              @NotNull ATNConfigSet configs) {
+        // Pass
+      }
+
+      @Override
+      public void reportContextSensitivity(@NotNull Parser recognizer, @NotNull DFA dfa, int startIndex, int stopIndex,
+                                           int prediction, @NotNull ATNConfigSet configs) {
+        // Pass
+      }
+    });
+
     // Specify our entry point
     ManifoldParser.SchematicContext context = parser.schematic();
+
+    if (errors.length() != 0) {
+      throw new FrontendBuildException(errors.toString());
+    }
+
     ExpressionContextVisitor graphBuilder = new ExpressionContextVisitor();
     List<ExpressionContext> expressionContexts = context.expression();
     for (ExpressionContext expressionContext : expressionContexts) {
@@ -231,6 +248,8 @@ class ExpressionContextVisitor extends ManifoldBaseVisitor<ExpressionVertex> {
     return this.exprGraph;
   }
 
+  private boolean isLHS = true;
+  private int nextTmpVar = 0;
   public ExpressionContextVisitor() {
     this.exprGraph = new ExpressionGraph();
   }
@@ -238,10 +257,15 @@ class ExpressionContextVisitor extends ManifoldBaseVisitor<ExpressionVertex> {
   @Override
   public ExpressionVertex visitAssignmentExpression(
       ManifoldParser.AssignmentExpressionContext context) {
+
     // get the vertex corresponding to the lvalue
-    ExpressionVertex vLeft = context.expression(0).accept(this);
+    isLHS = true;
+    ExpressionVertex vLeft = context.lvalue().accept(this);
+
     // then get the rvalue...
-    ExpressionVertex vRight = context.expression(1).accept(this);
+    isLHS = false;
+    ExpressionVertex vRight = context.rvalue().accept(this);
+
     ExpressionEdge e = new ExpressionEdge(vRight, vLeft);
     exprGraph.addEdge(e);
     return vRight;
@@ -251,10 +275,10 @@ class ExpressionContextVisitor extends ManifoldBaseVisitor<ExpressionVertex> {
   public ExpressionVertex visitFunctionInvocationExpression(
       ManifoldParser.FunctionInvocationExpressionContext context) {
     // get the vertex corresponding to the function being called
-    ExpressionVertex vFunction = context.expression(0).accept(this);
+    ExpressionVertex vFunction = context.reference().accept(this);
     ExpressionEdge eFunction = new ExpressionEdge(vFunction, null);
     // then get the input vertex
-    ExpressionVertex vInput = context.expression(1).accept(this);
+    ExpressionVertex vInput = context.rvalue().accept(this);
     ExpressionEdge eInput = new ExpressionEdge(vInput, null);
 
     FunctionInvocationVertex vInvocation = new FunctionInvocationVertex(
@@ -335,8 +359,8 @@ class ExpressionContextVisitor extends ManifoldBaseVisitor<ExpressionVertex> {
   @Override
   public ExpressionVertex visitTupleTypeValue(TupleTypeValueContext context) {
     List<TupleTypeValueEntryContext> entries = context.tupleTypeValueEntry();
-    Map<String, ExpressionEdge> typeValueEdges = new HashMap<>();
-    Map<String, ExpressionEdge> defaultValueEdges = new HashMap<>();
+    MappedArray<String, ExpressionEdge> typeValueEdges = new MappedArray<>();
+    MappedArray<String, ExpressionEdge> defaultValueEdges = new MappedArray<>();
     Integer nextAnonymousID = 0;
     for (TupleTypeValueEntryContext entryCtx : entries) {
       // each child has a typevalue, and may have
@@ -369,8 +393,14 @@ class ExpressionContextVisitor extends ManifoldBaseVisitor<ExpressionVertex> {
   @Override
   public ExpressionVertex visitTupleValue(TupleValueContext context) {
     List<TupleValueEntryContext> entries = context.tupleValueEntry();
-    Map<String, ExpressionEdge> valueEdges = new HashMap<>();
+
+    // Desugar tuple unpacking to assignment to a temporary variable, then accessing the attributes of that variable
+    if (isLHS) {
+      return unpackTuple(entries);
+    }
+
     Integer nextAnonymousID = 0;
+    MappedArray<String, ExpressionEdge> valueEdges = new MappedArray<>();
     for (TupleValueEntryContext entryCtx : entries) {
       // each child has a value, and may have an identifier (named field)
       ExpressionVertex vxValue = entryCtx.expression().accept(this);
@@ -389,6 +419,43 @@ class ExpressionContextVisitor extends ManifoldBaseVisitor<ExpressionVertex> {
     TupleValueVertex vTuple = new TupleValueVertex(exprGraph, valueEdges);
     exprGraph.addVertex(vTuple);
     return vTuple;
+  }
+
+  private ExpressionVertex unpackTuple(List<TupleValueEntryContext> entries) {
+    VariableIdentifier tmpTupleId = new VariableIdentifier(Arrays.asList("tmp_" + nextTmpVar));
+    nextTmpVar += 1;
+    ExpressionVertex tmpTuple = createVariableVertex(tmpTupleId);
+
+    int entryNum = 0;
+    boolean containsNamedEntry = false;
+    for (TupleValueEntryContext entryCtx : entries) {
+      ExpressionVertex entryVertex = entryCtx.expression().accept(this);
+
+      if (!(entryVertex instanceof VariableReferenceVertex)) {
+        String err = createLineError(entryCtx, "Unpacking target must be a variable");
+        throw new FrontendBuildException(err);
+      }
+
+      ExpressionVertex attrVertex;
+      TerminalNode entryId = entryCtx.IDENTIFIER();
+      if (entryId != null) {
+
+        attrVertex = createStaticAttributeAccessExpression(entryId.getText(), tmpTuple);
+        containsNamedEntry = true;
+
+      } else if (containsNamedEntry) {
+
+        String err = createLineError(entryCtx, "Index-based entries must be unpacked before namespaced identifiers");
+        throw new FrontendBuildException(err);
+
+      } else {
+        attrVertex = createStaticAttributeAccessExpression(entryNum, tmpTuple);
+      }
+      exprGraph.addEdge(new ExpressionEdge(attrVertex, entryVertex));
+
+      entryNum += 1;
+    }
+    return tmpTuple;
   }
 
   @Override
@@ -413,13 +480,11 @@ class ExpressionContextVisitor extends ManifoldBaseVisitor<ExpressionVertex> {
   public ExpressionVertex visitNamespacedIdentifier(
       NamespacedIdentifierContext context) {
     // keeping in mind that we may have constructed this variable already...
-    List<TerminalNode> identifierNodes = context.IDENTIFIER();
-    List<String> identifierStrings = new LinkedList<>();
-    for (TerminalNode node : identifierNodes) {
-      identifierStrings.add(node.getText());
-    }
+    VariableIdentifier id = getVariableIdentifier(context);
+    return createVariableVertex(id);
+  }
 
-    VariableIdentifier id = new VariableIdentifier(identifierStrings);
+  private ExpressionVertex createVariableVertex(VariableIdentifier id) {
     if (ReservedIdentifiers.getInstance()
         .isReservedIdentifier(id)) {
       // construct a constant value vertex with the identifier's value
@@ -475,4 +540,57 @@ class ExpressionContextVisitor extends ManifoldBaseVisitor<ExpressionVertex> {
     }
   }
 
+  private VariableIdentifier getVariableIdentifier(NamespacedIdentifierContext context) {
+    List<TerminalNode> identifierNodes = context.IDENTIFIER();
+    List<String> identifierStrings = new LinkedList<>();
+    for (TerminalNode node : identifierNodes) {
+      identifierStrings.add(node.getText());
+    }
+
+    return new VariableIdentifier(identifierStrings);
+  }
+
+  @Override
+  public StaticAttributeAccessVertex visitStaticAttributeAccessExpression(
+          @NotNull ManifoldParser.StaticAttributeAccessExpressionContext ctx) {
+    ExpressionVertex vRef = ctx.reference().accept(this);
+    if (ctx.INTEGER_VALUE() != null) {
+      return createStaticAttributeAccessExpression(Integer.parseInt(ctx.INTEGER_VALUE().toString()), vRef);
+    }
+    return createStaticAttributeAccessExpression(ctx.IDENTIFIER().getText(), vRef);
+  }
+
+  private StaticAttributeAccessVertex createStaticAttributeAccessExpression(int entryIdx, ExpressionVertex vRef) {
+    ExpressionEdge e = new ExpressionEdge(vRef, null);
+    exprGraph.addEdge(e);
+
+    StaticAttributeAccessVertex attributeVertex = new StaticNumberAttributeAccessVertex(
+          exprGraph, e, entryIdx);
+
+    exprGraph.addVertex(attributeVertex);
+    return attributeVertex;
+  }
+
+  private StaticAttributeAccessVertex createStaticAttributeAccessExpression(String attrName, ExpressionVertex vRef) {
+    ExpressionEdge e = new ExpressionEdge(vRef, null);
+    exprGraph.addEdge(e);
+
+    StaticAttributeAccessVertex attributeVertex = new StaticStringAttributeAccessVertex(
+        exprGraph, e, attrName);
+
+    exprGraph.addVertex(attributeVertex);
+    return attributeVertex;
+  }
+
+  private String createLineError(ParserRuleContext ctx, String reason) {
+    Token start = ctx.getStart();
+    StringBuilder sb = new StringBuilder()
+        .append("Error at line ")
+        .append(start.getLine())
+        .append(", char ")
+        .append(start.getCharPositionInLine() + 1)
+        .append(": ")
+        .append(reason);
+    return sb.toString();
+  }
 }

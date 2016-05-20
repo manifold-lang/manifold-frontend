@@ -11,28 +11,22 @@ import org.manifold.compiler.Value;
 
 import com.google.common.base.Preconditions;
 
-public class StaticAttributeAccessVertex extends ExpressionVertex {
+abstract class StaticAttributeAccessVertex extends ExpressionVertex {
 
   private static Logger log = LogManager.getLogger(
       "StaticAttributeAccessVertex");
 
-  private final ExpressionEdge exprEdge;
+  protected final ExpressionEdge exprEdge;
   public ExpressionEdge getExpressionEdge() {
     return this.exprEdge;
   }
 
-  private final String attributeID;
-  public String getAttributeID() {
-    return this.attributeID;
-  }
-
-  public StaticAttributeAccessVertex(ExpressionGraph exprGraph,
-      ExpressionEdge exprEdge, String attrID) {
+  protected StaticAttributeAccessVertex(ExpressionGraph exprGraph,
+                                     ExpressionEdge exprEdge) {
     super(exprGraph);
     this.exprEdge = exprEdge;
     this.exprEdge.setTarget(this);
     this.exprEdge.setName("expr");
-    this.attributeID = attrID;
   }
 
   private TypeValue type = null;
@@ -49,14 +43,22 @@ public class StaticAttributeAccessVertex extends ExpressionVertex {
     return this.value;
   }
 
+  protected abstract Value getVal(TupleValue tupleValue);
+
+  /**
+   * The string representation of the value used to access this attribute
+   */
+  protected abstract String attributeToString();
+
   @Override
   public void elaborate() throws Exception {
     log.debug("elaborating static attribute access");
     ExpressionVertex vExpr = exprEdge.getSource();
     vExpr.elaborate();
+
     Value val = vExpr.getValue();
     TupleValue tupleValue = (TupleValue) val;
-    this.value = tupleValue.entry(attributeID);
+    this.value = getVal(tupleValue);
     this.type = this.value.getType();
   }
 
@@ -78,7 +80,7 @@ public class StaticAttributeAccessVertex extends ExpressionVertex {
 
   @Override
   public String toString() {
-    String retval = "attribute[ " + attributeID + " ]";
+    String retval = "attribute[ " + attributeToString() + " ]";
     if (this.value == null) {
       retval += " (not elaborated)";
     }
@@ -99,13 +101,72 @@ public class StaticAttributeAccessVertex extends ExpressionVertex {
     writer.write("];");
     writer.newLine();
   }
+}
+
+class StaticStringAttributeAccessVertex extends StaticAttributeAccessVertex {
+
+  private final String attributeID;
+
+  public String getAttributeID() {
+    return this.attributeID;
+  }
+
+  @Override
+  protected String attributeToString() {
+    return this.attributeID;
+  }
+
+  @Override
+  protected final Value getVal(TupleValue tupleValue) {
+    return tupleValue.entry(attributeID);
+  }
+
+  public StaticStringAttributeAccessVertex(ExpressionGraph exprGraph,
+                                     ExpressionEdge exprEdge, String attrID) {
+    super(exprGraph, exprEdge);
+    this.attributeID = attrID;
+  }
 
   @Override
   public ExpressionVertex copy(ExpressionGraph g,
-      Map<ExpressionEdge, ExpressionEdge> edgeMap) {
+                               Map<ExpressionEdge, ExpressionEdge> edgeMap) {
     Preconditions.checkArgument(edgeMap.containsKey(exprEdge));
-    return new StaticAttributeAccessVertex(g,
-        edgeMap.get(exprEdge), attributeID);
+    return new StaticStringAttributeAccessVertex(g,
+            edgeMap.get(exprEdge), attributeID) {
+    };
+  }
+}
+
+class StaticNumberAttributeAccessVertex extends StaticAttributeAccessVertex {
+
+  private final int attributeIDX;
+
+  public final int getAttributeIDX() {
+    return this.attributeIDX;
   }
 
+  @Override
+  protected String attributeToString() {
+    return Integer.toString(this.attributeIDX);
+  }
+
+  @Override
+  protected final Value getVal(TupleValue tupleValue) {
+    return tupleValue.atIndex(attributeIDX);
+  }
+
+  public StaticNumberAttributeAccessVertex(ExpressionGraph exprGraph,
+                                           ExpressionEdge exprEdge, int attrIDX) {
+    super(exprGraph, exprEdge);
+    this.attributeIDX = attrIDX;
+  }
+
+  @Override
+  public ExpressionVertex copy(ExpressionGraph g,
+                               Map<ExpressionEdge, ExpressionEdge> edgeMap) {
+    Preconditions.checkArgument(edgeMap.containsKey(exprEdge));
+    return new StaticNumberAttributeAccessVertex(g,
+            edgeMap.get(exprEdge), attributeIDX) {
+    };
+  }
 }
