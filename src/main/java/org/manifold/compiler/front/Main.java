@@ -21,6 +21,7 @@ import org.manifold.parser.ManifoldParser.*;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.*;
 
@@ -163,15 +164,11 @@ public class Main implements Frontend {
 
   }
 
-  @Override
-  public Schematic invokeFrontend(CommandLine cmd) throws Exception {
-
-    File inputFile = Paths.get(cmd.getArgs()[0]).toFile();
-
+  public ExpressionGraph parseFile(File inputFile) throws IOException {
     ManifoldLexer lexer = new ManifoldLexer(new ANTLRInputStream(
         new FileInputStream(inputFile)));
 
-     // Get a list of matched tokens
+    // Get a list of matched tokens
     CommonTokenStream tokens = new CommonTokenStream(lexer);
 
     // Pass the tokens to the parser
@@ -184,7 +181,7 @@ public class Main implements Frontend {
       public void syntaxError(@NotNull Recognizer<?, ?> recognizer, @Nullable Object offendingSymbol, int line,
                               int charPositionInLine, @NotNull String msg, @Nullable RecognitionException e) {
         errors.append("Error at line ").append(line).append(", char ")
-                .append(charPositionInLine).append(": ").append(msg).append("\n");
+            .append(charPositionInLine).append(": ").append(msg).append("\n");
       }
 
       @Override
@@ -214,16 +211,35 @@ public class Main implements Frontend {
       throw new FrontendBuildException(errors.toString());
     }
 
-    ExpressionContextVisitor graphBuilder = new ExpressionContextVisitor();
+    ExpressionGraph exprGraph = new ExpressionGraph();
+
+    ImportVisitor importVisitor = new ImportVisitor();
+    importVisitor.visit(context);
+    for (String filePath : importVisitor.getImports()) {
+      File importedFile = new File(inputFile.getParent(), filePath);
+      ExpressionGraph g = parseFile(importedFile.getCanonicalFile());
+      exprGraph.addSubGraph(g);
+    }
+
+    ExpressionContextVisitor graphBuilder = new ExpressionContextVisitor(exprGraph);
     List<ExpressionContext> expressionContexts = context.expression();
     for (ExpressionContext expressionContext : expressionContexts) {
       graphBuilder.visit(expressionContext);
     }
-    ExpressionGraph exprGraph = graphBuilder.getExpressionGraph();
+    exprGraph = graphBuilder.getExpressionGraph();
+
     log.debug("writing out initial expression graph");
     File exprGraphDot = new File(inputFile.getName() + ".exprs.dot");
     exprGraph.writeDOTFile(exprGraphDot);
+    return exprGraph;
+  }
 
+  @Override
+  public Schematic invokeFrontend(CommandLine cmd) throws Exception {
+
+    File inputFile = Paths.get(cmd.getArgs()[0]).toFile();
+
+    ExpressionGraph exprGraph = parseFile(inputFile);
     exprGraph.verifyVariablesSingleAssignment();
 
     Schematic schematic = new Schematic(inputFile.getName());
@@ -241,6 +257,26 @@ public class Main implements Frontend {
   }
 }
 
+class ImportVisitor extends ManifoldBaseVisitor<Void> {
+
+  private List<String> imports;
+  public List<String> getImports() {
+    return this.imports;
+  }
+
+  public ImportVisitor() {
+    this.imports = new ArrayList<>();
+  }
+
+  @Override
+  public Void visitImportExpression(ManifoldParser.ImportExpressionContext context) {
+    String filePath = context.importExpr().STRING_VALUE().getText();
+    filePath = filePath.replaceAll("\\\"", "\"");
+    this.imports.add(filePath.substring(1, filePath.length() - 1));
+    return null;
+  }
+}
+
 class ExpressionContextVisitor extends ManifoldBaseVisitor<ExpressionVertex> {
 
   private ExpressionGraph exprGraph;
@@ -251,7 +287,11 @@ class ExpressionContextVisitor extends ManifoldBaseVisitor<ExpressionVertex> {
   private boolean isLHS = true;
   private int nextTmpVar = 0;
   public ExpressionContextVisitor() {
-    this.exprGraph = new ExpressionGraph();
+    this(new ExpressionGraph());
+  }
+
+  public ExpressionContextVisitor(ExpressionGraph exprGraph) {
+    this.exprGraph = exprGraph;
   }
 
   @Override
@@ -520,6 +560,11 @@ class ExpressionContextVisitor extends ManifoldBaseVisitor<ExpressionVertex> {
         }
       }
     }
+  }
+
+  @Override
+  public ExpressionVertex visitImportExpression(ImportExpressionContext context) {
+    return null;
   }
 
   @Override

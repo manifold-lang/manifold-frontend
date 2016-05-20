@@ -17,6 +17,7 @@ LINE_COMMENT: '//' ~[\r\n]* -> skip;
 INTEGER_VALUE: [0-9]+;
 BOOLEAN_VALUE: 'false' | 'true';
 TYPE_KEYWORD: 'Type';
+STRING_VALUE: '"' ( '\"' | ~["] )*? '"';
 
 tupleTypeValueEntry: (IDENTIFIER ':')? typevalue ('=' expression)?;
 tupleTypeValue: '(' tupleTypeValueEntry (',' tupleTypeValueEntry)* ')';
@@ -76,7 +77,7 @@ rvalue:
   | INTEGER_VALUE # Integer
   | functionValue # Function
   | reference rvalue # FunctionInvocationExpression // TODO: function invocation needs to be 'reference arglist'
-  | reference # RValueExpression
+  | reference # ReferenceExpression
   | lvalue '=' rvalue # AssignmentExpression
   | 'primitive' 'port' typevalue (':' tupleTypeValue)? # PrimitivePortDefinitionExpression
   | 'primitive' 'node' functionTypeValue # PrimitiveNodeDefinitionExpression
@@ -88,8 +89,14 @@ lvalue:
   reference # LValueExpression
   ;
 
+importExpr: 'import' STRING_VALUE;
+
 // TODO: declarations as expressions
-expression: /* declaration | */ rvalue;
+expression:
+    importExpr #ImportExpression
+  | rvalue #RValueExpression
+  // | declaration
+  ;
 
 EXPRESSION_TERMINATOR: ';';
 
