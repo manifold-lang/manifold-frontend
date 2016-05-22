@@ -7,7 +7,7 @@ In much the same way that computer programs are written in programming
 languages, digital circuits is "written" in a **hardware description language**.
 
 The two hardware languages in wide use today are **VHDL** and **Verilog**. Both
-were designed in the early 1980's and both have remained frozen in time since,
+were designed in the early 1980s and both have remained frozen in time since,
 while our understanding of how to build expressive, powerful, and usable
 programming languages has grown considerably. These languages are in widespread
 use because they are the best tool for the job but they aren't nearly as
@@ -93,35 +93,7 @@ In order to make Manifold readable and conceptually consistent, the following na
 # Front-End Language
 
 The Manifold front-end language expresses systems in many problem
-domains, including digital hardware and microfluidics, as text. It is optimized for conceptual elegance, expressiveness, and human readability.  
-
-## Bools
-
-The most fundamental type in Manifold is the `Bool` type. A
-`Bool` represents a single bit of information: true or false,
-represented as `true` or `false`. For example, we might turn
-on our time machine by setting
-
-```
-Bool timeMachineOn = true;
-```
-
-The compiler can infer the type of the variable so it is equivalent to write
-
-```
-timeMachineOn = true;
-```
-
-## Annotations
-
-Manifold supports a system capable of annotating variables with additional metadata using **annotations**. These annotations are similar to Java's annotations in syntax, being prefixed by a *@* and optionally taking parameters
-
-```
-@bar Int width = 5;
-@foo(10, true) Int height = 200;
-```
-
-At the moment, annotations are defined by the compiler but user-defined annotations are planned for future versions of the spec.
+domains, including digital hardware and microfluidics, as text. It is optimized for conceptual elegance, expressiveness, and human readability.
 
 ## Compile-Time vs Run-Time
 
@@ -142,17 +114,24 @@ Manifold is designed so that you don't need to think about the difference
 between these two types of operations but may take control over them, if
 desired.
 
-### Explicit Static vs Dynamic
+## Bools
 
-Values may be explicitly constrained to being knowable at compile time or run time using annotations. For example, we can require that `width` is known statically (at compile time) by defining it as
+The most fundamental type in Manifold is the `Bool` type. A
+`Bool` represents a single bit of information: true or false,
+represented as `true` or `false`. For example, we might turn
+on our time machine by setting
 
 ```
-@static Int width;
+timeMachineOn = true;
 ```
 
-If a variable or property is annotated as `@static` then we guarantee that its value is known at compile-time. Its value is additionally available at run-time.
+## Ints
 
-If a variable or property is annotated as `@dynamic` then we guarantee that its value is *not* known at compile-time but is known at run-time.
+The `Int` data type is used to represent positive integers.
+
+```
+year = 5000;
+```
 
 ## Tuples
 
@@ -166,52 +145,128 @@ machine that can travel to any year with an optional invisibility shield. You
 could define a tuple which groups and names these variables,
 
 ```
-(year: Int, invisibility: Bool) input;
+input = (year=5000, invisibility=true);
 ```
 
-create such a tuple,
+and access the properties in that tuple,
 
 ```
-input = (year: 5000, invisibility: true);
-```
-
-and access the properties in that tuple
-
-```
-input.invisibility; // => 500
+input.invisibility; // => 5000
 input.year;         // => true
 ```
 
-### Default Properties
-
-The declaration may also include a default value for any property. 
+Variables in a tuple can also be unnamed. Unnamed properties are identified by their position and accessed through an integer index.
 
 ```
-(year: Int = 3000, invisible: Bool = false);
+input = (1, 2, 3);
+
+input[0]; // => 1
+input[1]; // => 2
 ```
 
-Any property which does not have a default value is required; any property which
-does have a default value is optional.
+## Functions
 
-### Positional Properties
+A function is an entity that, given an input value, uses some logic to produce
+an output value.
 
-In addition to named properties, tuples may have implicitly named positional
-properties; these properties are named by their position in the tuple. For
-example, an ordered pair (x,y) might be represented as
-
-```
-(Int, Int);
-```
-
-where the first `Int` is implicitly named `0` and the second `1`.
+Suppose you were to write a function that determined if an input to the time
+machine was unsafe (i.e. targeting a year after the robot uprising and without the
+invisibility shield). This function takes in some input in the form `(year:
+Int, invisible: Bool invisible)` and produces some
+output in the form of a `Bool`.
 
 ```
-(Int, Int) position = (2, 4);
-position.0;  // => 2
-position.1;  // => 4
+reversedTuple = (a: Bool, b: Bool) -> (c: Bool, d: Bool) {
+  c = b;
+  d = a;
+};
 ```
 
-### Repeated Positional Properties (Arrays)
+Note in the above function that there is no `return` statement -- output
+variables defined in the function definition are assigned to directly.
+
+This function could be invoked as,
+
+```
+(foo, bar) = reversedTuple(a = true, b = false);
+// (foo = false, bar = true)
+```
+
+## Comments
+
+Manifold supports C++-style comment syntax, with both single-line `//` comments and multiline `/* ... */` comments.
+
+```
+/*
+This is a comment
+*/
+
+// This is also a comment.
+```
+
+# Planned or Speculative Features
+
+The features described in this section are not currently part of the Manifold language. They may be added in future versions depending on need.
+
+## Typing System
+
+ - `Type` is the "type" of all types in Manifold (including itself)
+ - `Bool` is a single bit of data, with the value `true` or `false`. 
+ - `Function` is an entity that produces an output value given an input value and potentially some internal state.
+ - `Tuple` is a structured group of values.
+ - `Enum`
+ - `Int`
+
+Since types are first class objects of type `Type`, a new type can be
+defined via variable assignment. For example, the definition of Bit might look
+like
+
+```
+Type Bit = Bool;
+```
+
+## Enums
+
+An enum allows you to restrict a domain to a fixed set of named values. For example, if you want to represent the states of a traffic light, you might define a TrafficLightState enum as follows
+
+```
+Type TrafficLight = Enum(
+    (green: Bool, yellow: Bool, red: Bool),
+    green: (1, 0, 0),
+    yellow: (0, 1, 0),
+    red: (0, 0, 1)
+);
+```
+
+This enum can then be used as 
+
+```
+TrafficLight south = TrafficLight.green;
+TrafficLight east = (0, 0, 1);
+// But 'TrafficLight east = (0, 1, 1)' would be rejected by the compiler
+```
+
+If no type or values are specified for an enum, integers are used implicitly
+
+```
+Type Color = Enum(
+    green,
+    red,
+    blue
+);
+Color color1 = Color.red;
+Color color2 = 0;
+```
+
+## Package System
+
+A package and import system makes it possible to combine multiple Manifold files together into one schematic. Imported files contribute their declarations and definitions into the importing file's scope.
+
+```
+import "otherFile.manifold";
+```
+
+## Arrays
 
 Arrays in Manifold are a special case of tuples which have many positional
 properties of a particular type. For example, an integer array of width 3 could be defined as
@@ -247,8 +302,6 @@ array.width; // => 5
 ```
 
 ### Subscript Operator
-
-*TODO This is super speculative. Do we even want to include this in the spec right now?*
 
 ```
 Type TimeMachineSettings = (year: year, invisible: invisible);
@@ -322,76 +375,49 @@ If a tuple with one property of type `A`, `(A)`, is cast to type `A`, then the v
 Bool winning = (true);
 ```
 
-## Enums
+### Parameterized Types
 
-An enum allows you to restrict a domain to a fixed set of named values. For example, if you want to represent the states of a traffic light, you might define a TrafficLightState enum as follows
-
-```
-Type TrafficLight = Enum(
-    (green: Bool, yellow: Bool, red: Bool),
-    green: (1, 0, 0),
-    yellow: (0, 1, 0),
-    red: (0, 0, 1)
-);
-```
-
-This enum can then be used as 
+Some types have compile-time parameters (like generics in C++). Such types are
+defined via the `=>` syntax. Take, for example, this simple definition of an
+`Array` type
 
 ```
-TrafficLight south = TrafficLight.green;
-TrafficLight east = (0, 0, 1);
-// But 'TrafficLight east = (0, 1, 1)' would be rejected by the compiler
+Type Array = (Type T, Int width) => (T...width, width: width);
 ```
 
-If no type or values are specified for an enum, integers are used implicitly
+Using this defined type, a developer could declare an instance of `Array` as
 
 ```
-Type Color = Enum(
-    green,
-    red,
-    blue
-);
-Color color1 = Color.red;
-Color color2 = 0;
+Array(SpaceshipEngine, 5) engines;
 ```
 
-## Functions
+## Function Overloading
 
-A function is an entity that, given an input value, uses some logic to produce
-an output value.
-
-Suppose you were to write a function that determined if an input to the time
-machine was unsafe (i.e. targeting a year after the robot uprising and without the
-invisibility shield). This function takes in some input in the form `(year:
-Int, invisible: Bool invisible)` and produces some
-output in the form of a `Bool`.
+Manifold is single assignment but there is one exception to
+this rule: assigning to a function variable multiple times will overload that
+function to support different input and output types. For example
 
 ```
-TimeMachineInput = (year: Int, invisible: Bool invisible);
+travel = Int year -> Bool success {
+  success = travel (year, false);
+};
 
-Function isDangerous = TimeMachineInput -> Bool dangerous {
-  dangerous = year > 5000 and !invisible;
+travel = (year: Int year, invisibility: Bool invisibility) 
+    -> Bool success {
+  ...
 };
 ```
 
-Note in the above function that there is no `return` statement -- output
-variables defined in the function definition are assigned to directly.
+This example defines a function called `travel` which accepts either our time
+machine input tuple or just an input year. Overloaded implementations may freely call each other.
 
-This function could be invoked as
-```
-settings = (year: 10000, invisibility: false);
-dangerous = isDangerous settings;
-```
+## Digital Hardware Core Library
 
-Multiple functions may be chained together as
-```
-if (!isDangerous settings) {
-  travel startFluxCapacitor configureTimeCrystals settings;
-}
-```
-
-where the returned value of `configureTimeCrystals` is passed to
-`startFluxCapacitor` and that of `startFluxCapacitor` is passed to `travel`.
+ - `series <T> ((T -> T)...@static Int width) -> T`
+ - `recall<T> (T initial, T next) -> T`
+ - `count (Int hz, Int mod) -> Int`
+ - `cycle<T> (Int hz, T...) -> T`
+ - `if ((Bool, Void -> Void)...)`
 
 ### Stateful Functions
 
@@ -421,117 +447,6 @@ Note that the output value of `recall` is used as an input value to
 itself! This might seem strange in the sequential programming paradigm but it is
 perfectly natural in hardware!
 
-### Overloading
-
-We said earlier that Manifold is single assignment but there is one exception to
-this rule: assigning to a function variable multiple times will overload that
-function to support different input and output types. For example
-
-```
-travel = Int year -> Bool success {
-  success = travel (year, false);
-};
-
-travel = (year: Int year, invisibility: Bool invisibility) 
-    -> Bool success {
-  ...
-};
-```
-
-This example defines a function called `travel` which accepts either our time
-machine input tuple or just an input year. Overloaded implementations may freely call each other.
-
-## Types
-
- - `Bool` is a single bit of data, with the value `high` or `false`. 
- - `Function` is an entity that produces an output value given an input value and potentially some internal state.
- - `Tuple` is a structured group of values.
- - `Enum`
- - `Int`
- - `Type` is the "type" of all types in Manifold (including itself)
-
-Since types are first class objects of type `Type`, a new type can be
-defined via variable assignment. For example, the definition of Bit might look
-like
-
-```
-Type Bit = Bool;
-```
-
-### Parameterized Types
-
-Some types have compile-time parameters (like generics in C++). Such types are
-defined via the `=>` syntax. Take, for example, this simple definition of an
-`Array` type
-
-```
-Type Array = (Type T, Int width) => (T...width, width: width);
-```
-
-Using this defined type, a developer could declare an instance of `Array` as
-
-```
-Array(SpaceshipEngine, 5) engines;
-```
-
-## Constraints
-
-*TODO*
-
-## Packages and Namespacing
-
-# Digital Hardware Core Library
-
- - `recall`
- - `count`
- - `cycle`
-
-```
-parallel = import parallel;
-```
-
-You may use destructuring assignment with packages
-
-```
-(parallel) = import Manifold;
-```
-
-or `*` destructuring assignment to import everything from the package into local scope
-
-```
-* = import Manifold;
-```
-
-## Core Library
-
-### `Bool`
-
-### `Int`
-
-### `Tuple`
-
-### `Void`
-
-A type describing the lack of a value. Equivalent to `()`.
-
-### `Type`
-
-### `parallel <T, U> ((T -> U)...@static Int width) -> (T...width)`
-
-### `series <T> ((T -> T)...@static Int width) -> T`
-
-## Digital Hardware Library
-
-### `recall<T> (T initial, T next) -> T`
-
-### `count (Int hz, Int mod) -> Int`
-
-### `cycle<T> (Int hz, T...) -> T`
-
-### `if ((Bool, Void -> Void)...)`
-
-## Microfluidics Library
-
 # Intermediate Language
 
  - **port**
@@ -551,63 +466,71 @@ Type information goes into **definition files** which are shipped with the back 
 
 Programs written in the Manifold front-end language compile into **schematic files** which can then be compiled into domain specific artifacts by the appropriate back end. For example, a description of a digital hardware circuit in the Manifold front-end would be compiled to a digital hardware schematic file that, when fed into the digital hardware back-end, would produce a VHDL or Verilog file.
 
-## Definition Files
-
-Each back-end compiler includes a definition file which declares all of its supported primitives. 
-
-```
-{
-  "node_types": {...}
-  "connection_types": {...}
-  "port_types": {...}
-}
-```
-
-### Node Definitions
-
-```
-{
-  "port_types": {
-    "name": {
-      attributes: {...}
-    }
-    , ...
-  }
-}
-```
-
-### Node Types
-
-```
-{
-  "node_types": {
-    "name": {
-      ports: ["name"]
-      attributes: {...}
-    }
-    , ...
-  }
-}
-```
-
-### Connection Types
-
 ## Schematic Files
 
 A schematic written in the Manifold front-end language will compile into a  intermediate file of this format. 
 
 ```
 {
+  "name": "..."
+  "userDefinedTypes": {...}
+  "portTypes": {...}
+  "nodeTypes": {...}
+  "constraintTypes": {...}
   "nodes": {...}
   "connections": {...}
-  "ports": {...}
+  "constraints": {...}
 }
+```
+### Port Types
+
+```
+"portTypes": {
+  "name": {
+    "signalType": "...",
+    "attributes": {...}
+  },
+  ...
+},
+```
+
+### Node Types
+
+
+```
+"nodeTypes": {
+  "name": {
+    "attributes": {...},
+    "ports": {...}
+  },
+  ...
+},
 ```
 
 ### Nodes
 
-### Ports
+```
+"nodes": {
+  "name": {
+    "type": "...",
+    "attributes": {...},
+    "portAttrs": {...}
+  },
+  ...
+},
+```
 
 ### Connections
 
-### Constraints
+```
+"connections": {
+  "name": {
+    "attributes": {...},
+    "from": "...",
+    "to": "..."
+  },
+  ...
+},
+```
+
+
