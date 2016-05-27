@@ -21,7 +21,7 @@ public class ExpressionGraph {
   Set<ExpressionVertex> allVertices = new HashSet<>();
 
   private Map<VariableIdentifier, VariableReferenceVertex> variableVertices =
-    new HashMap<>();
+      new HashMap<>();
   public Map<VariableIdentifier, VariableReferenceVertex> getVariableVertices() {
     return ImmutableMap.copyOf(variableVertices);
   }
@@ -40,22 +40,22 @@ public class ExpressionGraph {
 
     // do not add the input/output vertices since they are being replaced by the main graph's vertices
     subGraph.getVertices().stream()
-      .forEach(v -> {
-        ExpressionVertex newVertex;
-        if (v instanceof VariableReferenceVertex) {
-          VariableIdentifier ref = ((VariableReferenceVertex) v).getId();
-          try {
-            this.addVertex(ref);
-            newVertex = this.getVariableVertex(ref);
-          } catch (MultipleDefinitionException | VariableNotDefinedException e) {
-            throw Throwables.propagate(e);
+        .forEach(v -> {
+          ExpressionVertex newVertex;
+          if (v instanceof VariableReferenceVertex) {
+            VariableIdentifier ref = ((VariableReferenceVertex) v).getId();
+            try {
+              this.addVertex(ref);
+              newVertex = this.getVariableVertex(ref);
+            } catch (MultipleDefinitionException | VariableNotDefinedException e) {
+              throw Throwables.propagate(e);
+            }
+          } else {
+            newVertex = v.copy(this, exprEdgeMap);
+            this.addVertex(newVertex);
           }
-        } else {
-          newVertex = v.copy(this, exprEdgeMap);
-          this.addVertex(newVertex);
-        }
-        exprVertexMap.put(v, newVertex);
-      });
+          exprVertexMap.put(v, newVertex);
+        });
 
     // each edge in subgraph -> edge in main graph should refer to the same source/target
     subGraph.getEdges().forEach(edge -> {
@@ -126,9 +126,9 @@ public class ExpressionGraph {
   private List<ExpressionEdge> edges = new ArrayList<>();
   public void addEdge(ExpressionEdge e) {
     Preconditions.checkArgument(
-      (e.getSource() == null || getVertices().contains(e.getSource()))
-        && (e.getTarget() == null || getVertices().contains(e.getTarget())),
-      "Edge had unexpected vertices " + e.toString());
+        (e.getSource() == null || getVertices().contains(e.getSource()))
+            && (e.getTarget() == null || getVertices().contains(e.getTarget())),
+        "Edge had unexpected vertices " + e.toString());
     edges.add(e);
   }
   public void removeEdge(ExpressionEdge e) {
@@ -194,9 +194,9 @@ public class ExpressionGraph {
     // Sanity checks
     // input/output vertices exist in mainGraph and subGraph
     Preconditions.checkArgument(subGraph.getVertices().containsAll(
-      ImmutableList.of(subGraphInput, subGraphOutput)));
+        ImmutableList.of(subGraphInput, subGraphOutput)));
     Preconditions.checkArgument(this.edges.containsAll(
-      ImmutableList.of(mainGraphInput, mainGraphOutput)));
+        ImmutableList.of(mainGraphInput, mainGraphOutput)));
 
     // input edge and output edge should be connected through the same node (the function invocation)
     Preconditions.checkArgument(mainGraphInput.getTarget() == mainGraphOutput.getSource());
@@ -218,28 +218,28 @@ public class ExpressionGraph {
 
     // do not add the input/output vertices since they are being replaced by the main graph's vertices
     subGraph.getVertices().stream()
-      .filter(vertex -> vertex != subGraphInput)
-      .forEach(v -> {
-        ExpressionVertex newVertex;
-        if (v instanceof VariableReferenceVertex) {
-          // special case; handle renaming here
-          if (variableRenamingMap.containsKey(v)) {
-            newVertex = variableRenamingMap.get(v);
-          } else {
-            VariableIdentifier ref = ((VariableReferenceVertex) v).getId();
-            try {
-              this.addVertex(ref);
-              newVertex = this.getVariableVertex(ref);
-            } catch (MultipleDefinitionException | VariableNotDefinedException e) {
-              throw Throwables.propagate(e);
+        .filter(vertex -> vertex != subGraphInput)
+        .forEach(v -> {
+          ExpressionVertex newVertex;
+          if (v instanceof VariableReferenceVertex) {
+            // special case; handle renaming here
+            if (variableRenamingMap.containsKey(v)) {
+              newVertex = variableRenamingMap.get(v);
+            } else {
+              VariableIdentifier ref = ((VariableReferenceVertex) v).getId();
+              try {
+                this.addVertex(ref);
+                newVertex = this.getVariableVertex(ref);
+              } catch (MultipleDefinitionException | VariableNotDefinedException e) {
+                throw Throwables.propagate(e);
+              }
             }
+          } else {
+            newVertex = v.copy(this, exprEdgeMap);
+            this.addVertex(newVertex);
           }
-        } else {
-          newVertex = v.copy(this, exprEdgeMap);
-          this.addVertex(newVertex);
-        }
-        exprVertexMap.put(v, newVertex);
-      });
+          exprVertexMap.put(v, newVertex);
+        });
 
     // Replace the function input vertex with the vertices from the main graph
     ExpressionVertex inputVertex = mainGraphInput.getSource();
@@ -283,9 +283,9 @@ public class ExpressionGraph {
       // write all edges
       for (ExpressionEdge e : edges) {
         String source = Integer.toString(System.identityHashCode(
-          e.getSource()));
+            e.getSource()));
         String target = Integer.toString(System.identityHashCode(
-          e.getTarget()));
+            e.getTarget()));
         // for now
         writer.write(source + " -> " + target);
         if (!e.getName().equals("")) {
@@ -317,7 +317,7 @@ public class ExpressionGraph {
       if (edges.size() != 1) {
         StringBuilder error = new StringBuilder();
         error.append(String.format("Vertex %s has %d incoming edges:",
-          vertex.toString(), edges.size()));
+            vertex.toString(), edges.size()));
         edges.forEach(edge -> error.append(" {")
                                 .append(edge.toString())
                                 .append("}"));
