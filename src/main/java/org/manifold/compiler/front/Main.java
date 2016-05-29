@@ -228,9 +228,9 @@ public class Main implements Frontend {
     }
 
     ExpressionContextVisitor graphBuilder = new ExpressionContextVisitor(exprGraph);
-    List<ExpressionContext> expressionContexts = context.expression();
-    for (ExpressionContext expressionContext : expressionContexts) {
-      graphBuilder.visit(expressionContext);
+    List<StatementContext> statementContexts = context.statement();
+    for (StatementContext statementContext : statementContexts) {
+      graphBuilder.visit(statementContext);
     }
     exprGraph = graphBuilder.getExpressionGraph();
 

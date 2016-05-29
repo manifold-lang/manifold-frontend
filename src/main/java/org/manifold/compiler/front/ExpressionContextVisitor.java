@@ -304,7 +304,7 @@ class ExpressionContextVisitor extends ManifoldBaseVisitor<ExpressionVertex> {
   }
 
   @Override
-  public ExpressionVertex visitImportExpression(ImportExpressionContext context) {
+  public ExpressionVertex visitImportStatement(ImportStatementContext context) {
     return null;
   }
 

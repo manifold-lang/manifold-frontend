@@ -28,7 +28,7 @@ tupleValue:
   '(' ')';
 
 functionTypeValue: tupleTypeValue '->' tupleTypeValue;
-functionValue: functionTypeValue '{' (expression EXPRESSION_TERMINATOR)* '}';
+functionValue: functionTypeValue '{' (expression STATEMENT_TERMINATOR)* '}';
 
 ////////////////////////////////////////////////////////
 //                                                    //
@@ -89,16 +89,19 @@ lvalue:
   reference # LValueExpression
   ;
 
-importExpr: 'import' STRING_VALUE;
-
 // TODO: declarations as expressions
 expression:
-    importExpr #ImportExpression
-  | rvalue #RValueExpression
+  rvalue
   // | declaration
   ;
 
-EXPRESSION_TERMINATOR: ';';
+statement:
+    expression #ExpressionStatment
+    | 'import' STRING_VALUE #ImportStatement
+    ;
+
+STATEMENT_TERMINATOR: ';';
+
 
 ////////////////////////////////////////////////////////
 //                                                    //
@@ -106,4 +109,4 @@ EXPRESSION_TERMINATOR: ';';
 //                                                    //
 ////////////////////////////////////////////////////////
 
-schematic: (expression EXPRESSION_TERMINATOR)*;
+schematic: (statement STATEMENT_TERMINATOR)*;
