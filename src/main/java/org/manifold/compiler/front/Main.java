@@ -22,8 +22,10 @@ import org.manifold.parser.ManifoldParser.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.net.URL;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.stream.Stream;
 
 public class Main implements Frontend {
 
@@ -164,6 +166,14 @@ public class Main implements Frontend {
 
   }
 
+  private File getLib(String libPath) {
+    URL url = this.getClass().getClassLoader().getResource("libraries/" + libPath);
+    if (url == null) {
+      return null;
+    }
+    return new File(url.getFile());
+  }
+
   public ExpressionGraph parseFile(File inputFile) throws IOException {
     ManifoldLexer lexer = new ManifoldLexer(new ANTLRInputStream(
         new FileInputStream(inputFile)));
@@ -216,13 +226,21 @@ public class Main implements Frontend {
     ImportVisitor importVisitor = new ImportVisitor();
     importVisitor.visit(context);
     for (String filePath : importVisitor.getImports()) {
-      File importedFile = new File(inputFile.getParent(), filePath);
-      if (!importedFile.exists()) {
-        importedFile = new File(inputFile.getParent(), filePath + ".manifold");
-        if (!importedFile.exists()) {
-          throw new FrontendBuildException("Import " + filePath + " not found");
-        }
-      }
+      File importedFile = Stream.of(
+          new File(inputFile.getParent(), filePath),
+          new File(inputFile.getParent(), filePath + ".manifold")
+      ).filter(f -> f.exists())
+          .findFirst()
+          .orElseGet(() -> {
+            File lib = getLib(filePath);
+            if (lib == null) {
+              lib = getLib(filePath + ".manifold");
+            }
+            if (lib != null) {
+              return lib;
+            }
+            throw new FrontendBuildException("Import " + filePath + " not found");
+          });
       ExpressionGraph g = parseFile(importedFile);
       exprGraph.addSubGraph(g, true);
     }
