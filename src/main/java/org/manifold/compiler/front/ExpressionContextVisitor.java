@@ -25,7 +25,12 @@ class ExpressionContextVisitor extends ManifoldBaseVisitor<ExpressionVertex> {
     return this.exprGraph;
   }
 
+  // Used to distinguish between unpacking and defining tuples
   private boolean isLHS = true;
+
+  // Should tuples and variables be exported
+  private boolean isPublic = false;
+
   private int nextTmpVar = 0;
   public ExpressionContextVisitor() {
     this(new ExpressionGraph());
@@ -41,10 +46,12 @@ class ExpressionContextVisitor extends ManifoldBaseVisitor<ExpressionVertex> {
 
     // get the vertex corresponding to the lvalue
     isLHS = true;
+    isPublic = context.VISIBILITY_PUBLIC() != null;
     ExpressionVertex vLeft = context.lvalue().accept(this);
 
     // then get the rvalue...
     isLHS = false;
+    isPublic = false;
     ExpressionVertex vRight = context.rvalue().accept(this);
 
     ExpressionEdge e = new ExpressionEdge(vRight, vLeft);
@@ -262,7 +269,11 @@ class ExpressionContextVisitor extends ManifoldBaseVisitor<ExpressionVertex> {
       NamespacedIdentifierContext context) {
     // keeping in mind that we may have constructed this variable already...
     VariableIdentifier id = getVariableIdentifier(context);
-    return createVariableVertex(id);
+    ExpressionVertex v = createVariableVertex(id);
+    if (v instanceof VariableReferenceVertex && isLHS) {
+      ((VariableReferenceVertex) v).setExported(isPublic);
+    }
+    return v;
   }
 
   private ExpressionVertex createVariableVertex(VariableIdentifier id) {

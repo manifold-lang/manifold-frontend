@@ -26,7 +26,12 @@ public class ExpressionGraph {
     return ImmutableMap.copyOf(variableVertices);
   }
 
-  public void addSubGraph(ExpressionGraph subGraph) {
+  /**
+   * Copy everything from subGraph into this graph
+   * @param subGraph the graph to copy
+   * @param importVars should the visibility modifiers in subGraph are respected
+   */
+  public void addSubGraph(ExpressionGraph subGraph, boolean importVars) {
     // map of subgraph edge -> new edge to be inserted
     Map<ExpressionEdge, ExpressionEdge> exprEdgeMap = new HashMap<>();
     subGraph.getEdges().forEach(e -> {
@@ -43,12 +48,20 @@ public class ExpressionGraph {
         .forEach(v -> {
           ExpressionVertex newVertex;
           if (v instanceof VariableReferenceVertex) {
-            VariableIdentifier ref = ((VariableReferenceVertex) v).getId();
-            try {
-              this.addVertex(ref);
-              newVertex = this.getVariableVertex(ref);
-            } catch (MultipleDefinitionException | VariableNotDefinedException e) {
-              throw Throwables.propagate(e);
+            VariableReferenceVertex var = (VariableReferenceVertex) v;
+            // Allow for ignoring the state of import, this is the case when this function
+            // is used to copy the body of a FunctionValueVertex
+            if (var.getExported() || !importVars) {
+              VariableIdentifier ref = var.getId();
+              try {
+                this.addVertex(ref);
+                newVertex = this.getVariableVertex(ref);
+              } catch (MultipleDefinitionException | VariableNotDefinedException e) {
+                throw Throwables.propagate(e);
+              }
+            } else {
+              newVertex = new VariableReferenceVertex(this, var.getId());
+              this.addVertex(newVertex);
             }
           } else {
             newVertex = v.copy(this, exprEdgeMap);
@@ -321,12 +334,13 @@ public class ExpressionGraph {
         edges.forEach(edge -> error.append(" {")
                                 .append(edge.toString())
                                 .append("}"));
-        errors.add(error.toString());
+        log.error(error.toString());
+        errors.add(((VariableReferenceVertex) vertex).getId() + " is defined multiple times");
       }
     });
 
     if (!errors.isEmpty()) {
-      throw new RuntimeException(errors.toString());
+      throw new FrontendBuildException(errors.toString());
     }
   }
 

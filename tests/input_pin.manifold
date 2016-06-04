@@ -1,9 +1,13 @@
-digitalOut = primitive port Bool;
-inputPin = primitive node (Nil) -> (out: digitalOut);
+public digitalOut = primitive port Bool;
+public inputPin = primitive node (Nil) -> (out: digitalOut);
 
-in = inputPin();
+public in = inputPin();
 
-myfunc = (a: Bool, b: Bool) -> (out: Bool) {
+public myfunc = (a: Bool, b: Bool) -> (out: Bool) {
   out = a;
 };
+
+public (x, y) = (inputPin(), inputPin());
+
+hiddenVar = 2;
 

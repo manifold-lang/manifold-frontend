@@ -224,7 +224,7 @@ public class Main implements Frontend {
         }
       }
       ExpressionGraph g = parseFile(importedFile);
-      exprGraph.addSubGraph(g);
+      exprGraph.addSubGraph(g, true);
     }
 
     ExpressionContextVisitor graphBuilder = new ExpressionContextVisitor(exprGraph);

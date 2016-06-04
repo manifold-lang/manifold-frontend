@@ -153,7 +153,8 @@ public class FunctionValueVertex extends ExpressionVertex {
     // Use a new expression graph for the body, just like when constructing a function initially.
     // This maintains proper scoping
     ExpressionGraph newBody = new ExpressionGraph();
-    newBody.addSubGraph(functionBody);
+    newBody.addSubGraph(functionBody, false);
+
     return new FunctionValueVertex(g, edgeMap.get(functionTypeEdge), newBody);
   }
 }

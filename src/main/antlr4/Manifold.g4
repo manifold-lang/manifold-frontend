@@ -19,6 +19,8 @@ BOOLEAN_VALUE: 'false' | 'true';
 TYPE_KEYWORD: 'Type';
 STRING_VALUE: '"' ( '\"' | ~["] )*? '"';
 
+VISIBILITY_PUBLIC: 'public';
+
 tupleTypeValueEntry: (IDENTIFIER ':')? typevalue ('=' expression)?;
 tupleTypeValue: '(' tupleTypeValueEntry (',' tupleTypeValueEntry)* ')';
 
@@ -78,7 +80,7 @@ rvalue:
   | functionValue # Function
   | reference rvalue # FunctionInvocationExpression // TODO: function invocation needs to be 'reference arglist'
   | reference # ReferenceExpression
-  | lvalue '=' rvalue # AssignmentExpression
+  | VISIBILITY_PUBLIC? lvalue '=' rvalue # AssignmentExpression
   | 'primitive' 'port' typevalue (':' tupleTypeValue)? # PrimitivePortDefinitionExpression
   | 'primitive' 'node' functionTypeValue # PrimitiveNodeDefinitionExpression
   ;

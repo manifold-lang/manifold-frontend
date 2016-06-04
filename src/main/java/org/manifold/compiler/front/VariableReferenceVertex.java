@@ -1,30 +1,43 @@
 package org.manifold.compiler.front;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.IOException;
-import java.util.List;
-import java.util.Map;
-
 import org.manifold.compiler.TypeValue;
 import org.manifold.compiler.UndefinedBehaviourError;
 import org.manifold.compiler.Value;
 
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+
 public class VariableReferenceVertex extends ExpressionVertex {
-  private VariableIdentifier id;
+  protected VariableIdentifier id;
+  protected boolean exported;
   public VariableIdentifier getIdentifier() {
     return id;
   }
   
   public VariableReferenceVertex(ExpressionGraph g, VariableIdentifier id) {
+    this(g, id, false);
+  }
+
+  public VariableReferenceVertex(ExpressionGraph g, VariableIdentifier id, boolean exported) {
     super(g);
     this.id = id;
+    this.exported = exported;
   }
 
   public VariableIdentifier getId() {
     return id;
   }
-  
+
+  public boolean getExported() {
+    return exported;
+  }
+
+  public void setExported(boolean exported) {
+    this.exported = exported;
+  }
+
   @Override
   public String toString() {
     return "var " + id.toString();
@@ -47,7 +60,7 @@ public class VariableReferenceVertex extends ExpressionVertex {
 
   @Override
   public ExpressionVertex copy(ExpressionGraph g, Map<ExpressionEdge, ExpressionEdge> edgeMap) {
-    return new VariableReferenceVertex(g, id);
+    return new VariableReferenceVertex(g, id, exported);
   }
 
   private TypeValue type = null;
@@ -60,7 +73,7 @@ public class VariableReferenceVertex extends ExpressionVertex {
       return incoming.get(0);
     } else if (incoming.size() == 0) {
       // not assigned
-      throw new UndefinedBehaviourError("variable '" + id + "' not assigned");
+      throw new VariableNotDefinedException(id);
     } else { 
       throw new UndefinedBehaviourError("variable '" + id + "' multiply assigned");
     }

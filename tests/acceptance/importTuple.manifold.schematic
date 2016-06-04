@@ -1,5 +1,5 @@
 {
-  "name": "import.manifold",
+  "name": "importTuple.manifold",
   "userDefinedTypes": {},
   "portTypes": {
     "digitalOut": {
@@ -59,7 +59,7 @@
   "connections": {
     "c1": {
       "attributes": {},
-      "from": "n2:out",
+      "from": "n3:out",
       "to": "n4:in"
     }
   },
