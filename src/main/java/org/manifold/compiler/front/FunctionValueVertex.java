@@ -150,9 +150,12 @@ public class FunctionValueVertex extends ExpressionVertex {
   @Override
   public ExpressionVertex copy(ExpressionGraph g,
       Map<ExpressionEdge, ExpressionEdge> edgeMap) {
-    // TODO Auto-generated method stub
-    return null;
-  }
+    // Use a new expression graph for the body, just like when constructing a function initially.
+    // This maintains proper scoping
+    ExpressionGraph newBody = new ExpressionGraph();
+    newBody.addSubGraph(functionBody, false);
 
+    return new FunctionValueVertex(g, edgeMap.get(functionTypeEdge), newBody);
+  }
 }
 

@@ -39,6 +39,7 @@ public class TestBuildErrors extends AbstractTestFiles {
     if (Files.exists(expectedErrorPath)) {
       byte[] encoded = Files.readAllBytes(expectedErrorPath);
       expectedError = new String(encoded, Charset.defaultCharset());
+      expectedError = normalizeLineEndings(expectedError);
     }
 
     boolean isCaught = false;
@@ -47,6 +48,7 @@ public class TestBuildErrors extends AbstractTestFiles {
     } catch (FrontendBuildException error) {
       isCaught = true;
       String actualError = error.getMessage();
+      actualError = normalizeLineEndings(actualError);
 
       if (expectedError == null) {
         FileWriter fileWriter = new FileWriter(expectedErrorPath.toFile());
@@ -81,6 +83,10 @@ public class TestBuildErrors extends AbstractTestFiles {
       Assert.fail("Expected a FrontendBuildException to occur when invoking frontend for " +
               expectedErrorPath.toAbsolutePath());
     }
+  }
+
+  private String normalizeLineEndings(String fileContents) {
+    return fileContents.replaceAll("\\r\\n?", "\n");
   }
 }
 

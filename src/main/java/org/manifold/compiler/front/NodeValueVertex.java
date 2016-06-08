@@ -213,7 +213,7 @@ public class NodeValueVertex extends ExpressionVertex {
 
   @Override
   public ExpressionVertex copy(ExpressionGraph g, Map<ExpressionEdge, ExpressionEdge> edgeMap) {
-    Preconditions.checkArgument(edgeMap.containsKey(signature));
-    return new NodeValueVertex(g, nodeType, signature, edgeMap.get(signature));
+    Preconditions.checkArgument(edgeMap.containsKey(inputEdge));
+    return new NodeValueVertex(g, nodeType, signature, edgeMap.get(inputEdge));
   }
 }
