@@ -102,7 +102,7 @@ checkstyle {
   configFile = new File(rootDir, "checkstyle.xml")
   ignoreFailures = false
   showViolations = true
-  toolVersion = "5.9"
+  toolVersion = "6.18"
 }
 
 antlr4 {

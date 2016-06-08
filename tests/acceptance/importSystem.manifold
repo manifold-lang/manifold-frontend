@@ -1,0 +1,4 @@
+import "circuits";
+
+x = inputPin();
+outputPin(in=x);

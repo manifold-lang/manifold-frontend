@@ -17,6 +17,9 @@ LINE_COMMENT: '//' ~[\r\n]* -> skip;
 INTEGER_VALUE: [0-9]+;
 BOOLEAN_VALUE: 'false' | 'true';
 TYPE_KEYWORD: 'Type';
+STRING_VALUE: '"' ( '\"' | ~["] )*? '"';
+
+VISIBILITY_PUBLIC: 'public';
 
 tupleTypeValueEntry: (IDENTIFIER ':')? typevalue ('=' expression)?;
 tupleTypeValue: '(' tupleTypeValueEntry (',' tupleTypeValueEntry)* ')';
@@ -27,7 +30,7 @@ tupleValue:
   '(' ')';
 
 functionTypeValue: tupleTypeValue '->' tupleTypeValue;
-functionValue: functionTypeValue '{' (expression EXPRESSION_TERMINATOR)* '}';
+functionValue: functionTypeValue '{' (expression STATEMENT_TERMINATOR)* '}';
 
 ////////////////////////////////////////////////////////
 //                                                    //
@@ -76,8 +79,8 @@ rvalue:
   | INTEGER_VALUE # Integer
   | functionValue # Function
   | reference rvalue # FunctionInvocationExpression // TODO: function invocation needs to be 'reference arglist'
-  | reference # RValueExpression
-  | lvalue '=' rvalue # AssignmentExpression
+  | reference # ReferenceExpression
+  | VISIBILITY_PUBLIC? lvalue '=' rvalue # AssignmentExpression
   | 'primitive' 'port' typevalue (':' tupleTypeValue)? # PrimitivePortDefinitionExpression
   | 'primitive' 'node' functionTypeValue # PrimitiveNodeDefinitionExpression
   ;
@@ -89,9 +92,18 @@ lvalue:
   ;
 
 // TODO: declarations as expressions
-expression: /* declaration | */ rvalue;
+expression:
+  rvalue
+  // | declaration
+  ;
 
-EXPRESSION_TERMINATOR: ';';
+statement:
+    expression #ExpressionStatment
+    | 'import' STRING_VALUE #ImportStatement
+    ;
+
+STATEMENT_TERMINATOR: ';';
+
 
 ////////////////////////////////////////////////////////
 //                                                    //
@@ -99,4 +111,4 @@ EXPRESSION_TERMINATOR: ';';
 //                                                    //
 ////////////////////////////////////////////////////////
 
-schematic: (expression EXPRESSION_TERMINATOR)*;
+schematic: (statement STATEMENT_TERMINATOR)*;
