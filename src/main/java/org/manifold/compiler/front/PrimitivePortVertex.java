@@ -1,16 +1,12 @@
 package org.manifold.compiler.front;
 
+import com.google.common.base.Preconditions;
+import org.manifold.compiler.*;
+
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-
-import com.google.common.base.Preconditions;
-import org.manifold.compiler.NilTypeValue;
-import org.manifold.compiler.PortTypeValue;
-import org.manifold.compiler.TypeTypeValue;
-import org.manifold.compiler.TypeValue;
-import org.manifold.compiler.Value;
 
 public class PrimitivePortVertex extends ExpressionVertex {
 
@@ -98,8 +94,8 @@ public class PrimitivePortVertex extends ExpressionVertex {
 
   @Override
   public ExpressionVertex copy(ExpressionGraph g, Map<ExpressionEdge, ExpressionEdge> edgeMap) {
-    Preconditions.checkArgument(edgeMap.containsKey(signalTypeEdge) && edgeMap.containsKey(signalTypeEdge));
-    return new PrimitivePortVertex(g, edgeMap.get(signalTypeEdge), edgeMap.get(signalTypeEdge));
+    Preconditions.checkArgument(edgeMap.containsKey(signalTypeEdge) && edgeMap.containsKey(attributesEdge));
+    return new PrimitivePortVertex(g, edgeMap.get(signalTypeEdge), edgeMap.get(attributesEdge));
   }
 
   @Override

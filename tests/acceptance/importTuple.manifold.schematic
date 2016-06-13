@@ -1,0 +1,67 @@
+{
+  "name": "importTuple.manifold",
+  "userDefinedTypes": {},
+  "portTypes": {
+    "digitalIn": {
+      "signalType": "Bool",
+      "attributes": {}
+    },
+    "digitalOut": {
+      "signalType": "Bool",
+      "attributes": {}
+    }
+  },
+  "nodeTypes": {
+    "inputPin": {
+      "attributes": {},
+      "ports": {
+        "out": "digitalOut"
+      }
+    },
+    "outputPin": {
+      "attributes": {},
+      "ports": {
+        "in": "digitalIn"
+      }
+    }
+  },
+  "constraintTypes": {},
+  "nodes": {
+    "n1": {
+      "type": "inputPin",
+      "attributes": {},
+      "portAttrs": {
+        "out": {}
+      }
+    },
+    "n2": {
+      "type": "inputPin",
+      "attributes": {},
+      "portAttrs": {
+        "out": {}
+      }
+    },
+    "n3": {
+      "type": "outputPin",
+      "attributes": {},
+      "portAttrs": {
+        "in": {}
+      }
+    },
+    "n4": {
+      "type": "inputPin",
+      "attributes": {},
+      "portAttrs": {
+        "out": {}
+      }
+    }
+  },
+  "connections": {
+    "c1": {
+      "attributes": {},
+      "from": "n1:out",
+      "to": "n3:in"
+    }
+  },
+  "constraints": {}
+}

@@ -105,7 +105,7 @@ public class NodeValueVertex extends ExpressionVertex {
 
     for (String inputPortName : inputPortNames) {
       PortTypeValue inputPortType = nodeType.getPorts().get(inputPortName);
-      Value inputPortValue = input.entry(inputPortName);
+      Value inputPortValue = input.getEntry(inputPortName);
       // if the port has attributes, this is a tuple
       // (0: FuturePortValue, 1: (attributes))
       // otherwise, this is just a FuturePortValue
@@ -120,8 +120,8 @@ public class NodeValueVertex extends ExpressionVertex {
       } else {
         TupleValue inputPortTuple = (TupleValue) inputPortValue;
         // same story here about unwrapping the port
-        futurePort = unwrapPort(inputPortTuple.atIndex(0));
-        TupleValue attributesValue = (TupleValue) inputPortTuple.atIndex(1);
+        futurePort = unwrapPort(inputPortTuple.getEntry(0));
+        TupleValue attributesValue = (TupleValue) inputPortTuple.getEntry(1);
         // TODO this can probably be done better, it assumes that all tuple values are named
         inputPortAttrs = MappedArray.toMap(attributesValue.getEntries());
       }
@@ -136,14 +136,14 @@ public class NodeValueVertex extends ExpressionVertex {
       if (outputPortType.getAttributes().isEmpty()) {
         outputPortAttrs = new HashMap<>(); // no attributes
       } else {
-        TupleValue attributesValue = (TupleValue) input.entry(outputPortName);
+        TupleValue attributesValue = (TupleValue) input.getEntry(outputPortName);
         outputPortAttrs = MappedArray.toMap(attributesValue.getEntries());
       }
       portAttrs.put(outputPortName, outputPortAttrs);
     }
 
     for (String attrName : nodeType.getAttributes().keySet()) {
-      Value attrValue = input.entry(attrName);
+      Value attrValue = input.getEntry(attrName);
       nodeAttrs.put(attrName, attrValue);
     }
 
@@ -213,7 +213,7 @@ public class NodeValueVertex extends ExpressionVertex {
 
   @Override
   public ExpressionVertex copy(ExpressionGraph g, Map<ExpressionEdge, ExpressionEdge> edgeMap) {
-    Preconditions.checkArgument(edgeMap.containsKey(signature));
-    return new NodeValueVertex(g, nodeType, signature, edgeMap.get(signature));
+    Preconditions.checkArgument(edgeMap.containsKey(inputEdge));
+    return new NodeValueVertex(g, nodeType, signature, edgeMap.get(inputEdge));
   }
 }
