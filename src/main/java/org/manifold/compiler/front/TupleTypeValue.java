@@ -4,7 +4,7 @@ import org.manifold.compiler.SchematicValueVisitor;
 import org.manifold.compiler.TypeValue;
 import org.manifold.compiler.UndefinedBehaviourError;
 
-public class TupleTypeValue extends TypeValue {
+public class TupleTypeValue extends TypeValue implements NamedEntryTypeValue {
 
   private final MappedArray<String, TypeValue> subtypes;
   // TODO default values
@@ -17,7 +17,11 @@ public class TupleTypeValue extends TypeValue {
     return subtypes.size();
   }
 
-  public TypeValue entry(int i){
+  public TypeValue getEntry(String key) {
+    return subtypes.get(key);
+  }
+
+  public TypeValue getEntry(int i){
     return subtypes.get(i);
   }
 
@@ -58,8 +62,8 @@ public class TupleTypeValue extends TypeValue {
     }
     // type-check subexpressions for equality
     for (int i = 0; i < getSize(); ++i) {
-      TypeValue myType = entry(i).getType();
-      TypeValue otherType = oTuple.entry(i).getType();
+      TypeValue myType = getEntry(i).getType();
+      TypeValue otherType = oTuple.getEntry(i).getType();
       if (!myType.equals(otherType)) {
         return false;
       }
@@ -84,8 +88,8 @@ public class TupleTypeValue extends TypeValue {
     }
     // type-check subexpressions
     for (int i = 0; i < getSize(); ++i) {
-      TypeValue myType = entry(i).getType();
-      TypeValue otherType = oTuple.entry(i).getType();
+      TypeValue myType = getEntry(i).getType();
+      TypeValue otherType = oTuple.getEntry(i).getType();
       if (!myType.isSubtypeOf(otherType)) {
         return false;
       }

@@ -1,3 +1,0 @@
-import "../input_pin";
-
-in = inputPin();

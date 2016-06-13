@@ -1,7 +1,7 @@
-import "../input_pin.manifold";
+pin = import "../input_pin.manifold";
 
 digitalIn = primitive port Bool;
 outputPin = primitive node (in: digitalIn) -> (Nil);
 
-v = myfunc(a=in, b=in);
+v = pin.myfunc(a=pin.in, b=pin.in);
 outputPin(in=v);
