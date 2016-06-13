@@ -14,6 +14,7 @@ public class ImportVertex extends ExpressionVertex {
   private NamespaceIdentifier namespace;
   private ExpressionGraph includedGraph;
   private TypeValue type;
+  private Value value;
 
   public ImportVertex(ExpressionGraph exprGraph, ExpressionGraph includedGraph) {
     super(exprGraph);
