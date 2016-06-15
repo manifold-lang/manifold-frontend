@@ -30,7 +30,7 @@ tupleValue:
   '(' ')';
 
 functionTypeValue: tupleTypeValue '->' tupleTypeValue;
-functionValue: functionTypeValue '{' (expression STATEMENT_TERMINATOR)* '}';
+functionValue: functionTypeValue '{' (expression EXPRESSION_TERMINATOR)* '}';
 
 ////////////////////////////////////////////////////////
 //                                                    //
@@ -98,7 +98,7 @@ expression:
   // | declaration
   ;
 
-STATEMENT_TERMINATOR: ';';
+EXPRESSION_TERMINATOR: ';';
 
 
 ////////////////////////////////////////////////////////
@@ -107,4 +107,4 @@ STATEMENT_TERMINATOR: ';';
 //                                                    //
 ////////////////////////////////////////////////////////
 
-schematic: (expression STATEMENT_TERMINATOR)*;
+schematic: (expression EXPRESSION_TERMINATOR)*;

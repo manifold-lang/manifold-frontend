@@ -24,7 +24,6 @@ import java.util.stream.Stream;
 
 class ExpressionContextVisitor extends ManifoldBaseVisitor<ExpressionVertex> {
 
-  private ExpressionGraphParser parser;
   private ExpressionGraph exprGraph;
   private File inputFile;
   private List<String> errors;
@@ -46,7 +45,6 @@ class ExpressionContextVisitor extends ManifoldBaseVisitor<ExpressionVertex> {
 
   public ExpressionContextVisitor(ExpressionGraph exprGraph, File inputFile) {
     this.inputFile = inputFile;
-    this.parser = new ExpressionGraphParser();
     this.exprGraph = exprGraph;
     this.errors = new ArrayList<>();
   }
@@ -366,16 +364,7 @@ class ExpressionContextVisitor extends ManifoldBaseVisitor<ExpressionVertex> {
       return null;
     }
 
-    ExpressionGraph g;
-    try {
-      g = parser.parseFile(importedFile);
-    } catch (Exception e) {
-      errors.add(e.getMessage().trim());
-      errors.add("Error while parsing included file " + filePath);
-      return null;
-    }
-
-    ExpressionVertex v = new ImportVertex(exprGraph, g);
+    ExpressionVertex v = new ImportVertex(exprGraph, importedFile);
     exprGraph.addVertex(v);
     return v;
   }

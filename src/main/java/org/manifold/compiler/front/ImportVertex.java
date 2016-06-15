@@ -5,20 +5,21 @@ import org.manifold.compiler.UndefinedBehaviourError;
 import org.manifold.compiler.Value;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
 public class ImportVertex extends ExpressionVertex {
 
+  private File importedFile;
   private NamespaceIdentifier namespace;
-  private ExpressionGraph includedGraph;
   private TypeValue type;
   private Value value;
 
-  public ImportVertex(ExpressionGraph exprGraph, ExpressionGraph includedGraph) {
+  public ImportVertex(ExpressionGraph exprGraph, File importedFile) {
     super(exprGraph);
-    this.includedGraph = includedGraph;
+    this.importedFile = importedFile;
   }
 
   @Override
@@ -37,6 +38,16 @@ public class ImportVertex extends ExpressionVertex {
       return;
     }
 
+    ExpressionGraphParser parser = new ExpressionGraphParser();
+    ExpressionGraph importedGraph;
+    try {
+      importedGraph = parser.parseFile(importedFile);
+    } catch (FrontendBuildException e) {
+      throw new FrontendBuildException(
+          "Could not parse " + importedFile.getName() + "\n" +
+              e.getMessage());
+    }
+
     ExpressionGraph exprGraph = getExpressionGraph();
     List<ExpressionEdge> targets = exprGraph.getEdgesFromSource(this);
     if (targets.size() != 1) {
@@ -48,7 +59,7 @@ public class ImportVertex extends ExpressionVertex {
     }
     namespace = new NamespaceIdentifier(((VariableReferenceVertex) target).getId().getName());
 
-    exprGraph.addSubGraph(includedGraph, namespace);
+    exprGraph.addSubGraph(importedGraph, namespace);
     this.value = new ImportValue(getExpressionGraph(), namespace);
     this.type = this.value.getType();
   }
@@ -75,7 +86,7 @@ public class ImportVertex extends ExpressionVertex {
 
   @Override
   public ExpressionVertex copy(ExpressionGraph g, Map<ExpressionEdge, ExpressionEdge> edgeMap) {
-    ImportVertex v = new ImportVertex(g, includedGraph);
+    ImportVertex v = new ImportVertex(g, importedFile);
     v.namespace = namespace;
     return v;
   }
