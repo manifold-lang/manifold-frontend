@@ -30,7 +30,7 @@ tupleValue:
   '(' ')';
 
 functionTypeValue: tupleTypeValue '->' tupleTypeValue;
-functionValue: functionTypeValue '{' (expression STATEMENT_TERMINATOR)* '}';
+functionValue: functionTypeValue '{' (expression EXPRESSION_TERMINATOR)* '}';
 
 ////////////////////////////////////////////////////////
 //                                                    //
@@ -83,6 +83,7 @@ rvalue:
   | VISIBILITY_PUBLIC? lvalue '=' rvalue # AssignmentExpression
   | 'primitive' 'port' typevalue (':' tupleTypeValue)? # PrimitivePortDefinitionExpression
   | 'primitive' 'node' functionTypeValue # PrimitiveNodeDefinitionExpression
+  | 'import' STRING_VALUE #ImportExpr
   ;
 
 lvalue:
@@ -97,12 +98,7 @@ expression:
   // | declaration
   ;
 
-statement:
-    expression #ExpressionStatment
-    | 'import' STRING_VALUE #ImportStatement
-    ;
-
-STATEMENT_TERMINATOR: ';';
+EXPRESSION_TERMINATOR: ';';
 
 
 ////////////////////////////////////////////////////////
@@ -111,4 +107,4 @@ STATEMENT_TERMINATOR: ';';
 //                                                    //
 ////////////////////////////////////////////////////////
 
-schematic: (statement STATEMENT_TERMINATOR)*;
+schematic: (expression EXPRESSION_TERMINATOR)*;

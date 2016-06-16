@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import org.antlr.v4.runtime.misc.Nullable;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.manifold.compiler.UndefinedBehaviourError;
@@ -13,6 +14,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class ExpressionGraph {
 
@@ -29,9 +32,18 @@ public class ExpressionGraph {
   /**
    * Copy everything from subGraph into this graph
    * @param subGraph the graph to copy
-   * @param importVars should the visibility modifiers in subGraph are respected
    */
-  public void addSubGraph(ExpressionGraph subGraph, boolean importVars) {
+  public void addSubGraph(ExpressionGraph subGraph) {
+    addSubGraph(subGraph, null);
+  }
+
+  /**
+   * Copy all vertices from subGraph into this graph.
+   * @param subGraph the graph to copy
+   * @param namespace The namespace for any exported variables. If this is null all variables will be exported under
+   *                  the same name.
+   */
+  public void addSubGraph(ExpressionGraph subGraph, @Nullable NamespaceIdentifier namespace) {
     // map of subgraph edge -> new edge to be inserted
     Map<ExpressionEdge, ExpressionEdge> exprEdgeMap = new HashMap<>();
     subGraph.getEdges().forEach(e -> {
@@ -42,6 +54,7 @@ public class ExpressionGraph {
 
     // map of subgraph vertex -> new vertex
     Map<ExpressionVertex, ExpressionVertex> exprVertexMap = new HashMap<>();
+    List<String> oldNs = namespace == null ? new ArrayList<>() : namespace.getName();
 
     // do not add the input/output vertices since they are being replaced by the main graph's vertices
     subGraph.getVertices().stream()
@@ -51,8 +64,13 @@ public class ExpressionGraph {
             VariableReferenceVertex var = (VariableReferenceVertex) v;
             // Allow for ignoring the state of import, this is the case when this function
             // is used to copy the body of a FunctionValueVertex
-            if (var.getExported() || !importVars) {
-              VariableIdentifier ref = var.getId();
+            if (namespace == null || var.getExported()) {
+              List<String> newNs =
+                  Stream.concat(
+                      oldNs.stream(),
+                      var.getId().getNamespaceIdentifier().getName().stream())
+                      .collect(Collectors.toList());
+              VariableIdentifier ref = new VariableIdentifier(new NamespaceIdentifier(newNs), var.getId().getName());
               try {
                 this.addVertex(ref);
                 newVertex = this.getVariableVertex(ref);
@@ -61,6 +79,8 @@ public class ExpressionGraph {
               }
             } else {
               newVertex = new VariableReferenceVertex(this, var.getId());
+              // Uses the ExpressionVertex overload which will add this node to the non-variable vertices,
+              // instead of variable
               this.addVertex(newVertex);
             }
           } else {

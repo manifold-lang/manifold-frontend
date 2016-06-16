@@ -1,1 +1,7 @@
-import "parseError.manifold";
+error = import "parseError.manifold";
+
+digitalIn = primitive port Bool;
+outputPin = primitive node (in: digitalIn) -> (Nil);
+
+// error isn't parsed until usage, so force the elaboration here
+outputPin(error.foo);

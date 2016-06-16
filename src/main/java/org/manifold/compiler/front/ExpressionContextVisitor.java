@@ -14,13 +14,20 @@ import org.manifold.parser.ManifoldBaseVisitor;
 import org.manifold.parser.ManifoldLexer;
 import org.manifold.parser.ManifoldParser.*;
 
+import java.io.File;
+import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Stream;
 
 class ExpressionContextVisitor extends ManifoldBaseVisitor<ExpressionVertex> {
 
   private ExpressionGraph exprGraph;
+  private File inputFile;
+  private List<String> errors;
+
   public ExpressionGraph getExpressionGraph() {
     return this.exprGraph;
   }
@@ -32,12 +39,26 @@ class ExpressionContextVisitor extends ManifoldBaseVisitor<ExpressionVertex> {
   private boolean isPublic = false;
 
   private int nextTmpVar = 0;
-  public ExpressionContextVisitor() {
-    this(new ExpressionGraph());
+  public ExpressionContextVisitor(File inputFile) {
+    this(new ExpressionGraph(), inputFile);
   }
 
-  public ExpressionContextVisitor(ExpressionGraph exprGraph) {
+  public ExpressionContextVisitor(ExpressionGraph exprGraph, File inputFile) {
+    this.inputFile = inputFile;
     this.exprGraph = exprGraph;
+    this.errors = new ArrayList<>();
+  }
+
+  public List<String> getErrors() {
+    return errors;
+  }
+
+  private File getLib(String libPath) {
+    URL url = this.getClass().getClassLoader().getResource("libraries/" + libPath);
+    if (url == null) {
+      return null;
+    }
+    return new File(url.getFile());
   }
 
   @Override
@@ -81,7 +102,7 @@ class ExpressionContextVisitor extends ManifoldBaseVisitor<ExpressionVertex> {
   public ExpressionVertex visitFunctionValue(
       FunctionValueContext ctx) {
     ExpressionContextVisitor functionGraphBuilder =
-        new ExpressionContextVisitor();
+        new ExpressionContextVisitor(inputFile);
     ctx.expression().forEach(functionGraphBuilder::visit);
     ExpressionGraph fSubGraph = functionGraphBuilder.getExpressionGraph();
 
@@ -315,8 +336,37 @@ class ExpressionContextVisitor extends ManifoldBaseVisitor<ExpressionVertex> {
   }
 
   @Override
-  public ExpressionVertex visitImportStatement(ImportStatementContext context) {
-    return null;
+  public ExpressionVertex visitImportExpr(ImportExprContext context) {
+    String importString = context.STRING_VALUE().getText()
+        .replaceAll("\\\"", "\"");
+    importString = importString.substring(1, importString.length() - 1);
+
+    // Reassign to a new variable to satisfy the lambda requirement of "final" variables
+    String filePath = importString;
+
+    File importedFile = Stream.of(
+        new File(inputFile.getParent(), filePath),
+        new File(inputFile.getParent(), filePath + ".manifold")
+    ).filter(f -> f.exists())
+        .findFirst()
+        .orElseGet(() -> {
+          File lib = getLib(filePath);
+          if (lib == null) {
+            lib = getLib(filePath + ".manifold");
+          }
+          if (lib != null) {
+            return lib;
+          }
+          errors.add("Import " + filePath + " not found");
+          return null;
+        });
+    if (importedFile == null) {
+      return null;
+    }
+
+    ExpressionVertex v = new ImportVertex(exprGraph, importedFile);
+    exprGraph.addVertex(v);
+    return v;
   }
 
   @Override
