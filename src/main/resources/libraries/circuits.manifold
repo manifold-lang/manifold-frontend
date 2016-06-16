@@ -1,0 +1,5 @@
+public digitalIn = primitive port Bool;
+public digitalOut = primitive port Bool;
+
+public inputPin = primitive node (Nil) -> (out: digitalOut);
+public outputPin = primitive node (in: digitalIn) -> (Nil);

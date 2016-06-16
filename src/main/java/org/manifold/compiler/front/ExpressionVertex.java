@@ -10,6 +10,7 @@ import org.manifold.compiler.Value;
 public abstract class ExpressionVertex {
 
   private final ExpressionGraph exprGraph;
+
   protected ExpressionGraph getExpressionGraph() {
     return this.exprGraph;
   }
