@@ -43,7 +43,9 @@ abstract class StaticAttributeAccessVertex extends ExpressionVertex {
     return this.value;
   }
 
-  protected abstract Value getVal(TupleValue tupleValue);
+  protected abstract Value getValEntry(Value v) throws Exception;
+
+  protected abstract TypeValue getTypeEntry(TypeValue t) throws Exception;
 
   /**
    * The string representation of the value used to access this attribute
@@ -57,9 +59,10 @@ abstract class StaticAttributeAccessVertex extends ExpressionVertex {
     vExpr.elaborate();
 
     Value val = vExpr.getValue();
-    TupleValue tupleValue = (TupleValue) val;
-    this.value = getVal(tupleValue);
-    this.type = this.value.getType();
+    this.value = getValEntry(val);
+
+    TypeValue t = vExpr.getType();
+    this.type = getTypeEntry(t);
   }
 
   @Override
@@ -117,8 +120,19 @@ class StaticStringAttributeAccessVertex extends StaticAttributeAccessVertex {
   }
 
   @Override
-  protected final Value getVal(TupleValue tupleValue) {
-    return tupleValue.entry(attributeID);
+  protected final Value getValEntry(Value v) throws Exception {
+    if (!(v instanceof NamedEntryValue)) {
+      throw new RuntimeException("Cannot get entry by attribute of " + v.toString());
+    }
+    return ((NamedEntryValue) v).getEntry(attributeID);
+  }
+
+  @Override
+  protected final TypeValue getTypeEntry(TypeValue t) throws Exception {
+    if (!(t instanceof NamedEntryTypeValue)) {
+      throw new RuntimeException("Cannot get entry by attribute of " + t.toString());
+    }
+    return ((NamedEntryTypeValue) t).getEntry(attributeID);
   }
 
   public StaticStringAttributeAccessVertex(ExpressionGraph exprGraph,
@@ -151,8 +165,19 @@ class StaticNumberAttributeAccessVertex extends StaticAttributeAccessVertex {
   }
 
   @Override
-  protected final Value getVal(TupleValue tupleValue) {
-    return tupleValue.atIndex(attributeIDX);
+  protected final Value getValEntry(Value v) {
+    if (!(v instanceof TupleValue)) {
+      throw new RuntimeException("Cannot get entry by index of " + v.toString());
+    }
+    return ((TupleValue) v).getEntry(attributeIDX);
+  }
+
+  @Override
+  protected final TypeValue getTypeEntry(TypeValue t) throws Exception {
+    if (!(t instanceof TupleTypeValue)) {
+      throw new RuntimeException("Cannot get entry by attribute of " + t.toString());
+    }
+    return ((TupleTypeValue) t).getEntry(attributeIDX);
   }
 
   public StaticNumberAttributeAccessVertex(ExpressionGraph exprGraph,

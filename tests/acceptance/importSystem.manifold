@@ -1,0 +1,4 @@
+c = import "circuits";
+
+x = c.inputPin();
+c.outputPin(in=x);

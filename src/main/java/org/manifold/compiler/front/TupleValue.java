@@ -4,7 +4,7 @@ import org.manifold.compiler.SchematicValueVisitor;
 import org.manifold.compiler.UndefinedBehaviourError;
 import org.manifold.compiler.Value;
 
-public class TupleValue extends Value {
+public class TupleValue extends Value implements NamedEntryValue {
 
   private final MappedArray<String, Value> entries;
 
@@ -16,15 +16,15 @@ public class TupleValue extends Value {
     return entries.size();
   }
 
-  public Value entry(String key) {
+  public Value getEntry(String key) {
     if (!entries.containsKey(key)) {
       throw new IllegalArgumentException("No value for entry " + key);
     }
     return entries.get(key);
   }
 
-  public Value atIndex(int idx) {
-    return entries.get(idx);
+  public Value getEntry(int i) {
+    return entries.get(i);
   }
 
   public TupleValue(TupleTypeValue type, MappedArray<String, Value> entries) {
@@ -68,5 +68,4 @@ public class TupleValue extends Value {
     throw new UndefinedBehaviourError(
         "cannot accept non-frontend ValueVisitor into a frontend Value");
   }
-
 }
