@@ -10,6 +10,7 @@ public class TupleTypeValue extends TypeValue implements NamedEntryTypeValue {
   // TODO default values
 
   public MappedArray<String, TypeValue> getSubtypes() {
+    // TODO: m-lyons immutable copy
     return MappedArray.copyOf(subtypes);
   }
 
@@ -57,7 +58,7 @@ public class TupleTypeValue extends TypeValue implements NamedEntryTypeValue {
       return false;
     }
     TupleTypeValue oTuple = (TupleTypeValue) other;
-    if (!(getSize() != oTuple.getSize())) {
+    if (getSize() != oTuple.getSize()) {
       return false;
     }
     // type-check subexpressions for equality
@@ -68,6 +69,7 @@ public class TupleTypeValue extends TypeValue implements NamedEntryTypeValue {
         return false;
       }
     }
+    // TODO: check the default values for equality
     return true;
   }
 
@@ -83,7 +85,7 @@ public class TupleTypeValue extends TypeValue implements NamedEntryTypeValue {
       return getSupertype().isSubtypeOf(other);
     }
     TupleTypeValue oTuple = (TupleTypeValue) other;
-    if (!(getSize() != oTuple.getSize())) {
+    if (getSize() != oTuple.getSize()) {
       return false;
     }
     // type-check subexpressions

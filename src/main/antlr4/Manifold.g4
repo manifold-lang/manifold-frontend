@@ -57,11 +57,13 @@ typevalue:
   | functionTypeValue # FunctionType
   ;
 
-// TODO: implement type declarations and undefined variable declarations
-//declaration:
-//    type namespacedIdentifier # UndefinedDeclaration
-//  | TYPE_KEYWORD namespacedIdentifier '=' type # TypeDeclaration
-//  ;
+undefinedDeclaration: type namespacedIdentifier;
+typeDeclaration: TYPE_KEYWORD namespacedIdentifier '=' type;
+
+declaration:
+    typeDeclaration
+  | undefinedDeclaration
+  ;
 
 reference:
     tupleValue # Tuple
@@ -78,24 +80,22 @@ rvalue:
     BOOLEAN_VALUE # Boolean
   | INTEGER_VALUE # Integer
   | functionValue # Function
+  | VISIBILITY_PUBLIC? lvalue '=' rvalue # AssignmentExpression
   | reference rvalue # FunctionInvocationExpression // TODO: function invocation needs to be 'reference arglist'
   | reference # ReferenceExpression
-  | VISIBILITY_PUBLIC? lvalue '=' rvalue # AssignmentExpression
   | 'primitive' 'port' typevalue (':' tupleTypeValue)? # PrimitivePortDefinitionExpression
   | 'primitive' 'node' functionTypeValue # PrimitiveNodeDefinitionExpression
   | 'import' STRING_VALUE #ImportExpr
   ;
 
 lvalue:
-  // TODO: implement declarations as lvalues
-  // declaration # AssignmentDeclaration
-  reference # LValueExpression
+    undefinedDeclaration # AssignmentDeclaration
+  | reference # LValueExpression
   ;
 
-// TODO: declarations as expressions
 expression:
-  rvalue
-  // | declaration
+    declaration
+  | rvalue
   ;
 
 EXPRESSION_TERMINATOR: ';';

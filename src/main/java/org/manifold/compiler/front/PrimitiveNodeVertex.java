@@ -7,7 +7,6 @@ import org.manifold.compiler.*;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 
 public class PrimitiveNodeVertex extends ExpressionVertex {
@@ -50,7 +49,7 @@ public class PrimitiveNodeVertex extends ExpressionVertex {
   }
 
   private void extractPortTypes(TypeValue type,
-      Map<String, PortTypeValue> portMap) throws TypeMismatchException {
+      MappedArray<String, PortTypeValue> portMap) throws TypeMismatchException {
     if (!(type instanceof TupleTypeValue)) {
       MappedArray<String, TypeValue> x = new MappedArray<>();
       x.put("x", TypeTypeValue.getInstance());
@@ -79,7 +78,7 @@ public class PrimitiveNodeVertex extends ExpressionVertex {
   }
 
   private void extractAttributes(TypeValue type,
-      Map<String, TypeValue> attrMap) throws TypeMismatchException {
+      MappedArray<String, TypeValue> attrMap) throws TypeMismatchException {
     if (!(type instanceof TupleTypeValue)) {
       MappedArray<String, TypeValue> x = new MappedArray<>();
       x.put("x", TypeTypeValue.getInstance());
@@ -174,8 +173,8 @@ public class PrimitiveNodeVertex extends ExpressionVertex {
     }
     log.debug("elaborating primitive node");
 
-    Map<String, PortTypeValue> portTypeMap = new HashMap<>();
-    Map<String, TypeValue> attributesMap = new HashMap<>();
+    MappedArray<String, PortTypeValue> portTypeMap = new MappedArray<>();
+    MappedArray<String, TypeValue> attributesMap = new MappedArray<>();
 
     ExpressionVertex portTypeVertex = signatureEdge.getSource();
     portTypeVertex.elaborate();
@@ -209,7 +208,7 @@ public class PrimitiveNodeVertex extends ExpressionVertex {
     log.debug("extracting attributes");
     extractAttributes(portType.getInputType(), attributesMap);
 
-    this.node = new NodeTypeValue(attributesMap, portTypeMap);
+    this.node = new NodeTypeValue(MappedArray.toMap(attributesMap), MappedArray.toMap(portTypeMap));
     log.debug("constructed node type " + debugNodeType(node));
     this.instantiationSignature = constructInstantiationSignature(portType);
     log.debug("instantiation signature is "
