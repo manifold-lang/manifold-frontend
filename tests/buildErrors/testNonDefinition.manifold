@@ -1,0 +1,5 @@
+Int a;
+Int b;
+
+// a declared but not defined.
+b = 1;
