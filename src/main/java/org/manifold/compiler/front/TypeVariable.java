@@ -53,7 +53,7 @@ public class TypeVariable extends TypeValue {
       return true;
     }
 
-    if (other == null || this.getSupertype() != null) {
+    if (other == null || this.getSupertype() == null) {
       return false;
     }
     return this.getSupertype().isSubtypeOf(other);

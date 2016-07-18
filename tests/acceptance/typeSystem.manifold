@@ -1,0 +1,38 @@
+xIn = primitive port Bool;
+xOut = primitive port Bool;
+xInPin = primitive node (Nil) -> (x: xIn);
+xOutputPin = primitive node (x: xOut) -> (Nil);
+
+inPin = (Nil) -> (x: Bool) {
+    x = true;
+};
+
+// xIn p = xInPin();
+xIn p;
+(p) = inPin();
+
+Int declaration;
+declaration = 0;
+Int assignment = 1;
+
+xIn boolean = p;
+undecl = boolean;
+another = undecl;
+
+Type T = (Int, Bool);
+T t = (0, true);
+T s;
+s = t;
+
+Type NewInt = Int;
+NewInt ni = 0;
+
+Type F = (a: Int, b: Int);
+Type G = (c: F);
+
+G g = ((a = 100, b = 5));
+
+foo = (a=a, b=b);
+(c, d) = foo;
+
+xOutputPin(x=another);
