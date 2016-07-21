@@ -33,7 +33,7 @@ class ExpressionContextVisitor extends ManifoldBaseVisitor<ExpressionVertex> {
   }
 
   // Used to distinguish between unpacking and defining tuples
-  private boolean isLHS = true;
+  private boolean isLHS = false;
 
   // Should tuples and variables be exported
   private boolean isPublic = false;
@@ -317,19 +317,12 @@ class ExpressionContextVisitor extends ManifoldBaseVisitor<ExpressionVertex> {
           throw Throwables.propagate(e);
         }
       } else {
-        // doesn't exist yet
         try {
           exprGraph.addVertex(id);
-        } catch (MultipleDefinitionException e2) {
-          System.err.println("multiple definitions of variable " + id);
-          throw new ParseCancellationException();
-        }
-        try {
-          VariableReferenceVertex v = exprGraph.getVariableVertex(id);
-          return v;
-        } catch (VariableNotDefinedException e2) {
-          throw new UndefinedBehaviourError("failed to define variable "
-              + id);
+          return exprGraph.getVariableVertex(id);
+        } catch (MultipleDefinitionException e) {
+          // cannot actually happen
+          throw Throwables.propagate(e);
         }
       }
     }
