@@ -22,6 +22,10 @@ public class ImportVertex extends ExpressionVertex {
     this.importedFile = importedFile;
   }
 
+  public File getFile() {
+    return this.importedFile;
+  }
+
   @Override
   public TypeValue getType() {
     return this.type;

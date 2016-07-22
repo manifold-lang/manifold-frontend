@@ -108,7 +108,7 @@ public class ExpressionGraph {
   }
 
   public VariableReferenceVertex getVariableVertex(VariableIdentifier vID)
-    throws VariableNotDefinedException {
+      throws VariableNotDefinedException {
     if (variableVertices.containsKey(vID)) {
       return variableVertices.get(vID);
     } else {
@@ -117,12 +117,12 @@ public class ExpressionGraph {
   }
 
   public void addVertex(VariableIdentifier vID)
-    throws MultipleDefinitionException {
+      throws MultipleDefinitionException {
     addVertex(new VariableReferenceVertex(this, vID));
   }
 
   public void addVertex(VariableReferenceVertex v)
-    throws MultipleDefinitionException {
+      throws MultipleDefinitionException {
     VariableIdentifier vID = v.getId();
     if (variableVertices.containsKey(vID)) {
       throw new MultipleDefinitionException(vID);
