@@ -1,0 +1,73 @@
+{
+  "name": "singleFunctionOutput.manifold",
+  "userDefinedTypes": {},
+  "portTypes": {
+    "xOut": {
+      "signalType": "Bool",
+      "attributes": {}
+    },
+    "xIn": {
+      "signalType": "Bool",
+      "attributes": {}
+    }
+  },
+  "nodeTypes": {
+    "xInputPin": {
+      "attributes": {},
+      "ports": {
+        "x": "xOut"
+      }
+    },
+    "xNot": {
+      "attributes": {},
+      "ports": {
+        "xbar": "xOut",
+        "x": "xIn"
+      }
+    },
+    "xOutputPin": {
+      "attributes": {},
+      "ports": {
+        "x": "xIn"
+      }
+    }
+  },
+  "constraintTypes": {},
+  "nodes": {
+    "n1": {
+      "type": "xInputPin",
+      "attributes": {},
+      "portAttrs": {
+        "x": {}
+      }
+    },
+    "n2": {
+      "type": "xNot",
+      "attributes": {},
+      "portAttrs": {
+        "xbar": {},
+        "x": {}
+      }
+    },
+    "n3": {
+      "type": "xOutputPin",
+      "attributes": {},
+      "portAttrs": {
+        "x": {}
+      }
+    }
+  },
+  "connections": {
+    "c1": {
+      "attributes": {},
+      "from": "n1:x",
+      "to": "n2:x"
+    },
+    "c2": {
+      "attributes": {},
+      "from": "n2:xbar",
+      "to": "n3:x"
+    }
+  },
+  "constraints": {}
+}

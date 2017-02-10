@@ -165,8 +165,8 @@ public class FunctionInvocationVertex extends ExpressionVertex {
 
     log.debug("main graph output is " + mainGraphOutput);
     // identify subgraph (body) input and output vertices
-    ExpressionVertex subGraphInput = function.getInputVertex();
-    ExpressionVertex subGraphOutput = function.getOutputVertex();
+    TupleValueVertex subGraphInput = function.getInputVertex();
+    TupleValueVertex subGraphOutput = function.getOutputVertex();
 
     // perform copy
     getExpressionGraph().addFunctionExpressionGraph(function.getBody(),

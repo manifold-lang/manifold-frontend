@@ -1,9 +1,7 @@
 package org.manifold.compiler.front;
 
-import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
-
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.PatternLayout;
@@ -15,7 +13,9 @@ import org.manifold.compiler.BooleanValue;
 import org.manifold.compiler.StringTypeValue;
 import org.manifold.compiler.StringValue;
 
-import com.google.common.collect.ImmutableList;
+import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 public class TestExpressionGraph {
   ExpressionGraph expressionGraph;
@@ -93,12 +93,24 @@ public class TestExpressionGraph {
 
     // input/output
     VariableIdentifier subInput = new VariableIdentifier(ImmutableList.of("subInput"));
-    VariableIdentifier subOutput = new VariableIdentifier(ImmutableList.of("subOutput"));
     subGraph.addVertex(subInput);
-    subGraph.addVertex(subOutput);
+    ExpressionVertex subInputEdgeVertex = subGraph.getVariableVertex(subInput);
+    ExpressionEdge subGraphInputEdge = new ExpressionEdge(null, subInputEdgeVertex);
+    subGraph.addEdge(subGraphInputEdge);
 
-    ExpressionVertex subInputVertex = subGraph.getVariableVertex(subInput);
-    ExpressionVertex subOutputVertex = subGraph.getVariableVertex(subOutput);
+    VariableIdentifier dummyReturn = new VariableIdentifier(ImmutableList.of("returnValue"));
+    subGraph.addVertex(dummyReturn);
+    ExpressionVertex dummyReturnVertex = subGraph.getVariableVertex(dummyReturn);
+    ExpressionEdge returnEdge = new ExpressionEdge(dummyReturnVertex, null);
+    subGraph.addEdge(returnEdge);
+
+    TupleValueVertex subInputVertex = new TupleValueVertex(subGraph,
+            new MappedArray<>(ImmutableMap.of("a", subGraphInputEdge)));
+    TupleValueVertex subOutputVertex = new TupleValueVertex(subGraph,
+            new MappedArray<>(ImmutableMap.of("a", returnEdge)));
+
+    subGraph.addVertex(subInputVertex);
+    subGraph.addVertex(subOutputVertex);
 
     // intermediate nodes
     ExpressionVertex intermediate1 = new ConstantValueVertex(subGraph, BooleanValue.getInstance(true));
