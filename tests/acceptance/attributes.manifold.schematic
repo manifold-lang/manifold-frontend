@@ -1,0 +1,57 @@
+{
+  "name": "attributes.manifold",
+  "userDefinedTypes": {},
+  "portTypes": {
+    "digitalOut": {
+      "signalType": "Bool",
+      "attributes": {}
+    },
+    "digitalIn": {
+      "signalType": "Bool",
+      "attributes": {}
+    }
+  },
+  "nodeTypes": {
+    "outputPin": {
+      "attributes": {
+        "x": "Bool"
+      },
+      "ports": {
+        "in": "digitalIn"
+      }
+    },
+    "inputPin": {
+      "attributes": {},
+      "ports": {
+        "out": "digitalOut"
+      }
+    }
+  },
+  "constraintTypes": {},
+  "nodes": {
+    "n1": {
+      "type": "inputPin",
+      "attributes": {},
+      "portAttrs": {
+        "out": {}
+      }
+    },
+    "n2": {
+      "type": "outputPin",
+      "attributes": {
+        "x": null
+      },
+      "portAttrs": {
+        "in": {}
+      }
+    }
+  },
+  "connections": {
+    "c1": {
+      "attributes": {},
+      "from": "n1:out",
+      "to": "n2:in"
+    }
+  },
+  "constraints": {}
+}

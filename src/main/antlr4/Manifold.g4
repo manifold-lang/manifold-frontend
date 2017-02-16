@@ -77,6 +77,7 @@ reference:
 rvalue:
     BOOLEAN_VALUE # Boolean
   | INTEGER_VALUE # Integer
+  | 'infer' # Infer
   | functionValue # Function
   | reference rvalue # FunctionInvocationExpression // TODO: function invocation needs to be 'reference arglist'
   | reference # ReferenceExpression

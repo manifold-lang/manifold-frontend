@@ -1,0 +1,8 @@
+digitalIn = primitive port Bool;
+digitalOut = primitive port Bool;
+inputPin = primitive node (Nil) -> (out: digitalOut);
+outputPin = primitive node (in: digitalIn, x: Bool) -> (Nil);
+
+out = inputPin();
+
+outputPin(in=out, x=infer);

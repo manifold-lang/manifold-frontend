@@ -144,6 +144,18 @@ public class NodeValueVertex extends ExpressionVertex {
 
     for (String attrName : nodeType.getAttributes().keySet()) {
       Value attrValue = input.getEntry(attrName);
+
+      // This is the first time we can connect the type of the parameters to the infer value.
+      // So we get the type from the signature and replace the empty inferred type with one containing
+      // the correct type
+      if (attrValue instanceof InferredValue) {
+        InferredValue v = (InferredValue) attrValue;
+        if (v.getInferredType() == null) {
+          TypeValue tv = ((TupleTypeValue) signature.getInputType()).getEntry(attrName);
+          attrValue = new InferredValue(new InferredTypeValue(tv));
+        }
+      }
+
       nodeAttrs.put(attrName, attrValue);
     }
 

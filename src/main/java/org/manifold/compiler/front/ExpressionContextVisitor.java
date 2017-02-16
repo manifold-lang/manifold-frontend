@@ -4,12 +4,8 @@ import com.google.common.base.Throwables;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.misc.NotNull;
-import org.antlr.v4.runtime.misc.ParseCancellationException;
 import org.antlr.v4.runtime.tree.TerminalNode;
-import org.manifold.compiler.BooleanValue;
-import org.manifold.compiler.IntegerValue;
-import org.manifold.compiler.NilTypeValue;
-import org.manifold.compiler.UndefinedBehaviourError;
+import org.manifold.compiler.*;
 import org.manifold.parser.ManifoldBaseVisitor;
 import org.manifold.parser.ManifoldLexer;
 import org.manifold.parser.ManifoldParser.*;
@@ -378,6 +374,13 @@ class ExpressionContextVisitor extends ManifoldBaseVisitor<ExpressionVertex> {
       throw new UndefinedBehaviourError(
           "unknown terminal node '" + node.getSymbol().getText() + "'");
     }
+  }
+
+  @Override
+  public ExpressionVertex visitInfer(InferContext context) {
+    ExpressionVertex v = new InferredValueVertex(exprGraph);
+    exprGraph.addVertex(v);
+    return v;
   }
 
   private VariableIdentifier getVariableIdentifier(NamespacedIdentifierContext context) {
