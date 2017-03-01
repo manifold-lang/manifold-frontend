@@ -24,6 +24,8 @@ public class ReservedIdentifiers {
     addIdentifier(new VariableIdentifier(defaultNamespace, 
         "Int"), IntegerTypeValue.getInstance());
     addIdentifier(new VariableIdentifier(defaultNamespace,
+        "Real"), RealTypeValue.getInstance());
+    addIdentifier(new VariableIdentifier(defaultNamespace,
         "Type"), TypeTypeValue.getInstance());
   }
   
