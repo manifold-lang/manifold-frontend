@@ -1,0 +1,9 @@
+public microfluidPort = primitive port Bool;
+
+tJunction = primitive node (output: microfluidPort, dispersed: microfluidPort, continuous: microfluidPort)->(Nil);
+fluidExit = primitive node (input: microfluidPort, viscosity: Real)->(Nil);
+fluidEntry = primitive node (viscosity: Real)->(output:microfluidPort);
+channelCrossing = primitive node (channelB0: microfluidPort, channelA0: microfluidPort, channelB1: microfluidPort, channelA1: microfluidPort)->(Nil);
+controlPoint = primitive node (Nil) -> (Nil);
+pressureControlPoint = primitive node (Nil) -> (Nil);
+voltageControlPoint = primitive node (Nil) -> (Nil);
