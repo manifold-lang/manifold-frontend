@@ -14,6 +14,7 @@ LINE_COMMENT: '//' ~[\r\n]* -> skip;
 //                                                    //
 ////////////////////////////////////////////////////////
 
+REAL_VALUE: [0-9]+(.[0-9]+)?;
 INTEGER_VALUE: [0-9]+;
 BOOLEAN_VALUE: 'false' | 'true';
 TYPE_KEYWORD: 'Type';
@@ -76,6 +77,7 @@ reference:
 
 rvalue:
     BOOLEAN_VALUE # Boolean
+  | REAL_VALUE # Real
   | INTEGER_VALUE # Integer
   | 'infer' # Infer
   | functionValue # Function

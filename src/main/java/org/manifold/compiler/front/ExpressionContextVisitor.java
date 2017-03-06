@@ -370,6 +370,11 @@ class ExpressionContextVisitor extends ManifoldBaseVisitor<ExpressionVertex> {
           BooleanValue.getInstance(Boolean.parseBoolean(node.getText())));
       exprGraph.addVertex(v);
       return v;
+    } else if (node.getSymbol().getType() == ManifoldLexer.REAL_VALUE) {
+      ConstantValueVertex v = new ConstantValueVertex(exprGraph,
+          new RealValue(Double.parseDouble(node.getText())));
+      exprGraph.addVertex(v);
+      return v;
     } else {
       throw new UndefinedBehaviourError(
           "unknown terminal node '" + node.getSymbol().getText() + "'");
