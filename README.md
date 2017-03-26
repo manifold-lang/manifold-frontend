@@ -164,6 +164,51 @@ input[0]; // => 1
 input[1]; // => 2
 ```
 
+### Destructuring Assignment
+
+You may use destructuring assignment to extract the values from a tuple into
+individual variables.
+
+```
+(year, invisible) = (year: 5000, invisible: false);
+```
+
+This statement creates, in the local scope, the variables `year` and
+`invisible`, assigned to the `year` and `invisible` properties of the tuple, respectively.
+
+Destructuring assignment need not extract all properties within a tuple. If a
+you only need the destination year of your time machine, you need only write
+
+```
+(year=year) = (year=5000, invisible=false);
+```
+
+## Typing System
+
+ - `Type` is the "type" of all types in Manifold (including itself)
+ - `Bool` is a single bit of data, with the value `true` or `false`.
+ - `Function` is an entity that produces an output value given an input value and potentially some internal state.
+ - `Tuple` is a structured group of values.
+ - `Enum`
+ - `Int`
+
+Since types are first class objects of type `Type`, a new type can be
+defined via variable assignment. For example, the definition of Bit might look
+like
+
+```
+Type Bit = Bool;
+```
+
+Types are compared structurally, so as long as two tuples have the same field
+names, they are assignable. In this example the right hand side is an anonymous
+tuple type, but it is assigned to the named tuple type `Tuple1`.
+
+```
+Type Tuple1 = (a: Int, b: Int);
+Tuple1 a = (a=1, b=2);
+```
+
 ## Functions
 
 A function is an entity that, given an input value, uses some logic to produce
@@ -192,6 +237,25 @@ This function could be invoked as,
 // (foo = false, bar = true)
 ```
 
+## Package System
+
+A package and import system makes it possible to combine multiple Manifold files together into one schematic. Imported files contribute their declarations and definitions into the importing file's scope.
+
+```
+lib = import "microfluidics";
+p = lib.fluidEntry();
+```
+
+A module can export values using the `public` keyword. All other values are private to the module
+
+```
+public microfluidPort = primitive port Bool;
+public fluidEntry = primitive node (Nil) -> (out: microfluidPort)
+
+// Private variable
+x = fluidEntry();
+```
+
 ## Comments
 
 Manifold supports C++-style comment syntax, with both single-line `//` comments and multiline `/* ... */` comments.
@@ -207,23 +271,6 @@ This is a comment
 # Planned or Speculative Features
 
 The features described in this section are not currently part of the Manifold language. They may be added in future versions depending on need.
-
-## Typing System
-
- - `Type` is the "type" of all types in Manifold (including itself)
- - `Bool` is a single bit of data, with the value `true` or `false`. 
- - `Function` is an entity that produces an output value given an input value and potentially some internal state.
- - `Tuple` is a structured group of values.
- - `Enum`
- - `Int`
-
-Since types are first class objects of type `Type`, a new type can be
-defined via variable assignment. For example, the definition of Bit might look
-like
-
-```
-Type Bit = Bool;
-```
 
 ## Enums
 
@@ -256,14 +303,6 @@ Type Color = Enum(
 );
 Color color1 = Color.red;
 Color color2 = 0;
-```
-
-## Package System
-
-A package and import system makes it possible to combine multiple Manifold files together into one schematic. Imported files contribute their declarations and definitions into the importing file's scope.
-
-```
-import "otherFile.manifold";
 ```
 
 ## Arrays
@@ -299,44 +338,6 @@ the value being passed to it. Instead of a width expression, provide the definit
 (Int...Int width) array = (0, 1, 2, 3, 4, 5);
 array.1;     // => 1
 array.width; // => 5
-```
-
-### Subscript Operator
-
-```
-Type TimeMachineSettings = (year: year, invisible: invisible);
-TimeMachineSettings settings = (year: 5, invisible: high);
-
-settings[TimeMachineSettings.Property.year];
-
-TimeMachineSettings.Property property = TimeMachineSettings.Property.year;
-settings[property];
-```
-
-### Destructuring Assignment
-
-You may use destructuring assignment to extract the values from a tuple into
-individual variables.
-
-```
-(year: Int year, invisible: Bool invisible) = (year: 5000, invisible: false);
-```
-
-This statement creates, in the local scope, the variables `year` and
-`invisible`, assigned to `input.year` and `input.invisible` respectively.
-
-Types in destructuring can be inferred by the compiler. It is functionally
-equivalent to omit the types and write
-
-```
-(year: year, invisible: invisible) = (year: 5000, invisible: false);
-```
-
-Destructuring assignment need not extract all properties within a tuple. If a
-you only need the destination year of your time machine, you need only write
-
-```
-(year: year) = (year: 5000, invisible: false);
 ```
 
 ### Casting
@@ -398,13 +399,12 @@ this rule: assigning to a function variable multiple times will overload that
 function to support different input and output types. For example
 
 ```
-travel = Int year -> Bool success {
+travel = (year: Int) -> (success: Bool) {
   success = travel (year, false);
 };
 
-travel = (year: Int year, invisibility: Bool invisibility) 
-    -> Bool success {
-  ...
+travel = (year: Int, invisibility: Bool) -> (success: Bool) {
+  // ...
 };
 ```
 
