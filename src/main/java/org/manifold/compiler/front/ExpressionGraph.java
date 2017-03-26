@@ -71,12 +71,17 @@ public class ExpressionGraph {
                       var.getId().getNamespaceIdentifier().getName().stream())
                       .collect(Collectors.toList());
               VariableIdentifier ref = new VariableIdentifier(new NamespaceIdentifier(newNs), var.getId().getName());
-              try {
-                this.addVertex(ref);
-                newVertex = this.getVariableVertex(ref);
-              } catch (MultipleDefinitionException | VariableNotDefinedException e) {
-                throw Throwables.propagate(e);
+              // If this graph uses an exported variable then that namespaced variable will already be declared in
+              // the graph. So we just need to link it up
+              // If a variable is used in the importing module then the namespaced identifier will already exist
+              if (!containsVariable(ref)) {
+                try {
+                  addVertex(ref);
+                } catch (MultipleDefinitionException e) {
+                  // unreachable
+                }
               }
+              newVertex = this.getVariableVertex(ref);
             } else {
               newVertex = new VariableReferenceVertex(this, var.getId());
               // Uses the ExpressionVertex overload which will add this node to the non-variable vertices,
