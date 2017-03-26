@@ -129,7 +129,7 @@ public class VariableReferenceVertex extends ExpressionVertex {
     elaborated = true;
 
     if (!this.getId().getNamespaceIdentifier().isEmpty()) {
-     elaborateNamespace();
+      elaborateNamespace();
     }
 
     ExpressionEdge e = findAssigningEdge();
