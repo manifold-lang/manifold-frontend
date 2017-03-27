@@ -46,7 +46,7 @@ public class PrimitivePortVertex extends ExpressionVertex {
     }
   }
 
-  public void elaborate() throws TypeMismatchException {
+  public void elaborate() throws Exception {
     if (port != null) {
       return;
     }
@@ -75,6 +75,7 @@ public class PrimitivePortVertex extends ExpressionVertex {
           attributesVertex.getType());
     }
     // check for NIL
+    attributesVertex.elaborate();
     if (!(attributesVertex.getValue()
         .equals(NilTypeValue.getInstance()))) {
       throw new UnsupportedOperationException(

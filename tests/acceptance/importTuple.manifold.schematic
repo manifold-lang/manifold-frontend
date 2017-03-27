@@ -63,5 +63,6 @@
       "to": "n3:in"
     }
   },
-  "constraints": {}
+  "constraints": {},
+  "connectionTypes": {}
 }

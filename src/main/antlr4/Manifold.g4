@@ -92,7 +92,7 @@ rvalue:
   ;
 
 lvalue:
-    undefinedDeclaration # AssignmentDeclaration
+    undefinedTypeDeclaration # AssignmentDeclaration
   | reference # LValueExpression
   ;
 

@@ -49,5 +49,6 @@
       "to": "n2:x"
     }
   },
-  "constraints": {}
+  "constraints": {},
+  "connectionTypes": {}
 }

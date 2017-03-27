@@ -4,6 +4,7 @@ import com.google.common.base.Throwables;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.misc.NotNull;
+import org.antlr.v4.runtime.misc.ParseCancellationException;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.manifold.compiler.*;
 import org.manifold.parser.ManifoldBaseVisitor;
@@ -338,7 +339,7 @@ class ExpressionContextVisitor extends ManifoldBaseVisitor<ExpressionVertex> {
   }
 
   @Override
-  public ExpressionVertex visitUndefinedDeclaration(UndefinedDeclarationContext ctx) {
+  public ExpressionVertex visitUndefinedTypeDeclaration(UndefinedTypeDeclarationContext ctx) {
     // get the vertex for the type
     ExpressionVertex vType = ctx.type().accept(this);
     VariableIdentifier id = getVariableIdentifier(ctx.namespacedIdentifier());

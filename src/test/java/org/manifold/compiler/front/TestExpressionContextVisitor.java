@@ -152,32 +152,19 @@ public class TestExpressionContextVisitor {
   }
 
   @Test
-  public void visitPrimitivePortDefinition_noAttributes() throws IOException {
+  public void visitPrimitivePortDefinition_noAttributes() throws Exception {
     ExpressionContext expression =  parseExpression(
         "primitive port Bool;");
     PrimitivePortVertex v = (PrimitivePortVertex) expression.accept(visitor);
     assertTrue(exprGraph.allVertices.contains(v));
 
+    v.elaborate();
     assertTrue(v.getSignalTypeEdge().getSource().getValue() instanceof BooleanTypeValue);
     assertTrue(v.getAttributesEdge().getSource().getValue() instanceof NilTypeValue);
   }
 
   @Test
-  public void visitPrimitivePortDefinition_withAttributes() throws IOException {
-    ExpressionContext expression =  parseExpression(
-        "primitive port Bool: (a: Bool, b:Bool);");
-    PrimitivePortVertex v = (PrimitivePortVertex) expression.accept(visitor);
-    assertTrue(exprGraph.allVertices.contains(v));
-
-    assertTrue(v.getSignalTypeEdge().getSource().getValue() instanceof BooleanTypeValue);
-
-    ExpressionVertex attrVertex = v.getAttributesEdge().getSource();
-    assertTrue(attrVertex instanceof TupleTypeValueVertex);
-    assertEquals(((TupleTypeValueVertex) attrVertex).getTypeValueEdges().size(), 2);
-  }
-
-  @Test
-  public void visitTupleTypeValue_positional() throws IOException {
+  public void visitTupleTypeValue_positional() throws Exception {
     // Parses a function definition but the assertions are only with respect to the type
     ExpressionContext expression =  parseExpression(
         "(Bool, Int) -> (Bool) {};");
@@ -186,13 +173,14 @@ public class TestExpressionContextVisitor {
     TupleTypeValueVertex v = (TupleTypeValueVertex) context.accept(visitor);
     assertTrue(exprGraph.allVertices.contains(v));
 
+    v.elaborate();
     assertEquals(v.getTypeValueEdges().size(), 2);
     assertTrue(v.getTypeValueEdges().get(0).getSource().getValue() instanceof BooleanTypeValue);
     assertTrue(v.getTypeValueEdges().get(1).getSource().getValue() instanceof IntegerTypeValue);
   }
 
   @Test
-  public void visitTupleTypeValue_named() throws IOException {
+  public void visitTupleTypeValue_named() throws Exception {
     // Parses a function definition but the assertions are only with respect to the type
     ExpressionContext expression =  parseExpression(
         "(a: Bool, b: Int) -> (c: Bool) {};");
@@ -201,6 +189,7 @@ public class TestExpressionContextVisitor {
     TupleTypeValueVertex v = (TupleTypeValueVertex) context.accept(visitor);
     assertTrue(exprGraph.allVertices.contains(v));
 
+    v.elaborate();
     assertEquals(v.getTypeValueEdges().size(), 2);
     assertTrue(v.getTypeValueEdges().get("a").getSource().getValue() instanceof BooleanTypeValue);
     assertTrue(v.getTypeValueEdges().get("b").getSource().getValue() instanceof IntegerTypeValue);

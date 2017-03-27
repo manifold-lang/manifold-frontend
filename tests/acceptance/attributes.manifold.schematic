@@ -53,5 +53,6 @@
       "to": "n2:in"
     }
   },
-  "constraints": {}
+  "constraints": {},
+  "connectionTypes": {}
 }
