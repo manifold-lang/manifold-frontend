@@ -132,8 +132,16 @@ public class VariableReferenceVertex extends ExpressionVertex {
       elaborateNamespace();
     }
 
-    ExpressionEdge e = findAssigningEdge();
-    e.getSource().elaborate();
+    ExpressionEdge assigningEdge = findAssigningEdge();
+    ExpressionEdge e = null;
+    // continue to elaborate the assigning edge until it stays
+    // in the graph upon elaboration because vertex elaboration
+    // can lead to the edge being replaced in the graph
+    while (e != assigningEdge) {
+      e = assigningEdge;
+      e.getSource().elaborate();
+      assigningEdge = findAssigningEdge();
+    }
     type = e.getSource().getType();
     value = e.getSource().getValue();
   }

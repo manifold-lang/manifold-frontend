@@ -225,8 +225,8 @@ public class ExpressionGraph {
    * @param subGraphOutput Exit vertex in subGraph
    */
   public void addFunctionExpressionGraph(ExpressionGraph subGraph,
-                                         ExpressionEdge mainGraphInput, ExpressionVertex subGraphInput,
-                                         ExpressionEdge mainGraphOutput, ExpressionVertex subGraphOutput,
+                                         ExpressionEdge mainGraphInput, TupleValueVertex subGraphInput,
+                                         ExpressionEdge mainGraphOutput, TupleValueVertex subGraphOutput,
                                          Map<VariableReferenceVertex, VariableReferenceVertex> variableRenamingMap) {
 
     // Sanity checks
@@ -284,7 +284,19 @@ public class ExpressionGraph {
     exprVertexMap.put(subGraphInput, inputVertex);
 
     // Connect the function output vertex to the main graph
-    ExpressionEdge outputEdge = new ExpressionEdge(exprVertexMap.get(subGraphOutput), mainGraphOutput.getTarget());
+    ExpressionVertex outputVertex = exprVertexMap.get(subGraphOutput);
+    if (subGraphOutput.getValueEdges().size() == 1) {
+      // Remove the output tuple from the expression graph
+      this.allVertices.remove(outputVertex);
+      this.nonVariableVertices.remove(outputVertex);
+
+      // Find the single value in the tuple and assign connect it to the output
+      ExpressionEdge functionReturnEdge = subGraphOutput.getValueEdges().get(0);
+      subGraph.removeEdge(functionReturnEdge);
+
+      outputVertex = exprVertexMap.get(functionReturnEdge.getSource());
+    }
+    ExpressionEdge outputEdge = new ExpressionEdge(outputVertex, mainGraphOutput.getTarget());
     this.edges.add(outputEdge);
 
     // each edge in subgraph -> edge in main graph should refer to the same source/target

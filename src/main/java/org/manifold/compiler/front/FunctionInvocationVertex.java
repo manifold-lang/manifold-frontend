@@ -52,8 +52,19 @@ public class FunctionInvocationVertex extends ExpressionVertex {
 
   @Override
   public void verify() throws Exception {
-    // TODO Auto-generated method stub
-
+    // Elaborate function
+    ExpressionVertex vFunction = functionEdge.getSource();
+    vFunction.elaborate();
+    // now find out what kind of function we are about to invoke
+    Value function = vFunction.getValue();
+    if (function instanceof FunctionValue) {
+      // verify all the variables in the function body
+      FunctionValue functionValue = (FunctionValue) function;
+      for (Map.Entry<VariableIdentifier, VariableReferenceVertex> entry
+          : functionValue.getBody().getVariableVertices().entrySet()) {
+        entry.getValue().verify();
+      }
+    }
   }
 
   @Override
@@ -165,8 +176,8 @@ public class FunctionInvocationVertex extends ExpressionVertex {
 
     log.debug("main graph output is " + mainGraphOutput);
     // identify subgraph (body) input and output vertices
-    ExpressionVertex subGraphInput = function.getInputVertex();
-    ExpressionVertex subGraphOutput = function.getOutputVertex();
+    TupleValueVertex subGraphInput = function.getInputVertex();
+    TupleValueVertex subGraphOutput = function.getOutputVertex();
 
     // perform copy
     getExpressionGraph().addFunctionExpressionGraph(function.getBody(),
