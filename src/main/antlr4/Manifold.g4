@@ -57,12 +57,12 @@ typevalue:
   | functionTypeValue # FunctionType
   ;
 
-undefinedDeclaration: type namespacedIdentifier;
+undefinedTypeDeclaration: type namespacedIdentifier;
 typeDeclaration: TYPE_KEYWORD namespacedIdentifier '=' type;
 
 declaration:
     typeDeclaration
-  | undefinedDeclaration
+  | undefinedTypeDeclaration
   ;
 
 reference:

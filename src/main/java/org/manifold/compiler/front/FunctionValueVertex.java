@@ -79,7 +79,7 @@ public class FunctionValueVertex extends ExpressionVertex {
           : functionBody.getVariableVertices().entrySet()) {
         if (vRef.getKey() == null) {
           // then the user tried to have an output tuple without named keys
-          throw new FrontendBuildException("The function output type is an anonymous tuple." +
+          throw new FrontendBuildException("The function output type is an anonymous tuple. " +
               "Give the anonymous value a key to fix this.");
         }
         if (vRef.getKey().getName().equals(argName)) {
