@@ -84,6 +84,10 @@ public class NodeValueVertex extends ExpressionVertex {
 
     for (MappedArray<String, TypeValue>.Entry typeEntry : outputType.getSubtypes()) {
       String outputPortName = typeEntry.getKey();
+      if (outputPortName == null) {
+        throw new FrontendBuildException("The output port name was anonymous for this node. " +
+          "This can be fixed by giving a name to the port");
+      }
       PortTypeValue outputPortType = nodeType.getPorts().get(outputPortName);
       FuturePortValue futurePort = new FuturePortValue(
           this, outputPortName, outputPortType);

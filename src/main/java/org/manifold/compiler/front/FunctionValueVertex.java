@@ -67,16 +67,21 @@ public class FunctionValueVertex extends ExpressionVertex {
     TupleTypeValue outputType = (TupleTypeValue) type.getOutputType();
     MappedArray<String, ExpressionEdge> inputEdges = new MappedArray<>();
     MappedArray<String, ExpressionEdge> outputEdges = new MappedArray<>();
-    for (MappedArray<String, TypeValue>.Entry argName : inputType.getSubtypes()) {
+    inputType.getSubtypes().forEach((argName) -> {
       ExpressionEdge e = new ExpressionEdge(null, null); // I know what I'm doing
       functionBody.addEdge(e);
       inputEdges.put(argName.getKey(), e);
-    }
-    for (MappedArray<String, TypeValue>.Entry typeEntry : outputType.getSubtypes()) {
+    });
+    outputType.getSubtypes().forEach((typeEntry) -> {
       String argName = typeEntry.getKey();
       // "name resolution": look for a variable reference vertex with this name in the subgraph
       for (Map.Entry<VariableIdentifier, VariableReferenceVertex> vRef
           : functionBody.getVariableVertices().entrySet()) {
+        if (vRef.getKey() == null) {
+          // then the user tried to have an output tuple without named keys
+          throw new FrontendBuildException("The function output type is an anonymous tuple. " +
+              "Give the anonymous value a key to fix this.");
+        }
         if (vRef.getKey().getName().equals(argName)) {
           ExpressionEdge e = new ExpressionEdge(vRef.getValue(), null);
           functionBody.addEdge(e);
@@ -84,7 +89,7 @@ public class FunctionValueVertex extends ExpressionVertex {
           break;
         }
       }
-    }
+    });
     TupleValueVertex vInput = new TupleValueVertex(functionBody, inputEdges);
     functionBody.addVertex(vInput);
     TupleValueVertex vOutput = new TupleValueVertex(functionBody, outputEdges);
