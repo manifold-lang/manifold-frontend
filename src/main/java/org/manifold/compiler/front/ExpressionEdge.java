@@ -32,9 +32,6 @@ public class ExpressionEdge {
   }
 
   public ExpressionEdge(ExpressionVertex from, ExpressionVertex to) {
-    if (from == null && to == null) {
-      log.warn("attempt to create a totally disconnected ExpressionEdge");
-    }
     source = from;
     target = to;
   }
