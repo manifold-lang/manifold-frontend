@@ -66,6 +66,10 @@ public class TupleValueVertex extends ExpressionVertex {
       log.debug("elaborating tuple entry '" + entry.getKey() + "'");
       ExpressionVertex vSource = entry.getValue().getSource();
       vSource.elaborate();
+
+      // If the source was a function invocation then the source edge will now point to something else, probably a node
+      // query the source again to get the updated source
+      vSource = entry.getValue().getSource();
       values.put(entry.getKey(), vSource.getValue());
       types.put(entry.getKey(), vSource.getType());
     }

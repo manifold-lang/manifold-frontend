@@ -30,6 +30,10 @@ public class ImportValue extends Value implements NamedEntryValue {
   @Override
   public Value getEntry(String key) throws Exception {
     VariableIdentifier id = new VariableIdentifier(namespace, key);
+    if (!exprGraph.containsVariable(id)) {
+      throw new VariableNotDefinedException(id);
+    }
+
     VariableReferenceVertex source = exprGraph.getVariableVertex(id);
     source.elaborate();
     return source.getValue();

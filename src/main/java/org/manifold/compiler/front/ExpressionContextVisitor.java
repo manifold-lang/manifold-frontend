@@ -4,12 +4,8 @@ import com.google.common.base.Throwables;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.misc.NotNull;
-import org.antlr.v4.runtime.misc.ParseCancellationException;
 import org.antlr.v4.runtime.tree.TerminalNode;
-import org.manifold.compiler.BooleanValue;
-import org.manifold.compiler.IntegerValue;
-import org.manifold.compiler.NilTypeValue;
-import org.manifold.compiler.UndefinedBehaviourError;
+import org.manifold.compiler.*;
 import org.manifold.parser.ManifoldBaseVisitor;
 import org.manifold.parser.ManifoldLexer;
 import org.manifold.parser.ManifoldParser.*;
@@ -30,7 +26,7 @@ class ExpressionContextVisitor extends ManifoldBaseVisitor<ExpressionVertex> {
   }
 
   // Used to distinguish between unpacking and defining tuples
-  private boolean isLHS = true;
+  private boolean isLHS = false;
 
   // Should tuples and variables be exported
   private boolean isPublic = false;
@@ -330,19 +326,12 @@ class ExpressionContextVisitor extends ManifoldBaseVisitor<ExpressionVertex> {
           throw Throwables.propagate(e);
         }
       } else {
-        // doesn't exist yet
         try {
           exprGraph.addVertex(id);
-        } catch (MultipleDefinitionException e2) {
-          System.err.println("multiple definitions of variable " + id);
-          throw new ParseCancellationException();
-        }
-        try {
-          VariableReferenceVertex v = exprGraph.getVariableVertex(id);
-          return v;
-        } catch (VariableNotDefinedException e2) {
-          throw new UndefinedBehaviourError("failed to define variable "
-              + id);
+          return exprGraph.getVariableVertex(id);
+        } catch (MultipleDefinitionException e) {
+          // cannot actually happen
+          throw Throwables.propagate(e);
         }
       }
     }
@@ -427,6 +416,11 @@ class ExpressionContextVisitor extends ManifoldBaseVisitor<ExpressionVertex> {
           BooleanValue.getInstance(Boolean.parseBoolean(node.getText())));
       exprGraph.addVertex(v);
       return v;
+    } else if (node.getSymbol().getType() == ManifoldLexer.REAL_VALUE) {
+      ConstantValueVertex v = new ConstantValueVertex(exprGraph,
+          new RealValue(Double.parseDouble(node.getText())));
+      exprGraph.addVertex(v);
+      return v;
     } else if (node.getSymbol().getType() == ManifoldLexer.TYPE_KEYWORD) {
       NamespaceIdentifier empty = new NamespaceIdentifier(Collections.emptyList());
       VariableIdentifier id = new VariableIdentifier(empty, node.toString());
@@ -452,6 +446,13 @@ class ExpressionContextVisitor extends ManifoldBaseVisitor<ExpressionVertex> {
       throw new UndefinedBehaviourError(
           "unknown terminal node '" + node.getSymbol().getText() + "'");
     }
+  }
+
+  @Override
+  public ExpressionVertex visitInfer(InferContext context) {
+    ExpressionVertex v = new InferredValueVertex(exprGraph);
+    exprGraph.addVertex(v);
+    return v;
   }
 
   private VariableIdentifier getVariableIdentifier(NamespacedIdentifierContext context) {

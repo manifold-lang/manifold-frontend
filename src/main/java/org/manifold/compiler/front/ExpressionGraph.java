@@ -71,12 +71,17 @@ public class ExpressionGraph {
                       var.getId().getNamespaceIdentifier().getName().stream())
                       .collect(Collectors.toList());
               VariableIdentifier ref = new VariableIdentifier(new NamespaceIdentifier(newNs), var.getId().getName());
-              try {
-                this.addVertex(ref);
-                newVertex = this.getVariableVertex(ref);
-              } catch (MultipleDefinitionException | VariableNotDefinedException e) {
-                throw Throwables.propagate(e);
+              // If this graph uses an exported variable then that namespaced variable will already be declared in
+              // the graph. So we just need to link it up
+              // If a variable is used in the importing module then the namespaced identifier will already exist
+              if (!containsVariable(ref)) {
+                try {
+                  addVertex(ref);
+                } catch (MultipleDefinitionException e) {
+                  // unreachable
+                }
               }
+              newVertex = this.getVariableVertex(ref);
             } else {
               newVertex = new VariableReferenceVertex(this, var.getId());
               // Uses the ExpressionVertex overload which will add this node to the non-variable vertices,
@@ -108,7 +113,7 @@ public class ExpressionGraph {
   }
 
   public VariableReferenceVertex getVariableVertex(VariableIdentifier vID)
-    throws VariableNotDefinedException {
+      throws VariableNotDefinedException {
     if (variableVertices.containsKey(vID)) {
       return variableVertices.get(vID);
     } else {
@@ -117,12 +122,12 @@ public class ExpressionGraph {
   }
 
   public void addVertex(VariableIdentifier vID)
-    throws MultipleDefinitionException {
+      throws MultipleDefinitionException {
     addVertex(new VariableReferenceVertex(this, vID));
   }
 
   public void addVertex(VariableReferenceVertex v)
-    throws MultipleDefinitionException {
+      throws MultipleDefinitionException {
     VariableIdentifier vID = v.getId();
     if (variableVertices.containsKey(vID)) {
       throw new MultipleDefinitionException(vID);

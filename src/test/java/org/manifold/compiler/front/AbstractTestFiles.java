@@ -11,7 +11,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.manifold.compiler.middle.Schematic;
 import org.manifold.compiler.middle.serialization.SchematicSerializer;
-import org.skyscreamer.jsonassert.JSONAssert;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -96,11 +95,10 @@ public abstract class AbstractTestFiles {
   protected final String getSchematicJSON(String pathName) throws Exception {
     String[] args = { pathName };
     Schematic actual = invokeFrontend(args);
-    SchematicSerializer.serialize(actual);
 
     JsonObject schematicJson = SchematicSerializer.serialize(actual);
 
-    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    Gson gson = new GsonBuilder().setPrettyPrinting().serializeNulls().create();
     JsonParser jp = new JsonParser();
     JsonElement je = jp.parse(schematicJson.toString());
     return gson.toJson(je);

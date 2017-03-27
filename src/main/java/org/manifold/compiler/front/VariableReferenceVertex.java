@@ -6,6 +6,7 @@ import org.manifold.compiler.Value;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -65,9 +66,10 @@ public class VariableReferenceVertex extends ExpressionVertex {
 
   private TypeValue type = null;
   private Value value = null;
-  
+
   private ExpressionEdge findAssigningEdge() {
     ExpressionGraph g = getExpressionGraph();
+
     List<ExpressionEdge> incoming = g.getEdgesToTarget(this);
     if (incoming.size() == 1) {
       return incoming.get(0);
@@ -104,8 +106,32 @@ public class VariableReferenceVertex extends ExpressionVertex {
     return false;
   }
 
+  private boolean elaborated = false;
+
+  private void elaborateNamespace() throws Exception {
+    // TODO doesn't do nested namespaces
+    ExpressionGraph g = getExpressionGraph();
+    String namespace = getId().getNamespaceIdentifier().getName().get(0);
+    VariableIdentifier namespaceId = new VariableIdentifier(Arrays.asList(namespace));
+    ExpressionVertex namespaceVar = g.getVariableVertex(namespaceId);
+    if (namespaceVar == null) {
+      throw new VariableNotDefinedException(namespaceId);
+    }
+
+    namespaceVar.elaborate();
+  }
+
   @Override
   public void elaborate() throws Exception {
+    if (elaborated) {
+      return;
+    }
+    elaborated = true;
+
+    if (!this.getId().getNamespaceIdentifier().isEmpty()) {
+      elaborateNamespace();
+    }
+
     ExpressionEdge assigningEdge = findAssigningEdge();
     ExpressionEdge e = null;
     // continue to elaborate the assigning edge until it stays
