@@ -56,5 +56,6 @@
       "to": "n3:x"
     }
   },
-  "constraints": {}
+  "constraints": {},
+  "connectionTypes": {}
 }

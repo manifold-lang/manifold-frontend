@@ -48,6 +48,7 @@ public class Main implements Frontend {
       log.debug("elaborating function "
           + Integer.toString(System.identityHashCode(v)));
       v.elaborate();
+      v.verify();
       log.debug("writing out expression graph at function elaboration step " +
           step);
       File elaboratedDot = new File("tmp.elaborated.step" + step + ".dot");
@@ -150,6 +151,21 @@ public class Main implements Frontend {
 
   }
 
+  public static void verifyVariables(ExpressionGraph g) throws Exception {
+    // verify that variables are only assigned once and
+    // iterate through all the variables in the graph and verify that
+    // there aren't any type mismatches.
+    log.debug("verifying variables");
+
+    g.verifyVariablesSingleAssignment();
+
+    Map<VariableIdentifier, VariableReferenceVertex> variables = g.getVariableVertices();
+    for (Map.Entry<VariableIdentifier, VariableReferenceVertex> entry : variables.entrySet()) {
+      VariableReferenceVertex vertex = entry.getValue();
+      vertex.verify();
+    }
+  }
+
   @Override
   public Schematic invokeFrontend(CommandLine cmd) throws Exception {
 
@@ -160,14 +176,14 @@ public class Main implements Frontend {
 
     ExpressionGraphParser parser = new ExpressionGraphParser();
     ExpressionGraph exprGraph = parser.parseFile(inputFile);
-    exprGraph.verifyVariablesSingleAssignment();
 
-    Schematic schematic = new Schematic(inputFile.getName());
-
+    verifyVariables(exprGraph);
     elaborateFunctions(exprGraph);
     log.debug("writing out expression graph after function elaboration");
     File elaboratedDot = new File(inputFile.getName() + ".elaborated.dot");
     exprGraph.writeDOTFile(elaboratedDot);
+
+    Schematic schematic = new Schematic(inputFile.getName());
 
     elaborateSchematicTypes(exprGraph, schematic);
     elaborateNodes(exprGraph, schematic);

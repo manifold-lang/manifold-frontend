@@ -33,7 +33,7 @@ public class TestPrimitivePortVertex {
   }
   
   @Test
-  public void testElaborate_noAttributes() throws TypeMismatchException {
+  public void testElaborate_noAttributes() throws Exception {
     ExpressionGraph g = new ExpressionGraph();
     ConstantValueVertex vSignalType = new ConstantValueVertex(g,
         BooleanTypeValue.getInstance());

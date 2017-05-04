@@ -1,5 +1,5 @@
 {
-  "name": "simpleElaboration.manifold",
+  "name": "singleFunctionOutput.manifold",
   "userDefinedTypes": {},
   "portTypes": {
     "xOut": {
@@ -12,10 +12,10 @@
     }
   },
   "nodeTypes": {
-    "xOutputPin": {
+    "xInputPin": {
       "attributes": {},
       "ports": {
-        "x": "xIn"
+        "x": "xOut"
       }
     },
     "xNot": {
@@ -25,10 +25,10 @@
         "x": "xIn"
       }
     },
-    "xInputPin": {
+    "xOutputPin": {
       "attributes": {},
       "ports": {
-        "x": "xOut"
+        "x": "xIn"
       }
     }
   },

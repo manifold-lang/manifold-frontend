@@ -46,12 +46,18 @@ public class PrimitivePortVertex extends ExpressionVertex {
     }
   }
 
-  public void elaborate() throws TypeMismatchException {
+  public void elaborate() throws Exception {
     if (port != null) {
       return;
     }
-    // check that the signal type is really a type
+
     ExpressionVertex signalTypeVertex = signalTypeEdge.getSource();
+    try {
+      signalTypeVertex.elaborate();
+    } catch (Exception e) {
+      throw new TypeMismatchException(TypeTypeValue.getInstance(), signalTypeVertex.getType());
+    }
+    // check that the signal type is really a type
     if (!(signalTypeVertex.getType()
         .isSubtypeOf(TypeTypeValue.getInstance()))) {
       throw new TypeMismatchException(
@@ -69,6 +75,7 @@ public class PrimitivePortVertex extends ExpressionVertex {
           attributesVertex.getType());
     }
     // check for NIL
+    attributesVertex.elaborate();
     if (!(attributesVertex.getValue()
         .equals(NilTypeValue.getInstance()))) {
       throw new UnsupportedOperationException(

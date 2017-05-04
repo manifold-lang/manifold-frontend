@@ -71,12 +71,17 @@ public class ExpressionGraph {
                       var.getId().getNamespaceIdentifier().getName().stream())
                       .collect(Collectors.toList());
               VariableIdentifier ref = new VariableIdentifier(new NamespaceIdentifier(newNs), var.getId().getName());
-              try {
-                this.addVertex(ref);
-                newVertex = this.getVariableVertex(ref);
-              } catch (MultipleDefinitionException | VariableNotDefinedException e) {
-                throw Throwables.propagate(e);
+              // If this graph uses an exported variable then that namespaced variable will already be declared in
+              // the graph. So we just need to link it up
+              // If a variable is used in the importing module then the namespaced identifier will already exist
+              if (!containsVariable(ref)) {
+                try {
+                  addVertex(ref);
+                } catch (MultipleDefinitionException e) {
+                  // unreachable
+                }
               }
+              newVertex = this.getVariableVertex(ref);
             } else {
               newVertex = new VariableReferenceVertex(this, var.getId());
               // Uses the ExpressionVertex overload which will add this node to the non-variable vertices,
@@ -220,8 +225,8 @@ public class ExpressionGraph {
    * @param subGraphOutput Exit vertex in subGraph
    */
   public void addFunctionExpressionGraph(ExpressionGraph subGraph,
-                                         ExpressionEdge mainGraphInput, ExpressionVertex subGraphInput,
-                                         ExpressionEdge mainGraphOutput, ExpressionVertex subGraphOutput,
+                                         ExpressionEdge mainGraphInput, TupleValueVertex subGraphInput,
+                                         ExpressionEdge mainGraphOutput, TupleValueVertex subGraphOutput,
                                          Map<VariableReferenceVertex, VariableReferenceVertex> variableRenamingMap) {
 
     // Sanity checks
@@ -279,7 +284,19 @@ public class ExpressionGraph {
     exprVertexMap.put(subGraphInput, inputVertex);
 
     // Connect the function output vertex to the main graph
-    ExpressionEdge outputEdge = new ExpressionEdge(exprVertexMap.get(subGraphOutput), mainGraphOutput.getTarget());
+    ExpressionVertex outputVertex = exprVertexMap.get(subGraphOutput);
+    if (subGraphOutput.getValueEdges().size() == 1) {
+      // Remove the output tuple from the expression graph
+      this.allVertices.remove(outputVertex);
+      this.nonVariableVertices.remove(outputVertex);
+
+      // Find the single value in the tuple and assign connect it to the output
+      ExpressionEdge functionReturnEdge = subGraphOutput.getValueEdges().get(0);
+      subGraph.removeEdge(functionReturnEdge);
+
+      outputVertex = exprVertexMap.get(functionReturnEdge.getSource());
+    }
+    ExpressionEdge outputEdge = new ExpressionEdge(outputVertex, mainGraphOutput.getTarget());
     this.edges.add(outputEdge);
 
     // each edge in subgraph -> edge in main graph should refer to the same source/target

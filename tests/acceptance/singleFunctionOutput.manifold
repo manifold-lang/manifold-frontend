@@ -1,0 +1,10 @@
+xIn = primitive port Bool; xOut = primitive port Bool;
+xNot = primitive node (x: xIn) -> (xbar: xOut);
+xInputPin = primitive node (Nil) -> (x: xOut);
+xOutputPin = primitive node (x: xIn) -> (Nil);
+
+invert = (p: Bool) -> (q: Bool) { q = xNot(x=p); };
+
+a = xInputPin();
+b = invert(p=a);
+xOutputPin(x=b);

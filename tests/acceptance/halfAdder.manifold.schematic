@@ -122,5 +122,6 @@
       "to": "n6:in"
     }
   },
-  "constraints": {}
+  "constraints": {},
+  "connectionTypes": {}
 }

@@ -3,44 +3,23 @@ package org.manifold.compiler.front;
 import org.manifold.compiler.SchematicValueVisitor;
 import org.manifold.compiler.TypeValue;
 
+import java.util.HashMap;
+
 public class TypeVariable extends TypeValue {
 
-  private static int nextID = 0;
-  private synchronized int allocateNewID() {
-    int id = nextID;
-    nextID += 1;
+  private final VariableIdentifier id;
+  public VariableIdentifier getID() {
     return id;
   }
 
-  private final int id;
-  public Integer getID() {
-    return id;
+  public TypeVariable(VariableIdentifier id, TypeValue superType) {
+    super(superType, new HashMap<>());
+    this.id = id;
   }
-
-  public TypeVariable() {
-    this.id = allocateNewID();
-  }
-
-  private String name = null;
 
   @Override
   public String toString() {
-    if (instance != null) {
-      return instance.toString();
-    } else {
-      if (name == null) {
-        // generate a new name based on the ID
-        String tmp = "";
-        int tmpID = id;
-        while (tmpID >= 26) {
-          tmp += (char) (97 + tmpID % 26);
-          tmpID /= 26;
-        }
-        tmp += (char) (97 + tmpID);
-        name = tmp;
-      }
-      return name;
-    }
+    return getID().toString();
   }
 
   private TypeValue instance = null;
@@ -69,8 +48,20 @@ public class TypeVariable extends TypeValue {
   }
 
   @Override
+  public boolean isSubtypeOf(TypeValue other) {
+    if (this.equals(other)) {
+      return true;
+    }
+
+    if (other == null || this.getSupertype() == null) {
+      return false;
+    }
+    return this.getSupertype().isSubtypeOf(other);
+  }
+
+  @Override
   public int hashCode() {
-    return getID();
+    return getID().hashCode();
   }
 
 }
